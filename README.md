@@ -1,1 +1,160 @@
 # spleeterpt
+
+A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter),
+with official weight conversion, audio separation, and a single-GPU training entry
+point for RunPod. This is an independent project, not an official Deezer release.
+
+**First implementation:** 2/4/5-stem U-Nets, aligned WAV datasets, magnitude L1
+training, validation, AMP, and atomic resume checkpoints. No pretrained weights or
+training audio are bundled. No cloud training has been started.
+
+## Install
+
+Use Python 3.10–3.12 and a PyTorch build appropriate for your CPU/GPU. The tested
+baseline is Python 3.12 + PyTorch 2.6.0 on CPU. RunPod CUDA/AMP validation is pending.
+
+```bash
+git clone https://github.com/jasonjiang8866/spleeterpt.git
+cd spleeterpt
+git checkout codex/pytorch-port  # omit after this branch is merged
+python -m venv .venv
+source .venv/bin/activate
+# CPU example. On RunPod keep/install the CUDA-enabled PyTorch build instead.
+python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -e '.[dev]'
+python scripts/smoke_test.py
+```
+
+The smoke test uses small synthetic audio and temporary files. It checks training,
+validation, resume, checkpoint reload, and WAV inference; it does not assess music
+separation quality. Runtime training/inference needs no TensorFlow.
+
+## Convert official pretrained weights
+
+Conversion uses TensorFlow **once**, to read the original TF1 checkpoint. You can
+do this in a separate environment and copy the resulting `.pt` file to RunPod.
+Only the official name-based checkpoint layout is supported; unknown model tensors
+or shape mismatches are rejected. Converted files retain source SHA-256 hashes.
+
+```bash
+python -m pip install -e '.[convert]'
+mkdir -p weights/2stems
+curl -fL https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz -o /tmp/2stems.tar.gz
+tar -xzf /tmp/2stems.tar.gz -C weights/2stems
+spleeterpt convert --checkpoint weights/2stems/model --stems 2 --output weights/2stems.pt
+spleeterpt separate song.wav --checkpoint weights/2stems.pt --output outputs/song --device cpu
+```
+
+For 4/5 stems, use the corresponding official `4stems.tar.gz` / `5stems.tar.gz`
+archive and matching `--stems`. Inference accepts audio formats supported by
+libsndfile, duplicates mono to stereo, and resamples to the checkpoint sample rate.
+Output is stereo float WAV at that rate, avoiding silent PCM clipping. Network
+inference uses fixed windows; the full STFT still resides in memory.
+
+## Prepare training data
+
+Use aligned **44.1 kHz stereo WAV** files with exactly the same sample count per
+track. The loader rejects misalignment and wrong sample rates rather than silently
+resampling stems independently. Expected files under each `data/train-pool/<track>`:
+
+- `mixture.wav`, `vocals.wav`, `drums.wav`, `bass.wav`, `other.wav`.
+- For 2 stems, `accompaniment.wav` is used when present; otherwise drums + bass +
+  other are summed.
+- For 5 stems, provide `piano.wav`, with `other.wav` excluding piano. Standard
+  MUSDB four-stem data cannot provide a supervised five-stem target on its own.
+
+Split the **training pool** by song; keep a separate test set untouched:
+
+```bash
+spleeterpt manifest --root data/train-pool --output data/manifests --validation-tracks 10 --seed 0
+```
+
+Or supply your own train/validation JSONL manifests. Each line is
+`{"track": "/absolute/path/to/track"}`; relative paths resolve against the manifest
+directory. Overlapping train/validation directories are rejected. Equivalent songs
+copied to different directories still require manual duplicate checking. Manifest
+generation refuses to overwrite an existing split.
+
+## Train or fine-tune
+
+```bash
+spleeterpt train \
+  --config configs/2stems.json \
+  --train-manifest data/manifests/train.jsonl \
+  --val-manifest data/manifests/validation.jsonl \
+  --output runs/2stems-baseline \
+  --device cuda --precision fp32 --batch-size 1 --epochs 100
+```
+
+This starts from random initialization. Add `--init weights/2stems.pt` to fine-tune
+converted weights with a fresh optimizer. Use `configs/4stems.json` or
+`configs/5stems.json` for the other model presets.
+
+- Loss: sum of per-stem mean absolute magnitude-spectrogram errors.
+- Optimizer: Adam, learning rate `1e-4`, gradient norm clipping at `5` by default.
+- Training crops: 16 per track per epoch, deterministic from seed/epoch/index.
+- Validation: 4 fixed, evenly spaced crops per track; logged each completed epoch.
+- Precision: `fp32` baseline; `fp16` uses GradScaler; `bf16` requires GPU support.
+- Checkpoints: `last.pt` every 150 batches and at epoch end; `best.pt` after improved
+  validation. Config, optimizer, scaler, position, and Torch RNG states are saved.
+- Logs: stdout + `metrics.jsonl`; settings in `config.json` and `arguments.json`.
+- `--max-steps N` limits **total batches**, including resumed batches. An early exit
+  saves `last.pt` but may precede validation, so `best.pt` may not exist yet.
+
+Resume with the same data, seed, batch/crop/precision/optimizer settings and add:
+
+```bash
+--resume runs/2stems-baseline/last.pt
+```
+
+`--epochs` is the desired total epoch count, not additional epochs. Resume verifies
+resolved data paths and file size/mtime metadata. If data moved or settings changed,
+start a new output directory with `--init` instead. Only `.pt` files created by this
+project are accepted; an official TF checkpoint first needs `convert`.
+
+## Architecture and compatibility
+
+| Property | Implementation |
+|---|---|
+| Spectrogram | Periodic Hann, FFT 4096, hop 1024, 44.1 kHz |
+| Network window | 512 time frames × 1024 frequency bins, stereo |
+| U-Net | One per stem; channels 16, 32, 64, 128, 256, 512 |
+| Down/up blocks | 5×5 stride-two convolutions; TF SAME spatial alignment |
+| Skip connections | Raw encoder convolution outputs, including raw bottleneck |
+| Decoder | Activation → BN; ordinary dropout 0.5 in first three blocks |
+| Output | 4×4 convolution, dilation 2; two stereo channels |
+| 2 stems | LeakyReLU encoder, ReLU decoder, sigmoid masks |
+| 4 stems | ELU encoder/decoder, sigmoid masks |
+| 5 stems | ELU encoder/decoder, softmax across stems |
+| Synthesis | Squared magnitude ratio masks and upstream Hann overlap-add |
+
+The default `mask_extension="zeros"` matches upstream and drops frequencies above
+the modeled band (about 11 kHz). `average` extends masks to higher frequencies and
+preserves the mixture sum, but changes the upstream default behavior.
+
+Training is a practical port, not an identical reproduction of Deezer's original
+training run: data/crops, RNG/initialization, BN running-variance updates, Adam
+details, and gradient clipping can differ. The original dataset, spectrogram cache
+quantization, optional augmentation, multichannel Wiener filtering, and distributed
+training are not reproduced. Quality must be measured on held-out music.
+
+## Verification
+
+```bash
+pytest -q
+ruff check .
+ruff format --check .
+# Optional TF numerical oracle (skipped when TensorFlow is absent):
+pytest -q tests/test_tensorflow_parity.py
+# Compare with the ORIGINAL official serialized inference graph:
+python scripts/verify_official_checkpoint.py \
+  --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt
+```
+
+See [validation notes](docs/validation.md) and [RunPod instructions](runpod/README.md).
+
+## Attribution
+
+Ported against upstream commit
+[`c8854001ac8acad34a9bc2bd15f28475541828b1`](https://github.com/deezer/spleeter/tree/c8854001ac8acad34a9bc2bd15f28475541828b1).
+See [third-party notices](THIRD_PARTY_NOTICES.md) and [LICENSE](LICENSE).

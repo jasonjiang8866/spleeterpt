@@ -1,0 +1,26 @@
+{
+  "instruments": [
+    "vocals",
+    "drums",
+    "bass",
+    "other"
+  ],
+  "filters": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "sample_rate": 44100,
+  "n_fft": 4096,
+  "hop_length": 1024,
+  "segment_frames": 512,
+  "frequency_bins": 1024,
+  "encoder_activation": "elu",
+  "decoder_activation": "elu",
+  "mask_activation": "sigmoid",
+  "mask_extension": "zeros",
+  "separation_exponent": 2.0
+}
