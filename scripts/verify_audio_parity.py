@@ -62,6 +62,7 @@ class OfficialGraph:
         with self.graph.as_default():
             self.waveform = tf.compat.v1.placeholder(tf.float32, [None, 2], name="input_audio")
             builder = module.EstimatorSpecBuilder({"waveform": self.waveform}, params)
+            self.builder = builder
             magnitude = builder.spectrogram_feature
             # Restore the serialized network, bypassing only its obsolete frontend.
             saver = tf.compat.v1.train.import_meta_graph(

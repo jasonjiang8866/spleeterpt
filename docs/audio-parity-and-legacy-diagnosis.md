@@ -75,9 +75,11 @@ stems, piano/drums/bass fail on each music case; all short/silent/impulse cases
 pass. **The threshold was not loosened to turn these failures into passes.**
 
 Five-stem pre-softmax logits on this music span approximately -341 to 1064, and
-TF/Torch logit differences reach about 6.7e-4. This is consistent with sensitivity
-to FP32 arithmetic across large, similar logits, but the remaining difference has
-not been fully isolated. Disabling TensorFlow oneDNN did not remove it. Do not
+TF/Torch logit differences reach about 6.7e-4. The follow-up [stage/precision diagnosis](five-stem-numerics.md) now isolates
+pre-softmax FP32 BatchNorm/convolution drift, a measurable frontend contribution,
+and cross-stem competition sensitivity. Identical-logit softmax and fixed-estimate
+audio reconstruction pass; independent FP64 logits converge to 5.68e-13. Neither
+backend changes nor higher Torch precision reproduces all TF FP32 samples. Do not
 claim bitwise or strict samplewise five-stem equivalence from these results.
 
 “Agreement SNR” treats the **TensorFlow output** as reference. It is not music
