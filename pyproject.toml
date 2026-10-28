@@ -14,6 +14,7 @@ dependencies = ["torch>=2.6,<3", "numpy>=1.26,<3", "soundfile>=0.12,<1", "scipy>
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.9,<1"]
 convert = ["tensorflow-cpu==2.18.1"]
+verify = ["tensorflow-cpu==2.18.1", "pandas>=2.2,<4"]
 
 [project.scripts]
 spleeterpt = "spleeterpt.cli:main"

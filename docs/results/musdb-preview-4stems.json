@@ -1,0 +1,373 @@
+{
+  "dataset": "MUSDB18-7-STEMS preview, test subset",
+  "selection": "first 5 lexicographically sorted test filenames, selected before inference",
+  "metric": "global stereo SI-SDR (dB), not BSSEval-v4 SDR",
+  "aggregation": "median per instrument across selected tracks",
+  "instruments": [
+    "vocals",
+    "drums",
+    "bass",
+    "other"
+  ],
+  "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+  "legacy_commit": "8015f4309f51e84d8a9b270711f4c1cf2ae2389e",
+  "tracks": [
+    {
+      "track": "AM Contra - Heart Peripheral.stem.mp4",
+      "sha256": "5e0f133467dd04a2de18f994aec8f0bca419de6e7ba6f963bf37c46198444cb8",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 9.2886321404702,
+          "drums": 1.9263492407487792,
+          "bass": -1.8988953942464282,
+          "other": -10.46542617587514
+        },
+        "spleeterpt": {
+          "vocals": 9.28863239739685,
+          "drums": 1.9263484633279806,
+          "bass": -1.8988967576093552,
+          "other": -10.465425727557498
+        },
+        "legacy_unmodified": {
+          "vocals": -35.26732161157801,
+          "drums": -2.400056758455603,
+          "bass": -16.76828784531027,
+          "other": -14.695936976759095
+        },
+        "legacy_corrected": {
+          "vocals": 9.288632403272786,
+          "drums": 1.926348466832796,
+          "bass": -1.8988967561188888,
+          "other": -10.465425738321613
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.948807716369629e-07,
+          "rmse": 4.0860801068054e-08,
+          "relative_l2_error": 4.958699761944382e-07,
+          "reference_snr_db": 126.09264372923
+        },
+        "drums": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 4.6193599700927734e-07,
+          "rmse": 5.2136502702870566e-08,
+          "relative_l2_error": 5.92143072910264e-07,
+          "reference_snr_db": 124.55146693756029
+        },
+        "bass": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.980232238769531e-07,
+          "rmse": 4.468715603059263e-08,
+          "relative_l2_error": 6.630526813907303e-07,
+          "reference_snr_db": 123.56903928625266
+        },
+        "other": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 4.991888999938965e-07,
+          "rmse": 4.047640042289223e-08,
+          "relative_l2_error": 1.4683953223682437e-06,
+          "reference_snr_db": 116.66314015256418
+        }
+      }
+    },
+    {
+      "track": "Al James - Schoolboy Facination.stem.mp4",
+      "sha256": "67a7f1353855648eae075fa28c7cb050bb57a78633a1f24e293b7b12ec21291d",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 6.3134556428367805,
+          "drums": 1.5613517134443964,
+          "bass": 5.2054760788333425,
+          "other": 1.1122361061963786
+        },
+        "spleeterpt": {
+          "vocals": 6.313456152866791,
+          "drums": 1.5613518610808645,
+          "bass": 5.205476343611969,
+          "other": 1.1122363467190959
+        },
+        "legacy_unmodified": {
+          "vocals": -41.92289593239647,
+          "drums": -14.521257928287621,
+          "bass": -27.805655629650392,
+          "other": -5.941001835140232
+        },
+        "legacy_corrected": {
+          "vocals": 6.3134561622241625,
+          "drums": 1.5613518594932834,
+          "bass": 5.2054763385277925,
+          "other": 1.1122363385826988
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.650784492492676e-07,
+          "rmse": 3.783745805619068e-08,
+          "relative_l2_error": 5.47432709219186e-07,
+          "reference_snr_db": 125.23338513928508
+        },
+        "drums": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.46451997756958e-07,
+          "rmse": 2.1281413965282955e-08,
+          "relative_l2_error": 6.792544411070091e-07,
+          "reference_snr_db": 123.35935026786025
+        },
+        "bass": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.086162567138672e-07,
+          "rmse": 2.0678712227749306e-08,
+          "relative_l2_error": 4.2877329049785083e-07,
+          "reference_snr_db": 127.35544551810992
+        },
+        "other": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 4.76837158203125e-07,
+          "rmse": 3.4382508352297354e-08,
+          "relative_l2_error": 7.40783522122183e-07,
+          "reference_snr_db": 122.60617373200301
+        }
+      }
+    },
+    {
+      "track": "Angels In Amplifiers - I'm Alright.stem.mp4",
+      "sha256": "16b132c663550ca0d7b20c43c556628bdf95a4bb5a191a1f9ec9e7364ee93187",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 9.746195402306656,
+          "drums": 3.289859847792539,
+          "bass": 1.792588481375232,
+          "other": 5.043319488605943
+        },
+        "spleeterpt": {
+          "vocals": 9.74619483113268,
+          "drums": 3.2898599465895666,
+          "bass": 1.792587642941421,
+          "other": 5.0433191139864455
+        },
+        "legacy_unmodified": {
+          "vocals": -5.79376158400388,
+          "drums": -6.143338043357629,
+          "bass": -26.470962692844786,
+          "other": -2.3654115438642505
+        },
+        "legacy_corrected": {
+          "vocals": 9.746194840075251,
+          "drums": 3.2898599362811276,
+          "bass": 1.792587643167325,
+          "other": 5.04331912904727
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.8312206268310547e-07,
+          "rmse": 3.54465294450966e-08,
+          "relative_l2_error": 3.913445996086039e-07,
+          "reference_snr_db": 128.14881309769024
+        },
+        "drums": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.129243850708008e-07,
+          "rmse": 3.348402401368293e-08,
+          "relative_l2_error": 6.503413022373609e-07,
+          "reference_snr_db": 123.73717327401158
+        },
+        "bass": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 1.7881393432617188e-07,
+          "rmse": 2.4425785010674614e-08,
+          "relative_l2_error": 5.601528071224019e-07,
+          "reference_snr_db": 125.03386966568203
+        },
+        "other": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.129243850708008e-07,
+          "rmse": 4.024118860096501e-08,
+          "relative_l2_error": 4.830018178434347e-07,
+          "reference_snr_db": 126.32102469437402
+        }
+      }
+    },
+    {
+      "track": "Arise - Run Run Run.stem.mp4",
+      "sha256": "2717258e43d6feb260bcbd7f60ab0ff65818dc6c65f5eedc5291084d553fe75d",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 2.827591011255486,
+          "drums": -1.2212744268115896,
+          "bass": 0.9947251801666324,
+          "other": -6.769774479958745
+        },
+        "spleeterpt": {
+          "vocals": 2.8275885650380617,
+          "drums": -1.2212713761340084,
+          "bass": 0.9947229339763818,
+          "other": -6.769778367178154
+        },
+        "legacy_unmodified": {
+          "vocals": -23.320262156897186,
+          "drums": -8.230617156002463,
+          "bass": -67.34788551276469,
+          "other": -4.928003593496629
+        },
+        "legacy_corrected": {
+          "vocals": 2.827588570687421,
+          "drums": -1.2212713817398044,
+          "bass": 0.9947229473283266,
+          "other": -6.769778360605416
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 9.98377799987793e-07,
+          "rmse": 1.0099737157352942e-07,
+          "relative_l2_error": 1.757553755783175e-06,
+          "reference_snr_db": 115.10182765921567
+        },
+        "drums": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 1.6987323760986328e-06,
+          "rmse": 1.1983359392283548e-07,
+          "relative_l2_error": 1.968211072120356e-06,
+          "reference_snr_db": 114.1185665881978
+        },
+        "bass": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 1.3113021850585938e-06,
+          "rmse": 1.24196189041874e-07,
+          "relative_l2_error": 1.1785063585784784e-06,
+          "reference_snr_db": 118.5733613983367
+        },
+        "other": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 1.7061829566955566e-06,
+          "rmse": 1.5543093406328115e-07,
+          "relative_l2_error": 3.926639056297349e-06,
+          "reference_snr_db": 108.11958036044729
+        }
+      }
+    },
+    {
+      "track": "BKS - Bulldozer.stem.mp4",
+      "sha256": "f85f9fb2e8fc18f9a40fa65488daf11520da805c39e58334abf38f202a622fd4",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 0.7009912677168689,
+          "drums": 5.901185949240401,
+          "bass": 3.670776065766769,
+          "other": 0.4736018404416195
+        },
+        "spleeterpt": {
+          "vocals": 0.7009912199051617,
+          "drums": 5.901186984983861,
+          "bass": 3.6707762712104226,
+          "other": 0.47360144957100275
+        },
+        "legacy_unmodified": {
+          "vocals": -54.16742107939741,
+          "drums": 1.7374583580104486,
+          "bass": -27.581506935898336,
+          "other": -2.9827558839055457
+        },
+        "legacy_corrected": {
+          "vocals": 0.7009912277219381,
+          "drums": 5.901186993921314,
+          "bass": 3.6707762715103476,
+          "other": 0.4736014446803987
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 6.686896085739136e-07,
+          "rmse": 4.453514701624384e-08,
+          "relative_l2_error": 9.248231542349798e-07,
+          "reference_snr_db": 120.67882611241116
+        },
+        "drums": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 4.6193599700927734e-07,
+          "rmse": 3.914388346636942e-08,
+          "relative_l2_error": 4.800590444007013e-07,
+          "reference_snr_db": 126.37410687413825
+        },
+        "bass": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.2351741790771484e-07,
+          "rmse": 2.8257953011922292e-08,
+          "relative_l2_error": 5.197104631561736e-07,
+          "reference_snr_db": 125.68477079168417
+        },
+        "other": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 6.780028343200684e-07,
+          "rmse": 5.367970658258243e-08,
+          "relative_l2_error": 7.033832242601289e-07,
+          "reference_snr_db": 123.05615987699613
+        }
+      }
+    }
+  ],
+  "median_si_sdr_db": {
+    "tensorflow_current": {
+      "vocals": 6.3134556428367805,
+      "drums": 1.9263492407487792,
+      "bass": 1.792588481375232,
+      "other": 0.4736018404416195
+    },
+    "spleeterpt": {
+      "vocals": 6.313456152866791,
+      "drums": 1.9263484633279806,
+      "bass": 1.792587642941421,
+      "other": 0.47360144957100275
+    },
+    "legacy_unmodified": {
+      "vocals": -35.26732161157801,
+      "drums": -6.143338043357629,
+      "bass": -27.581506935898336,
+      "other": -4.928003593496629
+    },
+    "legacy_corrected": {
+      "vocals": 6.3134561622241625,
+      "drums": 1.926348466832796,
+      "bass": 1.792587643167325,
+      "other": 0.4736014446803987
+    }
+  },
+  "max_abs_torch_tf_score_difference_db": 3.887219409470788e-06
+}

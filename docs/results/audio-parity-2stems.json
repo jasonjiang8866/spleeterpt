@@ -1,0 +1,120 @@
+{
+  "input": "audio_example.mp3",
+  "input_sha256": "4b431d535d235bd81b62f816f08c3f1afb6679d2706d84b3b75903b7df909507",
+  "sample_rate": 44100,
+  "instruments": [
+    "vocals",
+    "accompaniment"
+  ],
+  "reference": "upstream EstimatorSpecBuilder audio pipeline + original pretrained network graph",
+  "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+  "metric_note": "Reference is TF output, not isolated ground truth; this is not separation SDR.",
+  "environment": {
+    "torch": "2.6.0+cpu",
+    "tensorflow": "2.18.1",
+    "device": "cpu"
+  },
+  "cases": {
+    "music_original": {
+      "vocals": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 3.9581209421157837e-07,
+        "rmse": 4.074267731886484e-08,
+        "relative_l2_error": 3.6761309181256626e-07,
+        "reference_snr_db": 128.69218060944476,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "accompaniment": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 4.470348358154297e-07,
+        "rmse": 5.284970498624469e-08,
+        "relative_l2_error": 2.4181932428330876e-07,
+        "reference_snr_db": 132.33017993432955,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "music_multiwindow": {
+      "vocals": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 4.023313522338867e-07,
+        "rmse": 3.6248967963444995e-08,
+        "relative_l2_error": 3.401480026159583e-07,
+        "reference_snr_db": 129.36664149835548,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "accompaniment": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 4.76837158203125e-07,
+        "rmse": 4.925351688431957e-08,
+        "relative_l2_error": 2.241717413108174e-07,
+        "reference_snr_db": 132.98838269354312,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "music_short": {
+      "vocals": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 3.3651303965598345e-09,
+        "rmse": 5.548574513243616e-10,
+        "relative_l2_error": 8.367769414454229e-06,
+        "reference_snr_db": 101.54780591803004,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "accompaniment": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 1.4901161193847656e-08,
+        "rmse": 2.4950314804664817e-09,
+        "relative_l2_error": 1.714766512250125e-07,
+        "reference_snr_db": 135.3159001286887,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "silence": {
+      "vocals": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "accompaniment": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "boundary_impulses": {
+      "vocals": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 9.872019290924072e-08,
+        "rmse": 2.5664536212385313e-09,
+        "relative_l2_error": 9.716975648384028e-06,
+        "reference_snr_db": 100.24937771299753,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "accompaniment": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 9.685754776000977e-08,
+        "rmse": 2.5655835035416557e-09,
+        "relative_l2_error": 1.3013998383603117e-06,
+        "reference_snr_db": 117.71178503086959,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    }
+  },
+  "passed": true
+}

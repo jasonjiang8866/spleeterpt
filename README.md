@@ -153,6 +153,11 @@ python scripts/verify_official_checkpoint.py \
 
 See [validation notes](docs/validation.md) and [RunPod instructions](runpod/README.md).
 
+New: [real-audio parity and legacy-port diagnosis](docs/audio-parity-and-legacy-diagnosis.md)
+includes complete TF/Torch waveform comparisons, controlled legacy ablations, and
+a five-track ground-truth MUSDB preview check. Two/four stems match; the stricter
+five-stem waveform test retains a small numerical discrepancy and is not marked passed.
+
 ## Attribution
 
 Ported against upstream commit
