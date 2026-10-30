@@ -439,3 +439,10 @@ def test_runner_atomic_completion_and_failed_track(ev, tmp_path, monkeypatch, fa
         assert closed == [True]
     finally:
         torch.use_deterministic_algorithms(False)
+
+
+def test_missing_ffmpeg_fails_before_model_loading(ev, monkeypatch):
+    runner = importlib.import_module("evaluate_musdb")
+    monkeypatch.setattr(runner.shutil, "which", lambda name: None)
+    with pytest.raises(RuntimeError, match="including WAV"):
+        runner.run(SimpleNamespace())

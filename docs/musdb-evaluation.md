@@ -41,7 +41,11 @@ python -m pip install -e '.[dev,evaluate]'
 ```
 
 The evaluation extra pins `museval==0.4.1` and `tensorflow-cpu==2.18.1`.
-STEMS decoding also requires a local `ffmpeg` executable. Supply:
+Both `ffmpeg` and `ffprobe` must be on PATH, **including for WAV evaluation**:
+museval imports musdb/stempeg, which checks these executables at import time.
+On Debian/Ubuntu install them with `sudo apt-get update` followed by
+`sudo apt-get install -y --no-install-recommends ffmpeg`. The CLI checks this
+prerequisite before loading models. Supply:
 
 - The legally obtained complete dataset, or an explicitly labeled subset/preview.
 - Existing upstream Deezer Spleeter and legacy fwcd/spleeter-pytorch source checkouts,

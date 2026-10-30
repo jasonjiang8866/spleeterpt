@@ -8,6 +8,7 @@ import importlib.metadata
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -75,6 +76,10 @@ def build_parser():
 
 
 def run(args):
+    if any(shutil.which(name) is None for name in ("ffmpeg", "ffprobe")):
+        raise RuntimeError(
+            "museval/stempeg requires ffmpeg and ffprobe on PATH, including WAV evaluation"
+        )
     # Set TensorFlow/torch thread controls before their imports. NumPy is already
     # loaded by the helpers, so threadpoolctl also limits its active BLAS pools.
     os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -198,9 +203,7 @@ def run(args):
                 [sys.executable, "-m", "pip", "freeze"], text=True
             ),
             "threads": args.threads,
-            "ffmpeg": subprocess.check_output(["ffmpeg", "-version"], text=True).splitlines()[0]
-            if args.layout == "stems"
-            else None,
+            "ffmpeg": subprocess.check_output(["ffmpeg", "-version"], text=True).splitlines()[0],
         },
     }
     if manifest["environment"]["packages"]["museval"] != "0.4.1":
