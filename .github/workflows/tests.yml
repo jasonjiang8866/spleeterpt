@@ -14,9 +14,12 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-      - run: python -m pip install -e '.[dev]'
+      - run: python -m pip install -e '.[dev]' museval==0.4.1
       - run: ruff check . && ruff format --check .
       - run: pytest -q
+        env:
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '2'
       - run: python scripts/smoke_test.py
   tensorflow-parity:
     runs-on: ubuntu-latest

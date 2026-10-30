@@ -12,8 +12,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from diagnose_legacy_port import aligned_legacy, load_legacy, use_four_stem_activations
-from verify_audio_parity import OfficialGraph, agreement
 
 from spleeterpt.audio import separate
 from spleeterpt.checkpoint import load_model
@@ -64,6 +62,9 @@ def si_sdr(reference, estimate):
 
 @torch.inference_mode()
 def main():
+    from diagnose_legacy_port import aligned_legacy, load_legacy, use_four_stem_activations
+    from verify_audio_parity import OfficialGraph, agreement
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--upstream-root", type=Path, required=True)

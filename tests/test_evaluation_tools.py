@@ -6,8 +6,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-pytest.importorskip("tensorflow")
-
 
 @pytest.fixture
 def evaluation(monkeypatch):
@@ -32,9 +30,12 @@ def test_si_sdr_scale_and_dc_invariance(evaluation):
 
 
 def test_agreement_preserves_gain_error_and_reports_length(evaluation):
+    pytest.importorskip("tensorflow")
     reference = np.array([[1.0, -1.0, 1.0, -1.0]])
     candidate = 0.5 * reference[:, :3]
-    report = evaluation.agreement(reference, candidate)
+    from verify_audio_parity import agreement
+
+    report = agreement(reference, candidate)
     assert report["reference_samples"] == 4
     assert report["candidate_samples"] == 3
     assert report["rmse"] == 0.5

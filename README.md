@@ -163,3 +163,12 @@ five-stem waveform test retains a small numerical discrepancy and is not marked 
 Ported against upstream commit
 [`c8854001ac8acad34a9bc2bd15f28475541828b1`](https://github.com/deezer/spleeter/tree/c8854001ac8acad34a9bc2bd15f28475541828b1).
 See [third-party notices](THIRD_PARTY_NOTICES.md) and [LICENSE](LICENSE).
+
+### Full MUSDB port-quality evaluation
+
+For a reproducible four-way comparison of official TensorFlow, current spleeterpt,
+original legacy PyTorch and corrected legacy PyTorch on locally supplied MUSDB18
+or MUSDB18-HQ, see [the evaluation guide](docs/musdb-evaluation.md).
+The entry point supports full selected subsets, deterministic samples, BSSEval-v4
+SDR and separate global stereo SI-SDR, per-song records and integrity validation.
+Only 2/4-stem targets are supported. Full-dataset scores have not yet been measured.
