@@ -1,0 +1,75 @@
+name: RunPod checkpoint recovery
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_gpu:
+        description: 'Rent two sequential RTX 4090 Pods, each with a 30-minute lease; retain checkpoint artifacts for 14 days'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+jobs:
+  export:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_gpu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Train, export checkpoint and delete Pod A
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py recovery-export
+      - name: Retry cleanup
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+  resume:
+    needs: export
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: recovery-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: restore-input
+      - name: Restore on new Pod B, verify exact continuation and export final checkpoints
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py recovery-resume
+      - name: Retry cleanup
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-final-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14

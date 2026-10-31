@@ -5,6 +5,9 @@ uses the repository Secret `RUNPOD_API_KEY` and rents a GPU only on explicit man
 dispatch. The commands below are for an already configured GPU Pod. Full-size synthetic CUDA training/resume and the five-clip music-quality pilot
 have passed on RunPod. For real train-pool music acceptance, see
 [training acceptance](training.md); for quality scope, see [quality pilot](quality.md).
+[Two-Pod checkpoint recovery](recovery.md) exports actual checkpoints through Actions
+artifacts and verifies continuation on a replacement Pod. That page also covers
+checksum-verified complete MUSDB18 training-pool preparation.
 
 ## 1. Environment and persistent storage
 
