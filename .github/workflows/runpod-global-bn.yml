@@ -1,0 +1,75 @@
+name: RunPod Global Volume BN trial
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_trial:
+        description: 'Copy <=8 GiB to one Global Volume (usage/request billed); CPU <=$0.20/hour for 30 min, then MIG 24GB <=$0.69/hour for 30 min; retain both volumes'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+jobs:
+  copy:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_trial
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Copy and verify pinned validation inputs on a source-region CPU Pod
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py global-export
+      - name: Delete copy compute only
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: global-copy-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14
+  evaluate:
+    needs: copy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      SPT_EXPERIMENT: '41189465452-1'
+      SPT_GLOBAL_BN: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: global-copy-${{ github.run_id }}-${{ github.run_attempt }}
+          path: global-input
+      - run: python -m pip install numpy==2.0.2
+      - name: Stage inputs locally and evaluate four BN combinations on MIG
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py bn
+      - name: Delete GPU compute only
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: global-bn-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14

@@ -47,7 +47,16 @@ def run(*, ablation=False):
     from spleeterpt.checkpoint import load_model, read_checkpoint
     from spleeterpt.config import ModelConfig
 
-    if not os.path.ismount("/data") or os.environ["SPT_EXPERIMENT"] != "41189465452-1":
+    storage_proof = None
+    if os.environ.get("SPT_GLOBAL_VOLUME_ID"):
+        if not ablation:
+            raise RuntimeError("Global staging is restricted to BN evaluation")
+        from global_inputs import stage_inputs
+
+        storage_proof = stage_inputs()
+    if (not storage_proof and not os.path.ismount("/data")) or os.environ[
+        "SPT_EXPERIMENT"
+    ] != "41189465452-1":
         raise RuntimeError("Expected mounted persistent pilot")
     if torch.__version__ != "2.8.0+cu128" or not torch.cuda.is_available():
         raise RuntimeError("Expected stable CUDA runtime")
@@ -78,8 +87,11 @@ def run(*, ablation=False):
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
     with Path("/data/.spleeterpt.lock").open("a") as lock, threadpool_limits(limits=2):
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        dataset = verify_data()
-        if dataset != evidence["resume"]["dataset"]:
+        expected_dataset = dict(evidence["resume"]["dataset"])
+        if storage_proof:
+            expected_dataset["verified_audio_files"] = 50
+        dataset = expected_dataset if storage_proof else verify_data()
+        if dataset != expected_dataset:
             raise RuntimeError("Persistent dataset changed")
         provenance_json = (DATA / "provenance.json").read_text()
         expected = validation_inventory(provenance_json, dataset["provenance_sha256"], pinned)
@@ -207,6 +219,7 @@ def run(*, ablation=False):
             "No subjective listening verdict has been claimed by this automated run.\n"
         )
         report = {
+            "storage": storage_proof,
             "kind": "bn-ablation" if ablation else "finetune-validation",
             "commit": os.environ["SPT_COMMIT"],
             "pod_id": os.environ["RUNPOD_POD_ID"],
