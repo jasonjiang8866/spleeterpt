@@ -24,7 +24,7 @@
     },
     "seconds": 1019.0398715839256
   },
-  "training_status": "step 10 saved; worker acceptance failed on tuple/list config representation; resume pending",
+  "training_status": "passed: replacement Pod resumed the committed step-10 checkpoint and finished step 90 / epoch 1 plus validation",
   "interrupted_training": {
     "kind": "persistent-pilot",
     "stage": "train",
@@ -191,5 +191,868 @@
     "torch": "2.8.0+cu128",
     "cuda": "12.8",
     "gpu": "NVIDIA GeForce RTX 4090"
-  }
+  },
+  "resume_run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41191613855",
+  "resume": {
+    "kind": "persistent-pilot",
+    "stage": "resume",
+    "commit": "3ac37b849ad822ec06ba5bfebe77b950cdac9e21",
+    "pod_id": "op5ms6g9zb7xdt",
+    "volume_id": "j3aqjpw393",
+    "experiment": "41189465452-1",
+    "dataset": {
+      "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+      "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+      "train_tracks": 90,
+      "validation_tracks": 10,
+      "verified_audio_files": 500,
+      "test_audio_extracted": false
+    },
+    "seconds": 220.0148206340382,
+    "source_pod": "3vy22g8gzy815k",
+    "source_commit": "d25dc50f22165022a7122e0c10711c88ed16fddf",
+    "cursor": [
+      90,
+      1,
+      0
+    ],
+    "optimizer_steps": [
+      90
+    ],
+    "weights_finite": true,
+    "metrics": [
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 1,
+        "loss": 9.255226135253906,
+        "grad_norm": 0.16907437145709991,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 2,
+        "loss": 7.590274810791016,
+        "grad_norm": 0.14904150366783142,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 3,
+        "loss": 7.868463516235352,
+        "grad_norm": 0.11872398853302002,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 4,
+        "loss": 5.688495635986328,
+        "grad_norm": 0.12924614548683167,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 5,
+        "loss": 2.825373649597168,
+        "grad_norm": 0.06578322499990463,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 6,
+        "loss": 6.609165191650391,
+        "grad_norm": 0.118880994617939,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 7,
+        "loss": 5.87777853012085,
+        "grad_norm": 0.18023312091827393,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 8,
+        "loss": 0.852050244808197,
+        "grad_norm": 0.021601157262921333,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 9,
+        "loss": 8.336858749389648,
+        "grad_norm": 0.18066032230854034,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 10,
+        "loss": 4.760902404785156,
+        "grad_norm": 0.1241721510887146,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 11,
+        "loss": 5.562493324279785,
+        "grad_norm": 0.10932300239801407,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 12,
+        "loss": 9.386337280273438,
+        "grad_norm": 0.15759122371673584,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 13,
+        "loss": 7.352005958557129,
+        "grad_norm": 0.14690016210079193,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 14,
+        "loss": 3.2824954986572266,
+        "grad_norm": 0.08241594582796097,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 15,
+        "loss": 9.602336883544922,
+        "grad_norm": 0.16599909961223602,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 16,
+        "loss": 10.737895011901855,
+        "grad_norm": 0.1567056030035019,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 17,
+        "loss": 8.18163776397705,
+        "grad_norm": 0.16363336145877838,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 18,
+        "loss": 2.731255292892456,
+        "grad_norm": 0.0978754460811615,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 19,
+        "loss": 4.165618896484375,
+        "grad_norm": 0.08079228550195694,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 20,
+        "loss": 4.013890266418457,
+        "grad_norm": 0.1202443391084671,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 21,
+        "loss": 11.503334045410156,
+        "grad_norm": 0.19387371838092804,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 22,
+        "loss": 4.443630695343018,
+        "grad_norm": 0.0769769623875618,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 23,
+        "loss": 4.099869251251221,
+        "grad_norm": 0.11362450569868088,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 24,
+        "loss": 4.720989227294922,
+        "grad_norm": 0.10469004511833191,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 25,
+        "loss": 6.0978851318359375,
+        "grad_norm": 0.1531877964735031,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 26,
+        "loss": 5.703371524810791,
+        "grad_norm": 0.2418990284204483,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 27,
+        "loss": 1.1407549381256104,
+        "grad_norm": 0.2282613217830658,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 28,
+        "loss": 10.810815811157227,
+        "grad_norm": 0.16378852725028992,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 29,
+        "loss": 3.526278257369995,
+        "grad_norm": 0.13710442185401917,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 30,
+        "loss": 9.698179244995117,
+        "grad_norm": 0.16750462353229523,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 31,
+        "loss": 3.904607057571411,
+        "grad_norm": 0.10546910762786865,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 32,
+        "loss": 6.542361259460449,
+        "grad_norm": 0.13658367097377777,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 33,
+        "loss": 2.969409465789795,
+        "grad_norm": 0.08026621490716934,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 34,
+        "loss": 8.345254898071289,
+        "grad_norm": 0.12704670429229736,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 35,
+        "loss": 7.012903213500977,
+        "grad_norm": 0.14520606398582458,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 36,
+        "loss": 5.628042221069336,
+        "grad_norm": 0.1396123468875885,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 37,
+        "loss": 2.3295958042144775,
+        "grad_norm": 0.038754675537347794,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 38,
+        "loss": 2.7024693489074707,
+        "grad_norm": 0.053696975111961365,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 39,
+        "loss": 6.589275360107422,
+        "grad_norm": 0.12032394856214523,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 40,
+        "loss": 9.94490909576416,
+        "grad_norm": 0.19108103215694427,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 41,
+        "loss": 6.915045738220215,
+        "grad_norm": 0.13634030520915985,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 42,
+        "loss": 2.404917001724243,
+        "grad_norm": 0.06449856609106064,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 43,
+        "loss": 8.216973304748535,
+        "grad_norm": 0.18077877163887024,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 44,
+        "loss": 2.7927167415618896,
+        "grad_norm": 0.07655651122331619,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 45,
+        "loss": 9.1128568649292,
+        "grad_norm": 0.16390009224414825,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 46,
+        "loss": 2.110253095626831,
+        "grad_norm": 0.0537763312458992,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 47,
+        "loss": 5.411352634429932,
+        "grad_norm": 0.12730425596237183,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 48,
+        "loss": 2.45919132232666,
+        "grad_norm": 0.05573413148522377,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 49,
+        "loss": 2.6190619468688965,
+        "grad_norm": 0.0839473307132721,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 50,
+        "loss": 8.561697006225586,
+        "grad_norm": 0.19878563284873962,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 51,
+        "loss": 4.18510627746582,
+        "grad_norm": 0.09315341711044312,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 52,
+        "loss": 8.118697166442871,
+        "grad_norm": 0.13955532014369965,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 53,
+        "loss": 1.1721174716949463,
+        "grad_norm": 0.03690376505255699,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 54,
+        "loss": 3.9185798168182373,
+        "grad_norm": 0.1234077587723732,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 55,
+        "loss": 7.048961639404297,
+        "grad_norm": 0.16179707646369934,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 56,
+        "loss": 5.031883239746094,
+        "grad_norm": 0.08386968076229095,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 57,
+        "loss": 7.978736877441406,
+        "grad_norm": 0.1558404266834259,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 58,
+        "loss": 8.509998321533203,
+        "grad_norm": 0.18550021946430206,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 59,
+        "loss": 4.421688079833984,
+        "grad_norm": 0.09976328164339066,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 60,
+        "loss": 9.562381744384766,
+        "grad_norm": 0.21912260353565216,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 61,
+        "loss": 7.105526924133301,
+        "grad_norm": 0.13677431643009186,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 62,
+        "loss": 5.271205902099609,
+        "grad_norm": 0.13038042187690735,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 63,
+        "loss": 6.498150825500488,
+        "grad_norm": 0.16168057918548584,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 64,
+        "loss": 7.308671951293945,
+        "grad_norm": 0.13377220928668976,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 65,
+        "loss": 6.2264885902404785,
+        "grad_norm": 0.13780063390731812,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 66,
+        "loss": 4.541198253631592,
+        "grad_norm": 0.12061794102191925,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 67,
+        "loss": 4.746860027313232,
+        "grad_norm": 0.15091633796691895,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 68,
+        "loss": 8.601045608520508,
+        "grad_norm": 0.17398914694786072,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 69,
+        "loss": 2.4050376415252686,
+        "grad_norm": 0.13921909034252167,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 70,
+        "loss": 6.19334602355957,
+        "grad_norm": 0.13131093978881836,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 71,
+        "loss": 5.431293964385986,
+        "grad_norm": 0.09565374255180359,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 72,
+        "loss": 9.264497756958008,
+        "grad_norm": 0.1968696266412735,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 73,
+        "loss": 5.653408050537109,
+        "grad_norm": 0.11911958456039429,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 74,
+        "loss": 6.613600254058838,
+        "grad_norm": 0.12365548312664032,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 75,
+        "loss": 6.124810695648193,
+        "grad_norm": 0.12320587038993835,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 76,
+        "loss": 3.300349235534668,
+        "grad_norm": 0.09118252992630005,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 77,
+        "loss": 5.631628036499023,
+        "grad_norm": 0.20876307785511017,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 78,
+        "loss": 3.098752975463867,
+        "grad_norm": 0.1191892996430397,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 79,
+        "loss": 6.644082069396973,
+        "grad_norm": 0.14719301462173462,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 80,
+        "loss": 1.2566747665405273,
+        "grad_norm": 0.04508120194077492,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 81,
+        "loss": 14.120787620544434,
+        "grad_norm": 0.2118651270866394,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 82,
+        "loss": 7.809670448303223,
+        "grad_norm": 0.1744959056377411,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 83,
+        "loss": 6.428125381469727,
+        "grad_norm": 0.13927412033081055,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 84,
+        "loss": 4.939326763153076,
+        "grad_norm": 0.08913375437259674,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 85,
+        "loss": 4.803705215454102,
+        "grad_norm": 0.08910276740789413,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 86,
+        "loss": 7.768089294433594,
+        "grad_norm": 0.16364431381225586,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 87,
+        "loss": 6.230993270874023,
+        "grad_norm": 0.12448060512542725,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 88,
+        "loss": 4.53806209564209,
+        "grad_norm": 0.12455595284700394,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 89,
+        "loss": 7.685567855834961,
+        "grad_norm": 0.3230409622192383,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 90,
+        "loss": 5.517833709716797,
+        "grad_norm": 0.2291160374879837,
+        "update_skipped": false
+      },
+      {
+        "kind": "validation",
+        "epoch": 0,
+        "step": 90,
+        "loss": 6.992371892929077
+      }
+    ],
+    "backup": {
+      "format": 1,
+      "step": 90,
+      "generation": "step-000000090-2489bbf038b940148829ed6012eb4a86",
+      "files": {
+        "arguments.json": {
+          "bytes": 633,
+          "sha256": "dd7db9913ed8cbc4e768f66904f6450c2aa38d437a626db37dec8827c8e93a91"
+        },
+        "best.pt": {
+          "bytes": 471800627,
+          "sha256": "604ce826c10a028b3d89ac5c5d0ed35bf45aeb055df1b5b7560fc8ff02bd0898"
+        },
+        "config.json": {
+          "bytes": 415,
+          "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+        },
+        "last.pt": {
+          "bytes": 471800627,
+          "sha256": "604ce826c10a028b3d89ac5c5d0ed35bf45aeb055df1b5b7560fc8ff02bd0898"
+        },
+        "metrics.jsonl": {
+          "bytes": 11574,
+          "sha256": "5169625844021980c4f2c42ddb17d0faee4251bff975e35772355e66a13d94d9"
+        }
+      }
+    },
+    "restored": {
+      "format": 1,
+      "step": 10,
+      "generation": "step-000000010-84bcf72d64aa489e9fda02bab00f9eb3",
+      "files": {
+        "arguments.json": {
+          "bytes": 630,
+          "sha256": "902d8caba5275999003fcc16a7d380ba27b9e7fadc0e4a09aa3dc703242d2156"
+        },
+        "config.json": {
+          "bytes": 415,
+          "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+        },
+        "last.pt": {
+          "bytes": 471800627,
+          "sha256": "a99829008eb2d7c13f4d9ca8b5f571eb014f282de8bd2f9a7cc1285670e0bbee"
+        },
+        "metrics.jsonl": {
+          "bytes": 1268,
+          "sha256": "50ec1246c0efbc64025f765d99a80c0ed2b717f2f365a6cf41c9cc1441a51618"
+        }
+      }
+    },
+    "initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+    "timing": {
+      "seconds": 91.53786081599537,
+      "peak_allocated_bytes": 1111438336
+    },
+    "config": {
+      "instruments": [
+        "vocals",
+        "drums",
+        "bass",
+        "other"
+      ],
+      "filters": [
+        16,
+        32,
+        64,
+        128,
+        256,
+        512
+      ],
+      "sample_rate": 44100,
+      "n_fft": 4096,
+      "hop_length": 1024,
+      "segment_frames": 512,
+      "frequency_bins": 1024,
+      "encoder_activation": "elu",
+      "decoder_activation": "elu",
+      "mask_activation": "sigmoid",
+      "mask_extension": "zeros",
+      "separation_exponent": 2.0
+    },
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "independent_checks": {
+    "artifact_sha256": "4db4fe461f984591fadfa3d15b28e9006e2d8090a32ffecf57f95fb9537446cd",
+    "dataset_identity_equal": true,
+    "restored_manifest_exactly_matches_original": true,
+    "original_ten_metrics_unchanged": true,
+    "different_pod_verified": true
+  },
+  "committed_steps_in_resume_log": [
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90,
+    90
+  ],
+  "compute_cleanup": "All three Pods deleted; final cleanup retries found zero Pods for each run",
+  "estimated_gpu_compute_usd": 0.47,
+  "retained_storage_estimate_usd_per_month": 5.6,
+  "quality_scope": "One crop per training/validation song; no before/after SDR comparison or convergence claim"
 }

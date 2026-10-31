@@ -14,17 +14,30 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
-| Persistent training pilot | 80 GB STANDARD volume created in EU-RO-1; full data preparation and 500-file hash validation passed. Step 10 checkpoint generations saved; a tuple/list config acceptance bug blocked the original run. The validator is fixed; replacement-Pod continuation is pending |
+| Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
 | Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
-and [full-data provenance](docs/results/musdb18-training-provenance.json).
+[persistent pilot continuation](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41191613855),
+[full-data provenance](docs/results/musdb18-training-provenance.json), and
+[persistent-pilot evidence](docs/results/persistent-pilot-41189465452.json).
 Recovery artifacts expire on **2026-11-14**; both test Pods were deleted.
 Decoded data is now checksum-verified on RunPod volume `j3aqjpw393` (EU-RO-1),
 mounted at `/data/musdb18`. The retained 80 GB STANDARD volume costs approximately
 **$5.60/month** even when no Pod runs. See the [persistent pilot run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452). No pretrained weights or
 training audio are bundled in this repository.
+
+The persistent pilot used **one crop per song**, not every sample of the full
+recordings. It retained the original ten metrics exactly, then completed 90 total
+training updates and ten-song validation (spectral loss **6.99237**, not SDR and
+not evidence of improvement). `last.pt` and `best.pt` are retained under
+`/data/experiments/41189465452-1/backups`; only reports are in the new Actions
+artifacts. All three compute Pods were deleted. Logged GPU compute is estimated
+at **$0.47** for preparation, interrupted training and continuation, excluding
+storage/Actions charges. The original run exposed a tuple/list acceptance bug
+**after** saving step 10; the fix and successful continuation are recorded in
+[PR #10](https://github.com/jasonjiang8866/spleeterpt/pull/10).
 
 ## Install
 
