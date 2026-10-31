@@ -70,6 +70,14 @@ def capacity_preflight(api, gpu_id=MIG24):
     if value not in {"HIGH", "MEDIUM", "LOW", "NONE", "NOT_LISTED"}:
         value = "UNKNOWN"
     print("READ-ONLY: selected GPU=" + gpu_id + "; pinned-volume availability=" + value, flush=True)
+    regions = sorted(
+        d["id"]
+        for d in gpu.get("dataCenters", [])
+        if isinstance(d.get("id"), str)
+        and re.fullmatch(r"[A-Z]{2}-[A-Z0-9]+-[0-9]+", d["id"])
+        and d.get("availability") in {"HIGH", "MEDIUM", "LOW"}
+    )
+    print("READ-ONLY: available catalog regions=" + (",".join(regions[:50]) or "NONE"), flush=True)
     print("Catalog availability is advisory; it does not guarantee a launch or quote.", flush=True)
     return value
 
