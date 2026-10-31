@@ -1,0 +1,28 @@
+{
+  "assets": {
+    "preview.zip": {
+      "url": "https://github.com/sigsep/sigsep-mus-db/releases/download/v0.4.0/MUSDB18-7-STEMS.zip",
+      "sha256": "365f66acffc57282e474a4c24b32afec3678258c50b8d45646ac849b0a287df3",
+      "bytes": 147209385
+    },
+    "2stems.tar.gz": {
+      "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz",
+      "sha256": "f3a90b39dd2874269e8b05a48a86745df897b848c61f3958efc80a39152bd692",
+      "bytes": 73109797
+    },
+    "4stems.tar.gz": {
+      "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/4stems.tar.gz",
+      "sha256": "3adb4a50ad4eb18c7c4d65fcf4cf2367a07d48408a5eb7d03cd20067429dfaa8",
+      "bytes": 146308147
+    }
+  },
+  "tracks": {
+    "AM Contra - Heart Peripheral.stem.mp4": "5e0f133467dd04a2de18f994aec8f0bca419de6e7ba6f963bf37c46198444cb8",
+    "Al James - Schoolboy Facination.stem.mp4": "67a7f1353855648eae075fa28c7cb050bb57a78633a1f24e293b7b12ec21291d",
+    "Angels In Amplifiers - I'm Alright.stem.mp4": "16b132c663550ca0d7b20c43c556628bdf95a4bb5a191a1f9ec9e7364ee93187",
+    "Arise - Run Run Run.stem.mp4": "2717258e43d6feb260bcbd7f60ab0ff65818dc6c65f5eedc5291084d553fe75d",
+    "BKS - Bulldozer.stem.mp4": "f85f9fb2e8fc18f9a40fa65488daf11520da805c39e58334abf38f202a622fd4"
+  },
+  "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+  "legacy_commit": "8015f4309f51e84d8a9b270711f4c1cf2ae2389e"
+}

@@ -5,6 +5,7 @@ import importlib.util
 import io
 import json
 import os
+import sys
 import tempfile
 import threading
 import unittest
@@ -12,6 +13,7 @@ import urllib.error
 import urllib.request
 from contextlib import redirect_stdout
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 
@@ -24,6 +26,7 @@ def load(name):
 
 control = load("control")
 worker = load("worker")
+quality_result = load("quality_result")
 ENV = {
     "GITHUB_REPOSITORY": "jasonjiang8866/spleeterpt",
     "GITHUB_REPOSITORY_ID": "123",
@@ -269,6 +272,50 @@ class ControlTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "missing"):
                 control.Runpod()
             call.assert_not_called()
+
+    def test_quality_rejects_bare_pass_wrong_identity_and_unsafe_files(self):
+        good = {
+            "status": "passed",
+            "report": {
+                "kind": "quality-preview",
+                "commit": "a" * 40,
+                "torch": "2.8.0+cu128",
+                "gpu": "NVIDIA GeForce RTX 4090",
+                "files": {},
+            },
+        }
+        cases = [{"status": "passed"}, {"status": "failed"}, good]
+        for key, value in (
+            ("commit", "b" * 40),
+            ("torch", "2.8.0.dev20250319+cu128"),
+            ("files", {"../../escape": "{}"}),
+        ):
+            item = copy.deepcopy(good)
+            item["report"][key] = value
+            cases.append(item)
+        with tempfile.TemporaryDirectory() as folder:
+            for item in cases:
+                with self.assertRaises(RuntimeError):
+                    quality_result.validate_quality(item, "a" * 40, Path(folder))
+            self.assertEqual(list(Path(folder).iterdir()), [])
+
+    def test_quality_validation_failure_still_releases_pod(self):
+        api = FakeAPI()
+
+        def reject(*args):
+            raise RuntimeError("Incomplete quality report")
+
+        with (
+            tempfile.TemporaryDirectory() as folder,
+            patch.object(control, "Path", side_effect=lambda p: Path(folder) / p),
+            patch.object(control, "resolve_image", return_value="image"),
+            patch.object(control, "request", return_value={"status": "passed"}),
+            patch.dict(sys.modules, {"quality_result": SimpleNamespace(validate_quality=reject)}),
+            self.assertRaisesRegex(RuntimeError, "Incomplete quality"),
+        ):
+            control.launch(api, "quality")
+        self.assertEqual(api.payload["env"]["SPT_TASK"], "quality")
+        self.assertEqual(api.deleted, ["/pods/abc"])
 
 
 if __name__ == "__main__":

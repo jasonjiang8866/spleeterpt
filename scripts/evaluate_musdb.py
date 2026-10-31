@@ -11,6 +11,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from musdb_evaluation import (
@@ -65,6 +66,12 @@ def build_parser():
     parser.add_argument("--duration-seconds", type=float, help="default: entire remaining track")
     parser.add_argument("--length-policy", choices=("common-crop", "strict"), default="common-crop")
     parser.add_argument("--threads", type=int, default=2)
+    parser.add_argument(
+        "--device",
+        choices=("cpu", "cuda"),
+        default="cpu",
+        help="device for all three PyTorch variants; TensorFlow stays on CPU",
+    )
     parser.add_argument("--upstream-root", type=Path)
     parser.add_argument("--legacy-root", type=Path)
     parser.add_argument("--tf-checkpoint", type=Path)
@@ -82,7 +89,10 @@ def run(args):
         )
     # Set TensorFlow/torch thread controls before their imports. NumPy is already
     # loaded by the helpers, so threadpoolctl also limits its active BLAS pools.
-    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    if args.device == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    else:
+        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
     for name in (
         "OMP_NUM_THREADS",
         "OPENBLAS_NUM_THREADS",
@@ -109,6 +119,14 @@ def run(args):
     torch.manual_seed(0)
     np.random.seed(0)
     torch.use_deterministic_algorithms(True)
+    if args.device == "cuda":
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA requested but unavailable")
+        tf.config.set_visible_devices([], "GPU")
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
+        torch.backends.cudnn.benchmark = False
+        torch.cuda.reset_peak_memory_stats()
     tracks = discover(
         args.root,
         args.layout,
@@ -139,6 +157,7 @@ def run(args):
         if not torch.equal(tensor, model.state_dict()[name]):
             raise ValueError(f"PyTorch checkpoint differs from supplied TF weights: {name}")
     del reference_model
+    model.to(args.device)
     for track in tracks:
         track["sha256"] = {name: sha256(args.root / name) for name in track["files"]}
     manifest = {
@@ -186,7 +205,13 @@ def run(args):
         "environment": {
             "python": sys.version,
             "platform": platform.platform(),
-            "device": "cpu",
+            "device": args.device,
+            "variant_devices": {
+                v: "cpu" if v == "tensorflow_current" else args.device for v in VARIANTS
+            },
+            "cuda": torch.version.cuda if args.device == "cuda" else None,
+            "gpu": torch.cuda.get_device_name(0) if args.device == "cuda" else None,
+            "tf32": False if args.device == "cuda" else None,
             "packages": {
                 p: importlib.metadata.version(p)
                 for p in (
@@ -223,6 +248,9 @@ def run(args):
         corrected = load_legacy(args.legacy_root.resolve(), args.tf_checkpoint, len(instruments))
         if len(instruments) == 4:
             use_four_stem_activations(corrected)
+        if args.device == "cuda":
+            legacy.to("cuda")
+            corrected.to("cuda")
         oracle = OfficialGraph(args.tf_checkpoint, instruments, args.upstream_root)
         records = []
         with torch.inference_mode():
@@ -242,17 +270,25 @@ def run(args):
                     raise ValueError(f"requested interval unavailable: {track['id']}")
                 targets = {name: audio[:, start:stop].copy() for name, audio in targets.items()}
                 mixture = torch.from_numpy(targets["mixture"])
+                device_mixture = mixture.to(args.device)
+                if args.device == "cuda":
+                    torch.cuda.synchronize()
+                inference_start = time.monotonic()
                 variants = {
                     "tensorflow_current": oracle.separate(mixture),
                     "spleeterpt": {n: a.numpy() for n, a in separate(model, mixture).items()},
                     "legacy_unmodified": dict(
-                        zip(instruments, [a.numpy() for a in legacy(mixture)])
+                        zip(instruments, [a.cpu().numpy() for a in legacy(device_mixture)])
                     ),
                     "legacy_corrected": dict(
-                        zip(instruments, [a.numpy() for a in aligned_legacy(corrected, mixture)])
+                        zip(
+                            instruments,
+                            [a.cpu().numpy() for a in aligned_legacy(corrected, device_mixture)],
+                        )
                     ),
                 }
                 record = {
+                    "four_variant_inference_seconds": time.monotonic() - inference_start,
                     "id": track["id"],
                     "input_sha256": track["sha256"],
                     "manifest_sha256": status["manifest_sha256"],
@@ -273,6 +309,15 @@ def run(args):
                     flush=True,
                 )
         atomic_json(args.output / "summary.json", summarize(records, instruments))
+        atomic_json(
+            args.output / "runtime.json",
+            {
+                "peak_cuda_allocated_bytes": torch.cuda.max_memory_allocated()
+                if args.device == "cuda"
+                else None,
+                "gpu": torch.cuda.get_device_name(0) if args.device == "cuda" else None,
+            },
+        )
         status["summary_sha256"] = sha256(args.output / "summary.json")
         atomic_json(args.output / "status.json", status)
         validate_run(args.output, require_complete=False)
