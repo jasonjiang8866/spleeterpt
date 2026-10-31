@@ -1,6 +1,7 @@
 """Copy only pinned validation inputs; object storage never holds live training state."""
 
 import argparse
+import concurrent.futures
 import fcntl
 import hashlib
 import json
@@ -145,13 +146,30 @@ def copy_file(source, target, spec, data=None):
         raise ValueError("Destination read-back checksum mismatch")
 
 
-def copy_inputs(source, target, spec, generated_files=None):
+def copy_inputs(source, target, spec, generated_files=None, *, workers=1):
     generated_files = generated_files or {}
-    for index, (name, info) in enumerate(sorted(spec["files"].items()), 1):
+    if workers not in (1, 8):
+        raise ValueError("Unsupported input copy concurrency")
+
+    def one(item):
+        name, info = item
         copy_file(
             checked_path(source, name), checked_path(target, name), info, generated_files.get(name)
         )
-        print(f"Progress: global input files {index}/{len(spec['files'])}", flush=True)
+
+    items = sorted(spec["files"].items())
+    if workers == 1:
+        for index, item in enumerate(items, 1):
+            one(item)
+            print(f"Progress: global input files {index}/{len(items)}", flush=True)
+    else:
+        # Cross-region object reads are latency-bound. Bound concurrency and memory;
+        # each future retains the same source/size/hash/destination-readback checks.
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = [pool.submit(one, item) for item in items]
+            for index, future in enumerate(concurrent.futures.as_completed(futures), 1):
+                future.result()
+                print(f"Progress: global input files {index}/{len(items)}", flush=True)
 
 
 def validate_report(result, sha, global_id, pod_id, *, training=False):
@@ -206,7 +224,7 @@ def export_inputs(*, training=False):
         if marker.exists() and marker.read_bytes() != encoded(spec):
             raise ValueError("Refusing to replace a different completed snapshot")
         if marker.exists():
-            for name, info in spec["files"].items():
+            for index, (name, info) in enumerate(spec["files"].items(), 1):
                 existing = checked_path(target, name)
                 if (
                     not existing.is_file()
@@ -214,10 +232,13 @@ def export_inputs(*, training=False):
                     or digest(existing) != info["sha256"]
                 ):
                     raise ValueError("Completed global snapshot is corrupted; refusing overwrite")
-        copy_inputs(source, target, spec, generated(provenance_json, training=training))
+                print(f"Progress: global input files {index}/{len(spec['files'])}", flush=True)
+        else:
+            copy_inputs(source, target, spec, generated(provenance_json, training=training))
         check_generation()
         # No locks, chmod or atomic rename on object storage. This marker is written last.
-        marker.write_bytes(encoded(spec))
+        if not marker.exists():
+            marker.write_bytes(encoded(spec))
         if marker.read_bytes() != encoded(spec):
             raise ValueError("Snapshot completion marker read-back failed")
     return {
@@ -245,7 +266,7 @@ def stage_inputs(*, training=False):
         raise RuntimeError("Global inputs differ from pinned validation inputs")
     if shutil.disk_usage("/").free < spec["bytes"] + 1024**3:
         raise RuntimeError("Insufficient local staging space")
-    copy_inputs(source, Path("/data"), spec)
+    copy_inputs(source, Path("/data"), spec, workers=8 if training else 1)
     return {
         "mode": "global-staged",
         "global_volume_id": os.environ["SPT_GLOBAL_VOLUME_ID"],

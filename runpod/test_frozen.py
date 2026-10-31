@@ -17,6 +17,24 @@ from test_control import ENV, FakeAPI, control
 
 
 class FrozenTests(unittest.TestCase):
+    def test_parallel_staging_preserves_hash_checks_and_propagates_corruption(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            source = root / "source"
+            source.mkdir()
+            files = {}
+            for index in range(16):
+                data = (str(index) * 100).encode()
+                name = f"file-{index}.bin"
+                (source / name).write_bytes(data)
+                files[name] = {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+            inputs.copy_inputs(source, root / "good", {"files": files}, workers=8)
+            for name in files:
+                self.assertEqual((source / name).read_bytes(), (root / "good" / name).read_bytes())
+            (source / "file-7.bin").write_bytes(b"corrupt")
+            with self.assertRaisesRegex(ValueError, "checksum"):
+                inputs.copy_inputs(source, root / "bad", {"files": files}, workers=8)
+
     def test_full_training_snapshot_preserves_split_bytes_and_excludes_test_pool(self):
         pinned = json.loads(
             (inputs.ROOT / "docs/results/musdb18-training-provenance.json").read_text()
