@@ -6,7 +6,7 @@ MIG24 = BLACKWELL + " MIG 1g.24gb"
 
 
 def profile(task):
-    return (MIG24, 0.69) if task == "bn" else (ADA, 1.0)
+    return (MIG24, 0.69) if task in {"bn", "frozen"} else (ADA, 1.0)
 
 
 def validate_runtime(runtime, expected):

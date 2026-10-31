@@ -81,11 +81,11 @@ def safe_mounts(pod):
         if env.get("SPT_GLOBAL_VOLUME_NAME") != GLOBAL_NAME or not valid_id(gid):
             return False
         expected = {"global": [{"volumeId": gid, "path": "/global"}]}
-        if env.get("SPT_TASK") == "global-export":
+        if env.get("SPT_TASK") in {"global-export", "global-training-export"}:
             if vid != SOURCE_ID or env.get("SPT_VOLUME_NAME") != NAME:
                 return False
             expected["network"] = [{"volumeId": SOURCE_ID, "path": "/data"}]
-        elif env.get("SPT_TASK") != "bn" or vid != gid:
+        elif env.get("SPT_TASK") not in {"bn", "frozen"} or vid != gid:
             return False
         return mounts == expected
     return (

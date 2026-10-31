@@ -239,3 +239,37 @@ def test_export_tampering_and_duplicate_members(modules, tmp_path):
     path.write_bytes(path.read_bytes()[:-1] + b"x")
     with pytest.raises(RuntimeError, match="checksum"):
         checker.validate_export(path, report)
+
+
+def test_three_arm_projection_preserves_pair_direction_and_rejects_partial(modules, report):
+    frozen = importlib.import_module("frozen_bn_evaluation")
+    ev, _ = modules
+    r = report["report"]
+    records = copy.deepcopy(r["records"])
+    pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
+    expected = ev.validation_inventory(
+        r["provenance_json"], r["dataset"]["provenance_sha256"], pinned
+    )
+    for record in records:
+        base = record["scores"]["official_converted"]
+        record["scores"] = {}
+        for variant, value in zip(frozen.VARIANTS, (1.0, -8.0, 2.0)):
+            record["scores"][variant] = copy.deepcopy(base)
+            for stem in record["scores"][variant].values():
+                stem["global_stereo_si_sdr_db"] = value
+                stem["bsseval_v4"]["sdr"] = [value] * len(stem["bsseval_v4"]["sdr"])
+        lengths = record["output_samples"]["official_converted"]
+        record["output_samples"] = {v: dict(lengths) for v in frozen.VARIANTS}
+    result = frozen.summarize(records, expected)
+    for pair, delta in [
+        ("normal_vs_official", -9),
+        ("frozen_vs_official", 1),
+        ("frozen_vs_normal", 10),
+    ]:
+        for metric in result[pair]["metrics"].values():
+            assert all(stem["paired_delta"]["median"] == delta for stem in metric.values())
+    with pytest.raises(ValueError):
+        frozen.summarize(records[:-1], expected)
+    records[0]["output_samples"]["frozen_step90"]["bass"] -= 1
+    with pytest.raises(ValueError):
+        frozen.summarize(records, expected)
