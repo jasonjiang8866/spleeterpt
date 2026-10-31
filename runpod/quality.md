@@ -3,7 +3,7 @@
 Run **RunPod quality preview** from Actions on `main`, with the paid-GPU checkbox.
 It shares the smoke workflow's concurrency group, single RTX 4090, 30-minute lease,
 post-allocation $1/hour compute-rate guard, and cleanup. See [limitations](actions.md).
-Pushes and PRs cannot rent GPUs. No full-data training is started.
+Pushes and PRs cannot rent GPUs. This quality-preview workflow does not start full-data training.
 
 The worker creates an isolated venv with stable `torch==2.8.0+cu128`,
 `tensorflow-cpu==2.18.1`, `museval==0.4.1`, NumPy 2.0.2 and SciPy 1.15.3.

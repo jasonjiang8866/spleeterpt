@@ -93,3 +93,23 @@ full signature. This is not arbitrary checkpoint migration or arbitrary-step ret
 The original run saved a valid step-10 checkpoint before an acceptance bug compared
 Python tuples to JSON lists; the normalized comparison and a regression fixture
 now cover both in-memory and serialized reports.
+
+## Verified result — 2026-10-31
+
+[Preparation / original training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452)
+verified all 500 files on volume `j3aqjpw393` in EU-RO-1 and saved step 10.
+[Replacement-Pod continuation](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41191613855)
+passed at commit `3ac37b849ad822ec06ba5bfebe77b950cdac9e21`: checkpoint cursor
+`[90, 1, 0]`, optimizer steps `[90]`, 90 unique training metrics and ten-song
+validation loss 6.992371892929077. All original ten metrics are unchanged, and
+the restored generation descriptor exactly matches the saved step-10 report.
+
+The detailed worker log records commits at steps 20, 30, 40, 50, 60, 70, 80 and 90,
+plus the final post-validation save. Actions polling may show only some of those
+markers. Actual last/best weights remain on the volume under
+`/data/experiments/41189465452-1/backups`; metadata artifacts expire after 14 days.
+All three compute Pods were deleted. Estimated GPU compute is $0.47, separate
+from retained-volume billing. See [machine-readable evidence](../docs/results/persistent-pilot-41189465452.json).
+
+This confirms the storage/recovery pipeline and one epoch with one crop per song.
+It does not establish convergence, an SDR improvement, or offsite redundancy.
