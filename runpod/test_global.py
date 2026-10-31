@@ -18,6 +18,18 @@ from test_control import ENV, FakeAPI, control, pod
 
 
 class GlobalTests(unittest.TestCase):
+    def test_cli_global_export_dispatches_compute_instead_of_cleanup(self):
+        with (
+            patch.dict(os.environ, ENV),
+            patch("sys.argv", ["control.py", "global-export"]),
+            patch.object(control, "Runpod") as api,
+            patch.object(control, "launch") as launch,
+            patch.object(control, "cleanup") as cleanup,
+        ):
+            control.main()
+        launch.assert_called_once_with(api.return_value, "global-export")
+        cleanup.assert_not_called()
+
     def test_global_gpu_uses_verified_snapshot_without_regional_mount(self):
         api = FakeAPI()
         api.rate = ".70"
