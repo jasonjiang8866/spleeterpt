@@ -235,7 +235,8 @@ def draw(output, preview=None):
         "masks applied to the complex mixture STFT before Hann overlap-add synthesis. "
         "Two/four-stem presets use sigmoid; five stems use softmax across stems.</desc>"
     )
-    output.write_text(svg[: end + 1] + description + svg[end + 1 :])
+    svg = svg[: end + 1] + description + svg[end + 1 :]
+    output.write_text("\n".join(line.rstrip() for line in svg.splitlines()) + "\n")
     if preview:
         fig.savefig(preview, dpi=90, facecolor=BG)
     plt.close(fig)
