@@ -97,3 +97,11 @@ and test a real Pod restart/resume. This version uses single-device Adam;
 multi-GPU/DDP and alternative optimizers are follow-up work.
 The [MUSDB evaluator](../docs/musdb-evaluation.md) handles held-out SDR comparisons.
 No cloud credentials belong in this repository.
+
+## Persistent full-training-pool pilot
+
+The [persistent pilot](persistent.md) prepares the complete training pool on an
+80 GB network volume and tests periodic checkpoint generations across replacement
+Pods. Read its retained-storage cost and recovery boundaries before dispatching.
+See the root [progress table](../README.md#current-progress--2026-10-31) for measured
+results; data preparation alone is not convergence training.

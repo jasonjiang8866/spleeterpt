@@ -1,0 +1,95 @@
+name: RunPod persistent training pilot
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_storage_and_gpu:
+        description: 'Retain one 80 GB standard volume (~$5.60/month), rent up to 3 sequential 30-minute RTX 4090 Pods, finish one 90-track epoch'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+env:
+  SPT_EXPERIMENT: ${{ github.run_id }}-${{ github.run_attempt }}
+jobs:
+  prepare:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_storage_and_gpu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare and verify all training data on persistent storage
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py persistent-prepare
+      - name: Delete compute only; retain network volume
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: persistent-prepare-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14
+  train:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Train ten steps and persist checkpoint generations
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py persistent-train
+      - name: Delete compute only; retain network volume
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: persistent-train-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14
+  resume:
+    needs: train
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore from persistent volume on a new Pod and finish one epoch
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py persistent-resume
+      - name: Delete compute only; retain network volume
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: persistent-resume-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14

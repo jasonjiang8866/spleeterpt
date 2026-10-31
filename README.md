@@ -4,19 +4,37 @@ A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter
 with official weight conversion, audio separation, and a single-GPU training entry
 point for RunPod. This is an independent project, not an official Deezer release.
 
-**First implementation:** 2/4/5-stem U-Nets, aligned WAV datasets, magnitude L1
-training, validation, AMP, and atomic resume checkpoints. No pretrained weights or
-training audio are bundled. No cloud training has been started.
+## Current progress — 2026-10-31
+
+| Area | Verified status |
+|---|---|
+| PyTorch port | Trainable 2/4/5-stem U-Nets, official TF checkpoint conversion, separation, validation and resume |
+| TF/PT parity | 2/4-stem real-audio waveform comparisons pass; 5-stem retains small FP32 numerical discrepancies under strict waveform tolerances |
+| Legacy quality regression | Controlled ablations identified STFT frame alignment and, for 4 stems, activation mismatch; see [diagnosis](docs/audio-parity-and-legacy-diagnosis.md) |
+| Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
+| Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
+| Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
+| Persistent training pilot | Implementation added: 80 GB network volume, periodic checkpoint generations, new-Pod restore and one 90-track epoch; cloud acceptance pending |
+| Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
+
+Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
+[replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
+and [full-data provenance](docs/results/musdb18-training-provenance.json).
+Recovery artifacts expire on **2026-11-14**; both test Pods were deleted.
+Decoded data was prepared in the working environment; the new persistent workflow
+must pass before considering it available on RunPod. No pretrained weights or
+training audio are bundled in this repository.
 
 ## Install
 
 Use Python 3.10–3.12 and a PyTorch build appropriate for your CPU/GPU. The tested
-baseline is Python 3.12 + PyTorch 2.6.0 on CPU. RunPod CUDA/AMP validation is pending.
+CPU CI baseline is PyTorch 2.6.0 on Python 3.10/3.12. The real-music RunPod
+training/recovery baseline is PyTorch 2.8.0+cu128 in FP32; those results do not
+establish equivalent quality or reproducibility for AMP.
 
 ```bash
 git clone https://github.com/jasonjiang8866/spleeterpt.git
 cd spleeterpt
-git checkout codex/pytorch-port  # omit after this branch is merged
 python -m venv .venv
 source .venv/bin/activate
 # CPU example. On RunPod keep/install the CUDA-enabled PyTorch build instead.
@@ -75,6 +93,11 @@ directory. Overlapping train/validation directories are rejected. Equivalent son
 copied to different directories still require manual duplicate checking. Manifest
 generation refuses to overwrite an existing split.
 
+For the checksum-verified complete MUSDB18 preparation command and recorded
+90/10 split (seed 17), see [full-data preparation](runpod/recovery.md#complete-training-data-preparation).
+The generic manifest example above creates a different split; do not mix it with
+that recorded experiment.
+
 ## Train or fine-tune
 
 ```bash
@@ -97,6 +120,10 @@ converted weights with a fresh optimizer. Use `configs/4stems.json` or
 - Precision: `fp32` baseline; `fp16` uses GradScaler; `bf16` requires GPU support.
 - Checkpoints: `last.pt` every 150 batches and at epoch end; `best.pt` after improved
   validation. Config, optimizer, scaler, position, and Torch RNG states are saved.
+- Optional `--backup-dir /data/experiment/backups`: publish a checksum-verified
+  generation at every `last.pt` save, including matching metrics and `best.pt`
+  when available. Retains the latest three committed generations. Mount persistent
+  storage there; an ordinary local directory does not survive Pod deletion.
 - Logs: stdout + `metrics.jsonl`; settings in `config.json` and `arguments.json`.
 - `--max-steps N` limits **total batches**, including resumed batches. An early exit
   saves `last.pt` but may precede validation, so `best.pt` may not exist yet.
@@ -151,7 +178,8 @@ python scripts/verify_official_checkpoint.py \
   --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt
 ```
 
-See [validation notes](docs/validation.md) and [RunPod instructions](runpod/README.md).
+See [validation notes](docs/validation.md), [RunPod instructions](runpod/README.md),
+and the [persistent training pilot](runpod/persistent.md).
 
 New: [real-audio parity and legacy-port diagnosis](docs/audio-parity-and-legacy-diagnosis.md)
 includes complete TF/Torch waveform comparisons, controlled legacy ablations, and
