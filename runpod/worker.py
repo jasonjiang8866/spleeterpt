@@ -1,14 +1,15 @@
 """Serve a token-protected, bounded result over the Runpod HTTPS proxy."""
 
+import base64
 import hashlib
 import hmac
 import json
 import os
-import re
 import signal
 import subprocess
 import threading
 import time
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -26,28 +27,46 @@ class Handler(BaseHTTPRequestHandler):
         ):
             self.send_error(401)
             return
-        if (
-            self.path == "/checkpoint"
-            and RESULT.get("status") == "passed"
-            and EXPORT_FILE.is_file()
-        ):
-            match = re.fullmatch(r"bytes=(\d+)-(\d+)", self.headers.get("Range", ""))
-            total = EXPORT_FILE.stat().st_size
-            if not match:
-                self.send_error(416)
+        route = urllib.parse.urlsplit(self.path)
+        if route.path == "/checkpoint":
+            from transfer import PROBE_BYTES
+
+            query = urllib.parse.parse_qs(route.query)
+            try:
+                if set(query) - {"offset", "length", "probe"} or any(
+                    len(v) != 1 for v in query.values()
+                ):
+                    raise ValueError("Unexpected chunk query")
+                offset, length = int(query["offset"][0]), int(query["length"][0])
+                probe = query.get("probe") == ["1"]
+                if not probe and (RESULT.get("status") != "passed" or not EXPORT_FILE.is_file()):
+                    self.send_error(404)
+                    return
+                total = len(PROBE_BYTES) if probe else EXPORT_FILE.stat().st_size
+                if not 0 < length <= 4 * 1024 * 1024 or not 0 <= offset < offset + length <= total:
+                    raise ValueError("Invalid chunk bounds")
+                if probe:
+                    chunk = PROBE_BYTES[offset : offset + length]
+                else:
+                    with EXPORT_FILE.open("rb") as stream:
+                        stream.seek(offset)
+                        chunk = stream.read(length)
+                data = json.dumps(
+                    {
+                        "offset": offset,
+                        "bytes": len(chunk),
+                        "sha256": hashlib.sha256(chunk).hexdigest(),
+                        "data": base64.b64encode(chunk).decode("ascii"),
+                    }
+                ).encode()
+            except (ValueError, KeyError):
+                self.send_error(400)
                 return
-            start, end = map(int, match.groups())
-            if not 0 <= start <= end < total or end - start + 1 > 8 * 1024 * 1024:
-                self.send_error(416)
-                return
-            self.send_response(206)
-            self.send_header("Content-Type", "application/octet-stream")
-            self.send_header("Content-Length", str(end - start + 1))
-            self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
             self.end_headers()
-            with EXPORT_FILE.open("rb") as stream:
-                stream.seek(start)
-                self.wfile.write(stream.read(end - start + 1))
+            self.wfile.write(data)
             return
         if self.path != "/result":
             self.send_error(404)
@@ -67,7 +86,8 @@ class Handler(BaseHTTPRequestHandler):
         ):
             self.send_error(401)
             return
-        if self.path != "/restore" or os.environ.get("SPT_TASK") != "recovery-resume":
+        route = urllib.parse.urlsplit(self.path)
+        if route.path != "/restore" or os.environ.get("SPT_TASK") != "recovery-resume":
             self.send_error(404)
             return
         with RESTORE_LOCK:
@@ -75,7 +95,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 spec = json.loads(os.environ["SPT_RESTORE_DESCRIPTOR"])
                 size = int(self.headers.get("Content-Length", "-1"))
-                offset = int(self.headers.get("X-Offset", "0"))
+                offset = int(urllib.parse.parse_qs(route.query).get("offset", ["0"])[0])
                 existing = temporary.stat().st_size if temporary.exists() else 0
                 if (
                     not 0 < size <= 8 * 1024 * 1024

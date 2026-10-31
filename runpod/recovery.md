@@ -25,6 +25,9 @@ Best-checkpoint inference must be finite. The final artifact also retains the
 actual `last.pt` and `best.pt` weights in `checkpoint.tar`, not only their hashes.
 Music and credentials are never included. Archive members are strictly allowlisted;
 links, duplicate paths, oversize content and mismatched hashes fail closed.
+Downloads use authenticated JSON with 4 MiB base64 chunks and per-chunk offset/size/hash
+checks, followed by whole-archive validation. This avoids HTTP Range handling in
+the proxy. A small transport probe runs before waiting for the training result.
 
 Artifacts:
 

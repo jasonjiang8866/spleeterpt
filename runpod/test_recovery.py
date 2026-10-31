@@ -1,10 +1,12 @@
 """Actual archive/HTTP boundary tests and recovery evidence failure cases."""
 
+import base64
 import copy
 import hashlib
 import io
 import json
 import os
+import sys
 import tarfile
 import tempfile
 import threading
@@ -12,9 +14,10 @@ import unittest
 import urllib.error
 import urllib.request
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
-from test_control import load, worker
+from test_control import ENV, FakeAPI, control, load, worker
 from test_training_result import valid_result
 
 recovery = load("recovery_result")
@@ -157,7 +160,7 @@ class RecoveryTests(unittest.TestCase):
                         url,
                         data=data[:4],
                         method="PUT",
-                        headers={"Authorization": "Bearer secret", "X-Offset": "0"},
+                        headers={"Authorization": "Bearer secret"},
                     )
                     with urllib.request.urlopen(first) as response:
                         self.assertEqual(json.load(response), {"received": 4})
@@ -166,10 +169,10 @@ class RecoveryTests(unittest.TestCase):
                         urllib.request.urlopen(first)
                     self.assertEqual(err.exception.code, 409)
                     req = urllib.request.Request(
-                        url,
+                        url + "?offset=4",
                         data=data[4:],
                         method="PUT",
-                        headers={"Authorization": "Bearer secret", "X-Offset": "4"},
+                        headers={"Authorization": "Bearer secret"},
                     )
                     with urllib.request.urlopen(req) as response:
                         self.assertEqual(
@@ -202,6 +205,7 @@ class RecoveryTests(unittest.TestCase):
                     with self.assertRaisesRegex(RuntimeError, "HTTP 401"):
                         transfer.download_bundle(url, "bad", descriptor, output, complete=False)
                     self.assertFalse(output.exists())
+                    transfer.probe_transfer(url, "secret")
                     transfer.download_bundle(url, "secret", descriptor, output, complete=False)
                     self.assertEqual(source.read_bytes(), output.read_bytes())
                     req = urllib.request.Request(
@@ -209,11 +213,46 @@ class RecoveryTests(unittest.TestCase):
                     )
                     with self.assertRaises(urllib.error.HTTPError) as err:
                         urllib.request.urlopen(req)
-                    self.assertEqual(err.exception.code, 416)
+                    self.assertEqual(err.exception.code, 400)
             finally:
                 server.shutdown()
                 server.server_close()
                 thread.join()
+
+    def test_chunk_metadata_and_hash_must_match(self):
+        transfer = load("transfer")
+        import control as real_control
+
+        good = {
+            "offset": 0,
+            "bytes": 3,
+            "data": base64.b64encode(b"abc").decode(),
+            "sha256": hashlib.sha256(b"abc").hexdigest(),
+        }
+        for key, value in (("offset", 1), ("bytes", 4), ("sha256", "0" * 64), ("data", "!!")):
+            with (
+                patch.object(real_control, "request", return_value={**good, key: value}),
+                self.assertRaises(RuntimeError),
+            ):
+                transfer.read_chunk("https://pod.proxy.runpod.net/checkpoint", "secret", 0, 3)
+
+    def test_probe_failure_releases_pod(self):
+        api = FakeAPI()
+
+        def reject(*args):
+            raise RuntimeError("transport probe failed")
+
+        with (
+            tempfile.TemporaryDirectory() as folder,
+            patch.dict(os.environ, ENV),
+            patch.object(control, "Path", side_effect=lambda p: Path(folder) / p),
+            patch.object(control, "resolve_image", return_value="image"),
+            patch.object(control, "request", return_value={"status": "running"}),
+            patch.dict(sys.modules, {"transfer": SimpleNamespace(probe_transfer=reject)}),
+            self.assertRaisesRegex(RuntimeError, "probe failed"),
+        ):
+            control.launch(api, "recovery-export")
+        self.assertEqual(api.deleted, ["/pods/abc"])
 
     def test_full_archive_inventory_rejects_preview_or_unsafe_paths(self):
         names = [f"train/song{i}.stem.mp4" for i in range(100)] + [

@@ -250,12 +250,19 @@ def launch(api, task="smoke"):
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last_phase = None
         restore_uploaded = False
+        transfer_probed = False
         while time.time() < expiry - 90:
             try:
                 result = request(url, token=token)
             except RuntimeError:
                 time.sleep(15)
                 continue
+            if task.startswith("recovery-") and not transfer_probed:
+                from transfer import probe_transfer
+
+                probe_transfer(url.removesuffix("result") + "checkpoint", token)
+                transfer_probed = True
+                print("PASS: authenticated checkpoint transport probe", flush=True)
             if restore_source and not restore_uploaded:
                 from transfer import upload_bundle
 
