@@ -1,5 +1,7 @@
 """Paired validation protocol; independent of the four-way port-parity experiment."""
 
+import hashlib
+import json
 import math
 
 from musdb_evaluation import BSS_METRICS, decode_number, encode_number, statistics, track_score
@@ -25,6 +27,26 @@ PROTOCOL = {
     "listening": "first two sorted validation IDs, centered 8 seconds, shared gain per song",
     "test_pool_used": False,
 }
+
+
+def validation_inventory(provenance_json, expected_sha256, pinned):
+    """Use the exact decoded files used in training, not another machine's WAV headers."""
+    if hashlib.sha256(provenance_json.encode()).hexdigest() != expected_sha256:
+        raise ValueError("Training dataset provenance hash mismatch")
+    provenance = json.loads(provenance_json)
+    source = {t["id"]: (t["source_sha256"], t["samples"]) for t in pinned["tracks"]}
+    if (
+        len(provenance["tracks"]) != 100
+        or {t["id"]: (t["source_sha256"], t["samples"]) for t in provenance["tracks"]} != source
+        or provenance["archive_sha256"] != pinned["archive_sha256"]
+        or provenance["test_audio_extracted"] is not False
+    ):
+        raise ValueError("Persistent source inventory differs from official training pool")
+    return {
+        t["id"].removesuffix(".stem.mp4"): t
+        for t in provenance["tracks"]
+        if t["id"].removesuffix(".stem.mp4") in pinned["split_track_ids"]["validation"]
+    }
 
 
 def summarize_pair(records):

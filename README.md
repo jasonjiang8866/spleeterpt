@@ -21,7 +21,9 @@ Next evaluation: [full-song fine-tuning validation](runpod/finetune.md) compares
 official initialization with the pinned step-90 checkpoint on all ten validation
 songs, using paired BSSEval-v4 SDR and separate SI-SDR. The workflow exports fixed
 listening excerpts and verifies that evaluation does not modify weights. GPU
-results are pending; no quality improvement is claimed yet.
+results are pending; no quality improvement is claimed yet. The first attempt
+stopped before scoring on a local/cloud decode-fingerprint mismatch and released
+its Pod; the evaluator now checks the exact cloud preparation record used in training.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),

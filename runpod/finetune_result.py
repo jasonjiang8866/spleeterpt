@@ -12,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 MAX_BUNDLE = 100 * 1024**2
 
 
+def load_evidence():
+    return json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
+
+
 def validate_finetune(result, sha, volume_id, pod_id):
     sys.path.insert(0, str(ROOT / "scripts"))
     from finetune_evaluation import (
@@ -21,10 +25,11 @@ def validate_finetune(result, sha, volume_id, pod_id):
         VARIANTS,
         summarize_pair,
         validate_records,
+        validation_inventory,
     )
 
     r = result.get("report", {})
-    evidence = json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
+    evidence = load_evidence()
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
     if (
         result.get("status") != "passed"
@@ -45,11 +50,7 @@ def validate_finetune(result, sha, volume_id, pod_id):
         or r.get("packages", {}).get("museval") != "0.4.1"
     ):
         raise RuntimeError("Validation identity, protocol, weights or runtime mismatch")
-    expected = {
-        t["id"].removesuffix(".stem.mp4"): t
-        for t in pinned["tracks"]
-        if t["id"].removesuffix(".stem.mp4") in pinned["split_track_ids"]["validation"]
-    }
+    expected = validation_inventory(r["provenance_json"], r["dataset"]["provenance_sha256"], pinned)
     validate_records(r["records"], expected)
     if r["summary"] != summarize_pair(r["records"]):
         raise RuntimeError("Validation summary differs from recomputed paired metrics")

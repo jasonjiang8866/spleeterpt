@@ -47,10 +47,17 @@ def test_real_pair_identical_and_degraded(modules):
 
 
 @pytest.fixture
-def report(modules):
-    ev, _ = modules
+def report(modules, monkeypatch):
+    import hashlib
+
+    ev, checker = modules
     evidence = json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
+    provenance_json = json.dumps(pinned)
+    evidence["resume"]["dataset"]["provenance_sha256"] = hashlib.sha256(
+        provenance_json.encode()
+    ).hexdigest()
+    monkeypatch.setattr(checker, "load_evidence", lambda: evidence)
     selected = {
         t["id"].removesuffix(".stem.mp4"): t
         for t in pinned["tracks"]
@@ -108,6 +115,7 @@ def report(modules):
             "experiment": "41189465452-1",
             "protocol": ev.PROTOCOL,
             "dataset": evidence["resume"]["dataset"],
+            "provenance_json": provenance_json,
             "backup": evidence["resume"]["backup"],
             "initial_sha256": evidence["resume"]["initial_sha256"],
             "weights_unchanged": True,
@@ -146,6 +154,7 @@ def test_complete_report_recomputes_and_rejects_partial_or_swapped_data(modules,
         lambda r: r["listening"][0].update(id=r["listening"][1]["id"]),
         lambda r: r["bundle"]["files"].update({"../unexpected": {"bytes": 1, "sha256": "a" * 64}}),
         lambda r: r.update(weights_unchanged=False),
+        lambda r: r.update(provenance_json=r["provenance_json"] + " "),
     ]
     for mutate in mutations:
         changed = copy.deepcopy(report)
@@ -164,6 +173,30 @@ def test_undefined_windows_are_counted_and_unpaired(modules, report):
     for m in summary["metrics"].values():
         assert m["vocals"]["paired_delta"]["finite"] == 9
         assert m["vocals"]["paired_delta"]["undefined"] == 1
+
+
+def test_inventory_uses_verified_training_decode_not_local_wav_hash(modules):
+    import hashlib
+
+    ev, _ = modules
+    pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
+    cloud = copy.deepcopy(pinned)
+    tid = pinned["split_track_ids"]["validation"][0]
+    track = next(t for t in cloud["tracks"] if t["id"].removesuffix(".stem.mp4") == tid)
+    track["files"]["vocals"]["sha256"] = "a" * 64
+    raw = json.dumps(cloud)
+    expected_sha = hashlib.sha256(raw.encode()).hexdigest()
+    inventory = ev.validation_inventory(raw, expected_sha, pinned)
+    assert inventory[tid]["files"]["vocals"]["sha256"] == "a" * 64
+    # An unverified new decode, source substitution or sample loss must still fail.
+    with pytest.raises(ValueError, match="hash"):
+        ev.validation_inventory(raw + " ", expected_sha, pinned)
+    for field in ("source_sha256", "samples"):
+        bad = copy.deepcopy(cloud)
+        bad["tracks"][0][field] = "wrong"
+        raw = json.dumps(bad)
+        with pytest.raises(ValueError, match="source inventory"):
+            ev.validation_inventory(raw, hashlib.sha256(raw.encode()).hexdigest(), pinned)
 
 
 def test_export_tampering_and_duplicate_members(modules, tmp_path):

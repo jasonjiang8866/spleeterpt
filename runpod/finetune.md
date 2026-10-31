@@ -15,7 +15,11 @@ until recorded with an Actions run link below.
   initialization used for training; candidate generation and every member hash
   must match the previously verified persistent-pilot record.
 - Recheck all 500 dataset file hashes, then each selected input immediately before
-  use. No training, crop selection, source permutation or output length repair.
+  use. Decode fingerprints come from the exact cloud `provenance.json` whose SHA
+  was recorded during training. Original archive/source hashes, song IDs and sample
+  counts must also match the independently recorded release inventory. Local and
+  cloud WAV container fingerprints are not assumed interchangeable. No training,
+  crop selection, source permutation or output length repair.
 - `museval==0.4.1` BSSEval-v4 source-image metrics: time-invariant 512-tap filters,
   one-second windows/hops, no padding. Incomplete final windows are omitted by
   museval. Retain every window, including explicitly undefined values. Report
@@ -50,3 +54,10 @@ This ten-song validation set can guide model development, but it is too small to
 establish general superiority. Original pretrained data overlap is not verified.
 No listening verdict is inferred from numerical scores. Keep the 50-song test
 pool untouched until model selection and the final evaluation protocol are fixed.
+
+The [first attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41193783059)
+passed verification of all 500 persistent files and reconstructed the exact official
+initialization, then failed before scoring because the per-song check referenced
+local-preparation WAV hashes. The Pod was deleted. The evaluator now carries and
+verifies the original cloud provenance text, using the same prepared files as
+training without relaxing source, sample-count or checksum checks.

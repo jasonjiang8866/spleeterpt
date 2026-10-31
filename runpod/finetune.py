@@ -14,7 +14,15 @@ from persistent import DATA, ROOT, verify_data
 from quality import command, digest, download
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from finetune_evaluation import PROTOCOL, RATE, STEMS, VARIANTS, summarize_pair, validate_records
+from finetune_evaluation import (
+    PROTOCOL,
+    RATE,
+    STEMS,
+    VARIANTS,
+    summarize_pair,
+    validate_records,
+    validation_inventory,
+)
 from musdb_evaluation import score_variants
 
 
@@ -46,16 +54,13 @@ def run():
     started = time.monotonic()
     evidence = json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
-    expected = {
-        t["id"].removesuffix(".stem.mp4"): t
-        for t in pinned["tracks"]
-        if t["id"].removesuffix(".stem.mp4") in pinned["split_track_ids"]["validation"]
-    }
     with Path("/data/.spleeterpt.lock").open("a") as lock, threadpool_limits(limits=2):
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         dataset = verify_data()
         if dataset != evidence["resume"]["dataset"]:
             raise RuntimeError("Persistent dataset changed")
+        provenance_json = (DATA / "provenance.json").read_text()
+        expected = validation_inventory(provenance_json, dataset["provenance_sha256"], pinned)
         backup_root = Path("/data/experiments/41189465452-1/backups")
         folder, backup = validate(backup_root)
         if backup != evidence["resume"]["backup"]:
@@ -181,6 +186,7 @@ def run():
             "experiment": os.environ["SPT_EXPERIMENT"],
             "protocol": PROTOCOL,
             "dataset": dataset,
+            "provenance_json": provenance_json,
             "backup": backup,
             "initial_sha256": digest(initial),
             "torch": torch.__version__,
