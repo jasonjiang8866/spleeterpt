@@ -1,0 +1,1048 @@
+{
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41230412543",
+  "source_commit": "7a0c3249cc3eed254b86a0695329c7b548311def",
+  "protocol": {
+    "scope": "all 10 project validation songs, complete recordings",
+    "sample_rate": 44100,
+    "start_sample": 0,
+    "length_policy": "strict",
+    "precision": "fp32",
+    "tf32": false,
+    "bsseval": "museval 0.4.1 v4 source images, fixed 512-tap filters, no permutation",
+    "window_samples": 44100,
+    "hop_samples": 44100,
+    "padding": false,
+    "aggregation": "median 1-second frames per song; median songs per stem",
+    "paired_delta": "candidate minus baseline per-song median; median paired differences",
+    "si_sdr": "global stereo, mean removed, one scalar; separate from BSSEval SDR",
+    "undefined": "null; infinities as strings; counts explicit; paired deltas finite-only",
+    "listening": "first two sorted validation IDs, centered 8 seconds, shared gain per song",
+    "test_pool_used": false,
+    "variants": [
+      "official_converted",
+      "normal_step90",
+      "frozen_step90"
+    ],
+    "training": "two independent 90-step runs from identical official initialization on the same MIG",
+    "intervention": "freeze BN running buffers; train affine parameters; preserve training dropout",
+    "recipe": {
+      "epochs": 1,
+      "batch_size": 1,
+      "crops_per_track": 1,
+      "validation_crops": 1,
+      "workers": 0,
+      "lr": 1e-05,
+      "seed": 17,
+      "grad_clip": 5.0,
+      "optimizer": "Adam eps=1e-8",
+      "save_every": 10,
+      "deterministic": true
+    },
+    "baseline_tolerance_db": 0.001
+  },
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+  "initial_bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+  "training": {
+    "normal": {
+      "cursor": [
+        90,
+        1,
+        0
+      ],
+      "optimizer_steps": [
+        90
+      ],
+      "finite": true,
+      "bn_buffers_unchanged": false,
+      "bn_affine_changed": true,
+      "parameters_changed": true,
+      "bn_fingerprint": "9593e44abcc9c8724f826ab00858d1f48b6a417e904a309e177678f3cac41052",
+      "timing": {
+        "seconds": 29.848525446956046,
+        "peak_allocated_bytes": 1118093312
+      },
+      "last_sha256": "cbabe7d22ffe84e4008cbe5bf5c7ba9c7791d83c00e48bfa6cc786202b7abd6b",
+      "last_bytes": 471800627,
+      "validation_crop_loss": 6.9923744916915895
+    },
+    "frozen": {
+      "cursor": [
+        90,
+        1,
+        0
+      ],
+      "optimizer_steps": [
+        90
+      ],
+      "finite": true,
+      "bn_buffers_unchanged": true,
+      "bn_affine_changed": true,
+      "parameters_changed": true,
+      "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+      "timing": {
+        "seconds": 30.718350959010422,
+        "peak_allocated_bytes": 1118040064
+      },
+      "last_sha256": "0638bc4f00abaccbfa0e1f32c5adcbebe4d7631456144819cad98e5576dc6a3c",
+      "last_bytes": 471800627,
+      "validation_crop_loss": 1.343880480527878
+    }
+  },
+  "matched_rng": true,
+  "weights_unchanged": true,
+  "metrics": {
+    "bsseval_v4_sdr_db": {
+      "vocals": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.446345024238921,
+          "mean": 7.135616529944203
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 1.0546392421530721,
+          "mean": 0.9100169486851296
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.398409707459599,
+          "mean": 7.033393848330276
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.386525347277217,
+          "mean": -6.225599581259072,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.07908271529222954,
+          "mean": -0.10222268161392475,
+          "better": 2,
+          "worse": 8,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 6.358226156913115,
+          "mean": 6.123376899645147,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "drums": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 5.587253562567321,
+          "mean": 6.068724768069998
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.6058184489277747,
+          "mean": 0.5061214851073368
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 5.511877311354901,
+          "mean": 5.971581754122269
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -4.695263299961908,
+          "mean": -5.562603282962662,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.07359676938293735,
+          "mean": -0.0971430139477305,
+          "better": 3,
+          "worse": 7,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.658746117541165,
+          "mean": 5.465460269014931,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "bass": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.645184094333117,
+          "mean": 4.633951749219799
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.7257457003083585,
+          "mean": 0.5927034139741956
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.770469925267017,
+          "mean": 4.547032227052808
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.5335119920038127,
+          "mean": -4.041248335245603,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.08168111147356338,
+          "mean": -0.08691952216698956,
+          "better": 3,
+          "worse": 7,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.6030504052499133,
+          "mean": 3.9543288130786136,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "other": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.38205111429423,
+          "mean": 4.675248688453102
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 1.5060353708745353,
+          "mean": 1.173102178546426
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.576401073716459,
+          "mean": 4.663809922198965
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.855583839072631,
+          "mean": -3.5021465099066766,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.09597672122072831,
+          "mean": -0.011438766254137511,
+          "better": 4,
+          "worse": 6,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.7329269915099363,
+          "mean": 3.490707743652539,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      }
+    },
+    "global_stereo_si_sdr_db": {
+      "vocals": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.434087569575999,
+          "mean": 7.270640693623756
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -5.3387527859931705,
+          "mean": -5.5465390647596875
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.473091140838994,
+          "mean": 7.237783867320301
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -12.914380076003017,
+          "mean": -12.81717975838344,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.035131308134691785,
+          "mean": -0.03285682630345477,
+          "better": 3,
+          "worse": 7,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 12.932527484966123,
+          "mean": 12.78432293207999,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "drums": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.242344024072542,
+          "mean": 4.613003578694723
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.153606269462819,
+          "mean": -5.585826874372421
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.226191321176317,
+          "mean": 4.531075806431284
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -10.08780005235045,
+          "mean": -10.198830453067144,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.02934382278462827,
+          "mean": -0.08192777226343911,
+          "better": 2,
+          "worse": 8,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 10.10803423847815,
+          "mean": 10.116902680803705,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "bass": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 2.9075950059763174,
+          "mean": 2.640974685661827
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.042215443974609,
+          "mean": -5.6349212017080585
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.0119052268848687,
+          "mean": 2.535603497144227
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -8.409548382483093,
+          "mean": -8.275895887369888,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.022703412964801384,
+          "mean": -0.1053711885176001,
+          "better": 5,
+          "worse": 5,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.92892805602009,
+          "mean": 8.170524698852287,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      },
+      "other": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.0928753898877757,
+          "mean": 2.923067651494693
+        },
+        "normal_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.909320646835362,
+          "mean": -4.310628793803387
+        },
+        "frozen_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.1899855827009582,
+          "mean": 2.9235299261643246
+        },
+        "normal_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -7.978848897496871,
+          "mean": -7.233696445298078,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "frozen_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.019387119614806547,
+          "mean": 0.0004622746696320068,
+          "better": 5,
+          "worse": 5,
+          "equal": 0
+        },
+        "frozen_minus_normal": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.9758681994783425,
+          "mean": 7.234158719967711,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        }
+      }
+    }
+  },
+  "frame_coverage": {
+    "official_converted": {
+      "vocals": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "drums": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "bass": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "other": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      }
+    },
+    "normal_step90": {
+      "vocals": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "drums": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "bass": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "other": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      }
+    },
+    "frozen_step90": {
+      "vocals": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "drums": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "bass": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "other": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      }
+    }
+  },
+  "storage": {
+    "snapshot_files": 503,
+    "snapshot_bytes": 40342607284,
+    "snapshot_sha256": "172c50e5310b22ceab3d4813a4ba1146c682db682c8aebc4c03ad235de376964",
+    "copy_seconds": 796.490294201998,
+    "verified_audio_files": 500,
+    "completed_checkpoints_readback_verified": true
+  },
+  "worker_seconds_including_staging": 1941.3560209319694,
+  "evaluation_peak_allocated_bytes": 7750132736,
+  "observed_rates_usd_per_hour": {
+    "cpu": 0.06,
+    "gpu": 0.69
+  },
+  "verification": {
+    "artifact_sha256": "caf3e82ef29d8533d5acfcb29281636c1939ec6da1105e606f9af648a7a2181f",
+    "runner_and_independent_validation": true,
+    "listening_wav_files": 34,
+    "finite_audio_and_expected_shape": true,
+    "official_baseline_max_mean_median_deviation_db": 1.3476812741330946e-06
+  },
+  "evaluation_seconds": 1524.9583641451318,
+  "validation_audio_minutes": 30.371313681027967,
+  "compute": {
+    "copy": {
+      "start": "2026-10-31T18:38:51.4589112Z",
+      "end": "2026-10-31T18:52:19.7905071Z",
+      "seconds": 808.332
+    },
+    "gpu": {
+      "start": "2026-10-31T18:52:35.0939004Z",
+      "end": "2026-10-31T19:26:54.7809990Z",
+      "seconds": 2059.687
+    },
+    "first_attempt": {
+      "copy_seconds": 281.721,
+      "gpu_seconds": 398.756,
+      "compute_estimate_usd": 0.08112358333333332
+    },
+    "current_compute_estimate_usd": 0.40824554166666666,
+    "total_compute_estimate_usd": 0.48936912499999996,
+    "all_compute_deleted": true,
+    "storage_retained": true,
+    "estimate_excludes": "container storage, retained volumes, requests and Actions charges; not an invoice"
+  },
+  "interpretation": {
+    "frozen_vs_normal": "better on all ten songs for every stem under both metrics",
+    "frozen_vs_official": "all four median paired differences remain negative under both metrics; no established quality improvement",
+    "inference_baseline": "official converted weights",
+    "limits": "single seed, one crop per training song, 90 updates, project validation split; no convergence or test benchmark claim"
+  }
+}

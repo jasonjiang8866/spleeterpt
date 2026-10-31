@@ -4,7 +4,7 @@ A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter
 with official weight conversion, audio separation, and a single-GPU training entry
 point for RunPod. This is an independent project, not an official Deezer release.
 
-## Current progress — 2026-10-31
+## Current progress — 2026-11-01 (SGT)
 
 | Area | Verified status |
 |---|---|
@@ -15,9 +15,11 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
-| Quality / convergence | Completed official-initialization vs step-90 comparison on all ten full validation songs; see measured results below. Convergence and the full test benchmark remain unverified |
+| Quality / convergence | Matched normal/frozen-BN 90-step trial complete on MIG with Global Volume: freezing avoids collapse but does not beat official weights consistently. Convergence and the full test benchmark remain unverified |
 
-**Latest quality result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
+**Latest quality result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
+
+**Earlier ordinary-BN result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
 
 All ten complete validation songs (30.37 minutes), identical FP32
 PyTorch inference. BSSEval-v4 SDR in dB:
@@ -35,7 +37,7 @@ aggregate medians. [Summary, SI-SDR, protocol and listening method](docs/step90-
 and [successful GPU run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747). The export contains 26 fixed listening WAVs;
 all file hashes, lengths and audio samples were checked. No listening verdict is claimed.
 
-**BN diagnosis:** The [four-cell GPU intervention](docs/bn-ablation-41221906972.md) completed on PRO 6000 MIG 24GB using a verified Global Volume snapshot. Restoring official BN running statistics recovers most of the step-90 quality loss; learned statistics alone reproduce the collapse. The training-time cause and a frozen-BN retraining fix remain unverified. Keep official converted weights as the inference baseline.
+**BN diagnosis:** The [four-cell GPU intervention](docs/bn-ablation-41221906972.md) completed on PRO 6000 MIG 24GB using a verified Global Volume snapshot. Restoring official BN running statistics recovers most of the step-90 quality loss; learned statistics alone reproduce the collapse. The subsequent matched training experiment confirms that using fixed official BN statistics avoids this pilot’s large regression; it does not establish superior weights or fully explain why ordinary training produced the damaging statistics.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
