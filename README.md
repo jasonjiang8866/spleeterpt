@@ -17,6 +17,12 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
 | Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
 
+Next evaluation: [full-song fine-tuning validation](runpod/finetune.md) compares the
+official initialization with the pinned step-90 checkpoint on all ten validation
+songs, using paired BSSEval-v4 SDR and separate SI-SDR. The workflow exports fixed
+listening excerpts and verifies that evaluation does not modify weights. GPU
+results are pending; no quality improvement is claimed yet.
+
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
 [persistent pilot continuation](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41191613855),

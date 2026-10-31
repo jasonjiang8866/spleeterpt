@@ -144,12 +144,14 @@ def statistics(values, *, counts_only=False):
     return result
 
 
-def validate_outputs(targets, variants, instruments, hop_length, length_policy):
-    if set(variants) != set(VARIANTS):
-        raise ValueError("all four variants are required")
+def validate_outputs(
+    targets, variants, instruments, hop_length, length_policy, variant_names=VARIANTS
+):
+    if set(variants) != set(variant_names):
+        raise ValueError("all requested variants are required")
     length = targets["mixture"].shape[1]
     lengths = {}
-    for variant in VARIANTS:
+    for variant in variant_names:
         if set(variants[variant]) != set(instruments):
             raise ValueError(f"incorrect target set: {variant}")
         lengths[variant] = {}
@@ -170,14 +172,23 @@ def validate_outputs(targets, variants, instruments, hop_length, length_policy):
     return min(n for values in lengths.values() for n in values.values()), lengths
 
 
-def score_variants(targets, variants, instruments, hop_length=1024, length_policy="common-crop"):
+def score_variants(
+    targets,
+    variants,
+    instruments,
+    hop_length=1024,
+    length_policy="common-crop",
+    variant_names=VARIANTS,
+):
     import museval
     from evaluate_preview import si_sdr
 
-    common, lengths = validate_outputs(targets, variants, instruments, hop_length, length_policy)
+    common, lengths = validate_outputs(
+        targets, variants, instruments, hop_length, length_policy, variant_names
+    )
     reference = np.stack([targets[name][:, :common].T for name in instruments]).astype(np.float64)
     scores = {}
-    for variant in VARIANTS:
+    for variant in variant_names:
         estimate = np.stack([variants[variant][name][:, :common].T for name in instruments])
         # museval's MUSDB convention: 1-second windows/hops, fixed whole-track
         # 512-tap filters (v4), source-image metrics, no source permutation.
