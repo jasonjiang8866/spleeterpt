@@ -165,7 +165,9 @@ def resolve_image():
     return "runpod/pytorch@" + digest
 
 
-def launch(api):
+def launch(api, task="smoke"):
+    if task not in {"smoke", "quality"}:
+        raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
     if os.environ.get("GITHUB_REF") != "refs/heads/main":
         raise RuntimeError("GPU launches must use main")
@@ -185,7 +187,7 @@ def launch(api):
     print("::add-mask::" + token, flush=True)
     output = Path("runpod-results")
     output.mkdir(exist_ok=True)
-    metadata = {"commit": sha, "pod_name": name, "image": image, "expires_at": expiry}
+    metadata = {"commit": sha, "pod_name": name, "image": image, "expires_at": expiry, "task": task}
     (output / "provision.json").write_text(json.dumps(metadata, indent=2))
     bootstrap = (
         "set -eu; mkdir -p /workspace; cd /workspace; git clone https://github.com/"
@@ -214,6 +216,7 @@ def launch(api):
             "SPT_RESULT_TOKEN": token,
             "SPT_COMMIT": sha,
             "SPT_EXPIRY": str(expiry),
+            "SPT_TASK": task,
             "PYTHONUNBUFFERED": "1",
         },
     }
@@ -233,16 +236,27 @@ def launch(api):
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
         print(f"Created {pod_id}: ${rate}/hour; lease 30 minutes", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
+        last_phase = None
         while time.time() < expiry - 90:
             try:
                 result = request(url, token=token)
             except RuntimeError:
                 time.sleep(15)
                 continue
+            phase = result.get("phase")
+            if isinstance(phase, str) and phase != last_phase:
+                print("Worker: " + phase[:100], flush=True)
+                last_phase = phase
             if result.get("status") in {"passed", "failed"}:
                 (output / "result.json").write_text(json.dumps(result, indent=2))
-                validate_result(result, sha)
-                print("PASS: full-size CUDA train/validation/resume/inference", flush=True)
+                if task == "quality":
+                    from quality_result import validate_quality
+
+                    validate_quality(result, sha, output / "quality")
+                    print("PASS: complete CUDA quality pilot (not a full benchmark)", flush=True)
+                else:
+                    validate_result(result, sha)
+                    print("PASS: full-size CUDA train/validation/resume/inference", flush=True)
                 return
             time.sleep(15)
         raise RuntimeError("GPU smoke deadline exceeded; check artifacts and Runpod console")
@@ -253,15 +267,15 @@ def launch(api):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["preflight", "smoke", "cleanup", "reap"])
+    parser.add_argument("action", choices=["preflight", "smoke", "quality", "cleanup", "reap"])
     args = parser.parse_args()
     identity()
     api = Runpod()
     if args.action == "preflight":
         api.pods()
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
-    elif args.action == "smoke":
-        launch(api)
+    elif args.action in {"smoke", "quality"}:
+        launch(api, args.action)
     else:
         cleanup(api, expired=args.action == "reap")
 

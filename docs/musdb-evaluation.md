@@ -3,7 +3,9 @@
 `scripts/evaluate_musdb.py` evaluates **all available tracks in the requested
 subsets by default**, at full duration, using local assets. It supports MUSDB18
 STEMS MP4 and MUSDB18-HQ WAV directories. It does not download datasets, weights,
-or upstream repositories, and only runs on CPU. There are **no full MUSDB results
+or upstream repositories, and defaults to CPU. `--device cuda` runs all three PyTorch variants on CUDA
+with TF32 disabled; the official TensorFlow reference remains on CPU. This is a
+quality comparison, not a cross-framework speed benchmark. There are **no full MUSDB results
 yet**. The existing five-preview SI-SDR results remain a separate limited experiment.
 
 ## What is compared
@@ -103,7 +105,7 @@ track IDs/durations before describing an experiment as the complete benchmark.
   followed by sorting. Exact selected IDs and NumPy version are recorded.
 - `--start-seconds 30 --duration-seconds 10`: evaluate that exact interval for all
   models; fail if any song cannot provide it. Defaults use the entire song.
-- `--threads 2`: CPU thread limit. No paid compute is provisioned.
+- `--threads 2`: CPU thread limit. This CLI never provisions paid compute.
 
 A preview directory is still a preview even when all its files are selected.
 The test/preview corpus is never auto-downloaded by this entry point.

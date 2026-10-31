@@ -18,7 +18,10 @@
 No RunPod CLI, permanent SSH key, manual Pod, network volume, model weights, or
 music dataset is required. This initial workflow supports only this repository,
 one Secure Cloud RTX 4090, full-size 2-stem, FP32, batch size 1, synthetic audio.
-No real GPU run has been validated yet.
+The initial real RTX 4090 smoke passed on 2026-10-31:
+[run 41175739814](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41175739814).
+That image contained a torch development build despite its tag. The separate
+[quality pilot](quality.md) installs and checks stable torch in an isolated venv.
 
 ## What runs
 

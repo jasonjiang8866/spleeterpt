@@ -43,11 +43,52 @@ def run():
     env = {k: v for k, v in os.environ.items() if k != "SPT_RESULT_TOKEN"}
     expiry = int(os.environ["SPT_EXPIRY"])
     try:
+        task = os.environ.get("SPT_TASK", "smoke")
+        commands = [
+            ["python", "-m", "pip", "install", "-e", "."],
+            ["python", "runpod/gpu_smoke.py", "--output", str(report)],
+        ]
+        if task == "quality":
+            python = "/workspace/eval-venv/bin/python"
+            commands = [
+                [
+                    "bash",
+                    "-lc",
+                    "command -v ffmpeg && command -v ffprobe || (apt-get update && apt-get install -y --no-install-recommends ffmpeg)",
+                ],
+                ["python", "-m", "venv", "/workspace/eval-venv"],
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-cache-dir",
+                    "torch==2.8.0",
+                    "--index-url",
+                    "https://download.pytorch.org/whl/cu128",
+                ],
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-cache-dir",
+                    "-e",
+                    ".[evaluate]",
+                    "numpy==2.0.2",
+                    "scipy==1.15.3",
+                ],
+                [python, "-m", "pip", "check"],
+                [python, "runpod/quality.py", "--output", str(report)],
+            ]
+        elif task != "smoke":
+            raise ValueError("Unknown worker task")
         with log.open("w") as stream:
-            for cmd in (
-                ["python", "-m", "pip", "install", "-e", "."],
-                ["python", "runpod/gpu_smoke.py", "--output", str(report)],
-            ):
+            for index, cmd in enumerate(commands):
+                RESULT = {
+                    "status": "running",
+                    "phase": f"{task}: command {index + 1}/{len(commands)}",
+                }
                 process = subprocess.Popen(
                     cmd, stdout=stream, stderr=subprocess.STDOUT, env=env, start_new_session=True
                 )
