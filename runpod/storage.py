@@ -73,6 +73,21 @@ def safe_mounts(pod):
     mounts = {k: v for k, v in (pod.get("mounts") or {}).items() if v}
     env = pod.get("env", {})
     vid = env.get("SPT_VOLUME_ID", "")
+    if env.get("SPT_GLOBAL_VOLUME_ID"):
+        from global_storage import NAME as GLOBAL_NAME
+        from global_storage import SOURCE_ID, valid_id
+
+        gid = env["SPT_GLOBAL_VOLUME_ID"]
+        if env.get("SPT_GLOBAL_VOLUME_NAME") != GLOBAL_NAME or not valid_id(gid):
+            return False
+        expected = {"global": [{"volumeId": gid, "path": "/global"}]}
+        if env.get("SPT_TASK") == "global-export":
+            if vid != SOURCE_ID or env.get("SPT_VOLUME_NAME") != NAME:
+                return False
+            expected["network"] = [{"volumeId": SOURCE_ID, "path": "/data"}]
+        elif env.get("SPT_TASK") != "bn" or vid != gid:
+            return False
+        return mounts == expected
     return (
         env.get("SPT_VOLUME_NAME") == NAME
         and bool(re.fullmatch(r"[a-zA-Z0-9]+", vid))

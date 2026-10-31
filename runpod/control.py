@@ -212,13 +212,16 @@ def validate_result(result, sha):
             raise RuntimeError("Missing checkpoint checksum")
 
 
-def resolve_image():
+def resolve_image(image=IMAGE):
     # Resolve the public versioned image to an immutable registry digest before spending.
+    repository, tag = image.rsplit(":", 1)
     auth = request(
-        "https://auth.docker.io/token?service=registry.docker.io&scope=repository:runpod/pytorch:pull"
+        "https://auth.docker.io/token?service=registry.docker.io&scope=repository:"
+        + repository
+        + ":pull"
     )
     req = urllib.request.Request(
-        "https://registry-1.docker.io/v2/runpod/pytorch/manifests/" + IMAGE.split(":", 1)[1],
+        "https://registry-1.docker.io/v2/" + repository + "/manifests/" + tag,
         headers={
             "Authorization": "Bearer " + auth["token"],
             "Accept": "application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json",
@@ -229,7 +232,7 @@ def resolve_image():
         digest = response.headers.get("Docker-Content-Digest", "")
     if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
         raise RuntimeError("Cannot resolve container image digest")
-    return "runpod/pytorch@" + digest
+    return repository + "@" + digest
 
 
 def launch(api, task="smoke"):
@@ -244,6 +247,7 @@ def launch(api, task="smoke"):
         "persistent-prepare",
         "persistent-train",
         "persistent-resume",
+        "global-export",
     }:
         raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
@@ -278,17 +282,47 @@ def launch(api, task="smoke"):
     # Do not retry provisioning: a timed-out POST may already have created a paid Pod.
     if any(owned(p, repo, repo_id) for p in api.pods()):
         raise RuntimeError("A managed Pod already exists; run cleanup before another smoke test")
-    volume = None
-    if task.startswith("persistent-") or task in {"finetune", "bn"}:
+    volume, global_volume, cpu, regions, storage_proof = None, None, None, None, None
+    global_bn = task == "bn" and os.environ.get("SPT_GLOBAL_BN") == "1"
+    if (
+        task.startswith("persistent-")
+        or task in {"finetune", "global-export"}
+        or (task == "bn" and not global_bn)
+    ):
         from storage import ensure_volume
 
         volume = ensure_volume(api, create=task == "persistent-prepare")
-        if task in {"finetune", "bn"} and volume["id"] != "j3aqjpw393":
+        if task in {"finetune", "bn", "global-export"} and volume["id"] != "j3aqjpw393":
             raise RuntimeError("Fine-tune validation requires the verified data volume")
     gpu_id, rate_cap = profile(task)
-    if task == "bn" and capacity_preflight(api, gpu_id) not in {"HIGH", "MEDIUM", "LOW"}:
+    if task == "global-export" or global_bn:
+        from global_storage import CPU_RATE_CAP, cpu_placement, ensure_global, mig_regions
+
+        if task == "global-export":
+            cpu = cpu_placement(api, volume["dataCenter"])
+            rate_cap = CPU_RATE_CAP
+            global_volume = ensure_global(api, create=True)
+        else:
+            from global_inputs import validate_report
+
+            global_volume = ensure_global(api)
+            exported = json.loads(Path("global-input/result.json").read_text())
+            validate_report(exported, sha, global_volume["id"], exported["report"]["pod_id"])
+            storage_proof = {
+                "mode": "global-staged",
+                "global_volume_id": global_volume["id"],
+                "source_volume_id": "j3aqjpw393",
+                "snapshot_sha256": exported["report"]["snapshot_sha256"],
+                "verified_audio_files": 50,
+            }
+            regions = mig_regions(api, gpu_id)
+    if (
+        task == "bn"
+        and not global_bn
+        and capacity_preflight(api, gpu_id) not in {"HIGH", "MEDIUM", "LOW"}
+    ):
         raise RuntimeError("Selected MIG GPU unavailable at the pinned volume; no Pod created")
-    image = resolve_image()
+    image = resolve_image("library/python:3.12-bookworm") if cpu else resolve_image()
     lease_seconds = 3600 if task == "finetune" else 1800
     expiry = int(time.time()) + lease_seconds
     name = f"spt-{repo_id}-{run}-{attempt}-{expiry}"
@@ -344,6 +378,27 @@ def launch(api, task="smoke"):
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
     if restore_source:
         payload["env"]["SPT_RESTORE_DESCRIPTOR"] = json.dumps(restore_source["bundle"])
+    if global_volume:
+        from global_storage import NAME as GLOBAL_NAME
+
+        metadata["global_volume"] = global_volume
+        payload["mounts"]["global"] = [{"volumeId": global_volume["id"], "path": "/global"}]
+        payload["env"].update(
+            SPT_GLOBAL_VOLUME_ID=global_volume["id"], SPT_GLOBAL_VOLUME_NAME=GLOBAL_NAME
+        )
+        if global_bn:
+            payload["disk"] = 40
+            payload["dataCenterIds"] = regions
+            payload["env"].update(
+                SPT_VOLUME_ID=global_volume["id"],
+                SPT_EXPERIMENT="41189465452-1",
+                SPT_SNAPSHOT_SHA256=storage_proof["snapshot_sha256"],
+            )
+        if cpu:
+            del payload["gpu"]
+            payload["cpu"] = cpu
+            payload["disk"] = 10
+        (output / "provision.json").write_text(json.dumps(metadata, indent=2))
     try:
         pod = api.call("/pods", "POST", payload)
         pod_id = pod["id"]
@@ -358,7 +413,10 @@ def launch(api, task="smoke"):
             raise RuntimeError(f"Pod rate missing or above ${rate_cap}/hour; releasing immediately")
         if task == "bn" and detail.get("gpu", {}).get("id") != gpu_id:
             raise RuntimeError("Provider returned a different GPU; releasing immediately")
-        metadata["gpu_id"] = gpu_id
+        if cpu:
+            metadata["cpu"] = cpu
+        else:
+            metadata["gpu_id"] = gpu_id
         metadata["cost_per_hour"] = rate
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
         print(f"Created {pod_id}: ${rate}/hour; lease {lease_seconds // 60} minutes", flush=True)
@@ -403,7 +461,14 @@ def launch(api, task="smoke"):
                 last_phase = phase
             if result.get("status") in {"passed", "failed"}:
                 (output / "result.json").write_text(json.dumps(result, indent=2))
-                if task.startswith("persistent-"):
+                if task == "global-export":
+                    from global_inputs import validate_report
+
+                    validate_report(result, sha, global_volume["id"], pod_id)
+                    print(
+                        "PASS: pinned validation snapshot copied and read-back verified", flush=True
+                    )
+                elif task.startswith("persistent-"):
                     from persistent_result import validate_persistent
 
                     validate_persistent(result, sha, task, volume["id"], pod_id)
@@ -419,10 +484,11 @@ def launch(api, task="smoke"):
                     validate_finetune(
                         result,
                         sha,
-                        volume["id"],
+                        global_volume["id"] if global_bn else volume["id"],
                         pod_id,
                         ablation=task == "bn",
                         expected_gpu=gpu_id,
+                        storage=storage_proof,
                     )
                     download_export(
                         url.removesuffix("result") + "checkpoint",
@@ -486,6 +552,7 @@ def main():
             "persistent-prepare",
             "persistent-train",
             "persistent-resume",
+            "global-export",
             "cleanup",
             "reap",
         ],

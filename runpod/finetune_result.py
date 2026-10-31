@@ -18,7 +18,9 @@ def load_evidence():
     return json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
 
 
-def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False, expected_gpu=ADA):
+def validate_finetune(
+    result, sha, volume_id, pod_id, *, ablation=False, expected_gpu=ADA, storage=None
+):
     sys.path.insert(0, str(ROOT / "scripts"))
     from finetune_evaluation import (
         PROTOCOL,
@@ -36,18 +38,34 @@ def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False, expecte
     r = result.get("report", {})
     evidence = load_evidence()
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
+    expected_dataset = dict(evidence["resume"]["dataset"])
+    if storage is not None:
+        from global_storage import SOURCE_ID, valid_id
+
+        if (
+            not ablation
+            or storage.get("mode") != "global-staged"
+            or storage.get("global_volume_id") != volume_id
+            or not valid_id(volume_id)
+            or storage.get("source_volume_id") != SOURCE_ID
+            or storage.get("verified_audio_files") != 50
+            or not re.fullmatch(r"[a-f0-9]{64}", storage.get("snapshot_sha256", ""))
+        ):
+            raise RuntimeError("Invalid global storage provenance")
+        expected_dataset["verified_audio_files"] = 50
     if (
         result.get("status") != "passed"
         or r.get("kind") != ("bn-ablation" if ablation else "finetune-validation")
         or r.get("commit") != sha
         or r.get("volume_id") != volume_id
-        or volume_id != evidence["volume"]["id"]
+        or (storage is None and volume_id != evidence["volume"]["id"])
+        or r.get("storage") != storage
         or r.get("pod_id") != pod_id
         or r.get("experiment") != "41189465452-1"
         or r.get("results_directory")
         != f"/data/evaluations/41189465452-1/{'bn-' if ablation else ''}{pod_id}"
         or r.get("protocol") != PROTOCOL
-        or r.get("dataset") != evidence["resume"]["dataset"]
+        or r.get("dataset") != expected_dataset
         or r.get("backup") != evidence["resume"]["backup"]
         or r.get("initial_sha256") != evidence["resume"]["initial_sha256"]
         or r.get("weights_unchanged") is not True

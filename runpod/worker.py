@@ -22,7 +22,7 @@ RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 PROGRESS = re.compile(
-    r"(?:Progress: (?:archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+    r"(?:Progress: (?:global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
 )
 
 
@@ -233,6 +233,8 @@ def run():
                     )
                 ),
             ]
+        elif task == "global-export":
+            commands = [["python", "runpod/global_inputs.py", "--output", str(report)]]
         elif task != "smoke":
             raise ValueError("Unknown worker task")
         with log.open("w") as stream:
