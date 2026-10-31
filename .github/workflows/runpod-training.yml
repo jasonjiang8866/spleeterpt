@@ -1,0 +1,46 @@
+name: RunPod real music training
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_gpu:
+        description: 'Rent one RTX 4090 for a 30-minute training acceptance lease (cleanup may be delayed)'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+jobs:
+  training:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_gpu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preflight
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py preflight
+      - name: Verify real music training and resume, then release Pod
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py training
+      - name: Retry cleanup for this run
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runpod-training-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          if-no-files-found: warn
+          retention-days: 14

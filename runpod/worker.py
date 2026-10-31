@@ -41,6 +41,7 @@ def run():
     report = Path("/workspace/report.json")
     # Never pass the response token into training or dependency installation.
     env = {k: v for k, v in os.environ.items() if k != "SPT_RESULT_TOKEN"}
+    env["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
     expiry = int(os.environ["SPT_EXPIRY"])
     try:
         task = os.environ.get("SPT_TASK", "smoke")
@@ -48,7 +49,7 @@ def run():
             ["python", "-m", "pip", "install", "-e", "."],
             ["python", "runpod/gpu_smoke.py", "--output", str(report)],
         ]
-        if task == "quality":
+        if task in {"quality", "training"}:
             python = "/workspace/eval-venv/bin/python"
             commands = [
                 [
@@ -79,7 +80,7 @@ def run():
                     "scipy==1.15.3",
                 ],
                 [python, "-m", "pip", "check"],
-                [python, "runpod/quality.py", "--output", str(report)],
+                [python, f"runpod/{task}.py", "--output", str(report)],
             ]
         elif task != "smoke":
             raise ValueError("Unknown worker task")
@@ -103,6 +104,8 @@ def run():
         result = {"status": "passed", "report": json.loads(report.read_text())}
     except Exception as error:  # noqa: BLE001 -- always publish a sanitized failure result
         result = {"status": "failed", "error": type(error).__name__}
+        if report.exists():
+            result["report"] = json.loads(report.read_text())
     result["log_tail"] = log.read_text(errors="replace")[-100_000:] if log.exists() else ""
     RESULT = result
 
