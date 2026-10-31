@@ -35,7 +35,7 @@ aggregate medians. [Summary, SI-SDR, protocol and listening method](docs/step90-
 and [successful GPU run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747). The export contains 26 fixed listening WAVs;
 all file hashes, lengths and audio samples were checked. No listening verdict is claimed.
 
-**Next:** Run a controlled BatchNorm-statistics ablation before extending training: compare the current candidate with the same learned parameters but restored official running statistics, and a baseline-parameter model using the candidate statistics. This can separate statistics drift from parameter-update effects; the current result alone does not establish the cause. Keep official converted weights as the inference baseline while investigating.
+**Next:** [Four-cell BatchNorm ablation](runpod/bn-ablation.md) is implemented: official/step-90 parameters crossed with official/step-90 running statistics, scored on all ten complete validation songs with global stereo SI-SDR. Original controls must reproduce the previous scores. GPU results are pending; keep official converted weights as the inference baseline until the cause and a validated fix are established.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),

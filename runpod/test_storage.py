@@ -17,7 +17,7 @@ class StorageTests(unittest.TestCase):
             "type": "STANDARD",
             "dataCenter": "EU-RO-1",
         }
-        for task, seconds in (("smoke", 1800), ("finetune", 3600)):
+        for task, seconds in (("smoke", 1800), ("finetune", 3600), ("bn", 1800)):
             api = FakeAPI()
             api.rate = "1.01"
             with (

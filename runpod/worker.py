@@ -171,6 +171,7 @@ def run():
         if task in {
             "quality",
             "finetune",
+            "bn",
             "training",
             "recovery-export",
             "recovery-resume",

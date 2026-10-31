@@ -27,7 +27,16 @@ from finetune_evaluation import (
 from musdb_evaluation import atomic_json, score_variants
 
 
-def run():
+def run(*, ablation=False):
+    # Keep the accepted paired protocol unchanged unless explicitly selected.
+    protocol, variants_names = PROTOCOL, VARIANTS
+    summarize, check_records, score = summarize_pair, validate_records, score_variants
+    if ablation:
+        import bn_ablation as bn
+
+        protocol, variants_names = bn.PROTOCOL, bn.VARIANTS
+        summarize, check_records, score = bn.summarize_pair, bn.validate_records, bn.score_variants
+
     import numpy as np
     import soundfile as sf
     import torch
@@ -74,7 +83,7 @@ def run():
         pod_id = os.environ["RUNPOD_POD_ID"]
         if not re.fullmatch(r"[a-zA-Z0-9]+", pod_id):
             raise RuntimeError("Invalid evaluation identity")
-        out = Path("/data/evaluations/41189465452-1") / pod_id
+        out = Path("/data/evaluations/41189465452-1") / ("bn-" + pod_id if ablation else pod_id)
         out.mkdir(parents=True)
         assets = Path("/workspace/finetune-assets")
         assets.mkdir()
@@ -100,6 +109,9 @@ def run():
         models = dict(zip(VARIANTS, [load_model(initial, "cuda"), load_model(checkpoint, "cuda")]))
         if any(m.config != ModelConfig.preset(4) for m in models.values()):
             raise RuntimeError("Expected identical full four-stem configurations")
+        bn_proof = None
+        if ablation:
+            models, bn_proof = bn.build_models(models[VARIANTS[0]], models[VARIANTS[1]])
         before = {
             v: {k: t.detach().cpu().clone() for k, t in m.state_dict().items()}
             for v, m in models.items()
@@ -124,8 +136,8 @@ def run():
                 v: {s: x.numpy() for s, x in separate(m, waveform).items()}
                 for v, m in models.items()
             }
-            scored = score_variants(
-                targets, variants, STEMS, length_policy="strict", variant_names=VARIANTS
+            scored = score(
+                targets, variants, STEMS, length_policy="strict", variant_names=variants_names
             )
             record = {
                 "id": track_id,
@@ -137,7 +149,7 @@ def run():
             }
             records.append(record)
             atomic_json(out / f"track-{index:02d}.json", record)
-            if index < 2:
+            if index < 2 and not ablation:
                 count = RATE * 8
                 start = (waveform.shape[1] - count) // 2
                 groups = {"reference": targets, **variants}
@@ -162,7 +174,7 @@ def run():
                     }
                 )
             print(f"Progress: evaluated validation songs {index + 1}/10", flush=True)
-        validate_records(records, expected)
+        check_records(records, expected)
         unchanged = all(
             torch.equal(before[v][k], t.cpu())
             for v, m in models.items()
@@ -183,13 +195,13 @@ def run():
             "No subjective listening verdict has been claimed by this automated run.\n"
         )
         report = {
-            "kind": "finetune-validation",
+            "kind": "bn-ablation" if ablation else "finetune-validation",
             "commit": os.environ["SPT_COMMIT"],
             "pod_id": os.environ["RUNPOD_POD_ID"],
             "volume_id": os.environ["SPT_VOLUME_ID"],
             "experiment": os.environ["SPT_EXPERIMENT"],
             "results_directory": str(out),
-            "protocol": PROTOCOL,
+            "protocol": protocol,
             "dataset": dataset,
             "provenance_json": provenance_json,
             "backup": backup,
@@ -203,11 +215,20 @@ def run():
             },
             "weights_unchanged": unchanged,
             "records": records,
-            "summary": summarize_pair(records),
+            "summary": summarize(records),
             "listening": listening,
             "seconds": time.monotonic() - started,
             "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
         }
+        if ablation:
+            report["bn_proof"] = bn_proof
+            previous = json.loads(
+                (ROOT / "docs/results/step90-validation-41196010747.json").read_text()
+            )
+            bn.validate_baselines(report["summary"], previous)
+            (out / "LISTENING.txt").write_text(
+                "Metric-only BatchNorm ablation; no audio exported.\n"
+            )
         atomic_json(out / "report.json", report)
         files = {
             str(p.relative_to(out)): {"bytes": p.stat().st_size, "sha256": digest(p)}
