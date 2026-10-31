@@ -22,7 +22,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def request(url, *, token=None, method="GET", payload=None, limit=8_000_000):
-    headers = {"Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json", "User-Agent": "spleeterpt-runpod-actions/0.1"}
     if token:
         headers["Authorization"] = "Bearer " + token
     req = urllib.request.Request(
@@ -245,8 +245,22 @@ def main():
     identity()
     api = Runpod()
     if args.action == "preflight":
+        # Diagnose the permission shown in RunPod's key UI independently of REST.
+        try:
+            response = request(
+                "https://api.runpod.io/graphql",
+                token=api.key,
+                method="POST",
+                payload={"query": "query { myself { pods { id } } }"},
+            )
+            if response.get("errors") or response.get("data", {}).get("myself") is None:
+                print("GraphQL read-only authentication: rejected (response withheld)")
+            else:
+                print("GraphQL read-only authentication: PASS")
+        except RuntimeError as error:
+            print("GraphQL read-only authentication: " + str(error))
         api.pods()
-        print("PASS: RUNPOD_API_KEY authenticates to Pod management (read-only check).")
+        print("PASS: RUNPOD_API_KEY authenticates to REST Pod management (read-only check).")
     elif args.action == "smoke":
         launch(api)
     else:
