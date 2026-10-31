@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_paid_gpu:
-        description: 'Evaluate pinned step-90 weights against official initialization on all ten validation songs; one 30-minute RTX 4090 lease'
+        description: 'Evaluate pinned step-90 weights on ten full validation songs; one 60-minute RTX 4090 lease, at most $1/hour'
         type: boolean
         required: true
         default: false
@@ -16,7 +16,7 @@ jobs:
   evaluate:
     if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_gpu
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 65
     env:
       SPT_EXPERIMENT: '41189465452-1'
     steps:

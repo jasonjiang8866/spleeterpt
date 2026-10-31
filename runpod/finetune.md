@@ -36,11 +36,16 @@ until recorded with an Actions run link below.
 
 ## Execution and outputs
 
-One RTX 4090, existing 80 GB volume `j3aqjpw393`, existing 30-minute lease and
+One RTX 4090, existing 80 GB volume `j3aqjpw393`, a **60-minute evaluation lease** and
 $1/hour actual compute-rate guard. All GPU workflows share one concurrency group.
-The worker ends ahead of the lease to leave transfer/cleanup time; incomplete
+The worker ends three minutes ahead of the lease to leave transfer/cleanup time; incomplete
 selection fails acceptance rather than quietly reporting a smaller benchmark.
 Cleanup deletes compute only. No new storage volume is created.
+All other GPU tasks retain their 30-minute leases. At the rate guard, this evaluation
+can cost up to approximately $1 compute, excluding delayed cleanup and billing rounding.
+Completed per-song JSON and fixed listening excerpts are written under
+`/data/evaluations/41189465452-1/<pod-id>` so compute deletion does not discard them.
+Partial folders are not accepted as a complete benchmark and are not automatically resumed.
 
 The Actions artifact includes `result.json`, `provision.json`, and
 `listening-and-metrics.tar` (under 100 MiB). The runner recomputes summary statistics
@@ -61,3 +66,10 @@ initialization, then failed before scoring because the per-song check referenced
 local-preparation WAV hashes. The Pod was deleted. The evaluator now carries and
 verifies the original cloud provenance text, using the same prepared files as
 training without relaxing source, sample-count or checksum checks.
+
+The [second attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41194464761)
+passed the corrected data contract and completed two full-song comparisons. Its
+observed CPU scoring speed projected beyond the 27-minute worker window, so it was
+stopped before spending the entire lease on an incomplete run. The 60-minute
+evaluation window and persistent per-song outputs address that operational limit;
+they do not change the models, selected audio or metric computation.

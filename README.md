@@ -24,6 +24,10 @@ listening excerpts and verifies that evaluation does not modify weights. GPU
 results are pending; no quality improvement is claimed yet. The first attempt
 stopped before scoring on a local/cloud decode-fingerprint mismatch and released
 its Pod; the evaluator now checks the exact cloud preparation record used in training.
+The corrected run completed two songs before being stopped because observed CPU
+scoring speed projected beyond its original time window. Full-song evaluation now
+has a 60-minute lease and retains completed per-song results on the existing volume;
+training and other GPU workflows retain their 30-minute limits.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),

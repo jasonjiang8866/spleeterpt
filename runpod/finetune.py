@@ -5,6 +5,7 @@ import fcntl
 import importlib.metadata
 import json
 import os
+import re
 import sys
 import tarfile
 import time
@@ -23,7 +24,7 @@ from finetune_evaluation import (
     validate_records,
     validation_inventory,
 )
-from musdb_evaluation import score_variants
+from musdb_evaluation import atomic_json, score_variants
 
 
 def run():
@@ -70,8 +71,11 @@ def run():
         if [cp[k] for k in ("step", "epoch", "next_batch")] != [90, 1, 0]:
             raise RuntimeError("Unexpected candidate training cursor")
         del cp
-        out = Path("/workspace/finetune-results")
-        out.mkdir()
+        pod_id = os.environ["RUNPOD_POD_ID"]
+        if not re.fullmatch(r"[a-zA-Z0-9]+", pod_id):
+            raise RuntimeError("Invalid evaluation identity")
+        out = Path("/data/evaluations/41189465452-1") / pod_id
+        out.mkdir(parents=True)
         assets = Path("/workspace/finetune-assets")
         assets.mkdir()
         archive = download("4stems.tar.gz", assets)
@@ -132,7 +136,7 @@ def run():
                 **scored,
             }
             records.append(record)
-            (out / f"track-{index:02d}.json").write_text(json.dumps(record, allow_nan=False))
+            atomic_json(out / f"track-{index:02d}.json", record)
             if index < 2:
                 count = RATE * 8
                 start = (waveform.shape[1] - count) // 2
@@ -184,6 +188,7 @@ def run():
             "pod_id": os.environ["RUNPOD_POD_ID"],
             "volume_id": os.environ["SPT_VOLUME_ID"],
             "experiment": os.environ["SPT_EXPERIMENT"],
+            "results_directory": str(out),
             "protocol": PROTOCOL,
             "dataset": dataset,
             "provenance_json": provenance_json,
@@ -203,7 +208,7 @@ def run():
             "seconds": time.monotonic() - started,
             "peak_allocated_bytes": torch.cuda.max_memory_allocated(),
         }
-        (out / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False))
+        atomic_json(out / "report.json", report)
         files = {
             str(p.relative_to(out)): {"bytes": p.stat().st_size, "sha256": digest(p)}
             for p in sorted(out.rglob("*"))
