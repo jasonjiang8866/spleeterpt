@@ -24,6 +24,12 @@ metadata (at most 512 MiB) with read-back checks and a completion marker written
 last. No locks or atomic rename are used on Global Volume. Partial runs retain
 any completed arm, but do not report a successful trial.
 
+Full-pool local staging uses eight bounded concurrent file reads; every file still
+passes size, SHA-256 and local read-back validation. Reusing a completed snapshot
+performs one complete verification pass without rewriting objects or reading each
+file a second time. The initial serial-staging attempt was stopped before training
+because cross-region reads threatened the 60-minute experiment budget.
+
 Evaluate official, ordinary-BN and frozen-BN models on all 10 complete validation
 songs using the existing BSSEval v4 SDR and global stereo SI-SDR protocol. Report
 three paired comparisons. Official aggregate mean/median and coverage must
