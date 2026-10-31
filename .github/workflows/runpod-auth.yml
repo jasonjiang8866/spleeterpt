@@ -1,0 +1,24 @@
+name: RunPod authentication
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, codex/runpod-actions]
+    paths: [runpod/control.py, .github/workflows/runpod-auth.yml]
+permissions:
+  contents: read
+jobs:
+  preflight:
+    if: github.repository == 'jasonjiang8866/spleeterpt'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify Secret using a read-only Pod list request
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py preflight

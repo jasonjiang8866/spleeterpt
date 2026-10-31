@@ -1,8 +1,9 @@
-# RunPod training (after the Pod is ready)
+# RunPod training
 
-This repository does not create Pods, use a RunPod API key, or start paid jobs.
-These commands are for an already configured GPU Pod. CUDA and AMP have not yet
-been tested on RunPod for this implementation.
+For GitHub Actions provisioning, see [Actions setup](actions.md). That workflow
+uses the repository Secret `RUNPOD_API_KEY` and rents a GPU only on explicit manual
+dispatch. The commands below are for an already configured GPU Pod. Real RunPod
+CUDA validation is still pending; offline tests do not establish GPU compatibility.
 
 ## 1. Environment and persistent storage
 
@@ -16,7 +17,7 @@ it against your Pod setup.
 cd /workspace
 git clone https://github.com/jasonjiang8866/spleeterpt.git
 cd spleeterpt
-git checkout codex/pytorch-port  # omit after merge
+git switch main
 python -m pip install -e '.[dev]'
 python -c 'import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'
 python scripts/smoke_test.py --device cuda --precision fp32
