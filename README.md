@@ -4,6 +4,18 @@ A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter
 with official weight conversion, audio separation, and a single-GPU training entry
 point for RunPod. This is an independent project, not an official Deezer release.
 
+## Model architecture
+
+[![spleeterpt architecture: stereo STFT, independent six-level U-Nets with raw convolution skips, magnitude estimates, ratio masks and audio reconstruction](docs/assets/model-architecture.svg)](docs/assets/model-architecture.svg)
+
+The diagram shows the standard preset geometry, with four stems in the overview.
+Each stem has its own U-Net and parameters. The networks estimate magnitudes;
+inference derives squared-magnitude ratio masks and applies them to the original
+complex mixture STFT before Hann overlap-add reconstruction.
+
+[Architecture details and compatibility](#architecture-and-compatibility) ·
+[Diagram source and regeneration](docs/architecture.md)
+
 ## Current progress — 2026-11-01 (SGT)
 
 | Area | Verified status |
@@ -190,6 +202,17 @@ project are accepted; an official TF checkpoint first needs `convert`.
 | 4 stems | ELU encoder/decoder, sigmoid masks |
 | 5 stems | ELU encoder/decoder, softmax across stems |
 | Synthesis | Squared magnitude ratio masks and upstream Hann overlap-add |
+
+Encoder skips branch before BN and activation; the sixth raw convolution is the
+bottleneck. Decoder dropout is applied after BN and before concatenation in its
+first three blocks. The final decoder produces one feature channel, then a
+dilated convolution produces two stereo logits per stem. Five-stem softmax is
+applied **after** stacking logits from all five independent U-Nets.
+
+Training compares the predicted magnitudes with target magnitudes using summed
+per-stem L1 losses. `--freeze-bn-stats` uses fixed BN moments while continuing to
+train BN affine parameters and keeping dropout active; see the
+[matched pilot](docs/frozen-bn-41230412543.md) for measured results.
 
 The default `mask_extension="zeros"` matches upstream and drops frequencies above
 the modeled band (about 11 kHz). `average` extends masks to higher frequencies and
