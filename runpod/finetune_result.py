@@ -8,6 +8,8 @@ import sys
 import tarfile
 from pathlib import Path
 
+from gpu_profile import ADA, baseline_tolerance, validate_runtime
+
 ROOT = Path(__file__).resolve().parents[1]
 MAX_BUNDLE = 100 * 1024**2
 
@@ -16,7 +18,7 @@ def load_evidence():
     return json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
 
 
-def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False):
+def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False, expected_gpu=ADA):
     sys.path.insert(0, str(ROOT / "scripts"))
     from finetune_evaluation import (
         PROTOCOL,
@@ -51,7 +53,7 @@ def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False):
         or r.get("weights_unchanged") is not True
         or r.get("torch") != "2.8.0+cu128"
         or r.get("cuda") != "12.8"
-        or r.get("gpu") != "NVIDIA GeForce RTX 4090"
+        or (not ablation and r.get("gpu") != ADA)
         or r.get("packages", {}).get("museval") != "0.4.1"
     ):
         raise RuntimeError("Validation identity, protocol, weights or runtime mismatch")
@@ -67,9 +69,15 @@ def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False):
         from bn_ablation import validate_baselines, validate_proof
 
         validate_proof(r["bn_proof"])
+        validate_runtime(r["gpu_runtime"], expected_gpu)
+        if r["gpu"] != r["gpu_runtime"]["name"] or r.get(
+            "baseline_tolerance_db"
+        ) != baseline_tolerance(expected_gpu):
+            raise RuntimeError("Runtime identity or baseline tolerance mismatch")
         validate_baselines(
             r["summary"],
             json.loads((ROOT / "docs/results/step90-validation-41196010747.json").read_text()),
+            tolerance=baseline_tolerance(expected_gpu),
         )
     if len(r["listening"]) != (0 if ablation else 2):
         raise RuntimeError("Missing listening samples")

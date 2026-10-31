@@ -25,6 +25,7 @@ class StorageTests(unittest.TestCase):
                 patch.dict("os.environ", {**ENV, "SPT_EXPERIMENT": "41189465452-1"}),
                 patch.object(control, "Path", side_effect=lambda p: Path(folder) / p),
                 patch.object(control, "resolve_image", return_value="image"),
+                patch.object(control, "capacity_preflight", return_value="HIGH"),
                 patch.object(control.time, "time", return_value=100),
                 patch("storage.ensure_volume", return_value=volume),
                 self.assertRaisesRegex(RuntimeError, "rate"),
@@ -33,6 +34,34 @@ class StorageTests(unittest.TestCase):
             self.assertEqual(int(api.payload["env"]["SPT_EXPIRY"]), 100 + seconds)
             self.assertEqual(api.creates, 1)
             self.assertEqual(api.deleted, ["/pods/abc"])
+
+    def test_mig_selection_budget_and_unavailability(self):
+        from gpu_profile import ADA, MIG24, profile
+
+        self.assertEqual(profile("bn"), (MIG24, 0.69))
+        self.assertEqual(profile("training"), (ADA, 1.0))
+        for available, creates in (("HIGH", 1), ("NOT_LISTED", 0)):
+            api = FakeAPI()
+            api.rate = "0.70"
+            with (
+                tempfile.TemporaryDirectory() as folder,
+                patch.dict("os.environ", {**ENV, "SPT_EXPERIMENT": "41189465452-1"}),
+                patch.object(control, "Path", side_effect=lambda p: Path(folder) / p),
+                patch.object(control, "resolve_image", return_value="image"),
+                patch.object(control, "capacity_preflight", return_value=available),
+                patch(
+                    "storage.ensure_volume",
+                    return_value={"id": "j3aqjpw393", "name": NAME, "dataCenter": "TEST"},
+                ),
+                self.assertRaises(RuntimeError),
+            ):
+                control.launch(api, "bn")
+            self.assertEqual(api.creates, creates)
+            self.assertEqual(api.deleted, ["/pods/abc"] if creates else [])
+            if creates:
+                self.assertEqual(api.payload["gpu"]["id"], MIG24)
+                self.assertEqual(api.payload["env"]["SPT_GPU_ID"], MIG24)
+                self.assertEqual(api.payload["dataCenterIds"], ["TEST"])
 
     def test_capacity_probe_is_read_only(self):
         import io

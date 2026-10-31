@@ -12,6 +12,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from gpu_profile import MIG24, profile
+
 API = "https://api.runpod.io/v2"
 IMAGE = "runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04"
 GPU = "NVIDIA GeForce RTX 4090"
@@ -53,22 +55,23 @@ def error_category(raw):
         return "unclassified"
 
 
-def capacity_preflight(api):
+def capacity_preflight(api, gpu_id=MIG24):
     """GET-only observation; never creates, retries, moves or deletes resources."""
     from storage import ensure_volume
 
     volume = ensure_volume(api, create=False)
     gpu = api.call(
         "/catalog/gpus/"
-        + urllib.parse.quote(GPU, safe="")
+        + urllib.parse.quote(gpu_id, safe="")
         + "?include=AVAILABILITY&product=POD&cloud=SECURE&count=1&minCudaVersion=12.8"
     )
     matches = [d for d in gpu.get("dataCenters", []) if d.get("id") == volume["dataCenter"]]
     value = matches[0].get("availability") if len(matches) == 1 else "NOT_LISTED"
     if value not in {"HIGH", "MEDIUM", "LOW", "NONE", "NOT_LISTED"}:
         value = "UNKNOWN"
-    print("READ-ONLY: pinned-volume RTX 4090 catalog availability=" + value, flush=True)
+    print("READ-ONLY: selected GPU=" + gpu_id + "; pinned-volume availability=" + value, flush=True)
     print("Catalog availability is advisory; it does not guarantee a launch or quote.", flush=True)
+    return value
 
 
 def request(url, *, token=None, method="GET", payload=None, limit=8_000_000):
@@ -274,6 +277,9 @@ def launch(api, task="smoke"):
         volume = ensure_volume(api, create=task == "persistent-prepare")
         if task in {"finetune", "bn"} and volume["id"] != "j3aqjpw393":
             raise RuntimeError("Fine-tune validation requires the verified data volume")
+    gpu_id, rate_cap = profile(task)
+    if task == "bn" and capacity_preflight(api, gpu_id) not in {"HIGH", "MEDIUM", "LOW"}:
+        raise RuntimeError("Selected MIG GPU unavailable at the pinned volume; no Pod created")
     image = resolve_image()
     lease_seconds = 3600 if task == "finetune" else 1800
     expiry = int(time.time()) + lease_seconds
@@ -295,7 +301,7 @@ def launch(api, task="smoke"):
         "image": image,
         "cloud": "SECURE",
         "gpu": {
-            "id": GPU,
+            "id": gpu_id,
             "count": 1,
             "minRamPerGpu": 16,
             "minVcpuCountPerGpu": 4,
@@ -312,6 +318,7 @@ def launch(api, task="smoke"):
             "SPT_COMMIT": sha,
             "SPT_EXPIRY": str(expiry),
             "SPT_TASK": task,
+            "SPT_GPU_ID": gpu_id,
             "PYTHONUNBUFFERED": "1",
         },
     }
@@ -339,8 +346,11 @@ def launch(api, task="smoke"):
         # Actual price is returned only after creation; fail closed on missing/high rates.
         detail = api.call("/pods/" + pod_id)
         rate = float(detail.get("cost", "nan"))
-        if not math.isfinite(rate) or not 0 < rate <= 1.0:
-            raise RuntimeError("Pod rate missing or above $1/hour; releasing immediately")
+        if not math.isfinite(rate) or not 0 < rate <= rate_cap:
+            raise RuntimeError(f"Pod rate missing or above ${rate_cap}/hour; releasing immediately")
+        if task == "bn" and detail.get("gpu", {}).get("id") != gpu_id:
+            raise RuntimeError("Provider returned a different GPU; releasing immediately")
+        metadata["gpu_id"] = gpu_id
         metadata["cost_per_hour"] = rate
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
         print(f"Created {pod_id}: ${rate}/hour; lease {lease_seconds // 60} minutes", flush=True)
@@ -398,7 +408,14 @@ def launch(api, task="smoke"):
                 elif task in {"finetune", "bn"}:
                     from finetune_result import download_export, validate_finetune
 
-                    validate_finetune(result, sha, volume["id"], pod_id, ablation=task == "bn")
+                    validate_finetune(
+                        result,
+                        sha,
+                        volume["id"],
+                        pod_id,
+                        ablation=task == "bn",
+                        expected_gpu=gpu_id,
+                    )
                     download_export(
                         url.removesuffix("result") + "checkpoint",
                         token,

@@ -53,6 +53,18 @@ def run(*, ablation=False):
         raise RuntimeError("Expected stable CUDA runtime")
     if importlib.metadata.version("museval") != "0.4.1":
         raise RuntimeError("Expected pinned BSSEval implementation")
+    from gpu_profile import ADA, baseline_tolerance, validate_runtime
+
+    expected_gpu = os.environ.get("SPT_GPU_ID", ADA)
+    gpu_runtime = {
+        "requested_gpu": expected_gpu,
+        "name": torch.cuda.get_device_name(0),
+        "device_count": torch.cuda.device_count(),
+        "capability": list(torch.cuda.get_device_capability(0)),
+        "total_memory_bytes": torch.cuda.get_device_properties(0).total_memory,
+    }
+    if ablation:
+        validate_runtime(gpu_runtime, expected_gpu)
     torch.set_num_threads(2)
     torch.manual_seed(17)
     np.random.seed(17)
@@ -222,10 +234,14 @@ def run(*, ablation=False):
         }
         if ablation:
             report["bn_proof"] = bn_proof
+            report["gpu_runtime"] = gpu_runtime
+            report["baseline_tolerance_db"] = baseline_tolerance(expected_gpu)
             previous = json.loads(
                 (ROOT / "docs/results/step90-validation-41196010747.json").read_text()
             )
-            bn.validate_baselines(report["summary"], previous)
+            bn.validate_baselines(
+                report["summary"], previous, tolerance=baseline_tolerance(expected_gpu)
+            )
             (out / "LISTENING.txt").write_text(
                 "Metric-only BatchNorm ablation; no audio exported.\n"
             )

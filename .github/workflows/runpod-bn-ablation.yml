@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_paid_gpu:
-        description: 'Evaluate pinned step-90 weights on ten full validation songs; four parameter/statistics combinations; one 30-minute RTX 4090 lease, at most $1/hour'
+        description: 'Evaluate pinned step-90 weights on ten full validation songs; four parameter/statistics combinations; one 30-minute PRO 6000 MIG 24GB lease, at most $0.69/hour'
         type: boolean
         required: true
         default: false

@@ -20,4 +20,5 @@ if __name__ == "__main__":
         os.environ["SPT_VOLUME_ID"],
         os.environ["RUNPOD_POD_ID"],
         ablation=True,
+        expected_gpu=os.environ["SPT_GPU_ID"],
     )
