@@ -1,0 +1,2881 @@
+{
+  "dataset": "MUSDB18 AAC full training pool",
+  "source": "https://zenodo.org/records/1117372",
+  "archive_bytes": 4684228845,
+  "archive_md5": "af06762477334799bfc5abf237648207",
+  "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+  "full_archive_verified": true,
+  "training_pool_tracks": 100,
+  "train_tracks": 90,
+  "validation_tracks": 10,
+  "split": "project-specific track split, Python random seed 17; not the standard 86/14 split",
+  "test_tracks_in_archive": [
+    "test/AM Contra - Heart Peripheral.stem.mp4",
+    "test/Al James - Schoolboy Facination.stem.mp4",
+    "test/Angels In Amplifiers - I'm Alright.stem.mp4",
+    "test/Arise - Run Run Run.stem.mp4",
+    "test/BKS - Bulldozer.stem.mp4",
+    "test/BKS - Too Much.stem.mp4",
+    "test/Ben Carrigan - We'll Talk About It All Tonight.stem.mp4",
+    "test/Bobby Nobody - Stitch Up.stem.mp4",
+    "test/Buitraker - Revo X.stem.mp4",
+    "test/Carlos Gonzalez - A Place For Us.stem.mp4",
+    "test/Cristina Vane - So Easy.stem.mp4",
+    "test/Detsky Sad - Walkie Talkie.stem.mp4",
+    "test/Enda Reilly - Cur An Long Ag Seol.stem.mp4",
+    "test/Forkupines - Semantics.stem.mp4",
+    "test/Georgia Wonder - Siren.stem.mp4",
+    "test/Girls Under Glass - We Feel Alright.stem.mp4",
+    "test/Hollow Ground - Ill Fate.stem.mp4",
+    "test/James Elder & Mark M Thompson - The English Actor.stem.mp4",
+    "test/Juliet's Rescue - Heartbeats.stem.mp4",
+    "test/Little Chicago's Finest - My Own.stem.mp4",
+    "test/Louis Cressy Band - Good Time.stem.mp4",
+    "test/Lyndsey Ollard - Catching Up.stem.mp4",
+    "test/M.E.R.C. Music - Knockout.stem.mp4",
+    "test/Moosmusic - Big Dummy Shake.stem.mp4",
+    "test/Motor Tapes - Shore.stem.mp4",
+    "test/Mu - Too Bright.stem.mp4",
+    "test/Nerve 9 - Pray For The Rain.stem.mp4",
+    "test/PR - Happy Daze.stem.mp4",
+    "test/PR - Oh No.stem.mp4",
+    "test/Punkdisco - Oral Hygiene.stem.mp4",
+    "test/Raft Monk - Tiring.stem.mp4",
+    "test/Sambasevam Shanmugam - Kaathaadi.stem.mp4",
+    "test/Secretariat - Borderline.stem.mp4",
+    "test/Secretariat - Over The Top.stem.mp4",
+    "test/Side Effects Project - Sing With Me.stem.mp4",
+    "test/Signe Jakobsen - What Have You Done To Me.stem.mp4",
+    "test/Skelpolu - Resurrection.stem.mp4",
+    "test/Speak Softly - Broken Man.stem.mp4",
+    "test/Speak Softly - Like Horses.stem.mp4",
+    "test/The Doppler Shift - Atrophy.stem.mp4",
+    "test/The Easton Ellises (Baumi) - SDRNR.stem.mp4",
+    "test/The Easton Ellises - Falcon 69.stem.mp4",
+    "test/The Long Wait - Dark Horses.stem.mp4",
+    "test/The Mountaineering Club - Mallory.stem.mp4",
+    "test/The Sunshine Garcia Band - For I Am The Moon.stem.mp4",
+    "test/Timboz - Pony.stem.mp4",
+    "test/Tom McKenzie - Directions.stem.mp4",
+    "test/Triviul feat. The Fiend - Widow.stem.mp4",
+    "test/We Fell From The Sky - Not You.stem.mp4",
+    "test/Zeno - Signs.stem.mp4"
+  ],
+  "test_audio_extracted": false,
+  "ffmpeg": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+  "manifests": {
+    "train.jsonl": "18bdd22c0e00b0733ba6c347099faa7a97a4e5f51d7e564c7c6a378275bb6434",
+    "validation.jsonl": "534732179b5cd2023ef57019129b8a582cc26b208c1386ef3e169cab57b294e0"
+  },
+  "tracks": [
+    {
+      "id": "train/A Classic Education - NightOwl.stem.mp4",
+      "source_sha256": "6f725f03623b6792b7f82806ed76d371ec1359a3bf365cd04563e15a450eea85",
+      "files": {
+        "mixture": {
+          "sha256": "ca8ee336baf62373815e1f98b33573efa83f29167f1da1288d0940babb4fc5fa",
+          "bytes": 60416114
+        },
+        "drums": {
+          "sha256": "7e543b64a6e1ea40e5201741420f696e433fb5c42a56371fc12b8715af7a1d66",
+          "bytes": 60416114
+        },
+        "bass": {
+          "sha256": "b5f29a0d88f02ca6fd2bf62306da4428004867785af26af206b400083fb786cb",
+          "bytes": 60416114
+        },
+        "other": {
+          "sha256": "e9fbbf2d9c2fd924c67c5e3e5518e8c96bd4d940c9a07e57490cdc57e2d21de8",
+          "bytes": 60416114
+        },
+        "vocals": {
+          "sha256": "d5e23f4d54238f8218abb72802acad26b1d23e5624bc5773308d2f418bb7a2e4",
+          "bytes": 60416114
+        }
+      },
+      "samples": 7552000
+    },
+    {
+      "id": "train/ANiMAL - Clinic A.stem.mp4",
+      "source_sha256": "0d1744530aad3f8f94115758704e161f0eb078a456e972ab9bc05d643da64385",
+      "files": {
+        "mixture": {
+          "sha256": "948d0761cde2106946c5365c9a200a2276998b2a1b9a3aa830a0cd9680d6bd80",
+          "bytes": 83918962
+        },
+        "drums": {
+          "sha256": "980ab5b3d6c28caece537b1c33122b649ec5fc1fe3bcefd740bf3067bc794ec8",
+          "bytes": 83918962
+        },
+        "bass": {
+          "sha256": "5bc2c70eb3809d29409de224356d454e0137146bba73d0c497c095e7d36471b9",
+          "bytes": 83918962
+        },
+        "other": {
+          "sha256": "72224b8851dcb935b7da5c12c07af8e63ea08764508b017ef8b8367008e224bb",
+          "bytes": 83918962
+        },
+        "vocals": {
+          "sha256": "1c562365c650fc655e4fe8fe04d14b94482c724ad12586545431f9b6561ec3dc",
+          "bytes": 83918962
+        }
+      },
+      "samples": 10489856
+    },
+    {
+      "id": "train/ANiMAL - Easy Tiger.stem.mp4",
+      "source_sha256": "7280392aa6b1b75284700e62b2dda7f9ba975a83e9e663d4e08bc7e89e5d53e5",
+      "files": {
+        "mixture": {
+          "sha256": "0131b6a2bc0e08064b123a46e435c01da5ce85b4df3a591b78c04f02cc81b106",
+          "bytes": 72491122
+        },
+        "drums": {
+          "sha256": "7d2f49957a34ccfaa507d5fd24962a3552d15d971dc7f978a02c51ac8627ed65",
+          "bytes": 72491122
+        },
+        "bass": {
+          "sha256": "e0f1dbe5faec07a6af736e114117b124ae5e2150c4ef09f7687765fe395d44e5",
+          "bytes": 72491122
+        },
+        "other": {
+          "sha256": "92e7ce17e411ff5d344796327891763721502b62924eedbbfb43af6ddfffedca",
+          "bytes": 72491122
+        },
+        "vocals": {
+          "sha256": "33521b213ff2a46366a213ba5402d1e676bbfd15235168a6e748d692aabff3e1",
+          "bytes": 72491122
+        }
+      },
+      "samples": 9061376
+    },
+    {
+      "id": "train/ANiMAL - Rockshow.stem.mp4",
+      "source_sha256": "290f8793c72258198a4e5713ada06f30de5985c3deaf1d15ef7b7d67894fe25a",
+      "files": {
+        "mixture": {
+          "sha256": "2cc6e29b2a115d61e29f014d980dff59159dc0f2639a48f1aa42d233acf593c0",
+          "bytes": 58392690
+        },
+        "drums": {
+          "sha256": "54ff01154f5bb7ea6bd7fff29b2e24873b323e45d0cf95809efc7f674c14a5f6",
+          "bytes": 58392690
+        },
+        "bass": {
+          "sha256": "a809991857325daaf8d24d2e4f0eda24059c654196f34796f15b6bf2bed83d77",
+          "bytes": 58392690
+        },
+        "other": {
+          "sha256": "ef24a64bbc1abca8f56fd6b5278bf9d906a50d166781c6dda1d36a3514b96f73",
+          "bytes": 58392690
+        },
+        "vocals": {
+          "sha256": "8530bdb61ed4eafcdfb503b4b9a55a5a9939984a302f04570c86785ed3abcfc7",
+          "bytes": 58392690
+        }
+      },
+      "samples": 7299072
+    },
+    {
+      "id": "train/Actions - Devil's Words.stem.mp4",
+      "source_sha256": "b90ea6512ce504d7534afc377d579bc4c21a41336511371ac72800941249c5e8",
+      "files": {
+        "mixture": {
+          "sha256": "a597ff5266de59292e6cc1da63096d8b1bf7e5a1951aa2295d3afb8f1fd72268",
+          "bytes": 69369970
+        },
+        "drums": {
+          "sha256": "092d9f46b6e94bf7ba5736f5ebbd96853f25c076b3c119f7c17af0a4af5bfbc9",
+          "bytes": 69369970
+        },
+        "bass": {
+          "sha256": "c4a30f6a1665637960e5e4adc7483a7a971e2c5bb4764eb8855397a55e12d623",
+          "bytes": 69369970
+        },
+        "other": {
+          "sha256": "24bfd9c50e85190bee6ccd5cab54720b8c5c5f440bf4be4018a3498731c0ff20",
+          "bytes": 69369970
+        },
+        "vocals": {
+          "sha256": "5c3b7cef0841eae07f53f6de9fcfe50a9b35ebf099e0e2e131eae2ac98677970",
+          "bytes": 69369970
+        }
+      },
+      "samples": 8671232
+    },
+    {
+      "id": "train/Actions - One Minute Smile.stem.mp4",
+      "source_sha256": "0203237aa4334a36a30041384a586a3c53d1c5dc1d6f60b4e1b96206b6c2ada3",
+      "files": {
+        "mixture": {
+          "sha256": "9613564363e4e502319d89f5fbaf92f2d129b4b98f15f372abcdcfaa309d0edf",
+          "bytes": 57639026
+        },
+        "drums": {
+          "sha256": "6f6d1e497f3d0c07b04db6eaa4c6b29e614b20a1a02de8199e330b58c4f8a890",
+          "bytes": 57639026
+        },
+        "bass": {
+          "sha256": "9959ba7cf5227c5e0989e3fe5bfeb9a91c3068076fa5954215bb8eb83b2bf1a6",
+          "bytes": 57639026
+        },
+        "other": {
+          "sha256": "d7225a768db2f09659e1d6cb145afbad2333b7746efd3267c8c70c407c893474",
+          "bytes": 57639026
+        },
+        "vocals": {
+          "sha256": "9b9781f03847391e974c6674cd82ffbf2c2857c95fbaca449fad54dbb64f6ef0",
+          "bytes": 57639026
+        }
+      },
+      "samples": 7204864
+    },
+    {
+      "id": "train/Actions - South Of The Water.stem.mp4",
+      "source_sha256": "e00e0a4b69d25c9d070b4a6379d34e482d1690aaead013411a4c6f38ea987609",
+      "files": {
+        "mixture": {
+          "sha256": "3359d3eabd76ff156c8323d2cf85ad7dc3fe27ad166f4f91a2ea7b8ba63f0dc8",
+          "bytes": 62308466
+        },
+        "drums": {
+          "sha256": "7f70ee1012ddff998cf6bf22c2c1ca4531bfb45ad16d184ff4b477e46c05565d",
+          "bytes": 62308466
+        },
+        "bass": {
+          "sha256": "874dc700136fa11ec148c1b0cde5aaaaa2699db219d409c79eb4445c4420aba4",
+          "bytes": 62308466
+        },
+        "other": {
+          "sha256": "76071293e3e743b6c44f5782c7b74671b813913c6a19f8a20a8050cd448524a3",
+          "bytes": 62308466
+        },
+        "vocals": {
+          "sha256": "e663e7cd29270e14e9000c396a80c75bfd32118ef6537df35d8df697f55cbe58",
+          "bytes": 62308466
+        }
+      },
+      "samples": 7788544
+    },
+    {
+      "id": "train/Aimee Norwich - Child.stem.mp4",
+      "source_sha256": "c1af60e91ece429fbd38240bfb92de0e2725412a9b47990f6adced35ad89cd12",
+      "files": {
+        "mixture": {
+          "sha256": "e6ceb0471284b393f0a989dd3fbefd21e07d486014e6ea1f8c09d9f3c9d54dd2",
+          "bytes": 66707570
+        },
+        "drums": {
+          "sha256": "fd77af31b6c1a2b207803bd98b607fe80ceb7d91e5709ddc938f4018cef8904e",
+          "bytes": 66707570
+        },
+        "bass": {
+          "sha256": "df6fcb7c33466dff047c0ceb37b88868cc5a8e41ee712282931b3e2b3b961a62",
+          "bytes": 66707570
+        },
+        "other": {
+          "sha256": "7a683c3114a6d03c13eb447623a64869544917ad8a385780bd82f9a7287d9f34",
+          "bytes": 66707570
+        },
+        "vocals": {
+          "sha256": "2199c554bda5e8d0aac708e351928e8f2b39ea41454aaded4b2c933ba2c993bd",
+          "bytes": 66707570
+        }
+      },
+      "samples": 8338432
+    },
+    {
+      "id": "train/Alexander Ross - Goodbye Bolero.stem.mp4",
+      "source_sha256": "ac4b1c994d3fd26b67476e6b67ac7971deb638249c69c7eea9311728d040e01c",
+      "files": {
+        "mixture": {
+          "sha256": "94a96bf70a76300f2ac772f418b84d6986e5963f6f8f23c6bc1afcb81836ae8e",
+          "bytes": 147693682
+        },
+        "drums": {
+          "sha256": "b0c93416b65439de59eadddd1ba6b5c32d3229e7956fab75db5e52343d5a9a8e",
+          "bytes": 147693682
+        },
+        "bass": {
+          "sha256": "2339f76f9b013f797395c744953e832a20543f15c9d4965d15d2e4190e5937ed",
+          "bytes": 147693682
+        },
+        "other": {
+          "sha256": "a9d028a2d2afa7398dbc64ca2a8f76938b0c600052573078aceb1abed17d2d0c",
+          "bytes": 147693682
+        },
+        "vocals": {
+          "sha256": "437c20aa51419457cb5a8810ee77006d46e1a7365bbd0693bad9e42300b0b21a",
+          "bytes": 147693682
+        }
+      },
+      "samples": 18461696
+    },
+    {
+      "id": "train/Alexander Ross - Velvet Curtain.stem.mp4",
+      "source_sha256": "ffe793f4775e4d5fa70e28f9c3f7fa315ddc3b31eb93a3c8b6dc2b1ffb69df1c",
+      "files": {
+        "mixture": {
+          "sha256": "04321ba64bd16cefb842d2f4a1bafdab736ce3bc580b95d64f077eed2e488a98",
+          "bytes": 181444722
+        },
+        "drums": {
+          "sha256": "c9bdaa402f995b5ff19ba86a207b97e33a3cccdd4aeafd57ce80c9d933b1cac5",
+          "bytes": 181444722
+        },
+        "bass": {
+          "sha256": "a641e808eda6c74710794921dab8f16f4fab511e48df6c0a77677387bf4cd329",
+          "bytes": 181444722
+        },
+        "other": {
+          "sha256": "3c26463b4a3cf58e1f383c68a62b1d8d96f825072f78698f2a8a33608383b525",
+          "bytes": 181444722
+        },
+        "vocals": {
+          "sha256": "551c944f91fd6ecc1082ae961d8895abe863344065ead3284e11c54c07ded03e",
+          "bytes": 181444722
+        }
+      },
+      "samples": 22680576
+    },
+    {
+      "id": "train/Angela Thomas Wade - Milk Cow Blues.stem.mp4",
+      "source_sha256": "6ee603bc406c11ed981aded34217231d244f4507d246446c5571d639554b850b",
+      "files": {
+        "mixture": {
+          "sha256": "c5653b2f8a17da7d649d88caa5875a1346858d5ca2f3f57e5ae7404cb03669ba",
+          "bytes": 74408050
+        },
+        "drums": {
+          "sha256": "16509fc650e03d74bb20ebe07d348ecd6291cf547bca450563eea72d8e230e91",
+          "bytes": 74408050
+        },
+        "bass": {
+          "sha256": "e94432f757e58695d0378fe09b06225ddc3bdff43c81b223a5c2fc7328d2363f",
+          "bytes": 74408050
+        },
+        "other": {
+          "sha256": "088de2d19acacc7d7c0814efa2a4eb6dc47d45eb6aeadbe0fc4e1c77f768873e",
+          "bytes": 74408050
+        },
+        "vocals": {
+          "sha256": "2f15adad5f8decd6b80cd4f49409a744fc5b227aa4a8cd3e6750fd47b3449ed2",
+          "bytes": 74408050
+        }
+      },
+      "samples": 9300992
+    },
+    {
+      "id": "train/Atlantis Bound - It Was My Fault For Waiting.stem.mp4",
+      "source_sha256": "509694ad7e56d0aa111d606e3ac4755f3eaafb7ff0f08f6f0b69566f84cdb648",
+      "files": {
+        "mixture": {
+          "sha256": "a90085bf2dfaa9042152e580f81f89c876fa0723e0af2e8466b736cab62a1842",
+          "bytes": 94568562
+        },
+        "drums": {
+          "sha256": "1a0b506c4935cd710c303ca79f06c9d1413d605d260473e5ecaa45301de79a77",
+          "bytes": 94568562
+        },
+        "bass": {
+          "sha256": "e4ee4e5abacf3bc7487c57ae1923355b4f7f36e1ccdad47c47b2e0ef34957065",
+          "bytes": 94568562
+        },
+        "other": {
+          "sha256": "2e1f0bac676777209a7c0fb3da6f81eaec11ff986d3189a06fc88f9d958558b5",
+          "bytes": 94568562
+        },
+        "vocals": {
+          "sha256": "97d4d4e06a59f46a450b9307bdbfa054610882eacab738adeae37ecb01f41660",
+          "bytes": 94568562
+        }
+      },
+      "samples": 11821056
+    },
+    {
+      "id": "train/Auctioneer - Our Future Faces.stem.mp4",
+      "source_sha256": "92175e394d41d12cc4178e3ee94347fba946ee848e527b60b692fb74643d9926",
+      "files": {
+        "mixture": {
+          "sha256": "899eff86a8222614e5699043d6d0141488debaf88ba9648eb84ecc9c96800228",
+          "bytes": 73277554
+        },
+        "drums": {
+          "sha256": "a11e2d9003ff83dd056225b3fe26f49612a801162b74efcd5d19c943fb44c52c",
+          "bytes": 73277554
+        },
+        "bass": {
+          "sha256": "58f3b9c1f154155fde9945810bcf0305ff1a81bbba9bd337e3391804db618272",
+          "bytes": 73277554
+        },
+        "other": {
+          "sha256": "deeb4cef6bd92f12d1a8418bacd9f9ba3bb30b769a945310f53af94b330b67f4",
+          "bytes": 73277554
+        },
+        "vocals": {
+          "sha256": "cb64942be5b6537601cb3f23bfffaa68a6264638599b2beabb68bb314e84cab9",
+          "bytes": 73277554
+        }
+      },
+      "samples": 9159680
+    },
+    {
+      "id": "train/AvaLuna - Waterduct.stem.mp4",
+      "source_sha256": "d610dee477b5630c4320093fbef8b446ce58d1d58b5e09dc48136b199507450d",
+      "files": {
+        "mixture": {
+          "sha256": "59f90e76419f6e790d6e3daf2b618088599ef3d779608b89986100e367dec702",
+          "bytes": 91414642
+        },
+        "drums": {
+          "sha256": "0ac661c5085caa8e46421c4aec24e82848e990fcb6dbf9322442bd13e541406f",
+          "bytes": 91414642
+        },
+        "bass": {
+          "sha256": "461dbd746851cb70ad05d93d71913f1bd8a460d9229b08ba8048546cecf062fd",
+          "bytes": 91414642
+        },
+        "other": {
+          "sha256": "ccd39877b9265da859cb26c5025983d302354b0057d4472499cc765606cfc2ba",
+          "bytes": 91414642
+        },
+        "vocals": {
+          "sha256": "ea91473b0fadd4e766afbc6edc6e222413cfd5ec0aa882bab88f3fc959d6ff8d",
+          "bytes": 91414642
+        }
+      },
+      "samples": 11426816
+    },
+    {
+      "id": "train/BigTroubles - Phantom.stem.mp4",
+      "source_sha256": "886131d9e6b1c00cb500b92136bfa29b7c46fa67bcf1b7d404e495794bb917a4",
+      "files": {
+        "mixture": {
+          "sha256": "8ed4a92e4331779a3c44e0661e3224003869c6b6b422a9329d0b57d4597a53a3",
+          "bytes": 51773554
+        },
+        "drums": {
+          "sha256": "f53bc0991b296f172caaee694babbefbd8bfa5535a82b4611f2b0025502d1585",
+          "bytes": 51773554
+        },
+        "bass": {
+          "sha256": "13225616f61e6d12ae6e7d26c61df86c890ff9fb114ba8c6efea09394a7d7b35",
+          "bytes": 51773554
+        },
+        "other": {
+          "sha256": "e029c202391cbe8e782d987cdd3c8d9b1bc31c49d023d21c088da2b4121e85eb",
+          "bytes": 51773554
+        },
+        "vocals": {
+          "sha256": "00cfc47b9283abfb3acc5d94c0a73849906246673e46144c4e813600dc8f97c6",
+          "bytes": 51773554
+        }
+      },
+      "samples": 6471680
+    },
+    {
+      "id": "train/Bill Chudziak - Children Of No-one.stem.mp4",
+      "source_sha256": "8409b2539bc83c46dc08fdaa66e6427e27fa92284dee32ec7256b88d3e8d76da",
+      "files": {
+        "mixture": {
+          "sha256": "ccd10f7a22f9c160ee83d27d010bb0b91175bb003df74ec6f3d9dfe17767dc9e",
+          "bytes": 81404018
+        },
+        "drums": {
+          "sha256": "4d710af7fea103e9a35e329982803bbe2ed0d633424b65b4474c81e7c4b9690f",
+          "bytes": 81404018
+        },
+        "bass": {
+          "sha256": "5438b512f3f04628335debe0b150f82b8827aebd2e9646f143cea9b25a5c6538",
+          "bytes": 81404018
+        },
+        "other": {
+          "sha256": "8b0ac3808653c3c9972ce11625f3298c5dffaf2d266f960ada7c496436ae3588",
+          "bytes": 81404018
+        },
+        "vocals": {
+          "sha256": "5f4e1c7b0ccedf5f316b6eeae300636d80855cb0a3b0ccf0b46bff10b8070e41",
+          "bytes": 81404018
+        }
+      },
+      "samples": 10175488
+    },
+    {
+      "id": "train/Black Bloc - If You Want Success.stem.mp4",
+      "source_sha256": "9b5e35a8189ec0ea7586f92ff2cd49c3a6489eb731fee3492e8d74bfd1566900",
+      "files": {
+        "mixture": {
+          "sha256": "e87b46e1850888248389a0d3d515ccce24418a2d61004eb3db749b0655205f3c",
+          "bytes": 140607602
+        },
+        "drums": {
+          "sha256": "d1a7c95313c62b043e0d0774b24e5b70d377847788a35932dccaf16f2774b2ba",
+          "bytes": 140607602
+        },
+        "bass": {
+          "sha256": "2f588f9faa28fb01b67eafd81e2b812cf5fd029245c1657273cab144a9b9100d",
+          "bytes": 140607602
+        },
+        "other": {
+          "sha256": "d3adde94cc3c9c5da4e1d88bdf3f2545ef949b88069a77adbe56e5d3c4bee0fe",
+          "bytes": 140607602
+        },
+        "vocals": {
+          "sha256": "ea2dd0c81978d2df1b8ac46f0c6a1e18f71518d364cf280438cac4e3285a7513",
+          "bytes": 140607602
+        }
+      },
+      "samples": 17575936
+    },
+    {
+      "id": "train/Celestial Shore - Die For Us.stem.mp4",
+      "source_sha256": "24c37db55a5b911993201a7cc031195f5354abd7df5d14c29fc1889d521f5441",
+      "files": {
+        "mixture": {
+          "sha256": "9f839daf652b276efecf22f6e2145851ec2ffcf67191b03765b65ae9215691eb",
+          "bytes": 98246770
+        },
+        "drums": {
+          "sha256": "fbc0e3b96ef51683816d3bf03fad99c732309098e65b1828fe16389f3fd75ff6",
+          "bytes": 98246770
+        },
+        "bass": {
+          "sha256": "b2ce8e0ba774fdf684c5cee717e5dd93eb2147be1324359b9aeebb7ce28fd116",
+          "bytes": 98246770
+        },
+        "other": {
+          "sha256": "5d27d82b99db75e91a31f5acb030cc905a63173b6ae6e193149885e23ae534ce",
+          "bytes": 98246770
+        },
+        "vocals": {
+          "sha256": "25ee00ae715d9dbacfb071a73c98d38467e78d10e281d5b1cc6ae60639a1cc06",
+          "bytes": 98246770
+        }
+      },
+      "samples": 12280832
+    },
+    {
+      "id": "train/Chris Durban - Celebrate.stem.mp4",
+      "source_sha256": "774622fec5feafb2c4d3a50d435738a120780c3c1a869e92bd74c6a19794c54b",
+      "files": {
+        "mixture": {
+          "sha256": "644ef445985362cb2e50260159343d759edf6f832256723bc5af3cdedec60030",
+          "bytes": 106406002
+        },
+        "drums": {
+          "sha256": "4d0009d3e0edb5da33372e7f18b791c70efcd0a01a40585c2ca60cc44d258573",
+          "bytes": 106406002
+        },
+        "bass": {
+          "sha256": "d56e5eac16a21d35a79687d273155d56ef9dc26872dd1355cf22196672a592bd",
+          "bytes": 106406002
+        },
+        "other": {
+          "sha256": "79b902244ead17c5a59388c44fef3bdd438ed6839ed5d3d8ed015e528b055b2e",
+          "bytes": 106406002
+        },
+        "vocals": {
+          "sha256": "99d64b1e2fd338f0351f302b7800c7eb5b9bb795a18355b9871ca61fc1094d03",
+          "bytes": 106406002
+        }
+      },
+      "samples": 13300736
+    },
+    {
+      "id": "train/Clara Berry And Wooldog - Air Traffic.stem.mp4",
+      "source_sha256": "88f2f26e2cf521eeccc6f33d4f94a7b093802d4971bfd833c680ebc4a78858f3",
+      "files": {
+        "mixture": {
+          "sha256": "6d3cd8abc4f5fd49c9c79e9f45a9d114904360fbd6d15ee7087acc80417e547a",
+          "bytes": 61128818
+        },
+        "drums": {
+          "sha256": "16c71747a50c1e553aba6ab0326abb27604b00ae3793505bd2df493a23d2e196",
+          "bytes": 61128818
+        },
+        "bass": {
+          "sha256": "49d04596c9b099d82a9f097830c9f7ee7b516a3b846a1d15864c719e8b5fcad4",
+          "bytes": 61128818
+        },
+        "other": {
+          "sha256": "f13a3e0f3c7766da3b1625aa696f173618a0d49a37787a0d7a1eccccf4dacacc",
+          "bytes": 61128818
+        },
+        "vocals": {
+          "sha256": "b68cf3e4541fde924a1ad907aa97f310765d6a8d58a897b15c5d6a7fa408004d",
+          "bytes": 61128818
+        }
+      },
+      "samples": 7641088
+    },
+    {
+      "id": "train/Clara Berry And Wooldog - Stella.stem.mp4",
+      "source_sha256": "f693058c516a09650793206b15c8f10e43677190c10c817dcaecdee4a37de8f5",
+      "files": {
+        "mixture": {
+          "sha256": "6b25f7d88f028f51f3c9b8764e13fe358a6bcafca88098f78c4c30b0cf1136cc",
+          "bytes": 68993138
+        },
+        "drums": {
+          "sha256": "e2d59b23dcae9deb875a8c67fc05731e8b470ff883a5f0734dd2a84cae4fade3",
+          "bytes": 68993138
+        },
+        "bass": {
+          "sha256": "ca0d5ac7553c55af0cdb088e6eae99b45289d7b65f32233c0b0f423b100ed046",
+          "bytes": 68993138
+        },
+        "other": {
+          "sha256": "acf7cf5e8466556389ee79fa243cbbee31f98b607de9cd5683e9f85fd58df7c2",
+          "bytes": 68993138
+        },
+        "vocals": {
+          "sha256": "4c9dbcea0bb42c94fe1bce63bbdd4c2f3f9a5c81045fad7acfd183ae4cb1d9a3",
+          "bytes": 68993138
+        }
+      },
+      "samples": 8624128
+    },
+    {
+      "id": "train/Clara Berry And Wooldog - Waltz For My Victims.stem.mp4",
+      "source_sha256": "0747afeab90eecd32b3f0b933ce11ce246d2b7be1486c317cb10d558b4b47800",
+      "files": {
+        "mixture": {
+          "sha256": "905ce522552b898f5e1fbac5f39941cd12c87d5f92bb2a34929c79ae7385b4ef",
+          "bytes": 61825138
+        },
+        "drums": {
+          "sha256": "ac5bbcb38eb4742c2935f8ae5ce2d5e5e91a7fe079b6d723bb53c7063f4155d7",
+          "bytes": 61825138
+        },
+        "bass": {
+          "sha256": "789da1e32733debcc13e38a247f2dc1b707345a284dcb3da7e00f674ee189090",
+          "bytes": 61825138
+        },
+        "other": {
+          "sha256": "87f9e1953400e124a76bce632eb21e12ef1df4a0a7edfe8d3d13f854551bb857",
+          "bytes": 61825138
+        },
+        "vocals": {
+          "sha256": "bc6f47fb4be99c2fa35d7bff6a75e0e5a850ea61c917a033086738e53f276ea7",
+          "bytes": 61825138
+        }
+      },
+      "samples": 7728128
+    },
+    {
+      "id": "train/Cnoc An Tursa - Bannockburn.stem.mp4",
+      "source_sha256": "79f0d3d66dad7f1837e5902ea75b734ad08129adb74f95c34c27101766342e5e",
+      "files": {
+        "mixture": {
+          "sha256": "3cffae27301d2ea626e267c5e9a0cdff0dc4bb42c48a77a1d0b7613bbde6f5c6",
+          "bytes": 103907442
+        },
+        "drums": {
+          "sha256": "40ff63ff8a5ec6a7c699e5c00e0a10860a024f4b7069d4d469c783956b3ff5dd",
+          "bytes": 103907442
+        },
+        "bass": {
+          "sha256": "74164f4f6997bc31a3e4bf0bed3fec7eb6d3f0be3bccd49f01517a772c204901",
+          "bytes": 103907442
+        },
+        "other": {
+          "sha256": "70a88722270c1a61c908e8d7aa59d66b156921d5f472137bfbe323f2d8f5eeba",
+          "bytes": 103907442
+        },
+        "vocals": {
+          "sha256": "ecb8a4d0bec6eeca8ed82a598cec0366491b1e8c2c8864bdcf38248bf229e284",
+          "bytes": 103907442
+        }
+      },
+      "samples": 12988416
+    },
+    {
+      "id": "train/Creepoid - OldTree.stem.mp4",
+      "source_sha256": "d3230505a6364652f3a704aa97f543d4135de0c361a37d205c5b71de618c9a0a",
+      "files": {
+        "mixture": {
+          "sha256": "e6a4c7568801759bd380c0d4edb89686c3d00fc9d8d76569c92ac323a898def4",
+          "bytes": 106553458
+        },
+        "drums": {
+          "sha256": "401aa751e5cf2adadbc18b379632b1bcf91e75ce69a07de8e7dc91943945b5b0",
+          "bytes": 106553458
+        },
+        "bass": {
+          "sha256": "0b35578d059e85c6e28e70739e283b15c45d8b2f71b556b3c4cf49c8d58d59e4",
+          "bytes": 106553458
+        },
+        "other": {
+          "sha256": "3412690d4065b744ea3b69c4e58638131b5c11d850e61403432dc83f9089d585",
+          "bytes": 106553458
+        },
+        "vocals": {
+          "sha256": "d6199a0806448b0d82fac2b05c48f8142950c6d8bd76fd2d184ae438c89059e8",
+          "bytes": 106553458
+        }
+      },
+      "samples": 13319168
+    },
+    {
+      "id": "train/Dark Ride - Burning Bridges.stem.mp4",
+      "source_sha256": "e6ac53366ce71eb4a1526cadb42cef6c143660537ab08b5587c7a6aba15e8e37",
+      "files": {
+        "mixture": {
+          "sha256": "8d06209ae0db4162315336db6239b9ddaf71e20b27a9956c65ec9c14e889615d",
+          "bytes": 82083954
+        },
+        "drums": {
+          "sha256": "8d8cf8fb857d23441d4391c6a63accdfee94c8a0636a2a61e2aa1ac2f7f04379",
+          "bytes": 82083954
+        },
+        "bass": {
+          "sha256": "031e7879d3a4291b9ca61e468927913d451f50eaaea2d75c10470166be0a0e5b",
+          "bytes": 82083954
+        },
+        "other": {
+          "sha256": "e49cfd04ce9ad9edd1a32cf183848ccdfd57862840dcbba21770480f8ea9336d",
+          "bytes": 82083954
+        },
+        "vocals": {
+          "sha256": "2c3f89284136a345a5630886933488cc6004de27c4c10a2e538bb9d2b3d18380",
+          "bytes": 82083954
+        }
+      },
+      "samples": 10260480
+    },
+    {
+      "id": "train/Dreamers Of The Ghetto - Heavy Love.stem.mp4",
+      "source_sha256": "a586ca9267f62cf9de94763f9c2843d6bcbb678c3a05ce352c831ff236aef58c",
+      "files": {
+        "mixture": {
+          "sha256": "4d86c0134f3daa9f03091bd34782ae85cc38111a709b168fed520cdb4cc7b9b5",
+          "bytes": 104005746
+        },
+        "drums": {
+          "sha256": "5623f5024b949ead1848f42a229165a8951e182bf2914f7697eba4d86b66a82a",
+          "bytes": 104005746
+        },
+        "bass": {
+          "sha256": "61887038966575e6addc057b57f23ba69644b1cb8022393bcf1ffc069cc3d12d",
+          "bytes": 104005746
+        },
+        "other": {
+          "sha256": "73091a02a41eb99899810138726851afd7c3c989b930528e2f792317c6036aeb",
+          "bytes": 104005746
+        },
+        "vocals": {
+          "sha256": "61b6a98c6e9d54ca85dd7f5a361dc5c1205d7cda4ff200fa92d92ef2ea2fc216",
+          "bytes": 104005746
+        }
+      },
+      "samples": 13000704
+    },
+    {
+      "id": "train/Drumtracks - Ghost Bitch.stem.mp4",
+      "source_sha256": "d1e67435758737f3cf973bfffc97a6b7e8ec6c450a1d9e3b43f5b0fc43e2b672",
+      "files": {
+        "mixture": {
+          "sha256": "43d2f701467ef10d27dc919f126f3054f49be234006cb6521fb6e284feaafa5e",
+          "bytes": 125919346
+        },
+        "drums": {
+          "sha256": "82d21603a3d8a77950e6f6346dd69f556c1805992852a2f73c8de01539ed09ea",
+          "bytes": 125919346
+        },
+        "bass": {
+          "sha256": "78a0b0da6a381756d18f45566113dccec20c79146ba3e0b74c4d3fb8b45b850d",
+          "bytes": 125919346
+        },
+        "other": {
+          "sha256": "ed88f8a171face9c5faf6bf8743ae4348cd2113a601be25e28969638ea047ba0",
+          "bytes": 125919346
+        },
+        "vocals": {
+          "sha256": "4e47b3d48f0ac5ccc8e9389ab3fdf0d8f6486fc5795718ffd6e2879bf75553f3",
+          "bytes": 125919346
+        }
+      },
+      "samples": 15739904
+    },
+    {
+      "id": "train/Faces On Film - Waiting For Ga.stem.mp4",
+      "source_sha256": "ccbf0e00f61d1b09d4c848264fc1f4a1afb6fc140e50b9045e545acdebef744d",
+      "files": {
+        "mixture": {
+          "sha256": "8fe0b8ac29dcdef903e31d452f7bc6ea7b4960d66091a5d8da4560f206344f9b",
+          "bytes": 90824818
+        },
+        "drums": {
+          "sha256": "865cb2771aab16aa414ce6890bc3e97ff64e80b8c0f052972c22eeaf15cbf56b",
+          "bytes": 90824818
+        },
+        "bass": {
+          "sha256": "b72534501d65f4fa04422586eb5a69e294ee307cb5f4d2f26a39d7c7c6f92fd9",
+          "bytes": 90824818
+        },
+        "other": {
+          "sha256": "dc49b11ce501f862eeb42ba6b4237fcdff9c761bf1a678e9e91b56912e1b197e",
+          "bytes": 90824818
+        },
+        "vocals": {
+          "sha256": "6459c3159096261c3733ab28f5fb068a57e5c22b23c36f2e393907d900ec0d4b",
+          "bytes": 90824818
+        }
+      },
+      "samples": 11353088
+    },
+    {
+      "id": "train/Fergessen - Back From The Start.stem.mp4",
+      "source_sha256": "bd56bd5b3bf68a74a4d95d4908d547d1bcafad88236e4eb3b7e043b593da7368",
+      "files": {
+        "mixture": {
+          "sha256": "0be632d4ac4c19c6a4c4ffbcdfd1fb6e72e464de521960d0595d4f750466a8a6",
+          "bytes": 59465842
+        },
+        "drums": {
+          "sha256": "1b90b3c27725045a116f754d55b3a93023442809fe85fb62ad8d33ffcb92b3bc",
+          "bytes": 59465842
+        },
+        "bass": {
+          "sha256": "bb17abf1fb9bf9f4e557f34dde9f0aa83bb9ec0de11f61dc0acff403ce434988",
+          "bytes": 59465842
+        },
+        "other": {
+          "sha256": "9ad41b8028a0b7bf359f9270323df05d6681152f66c6e798625832f5f4041420",
+          "bytes": 59465842
+        },
+        "vocals": {
+          "sha256": "672c26749aacaed1c9a36e6d913b3c72ea0874f9d268064d0ebf7ff5b5fa6f40",
+          "bytes": 59465842
+        }
+      },
+      "samples": 7433216
+    },
+    {
+      "id": "train/Fergessen - Nos Palpitants.stem.mp4",
+      "source_sha256": "f8752b374148e0d0cdc661d131088297f7298ad01d8444c81010b8e25592d16e",
+      "files": {
+        "mixture": {
+          "sha256": "ff6f2c86a4b7542c2df353a4012f4f3b2951fd9c710b01a961a7d09cf3b32e1d",
+          "bytes": 69935218
+        },
+        "drums": {
+          "sha256": "56c875eabd50f955bb12b21cae2e3f015666ac9d48751bb9a5e68482fe0d9d2a",
+          "bytes": 69935218
+        },
+        "bass": {
+          "sha256": "30b4924730e69352b4833a147102039ea497b4c3210bee2886ba7bfbce387db4",
+          "bytes": 69935218
+        },
+        "other": {
+          "sha256": "7175f09625760fbd8f292fa50b1ef4c5424f77f0be18d7f746a7fa4037709641",
+          "bytes": 69935218
+        },
+        "vocals": {
+          "sha256": "af47da76046893c393112b88636ebd118d83aa3f503f0f1e3ddde6bd3c7f83d0",
+          "bytes": 69935218
+        }
+      },
+      "samples": 8741888
+    },
+    {
+      "id": "train/Fergessen - The Wind.stem.mp4",
+      "source_sha256": "edde3f4795dd4188f714c47e834194501b0b496606eeb6e0d9379e666cc2edbe",
+      "files": {
+        "mixture": {
+          "sha256": "ed0118f233f1c9fefd6847f20acbe7b9c4bfee3b087718cadab30ae61e993a91",
+          "bytes": 67674226
+        },
+        "drums": {
+          "sha256": "54f2c69fd3442a7ab92655822e6b15d2c2acb7542f4cface7cfed09f844e6037",
+          "bytes": 67674226
+        },
+        "bass": {
+          "sha256": "16bdf3a07aee3bae8ad6a865de4238ef7d02266df7664d049a4353799d51856c",
+          "bytes": 67674226
+        },
+        "other": {
+          "sha256": "95821a8034a213f85db7793e6590732db9a513a9e0702a3c8441505867d0e6cd",
+          "bytes": 67674226
+        },
+        "vocals": {
+          "sha256": "ffa5f1d4397b2abd60c66575e10886c72a80f6b7395ebf05307cfa884d9a6217",
+          "bytes": 67674226
+        }
+      },
+      "samples": 8459264
+    },
+    {
+      "id": "train/Flags - 54.stem.mp4",
+      "source_sha256": "37f4405f59da5916849f36e10bece87ce05c4a4224e2090244d99a52a117e1b2",
+      "files": {
+        "mixture": {
+          "sha256": "c0ffff086c3e0e6b03c26ae2d3627b064d30fff0822beb140177165fd000c9ea",
+          "bytes": 111190130
+        },
+        "drums": {
+          "sha256": "ad30263c6c635cd0e0fc0a4e577e5278dfd17e48d85d4f5583c5133389a13f41",
+          "bytes": 111190130
+        },
+        "bass": {
+          "sha256": "0e5a58d2cea5e798605e43d0a9aaffb84602a348415ddc596229f18c63b07555",
+          "bytes": 111190130
+        },
+        "other": {
+          "sha256": "c97945cfc2cbdf432691754c9f3c1e6aaf116bfb06bcae23460a61c0dfdd3fbc",
+          "bytes": 111190130
+        },
+        "vocals": {
+          "sha256": "c3978d651b4d699b15cf5a43dd11602eb80a96098ff0667190f7686391412028",
+          "bytes": 111190130
+        }
+      },
+      "samples": 13898752
+    },
+    {
+      "id": "train/Giselle - Moss.stem.mp4",
+      "source_sha256": "fdd68957a40e1ae0dc56eaa9e1987bda45598eba29a1758814e61e32ec25e9c4",
+      "files": {
+        "mixture": {
+          "sha256": "ad54dded19e7f6dbab81439f36f999edb69bd60c2593f0a3bc6e25ca1efab7ee",
+          "bytes": 71164018
+        },
+        "drums": {
+          "sha256": "1e1c5758440c051e635a6a82e9beaa5e7f919798750380594820610cf4634049",
+          "bytes": 71164018
+        },
+        "bass": {
+          "sha256": "1c85164783eab3624fcea5c011e02893524dba8b28c60ac65fe36fbc77cd5d7b",
+          "bytes": 71164018
+        },
+        "other": {
+          "sha256": "350e53139473eb444ce1419931c262f7665c1bfb20ef94f2f03adcc3a937b7f2",
+          "bytes": 71164018
+        },
+        "vocals": {
+          "sha256": "66ab0f5e6561e77864d14adea4a6e38b43c0ec537b75b1a74a9c427a9e434efb",
+          "bytes": 71164018
+        }
+      },
+      "samples": 8895488
+    },
+    {
+      "id": "train/Grants - PunchDrunk.stem.mp4",
+      "source_sha256": "edcba85b42b06064fc8e2a09e161ff148738cdbecb629d9203d6825f91dea628",
+      "files": {
+        "mixture": {
+          "sha256": "ccb6aaf55fa87203f40bfca9d42e0294f10c1f692d530df913b7de9857a35ef1",
+          "bytes": 72114290
+        },
+        "drums": {
+          "sha256": "abf180fd317db7c6b67ddff8122c4607277cc455c0f7c31ad90e4bb3a694c5e4",
+          "bytes": 72114290
+        },
+        "bass": {
+          "sha256": "3aafe8141b26a3c595b71d85e362642454b2579b7d8c9fdbea0ff6530046c19d",
+          "bytes": 72114290
+        },
+        "other": {
+          "sha256": "ecda6708c6e8a790ef61e5c184c7b975a8703749867274de28ca3e50a4cef39c",
+          "bytes": 72114290
+        },
+        "vocals": {
+          "sha256": "e6ec3d543c1cdad51cae6a00992a2f3b44d167410665a2fdd4cb1875a874e063",
+          "bytes": 72114290
+        }
+      },
+      "samples": 9014272
+    },
+    {
+      "id": "train/Helado Negro - Mitad Del Mundo.stem.mp4",
+      "source_sha256": "601b344cb9244bf3167a82f137c998a173fd197be8a3dc09c2119b213bb4a034",
+      "files": {
+        "mixture": {
+          "sha256": "dfb77f2a683d44f6cb63126aa99daf4568a787e154a80fc7ffa4d4ccd7a48f31",
+          "bytes": 64094322
+        },
+        "drums": {
+          "sha256": "35041958534b2eb3450604aee924694c9d35ccd5620f2e9cd52703b16c045cc2",
+          "bytes": 64094322
+        },
+        "bass": {
+          "sha256": "496a91a3dab29d9aa5a32908f9d10db37992e26d394674f18ab8c35d5c4079dd",
+          "bytes": 64094322
+        },
+        "other": {
+          "sha256": "c70fbf9d3fbb9b12377c86140ded1d9db2dffe24ab276ecff5db9d04ffc8ab09",
+          "bytes": 64094322
+        },
+        "vocals": {
+          "sha256": "a494bd2efa3cf8ae4c8a7cc9e38cdf992d3915a768a67525c019d000aa3c61b4",
+          "bytes": 64094322
+        }
+      },
+      "samples": 8011776
+    },
+    {
+      "id": "train/Hezekiah Jones - Borrowed Heart.stem.mp4",
+      "source_sha256": "3a338329fe85e3f35df767e2afe90b25840cc70e0cb6d368411693cab63ff7d9",
+      "files": {
+        "mixture": {
+          "sha256": "55272d52f05182b74d573c3e04b818838618d9331805ace3b4b27d51fab48e33",
+          "bytes": 85164146
+        },
+        "drums": {
+          "sha256": "b286f5f561b4832059a77f271acf46816020ffa7c50d43506417a93b66c56940",
+          "bytes": 85164146
+        },
+        "bass": {
+          "sha256": "d46f84ae646d67dead5ee38b09543ca2625f773d3e8b88878afcb0521ca5d431",
+          "bytes": 85164146
+        },
+        "other": {
+          "sha256": "d6596284aded4a83b50271b8753af669ab5bd0d01912338b763ea31f931a93a0",
+          "bytes": 85164146
+        },
+        "vocals": {
+          "sha256": "5153e5e807f02f6959c41870f22342bf4c994efc174a26b141130870bc394dd1",
+          "bytes": 85164146
+        }
+      },
+      "samples": 10645504
+    },
+    {
+      "id": "train/Hollow Ground - Left Blind.stem.mp4",
+      "source_sha256": "4956b2ffe55088a9b7c8f957b7dc8310b141b853ec91cd5628994613b8bea774",
+      "files": {
+        "mixture": {
+          "sha256": "c636ad1beda73a1ca7895cf947218877b1a1bf22fd41a390ee651a9ae83efe38",
+          "bytes": 56131698
+        },
+        "drums": {
+          "sha256": "128f00ec97378db2328616006175e5fd0f14d46eb0ce16126541da58eed134f9",
+          "bytes": 56131698
+        },
+        "bass": {
+          "sha256": "96b2d699635bd90a6ed3c478c23bd359bac7dea7ea139354cdcf74657de78b78",
+          "bytes": 56131698
+        },
+        "other": {
+          "sha256": "4825891d52699301bcac144aa89f9c0a5e39e60c44272695ca7bb4ba2db2b4db",
+          "bytes": 56131698
+        },
+        "vocals": {
+          "sha256": "a206ba5d9fe811010575865daea8114215f94d92e4cdd83f318fbe9a47af5d73",
+          "bytes": 56131698
+        }
+      },
+      "samples": 7016448
+    },
+    {
+      "id": "train/Hop Along - Sister Cities.stem.mp4",
+      "source_sha256": "19fa052a078089afc6685a85ddb6147e951f3ba74d5263ae56ea72c7d23736a7",
+      "files": {
+        "mixture": {
+          "sha256": "e905d83136c6d7241ceeea163f17e3c50fdc34ce6c696f8d93b2c3f1d9efa516",
+          "bytes": 99926130
+        },
+        "drums": {
+          "sha256": "20504ac51664d028de9777ef2373cabe976cc3f423b15d89c61e0cec79c25c69",
+          "bytes": 99926130
+        },
+        "bass": {
+          "sha256": "339b1636f6a88195ea23cc6f520427c850a06a3de961d9faf2b1f816cff30595",
+          "bytes": 99926130
+        },
+        "other": {
+          "sha256": "e03e831c4901f4e68dfc73693faa2415ae5dc60999d0317c136234e76a93cd39",
+          "bytes": 99926130
+        },
+        "vocals": {
+          "sha256": "bd920a44d0e76f0661ededc7c2f8ba41975731dbb3b8470188f872122c328164",
+          "bytes": 99926130
+        }
+      },
+      "samples": 12490752
+    },
+    {
+      "id": "train/Invisible Familiars - Disturbing Wildlife.stem.mp4",
+      "source_sha256": "bb97248896906093317cd3a59b79915b8b7fda3afbc539ab052eec38a7166bf6",
+      "files": {
+        "mixture": {
+          "sha256": "91b522baa6c2b72019c75cb561ef6f537c9001a87f78577ef743661b64505c23",
+          "bytes": 77086834
+        },
+        "drums": {
+          "sha256": "08839d8116b221a0974f3afa13aba01849c4ec72c288d7a11ab4500e29a2aada",
+          "bytes": 77086834
+        },
+        "bass": {
+          "sha256": "907b653288fc7448409c617316cac9ecaa8aee98e544c71e53f0025c9e96faad",
+          "bytes": 77086834
+        },
+        "other": {
+          "sha256": "748658c06d6311f04f97621953053c64878b74716808f95f148b7b42744e81f2",
+          "bytes": 77086834
+        },
+        "vocals": {
+          "sha256": "80fd4ef6bce2661b98344da6b9d981d3fc39ebc2fa21d2a4bc5b55bf7807d9be",
+          "bytes": 77086834
+        }
+      },
+      "samples": 9635840
+    },
+    {
+      "id": "train/James May - All Souls Moon.stem.mp4",
+      "source_sha256": "4fb278fe1313727ce0c2beeaddb3dcb143b0324d8c9de7bc1742debaf50e1072",
+      "files": {
+        "mixture": {
+          "sha256": "66c823b489e6daf1c535193e4e0ae474258a4378cd742d6b3babac485ee3aa35",
+          "bytes": 77914226
+        },
+        "drums": {
+          "sha256": "631da85bfbadb4f3f6e9516fb0d26b313c64d5b02a0701f1fc727741998747aa",
+          "bytes": 77914226
+        },
+        "bass": {
+          "sha256": "6a1b1bff731a6a4a30199df18c9769086bdedcbb1f1e262a5d7c57ebe385bce7",
+          "bytes": 77914226
+        },
+        "other": {
+          "sha256": "b0c356b7e96a15556494dec3eb8fe4d1e74ce146e644f247119c20ad25f788a3",
+          "bytes": 77914226
+        },
+        "vocals": {
+          "sha256": "4110cde5501367bb6703d6b0524ac2ef9333ab78d8d2ca5a7ffa18c61f5ae966",
+          "bytes": 77914226
+        }
+      },
+      "samples": 9739264
+    },
+    {
+      "id": "train/James May - Dont Let Go.stem.mp4",
+      "source_sha256": "038b25ce9332b9eeee5dcee57154e672372aba8a89d3c27e2a79ed0e1cafdbef",
+      "files": {
+        "mixture": {
+          "sha256": "e1f35b66bee855dfb102d41664d361960ef51ee84e44702ab5801095e0dbe2e8",
+          "bytes": 85360754
+        },
+        "drums": {
+          "sha256": "ec6697258c27e0fbef352121176cec0e85159e0dcb04b5380406db19d3d607cf",
+          "bytes": 85360754
+        },
+        "bass": {
+          "sha256": "9e085d50a0cc73967352412c930e4010ec5f79343c8281ac1cf3ed0e53ca928f",
+          "bytes": 85360754
+        },
+        "other": {
+          "sha256": "9930c622275543779007436e2ab8a40892ac4252504f88573b3059c7e96d1926",
+          "bytes": 85360754
+        },
+        "vocals": {
+          "sha256": "fae85846a033a7425559aca8260ed98c544b733a69377939af1b4a421d39c6fb",
+          "bytes": 85360754
+        }
+      },
+      "samples": 10670080
+    },
+    {
+      "id": "train/James May - If You Say.stem.mp4",
+      "source_sha256": "c1da34ec30e57fac58b8ec2ca2fe75d5728f90797362f5dc41e72df78ca02a37",
+      "files": {
+        "mixture": {
+          "sha256": "e8b29cbab6f0ecad9ee074034a81606471e36f438d5b57ae3ca704ef09c99eb3",
+          "bytes": 91136114
+        },
+        "drums": {
+          "sha256": "a6594ea967ab5f2fe2e068113a69bc54ff3a581f13713191323fb021df419211",
+          "bytes": 91136114
+        },
+        "bass": {
+          "sha256": "74a39100406bfa2c003ec0669ff615329f5188afb449ebe346108ceee4eef600",
+          "bytes": 91136114
+        },
+        "other": {
+          "sha256": "608b96ac7be68e8f9e882be423c9125cf02ed93130377523be4334690b670c7e",
+          "bytes": 91136114
+        },
+        "vocals": {
+          "sha256": "27207655196a90a0e64f014ec6a900547ae4319dda85fa0106f851011cce126a",
+          "bytes": 91136114
+        }
+      },
+      "samples": 11392000
+    },
+    {
+      "id": "train/James May - On The Line.stem.mp4",
+      "source_sha256": "9a3ae6f835baac105ff01949d8bd1b4fe48d19d7b4190f55aeecf69bf2c20224",
+      "files": {
+        "mixture": {
+          "sha256": "feb672550e9d889212dc00e78be42f8f2988d51c837ffeca6b753fd2389fe2ad",
+          "bytes": 90349682
+        },
+        "drums": {
+          "sha256": "531a2740fb4abe840e3d547bd10c320b935ed440e9f888344ca8b1957743f2bc",
+          "bytes": 90349682
+        },
+        "bass": {
+          "sha256": "3fb37831d2a5f2e9bd93ec042621a492dd9f8efc421a0859d413ab277d367064",
+          "bytes": 90349682
+        },
+        "other": {
+          "sha256": "e05b4c2ceb213d27e2193abbdfcc57bae4b613b78e95a4a4cec4a78d0a346534",
+          "bytes": 90349682
+        },
+        "vocals": {
+          "sha256": "4bd02a1c10b8f591cd899d602709df6875a28cabca4179252e3109103efdc161",
+          "bytes": 90349682
+        }
+      },
+      "samples": 11293696
+    },
+    {
+      "id": "train/Jay Menon - Through My Eyes.stem.mp4",
+      "source_sha256": "fa2d0ae6a1e8eacf409cab608702ba397f74a61cda4843966c6048a0f7ff9892",
+      "files": {
+        "mixture": {
+          "sha256": "47b70a5fe066fcc5c9c347b2407b3d8548bf58b8c5950c102acad719c91ccd6b",
+          "bytes": 89317490
+        },
+        "drums": {
+          "sha256": "49e257b54d7de936e738f25bfcda0b58e321d81419f8c2b24478dddc9645fda0",
+          "bytes": 89317490
+        },
+        "bass": {
+          "sha256": "743aaf51ca49ae3e666660952fcac8c58003a7a096501b4a3e53042bef6f83ed",
+          "bytes": 89317490
+        },
+        "other": {
+          "sha256": "1fdf8dda3b4b9346ed710553df4a90cd53f873a8d35724d45efbb1694fded2e4",
+          "bytes": 89317490
+        },
+        "vocals": {
+          "sha256": "63cdf7a3f90c8f951ef64d51f3562b09db12dc72fe19ed0a1501ffc3b327eff7",
+          "bytes": 89317490
+        }
+      },
+      "samples": 11164672
+    },
+    {
+      "id": "train/Johnny Lokke - Promises & Lies.stem.mp4",
+      "source_sha256": "69201498e6381f19514724acc119ff724a0cfb4e2a137fe36183056e4319915f",
+      "files": {
+        "mixture": {
+          "sha256": "c6fc3b91abaa16690d01095c1c64f61bbe86667c928289ba4d42e4bef3196872",
+          "bytes": 100835442
+        },
+        "drums": {
+          "sha256": "e7141a6027e3305daf9455f594fd7e685938a49742e085faab38c6ef5100b522",
+          "bytes": 100835442
+        },
+        "bass": {
+          "sha256": "ba4ac15d8cad66dd1238a2d5300f1050cf432f7b8778f6381938a54f5c638636",
+          "bytes": 100835442
+        },
+        "other": {
+          "sha256": "128a817008e7a5a26a87a4b542001436a5ec5bc92b9b88d62ee2e5c0483dee79",
+          "bytes": 100835442
+        },
+        "vocals": {
+          "sha256": "e17dd4a50ac6b829e124ff994647dfbf8ebfed4a1f35b4bcab493a047299e442",
+          "bytes": 100835442
+        }
+      },
+      "samples": 12604416
+    },
+    {
+      "id": "train/Johnny Lokke - Whisper To A Scream.stem.mp4",
+      "source_sha256": "21dcfb7ae24a5cbdaa2f11bc226205dc9d346b86420d0dfb1356d022ffcd3e7a",
+      "files": {
+        "mixture": {
+          "sha256": "4c981714fb6ba32f733c60906890b0b8bc1605187891bcb18349daf6c3b0e8c6",
+          "bytes": 90079346
+        },
+        "drums": {
+          "sha256": "f9b6876b5621b1697e6f783bba84fcee2af520d7276963647dd7684e4903e12f",
+          "bytes": 90079346
+        },
+        "bass": {
+          "sha256": "25a75dbcc54b1c9c2e1b7fc146dea6bb27f193e18fdc94c8ccf01fc8e10a439f",
+          "bytes": 90079346
+        },
+        "other": {
+          "sha256": "3a997569181299cabd919eaf1503b290c357e286c6b189b1077c1a437d9f6f85",
+          "bytes": 90079346
+        },
+        "vocals": {
+          "sha256": "3a20412b77717d297ea91c5139c41de5912daa5c0452847326da526a7aba104c",
+          "bytes": 90079346
+        }
+      },
+      "samples": 11259904
+    },
+    {
+      "id": "train/Jokers, Jacks & Kings - Sea Of Leaves.stem.mp4",
+      "source_sha256": "1a2e6ffbf81df7dbe6973a18fca0953622f136d3e2bb1571b37157497a5214cd",
+      "files": {
+        "mixture": {
+          "sha256": "94ac8c96b795d4196d06f3a2f935dfa6d4ff8977763fea4aa1ba371e45b3db37",
+          "bytes": 67551346
+        },
+        "drums": {
+          "sha256": "3d531401567d15c943d7909aa027d9b4d4c4a00f8ce6271cf99bc84f172e7373",
+          "bytes": 67551346
+        },
+        "bass": {
+          "sha256": "012c5380ee3a507f91357a6c1cd1c85533f75055c67d21c930cfe77643de6b04",
+          "bytes": 67551346
+        },
+        "other": {
+          "sha256": "2f04d2a83680cc20db056388833b3063f81a1101037c79700a8b8a3390ca14d9",
+          "bytes": 67551346
+        },
+        "vocals": {
+          "sha256": "e235ca2917185649470e124f372489bb02812c9e3317a78709be18fae1027544",
+          "bytes": 67551346
+        }
+      },
+      "samples": 8443904
+    },
+    {
+      "id": "train/Leaf - Come Around.stem.mp4",
+      "source_sha256": "379dd7fcaba2438944718ce8d40974d4fd43d8da0c7b68b2ff771daa0884d2be",
+      "files": {
+        "mixture": {
+          "sha256": "be95cc840bc86ea79df0d22ae148cc396c17c1e6edf2f9e12f601a301b26e2cc",
+          "bytes": 93274226
+        },
+        "drums": {
+          "sha256": "ee69707e2482411571cd7601b16618023d878f8458ef6b2faee7ff557d620f01",
+          "bytes": 93274226
+        },
+        "bass": {
+          "sha256": "71fc2891c9c764f8695022cc2297dff634e5e6961f6a09ea53ae6b51c4524f57",
+          "bytes": 93274226
+        },
+        "other": {
+          "sha256": "b51f3b0961537f1a76864f6e9c51a4422fe11faedd018686b2d21a6fbee90f37",
+          "bytes": 93274226
+        },
+        "vocals": {
+          "sha256": "322073e02bd93b9f6d0df8ebf793b6006d24041e98849a28f66a2814497fb0a4",
+          "bytes": 93274226
+        }
+      },
+      "samples": 11659264
+    },
+    {
+      "id": "train/Leaf - Summerghost.stem.mp4",
+      "source_sha256": "7d7f843c801e4dba2d93c51dffe5578670b9d84596e302b1a03c1ba4262ffab3",
+      "files": {
+        "mixture": {
+          "sha256": "3bc88e06f2614f4e3cd791c349aa521a178fe25ab1ed3c5ccb46af0e0d4d710e",
+          "bytes": 81780850
+        },
+        "drums": {
+          "sha256": "ca806f3d18d9c59e634a0b1ce20d6fd1e7a638391be7e38b45e9205d8660e9b6",
+          "bytes": 81780850
+        },
+        "bass": {
+          "sha256": "2839a1eb65e0b707f67678a50d43650e89ad4703138ea7d66a50c71e5cf83c86",
+          "bytes": 81780850
+        },
+        "other": {
+          "sha256": "a18b25a9cd53defce6cc964fa018bba9e924c3f534b64c618eb59edb6ec44cce",
+          "bytes": 81780850
+        },
+        "vocals": {
+          "sha256": "e17eae88bddcec63ebf7d015b0fc2faa7875fc9ca7c821562041fc713d85bfcf",
+          "bytes": 81780850
+        }
+      },
+      "samples": 10222592
+    },
+    {
+      "id": "train/Leaf - Wicked.stem.mp4",
+      "source_sha256": "58913c08b3de321a1f98dc0e3b44413ac24275fd52507eac42a5454c03924732",
+      "files": {
+        "mixture": {
+          "sha256": "b44a42ca5ee604b9c7e832ad08b6127e05f8a7e75e67352e83daa05b40ecdcde",
+          "bytes": 67256434
+        },
+        "drums": {
+          "sha256": "7697043017e87233dd0bb5656e5f8a2ff292a70a469e2de1370260cc25670337",
+          "bytes": 67256434
+        },
+        "bass": {
+          "sha256": "067e45cd124b6184e0314645b8d3325704f178c42726baac6bdd7a84ac1bf4cf",
+          "bytes": 67256434
+        },
+        "other": {
+          "sha256": "bbb2c04831338a3803c595e5c87ea9a14d21886756a42c6508619165bf62e62b",
+          "bytes": 67256434
+        },
+        "vocals": {
+          "sha256": "2a12f1e49f830379f8e9df1e56d03e34ad652e2987a255f0dcf20d7c6f6affc9",
+          "bytes": 67256434
+        }
+      },
+      "samples": 8407040
+    },
+    {
+      "id": "train/Lushlife - Toynbee Suite.stem.mp4",
+      "source_sha256": "457bfe455617ec6bd28782346618a3a4ee27b00378524d27744f2d5f8ae8a87c",
+      "files": {
+        "mixture": {
+          "sha256": "371aa6c9d1c3335c7d3610bdfe6133fc0d3df3514b52415bd2670647c50e39d0",
+          "bytes": 221692018
+        },
+        "drums": {
+          "sha256": "8a9ae6e349ebecc2e32135213bccb94566b46a5b123f78d7833de9a1280c4742",
+          "bytes": 221692018
+        },
+        "bass": {
+          "sha256": "64731cf2ea67b42cacbbc49dfdefc0aaba5599960477fdaa28cece4e7a1af82f",
+          "bytes": 221692018
+        },
+        "other": {
+          "sha256": "049bf728a81877259be19e91235e7ccdc67ab65b38ee8f20ffbeb0d447647df5",
+          "bytes": 221692018
+        },
+        "vocals": {
+          "sha256": "c19021b387ee8f0b56652c24d550b02e9f4d36871d45a900659e4b91cfc87ceb",
+          "bytes": 221692018
+        }
+      },
+      "samples": 27711488
+    },
+    {
+      "id": "train/Matthew Entwistle - Dont You Ever.stem.mp4",
+      "source_sha256": "014980eb7d6c9fc7ead0528635f1651e88503a0c725fe964cfc944d4f8c8199a",
+      "files": {
+        "mixture": {
+          "sha256": "b9b50fb9824ec27599f0cf03ef7f830b23c6fd556944d487c72ae645dd449e26",
+          "bytes": 40157298
+        },
+        "drums": {
+          "sha256": "6c7ccc147806e5e06078f8dcefc6f17ac72c6c8f3cdba92c036cad91b134a814",
+          "bytes": 40157298
+        },
+        "bass": {
+          "sha256": "9c981170c9899cd80f563c203631a54ef094ec7d0a7cbccc99b251054b6b648f",
+          "bytes": 40157298
+        },
+        "other": {
+          "sha256": "903498cdacbf57d749c868a8fbc6abee2f320729100eba9961c2cd14c45a2430",
+          "bytes": 40157298
+        },
+        "vocals": {
+          "sha256": "9ce1a048e741ea16fcda3712d6c73e1de4788ed488edcd9b1ef20db39b33f8f4",
+          "bytes": 40157298
+        }
+      },
+      "samples": 5019648
+    },
+    {
+      "id": "train/Meaxic - Take A Step.stem.mp4",
+      "source_sha256": "4e1ea57fa9952c052909d67141a1d3efce7dd6b3477e1e6c7f4edada5a8355f7",
+      "files": {
+        "mixture": {
+          "sha256": "6de10bec79abe6305e845f3c9b9d78426ca898c143d5904ba85ca221f2617913",
+          "bytes": 99672178
+        },
+        "drums": {
+          "sha256": "503f51e65a1efac9ba1a892ab2e1beb0bc93742db5ce9d7aa7008ae2a907a932",
+          "bytes": 99672178
+        },
+        "bass": {
+          "sha256": "1912babf5277feca59e4cbab7612963a09c2a4436b680e85fb9121b9cda876eb",
+          "bytes": 99672178
+        },
+        "other": {
+          "sha256": "77074258391bb0616e4666c92a990d39cba90d6270cec91297e79285be0cb287",
+          "bytes": 99672178
+        },
+        "vocals": {
+          "sha256": "5f9a459ed947ce7def2c8922568fedb0e76571e3518bfea1dd2f03dcea4929b1",
+          "bytes": 99672178
+        }
+      },
+      "samples": 12459008
+    },
+    {
+      "id": "train/Meaxic - You Listen.stem.mp4",
+      "source_sha256": "8a65ceac0194128bfe613367fb06b2f065a7af02333266fc8ca34d5bec2c7fde",
+      "files": {
+        "mixture": {
+          "sha256": "45ed5880d86449630f8e199909ca3271b2dcba409e0bd11b9ed9127d0d81ac84",
+          "bytes": 145539186
+        },
+        "drums": {
+          "sha256": "a6830a24f8e8fa000d8904881b60dccf0f6eaed8d38de7dc552800fbb9e91757",
+          "bytes": 145539186
+        },
+        "bass": {
+          "sha256": "01f7c0fdcc5469e66caa76b3bdab9f390adb123fa8299b352bdb83c8fdaf961d",
+          "bytes": 145539186
+        },
+        "other": {
+          "sha256": "5d14dbb8c15f5605f090432d5ed878a0b251dea8c93ef7a98ec1a103a2e3f653",
+          "bytes": 145539186
+        },
+        "vocals": {
+          "sha256": "98066bb0a3095ec9160a9b40d39ba614bc4dd385647da0c4775a38b339e0ad9f",
+          "bytes": 145539186
+        }
+      },
+      "samples": 18192384
+    },
+    {
+      "id": "train/Music Delta - 80s Rock.stem.mp4",
+      "source_sha256": "4e5d4dfc014fc4466d3c790b72684e60ff59bb430978587beee6f313b28eb407",
+      "files": {
+        "mixture": {
+          "sha256": "bbd581537a9232cbd8d927bee778f795798e5e2472263c6cb077dbf3106b558f",
+          "bytes": 12959858
+        },
+        "drums": {
+          "sha256": "419a07b4e3b33e4185c69905e0cdd400c9e282683e23caf448dbf59cdca1fd17",
+          "bytes": 12959858
+        },
+        "bass": {
+          "sha256": "ac1071f3ad2e0f42303f73e4e85f8d211e5819bb08b90eae225cee60b0a09658",
+          "bytes": 12959858
+        },
+        "other": {
+          "sha256": "b40065fa1cc4fa2f5ccf171d89d0a03ba98a5a45ba4b2c7d6a5fc83f4b4f6d41",
+          "bytes": 12959858
+        },
+        "vocals": {
+          "sha256": "f5685ae08ab07cd67de26a797d0ed06c46e88bce202956399c1b06b7ca3e58e6",
+          "bytes": 12959858
+        }
+      },
+      "samples": 1619968
+    },
+    {
+      "id": "train/Music Delta - Beatles.stem.mp4",
+      "source_sha256": "6eea900822c070b0b4f8cc3f27cc01dab0fa17e68c08a3e9f90ca48f5cf954cf",
+      "files": {
+        "mixture": {
+          "sha256": "e4b2f4d6edbbbdb8d5ec4ecec65ba295c0f1248555598c986c4092972be4250f",
+          "bytes": 12763250
+        },
+        "drums": {
+          "sha256": "7c3326da4fc454a59a8ec8a2489df421f92ac4234d115f4360e3ae64703f4db1",
+          "bytes": 12763250
+        },
+        "bass": {
+          "sha256": "ce081168f0c0107099dc607ebd7d0a1ca712f7cf23fb2fc32b83de0324d142cf",
+          "bytes": 12763250
+        },
+        "other": {
+          "sha256": "dadfa13255bf47ba66dc162a2f0b56ac7b7afb39a8551ef15d1462fcdfb957e4",
+          "bytes": 12763250
+        },
+        "vocals": {
+          "sha256": "7389e9640ff36f8605adb2158c2d96c5d27b9253713c88bfe6e6ffa19ea0bff7",
+          "bytes": 12763250
+        }
+      },
+      "samples": 1595392
+    },
+    {
+      "id": "train/Music Delta - Britpop.stem.mp4",
+      "source_sha256": "ebd4a282a54fb4b142dd258ec7dedb6858189a4a0555b128daad76f812f0b08c",
+      "files": {
+        "mixture": {
+          "sha256": "85e382e7e164f5e687c6fd79b2aa510de49c430e02c5e6298201c89892d18d05",
+          "bytes": 12910706
+        },
+        "drums": {
+          "sha256": "8332e7ede960e0a25a2adb7861938a5781b11bf65b2dcb87ea4488cb85a303dc",
+          "bytes": 12910706
+        },
+        "bass": {
+          "sha256": "d1e8f33711c29ed6d743f33c3fa4ff6d4f7f547badc524eea9af5c912c276a4f",
+          "bytes": 12910706
+        },
+        "other": {
+          "sha256": "d45336c050bd8a5f849ed05b3d79704ae579fa99642c8694e1f5ca1b977bf3e7",
+          "bytes": 12910706
+        },
+        "vocals": {
+          "sha256": "b7fb7fe15fc95f7fec782bc5c11917bb3653cc0a40311eeeaa07bd722b92356e",
+          "bytes": 12910706
+        }
+      },
+      "samples": 1613824
+    },
+    {
+      "id": "train/Music Delta - Country1.stem.mp4",
+      "source_sha256": "ff716932643e80d913a5cda1c616fe6691ba49a65a2e0ec20cb63590f072760f",
+      "files": {
+        "mixture": {
+          "sha256": "a4a5a6b5a24ee887f3908e4216939264c239e8a1b012fc7219b4c50a6dea361f",
+          "bytes": 12189810
+        },
+        "drums": {
+          "sha256": "2a055b9694caaf11083a6e09dd054244d7c4d0362ed331ff6c7b5264be473deb",
+          "bytes": 12189810
+        },
+        "bass": {
+          "sha256": "bce0eb0c0f74faa9179072a07b8f6afafa7934123186f1e00cf71cf6159f863b",
+          "bytes": 12189810
+        },
+        "other": {
+          "sha256": "2c21538af0ff7872fb2d33afd5e58e9f5a714b7e594368b0b4e8b3b7d8418b7d",
+          "bytes": 12189810
+        },
+        "vocals": {
+          "sha256": "a702dfae2bba50c95b07467996cbfbfe2bf57357336da835826067eef47de1c8",
+          "bytes": 12189810
+        }
+      },
+      "samples": 1523712
+    },
+    {
+      "id": "train/Music Delta - Country2.stem.mp4",
+      "source_sha256": "6603528a79a4162f83f493454ea0a245895cc3784016a34a941b14813720e0fb",
+      "files": {
+        "mixture": {
+          "sha256": "7cad3830ea052e4402882b33cdbe6396dd3b76a0f7dc43c834d799e979ae60dd",
+          "bytes": 6094962
+        },
+        "drums": {
+          "sha256": "31e241acaa87a08b82e8ff1a1df86786de650d395aaf5b39b01ae92359ee3447",
+          "bytes": 6094962
+        },
+        "bass": {
+          "sha256": "e82d3b90cb91c8ac9ce67f3a9906bd37293a8abb0dd2ab61db1445cdb3f2774e",
+          "bytes": 6094962
+        },
+        "other": {
+          "sha256": "24b5d0661fa1e5a0fe2ca758b4b0df1d3dca2459df8244849502a627658af25e",
+          "bytes": 6094962
+        },
+        "vocals": {
+          "sha256": "23d873c90be275a6028174a191b61f707aa289b103e20e4013d630c68a5ad68a",
+          "bytes": 6094962
+        }
+      },
+      "samples": 761856
+    },
+    {
+      "id": "train/Music Delta - Disco.stem.mp4",
+      "source_sha256": "5416ef925a1384ffdd1e560403e0c19857c6562c992be81d356515ea277d353c",
+      "files": {
+        "mixture": {
+          "sha256": "88b4ec952a86a21acebd121eb049dee843c109d76be645b8ff771c3c57b01154",
+          "bytes": 43958386
+        },
+        "drums": {
+          "sha256": "89f87dc5dc6fd9bd455d8ab0dfc60b726706064c97b49025801db4b37a1f6421",
+          "bytes": 43958386
+        },
+        "bass": {
+          "sha256": "b539d1384252e191867db6d71c92b430326281cde86c03329ce53b91307479c8",
+          "bytes": 43958386
+        },
+        "other": {
+          "sha256": "4660d4aed91ae6f90c45ff40db06d7028fbc68930f2fc8244443d6800e74d454",
+          "bytes": 43958386
+        },
+        "vocals": {
+          "sha256": "42dae70018685b27b961bbc517663f6cdea5f749877ed1c8bad7ee127c84360a",
+          "bytes": 43958386
+        }
+      },
+      "samples": 5494784
+    },
+    {
+      "id": "train/Music Delta - Gospel.stem.mp4",
+      "source_sha256": "312cbc62ac60f798fb72a393c19d2d260ae127df100b52140897a50b871d163a",
+      "files": {
+        "mixture": {
+          "sha256": "883682ad87d2b4709579e43bb7f1d657b844c6b064d1eea9b5e56d0f5ea8d2a4",
+          "bytes": 26656882
+        },
+        "drums": {
+          "sha256": "a620bac17e8ff726488fe352201e3294e361090ee7c0597941d6017048b9fda5",
+          "bytes": 26656882
+        },
+        "bass": {
+          "sha256": "04e25f0749fe0ac3b7ed98187c3f67e76d46bb0ac143cd87e260f193f3259dc2",
+          "bytes": 26656882
+        },
+        "other": {
+          "sha256": "b363f862d53184d0ed7235a3a869db6b9d1408fd8b7159b5850cdeeaec4b0c0a",
+          "bytes": 26656882
+        },
+        "vocals": {
+          "sha256": "14c52fb0f74a4ecb30d80ab50fc9262b551bb52c300b7010e51c6e7be5d0429c",
+          "bytes": 26656882
+        }
+      },
+      "samples": 3332096
+    },
+    {
+      "id": "train/Music Delta - Grunge.stem.mp4",
+      "source_sha256": "5ed2050741dcfa522a55526823a65cb75884ecb8e3e2987040be7343e39100dc",
+      "files": {
+        "mixture": {
+          "sha256": "c942e72b2f52f95080e5114ac6abb10f84a6443f322f4202bb6f3ff88ea050bc",
+          "bytes": 14696562
+        },
+        "drums": {
+          "sha256": "0e9eb579cd4a472ab69c5c2ed44a628ac9a2b83899857d6b41fbb5d3285e2f3b",
+          "bytes": 14696562
+        },
+        "bass": {
+          "sha256": "5ae6940aefbd75f76c9e4bbf7d5f0b516a1feeeec480413135444fa0a6a09555",
+          "bytes": 14696562
+        },
+        "other": {
+          "sha256": "20d1e3b93d986feccb6ef176381ac118c86c02b99e742c254e48f200e0f95a9e",
+          "bytes": 14696562
+        },
+        "vocals": {
+          "sha256": "c3e94925775f20dbddbd2a90a12d14ce09dab5ef7a81554e81324eaa98705cbe",
+          "bytes": 14696562
+        }
+      },
+      "samples": 1837056
+    },
+    {
+      "id": "train/Music Delta - Hendrix.stem.mp4",
+      "source_sha256": "2a77dfcb9696773140879d473393d682905b8cd1c7103090c7d0eed23f88bbf1",
+      "files": {
+        "mixture": {
+          "sha256": "dfa95fc74ca2aa7bf5343ee428212ebefdd1ae67a58ad9cfac95e04c31ce7902",
+          "bytes": 6930546
+        },
+        "drums": {
+          "sha256": "1ea9502fcc552f25ffd8af167a8cf4413859d36bfa342a76a8b6d96f559a21c0",
+          "bytes": 6930546
+        },
+        "bass": {
+          "sha256": "e6dcb7d68a48bfd5a5b294e12b8c85966c9ea0b5b62495e4162a168f15adc343",
+          "bytes": 6930546
+        },
+        "other": {
+          "sha256": "5267df774fb65c0698d58184f467169a3cc4e7f1f98dc22dbeab6cb481bb0e1c",
+          "bytes": 6930546
+        },
+        "vocals": {
+          "sha256": "154167283eb0c225bc863d17452be6ee23579f6d32c01a84f76c9393513058cf",
+          "bytes": 6930546
+        }
+      },
+      "samples": 866304
+    },
+    {
+      "id": "train/Music Delta - Punk.stem.mp4",
+      "source_sha256": "834e05743af274b00abde5615027c33d9dfa31680627dbaf3224593728ce44cf",
+      "files": {
+        "mixture": {
+          "sha256": "7ae62b83d37adaa4c7675dbee339ede917cb0b11a5a7c72dd4089da28ecbcba4",
+          "bytes": 10084466
+        },
+        "drums": {
+          "sha256": "f72fcf04da90d52e5f8cba7ee2671608032d05676e1050bc14f1672b684dc298",
+          "bytes": 10084466
+        },
+        "bass": {
+          "sha256": "869a6daab69cd1a5caeaf4dfaa2c9e5a796b657d132c4c909084f87926934c1b",
+          "bytes": 10084466
+        },
+        "other": {
+          "sha256": "c73e2cea63e2be983fbb2b8f7c8e455a32f8e6e7d8e2130dee35d455d1d73a81",
+          "bytes": 10084466
+        },
+        "vocals": {
+          "sha256": "e7b43a7f6ab1b469ea095e0b92968482dbe0b77046bedfb9c4e359b9bcb88463",
+          "bytes": 10084466
+        }
+      },
+      "samples": 1260544
+    },
+    {
+      "id": "train/Music Delta - Reggae.stem.mp4",
+      "source_sha256": "bf1126382c1e73d2149c9b8ba7d174bbe4364a17e81344468b88d86ec220e735",
+      "files": {
+        "mixture": {
+          "sha256": "ba6cf6df507bfde67f6fec8ddbef06d4c3be28481875ab6a77ab65ccb2bf1257",
+          "bytes": 6094962
+        },
+        "drums": {
+          "sha256": "f6e5b31d1f766edc7af26abc10adfb4712baa31338a7200deadf3164132d72b1",
+          "bytes": 6094962
+        },
+        "bass": {
+          "sha256": "7edbe6684f58e12a9459abcc1d9d81955eb087ef8c41597184e1b3863c398587",
+          "bytes": 6094962
+        },
+        "other": {
+          "sha256": "e4490180de73e2c0785724ab1dd9557bdf3e21f7ebe58f86ead9554d9afb9910",
+          "bytes": 6094962
+        },
+        "vocals": {
+          "sha256": "7041ca2af90dfd12f0ac734c38ecd1293d4a9e2575dce3e0cddb98f0995af32d",
+          "bytes": 6094962
+        }
+      },
+      "samples": 761856
+    },
+    {
+      "id": "train/Music Delta - Rock.stem.mp4",
+      "source_sha256": "5208a13d1ccd67bbb13a334de4ea6ac33770fc10964b781d428edfd41d867e4e",
+      "files": {
+        "mixture": {
+          "sha256": "045002f8e109cf71d17b04975b96a815910be65860cee95c8d6e41d18c7f1951",
+          "bytes": 4554866
+        },
+        "drums": {
+          "sha256": "548046db0485728ab995778d0a31d32b8d5066b4be34c95be6c8efbc637b15bd",
+          "bytes": 4554866
+        },
+        "bass": {
+          "sha256": "fdbe9790e117350a0b5b33bdc87c230d63d8f94dcbeaa1427a8ffb71325ff825",
+          "bytes": 4554866
+        },
+        "other": {
+          "sha256": "e96af75dbe97fbe133ef37a7f6a567c960e38b75383f6eb54e8974d98f9c35a8",
+          "bytes": 4554866
+        },
+        "vocals": {
+          "sha256": "60aefdb27c895bd00e5bdaa35ec491a79eb1bb331fc3ed0ff28cd375e8f13aeb",
+          "bytes": 4554866
+        }
+      },
+      "samples": 569344
+    },
+    {
+      "id": "train/Music Delta - Rockabilly.stem.mp4",
+      "source_sha256": "9296a6ff3da5670d5955d63aa87fc4ac334183da1abdacf4868c590a8ae9b4f6",
+      "files": {
+        "mixture": {
+          "sha256": "62416d3dca70e13eda99b4a26cd38bd39e1f36f1b392feed1c5b7afb2b9e862b",
+          "bytes": 9085042
+        },
+        "drums": {
+          "sha256": "7e782443f00494e7be466fc9b2de27fd880c103aff241a68655082dc4aade330",
+          "bytes": 9085042
+        },
+        "bass": {
+          "sha256": "e683a9b784c6f1f24d402d7d14f7eab1f755fcf98031232f923e528b2a7e15cc",
+          "bytes": 9085042
+        },
+        "other": {
+          "sha256": "ae864ff4dcd083d584f06f221f9523e360caa3590ab9d1cd674e431570f37acf",
+          "bytes": 9085042
+        },
+        "vocals": {
+          "sha256": "29534a2e6900e2a80e4368ad543b74bf6577e83fdd85bc9eaf2cb3176205fd2b",
+          "bytes": 9085042
+        }
+      },
+      "samples": 1135616
+    },
+    {
+      "id": "train/Night Panther - Fire.stem.mp4",
+      "source_sha256": "e8977a6eb7d2e6fe88dcfcdf9c6ea61bbe02631c69649446aaaae76cae8e3bad",
+      "files": {
+        "mixture": {
+          "sha256": "20789c158bbf91b36c9728f5aa0d92fd16e84e994a76175080ad6ba2279ea716",
+          "bytes": 75079794
+        },
+        "drums": {
+          "sha256": "9b4ab25c8357428abaa2ef1354fb0f965498b399a166f54eaed15085b70cec14",
+          "bytes": 75079794
+        },
+        "bass": {
+          "sha256": "ef4a4120c8fc7e08dc6e1e32417d2f1e3c8afb744bd3970f778efdf0d96cbeed",
+          "bytes": 75079794
+        },
+        "other": {
+          "sha256": "ab316eba64af5692dce311d4a6f6361b6fe26bc211684afb9c32224a8789b3a3",
+          "bytes": 75079794
+        },
+        "vocals": {
+          "sha256": "e816bdd00b6f7c46ea79afffe784b1d179aa4d16c20f3da05189d50ddd50bd95",
+          "bytes": 75079794
+        }
+      },
+      "samples": 9384960
+    },
+    {
+      "id": "train/North To Alaska - All The Same.stem.mp4",
+      "source_sha256": "a7ff77168bceb9c8a59799318d09e37940f4419da1e088256f6ba91c74460b98",
+      "files": {
+        "mixture": {
+          "sha256": "b6591c6ee70f6a947acf88f3c3cb29587708073bcf7d3353998f559be2b356b9",
+          "bytes": 87482482
+        },
+        "drums": {
+          "sha256": "7e0241358debd035b8f45a5e5cca9310ff07e256450f7cf8042e15537c99a7d3",
+          "bytes": 87482482
+        },
+        "bass": {
+          "sha256": "eaf90e91bc1f7ae197d9b358585fdf41e81dee1e194e4243449bb6850b19939a",
+          "bytes": 87482482
+        },
+        "other": {
+          "sha256": "347aa88de6bdff4e71b85fae9f0c83ddb7e4424758ad0db2d8a32774a9771eb9",
+          "bytes": 87482482
+        },
+        "vocals": {
+          "sha256": "0dc356cbf9bacd553980e62b6cba12e52c39cb1fa83ae62e16aefb5a49a02e76",
+          "bytes": 87482482
+        }
+      },
+      "samples": 10935296
+    },
+    {
+      "id": "train/Patrick Talbot - A Reason To Leave.stem.mp4",
+      "source_sha256": "373209c329e7eb897ecd3caf3fb9e12e335b9ed74e874b9debddc9f06ad6c5c1",
+      "files": {
+        "mixture": {
+          "sha256": "eb55d833a1f4b06604b59e1d73af861b73d03ad299cc8e757d4116cdf5b1bb80",
+          "bytes": 91570290
+        },
+        "drums": {
+          "sha256": "c6f868599d4f3ef3a8a74c1b3c363a96d3bf4ed70e81a5cff2f650fe2ef6faf9",
+          "bytes": 91570290
+        },
+        "bass": {
+          "sha256": "21a047abac7ee2084a6f89bc30a46df91bb967809762f801cd3abe6cd519a567",
+          "bytes": 91570290
+        },
+        "other": {
+          "sha256": "5159f5a2956a034becb348640f4d9cd3b3920861e792d3100c0d5d0aa8cd484b",
+          "bytes": 91570290
+        },
+        "vocals": {
+          "sha256": "384aab0805cee6aca22901dd9af7a0b863287afac60df4801e885ce0c1eb4534",
+          "bytes": 91570290
+        }
+      },
+      "samples": 11446272
+    },
+    {
+      "id": "train/Patrick Talbot - Set Me Free.stem.mp4",
+      "source_sha256": "c8c314a9f03fcdf86b539e8fe7ab26ad5530aa6f57ed37ac905da8606ced86ce",
+      "files": {
+        "mixture": {
+          "sha256": "081dbdd6edb0ac0ee4254b5aecb9fda23ad163cbd632badd0964f061e5b94be9",
+          "bytes": 102236274
+        },
+        "drums": {
+          "sha256": "64f238c21a347c342b55bce5c13c465ad4c765b87018e5a2bd78cf8d6e4eddce",
+          "bytes": 102236274
+        },
+        "bass": {
+          "sha256": "c103ea74a7104e9466312fe49db32dda645b262a9b0f1c6fe21b0fd12ea382a4",
+          "bytes": 102236274
+        },
+        "other": {
+          "sha256": "8d491ce31f0f7a1ef7c807b671de9dd5b8b8c7511ee0c3f61a5ec3bbe3d13f72",
+          "bytes": 102236274
+        },
+        "vocals": {
+          "sha256": "e0af4b67306ccbd4d9c0a90db86961c6b556b313a5e510cebf4b3302315e0816",
+          "bytes": 102236274
+        }
+      },
+      "samples": 12779520
+    },
+    {
+      "id": "train/Phre The Eon - Everybody's Falling Apart.stem.mp4",
+      "source_sha256": "4efa30cd2a7e7287c75de93cc606083f8aaab9aad5a7d0a65178343da0071780",
+      "files": {
+        "mixture": {
+          "sha256": "8f0626e227ee33ef2717a6047af1ebd2d960367747a5e0284fa0fa8ba6660afa",
+          "bytes": 79110258
+        },
+        "drums": {
+          "sha256": "0eeba3958970b50981c1d4bef586a1fa0237c479e4f888170fced442a05e0edf",
+          "bytes": 79110258
+        },
+        "bass": {
+          "sha256": "f2af0c321ec7c3efeddef5cd12d5397429612f4b00cea3085caaf631a31c9747",
+          "bytes": 79110258
+        },
+        "other": {
+          "sha256": "e411934c0aa8b0d975fe2efe4e8069eeb752e3e2acedbb3a4bfdc59c3fa64f77",
+          "bytes": 79110258
+        },
+        "vocals": {
+          "sha256": "d69ee1e1486ad22c467c8e58938435d9705559a221144d711c9b881ca7b26a10",
+          "bytes": 79110258
+        }
+      },
+      "samples": 9888768
+    },
+    {
+      "id": "train/Port St Willow - Stay Even.stem.mp4",
+      "source_sha256": "e9a67e999f36fb33803a34d6d4e07f5610bb89f509348a6615f22f3e573452bf",
+      "files": {
+        "mixture": {
+          "sha256": "28f6b085aafa4396eb509b7ab72e29f4f09d598fd40c99116a8cbfe6ade527e8",
+          "bytes": 111779954
+        },
+        "drums": {
+          "sha256": "94a74d556fdc74e3686a3071c0d936808493d107495ad6ea88456d447448efbe",
+          "bytes": 111779954
+        },
+        "bass": {
+          "sha256": "a280babb1ab21a8a6c61c4a4ca1d3e45d519f3d1af168f6eb8569f26183c8661",
+          "bytes": 111779954
+        },
+        "other": {
+          "sha256": "4654f0fd9d89ed9dda6e54f7ad8e492ba3be5caa7850494d92303596fa83e839",
+          "bytes": 111779954
+        },
+        "vocals": {
+          "sha256": "61d4d26aef4df203c35b67edb6c71c4b45c7199351dfefc56d74c62f56a7f2c2",
+          "bytes": 111779954
+        }
+      },
+      "samples": 13972480
+    },
+    {
+      "id": "train/Remember December - C U Next Time.stem.mp4",
+      "source_sha256": "bb5ebf64c92d81bade976d177e7f76f446ad71ee6721934f73e77aac53f3af8f",
+      "files": {
+        "mixture": {
+          "sha256": "77b584d1c31bde994851a559e93f2d764a697405674a8b1e200f9a0bad3018bd",
+          "bytes": 85565554
+        },
+        "drums": {
+          "sha256": "6669e64ccf6e784a7f8bd43823e0ab232ebfbfa4c5c65f446e9ba6dafa49a533",
+          "bytes": 85565554
+        },
+        "bass": {
+          "sha256": "f2ba0b291b3384e46a63795bf80cf71db3f4860197180a85806985967707682a",
+          "bytes": 85565554
+        },
+        "other": {
+          "sha256": "f8f8eddcf52bb5d8e38c13c4762b05e853f2493b3bc98f9b7065a5ef2ce944f4",
+          "bytes": 85565554
+        },
+        "vocals": {
+          "sha256": "23eb6bd145e4312b33531f2390e01494a27145bdfc74287fad8eaa2b4bec9367",
+          "bytes": 85565554
+        }
+      },
+      "samples": 10695680
+    },
+    {
+      "id": "train/Secret Mountains - High Horse.stem.mp4",
+      "source_sha256": "3cbbb951b1bdcbe32c0e7a6241576d0cc827b87a241d83a41e75fff62b45cbaf",
+      "files": {
+        "mixture": {
+          "sha256": "bd1ce48d9c2ba7de866a293e8d3696554419c379cea55cab42a57647b0e4becc",
+          "bytes": 125354098
+        },
+        "drums": {
+          "sha256": "f241081699b28df323c164caa94b35b48d9a25eda37d819ff05cf35d288803db",
+          "bytes": 125354098
+        },
+        "bass": {
+          "sha256": "cbcf672d44dd0a027a71f54ce5ca61306dbc82f33ec055ea85dd8dbf3735faee",
+          "bytes": 125354098
+        },
+        "other": {
+          "sha256": "6e706f82031f62a0737c66eaf860b242267607ebafa21a20b6aaaa6ac2a2a490",
+          "bytes": 125354098
+        },
+        "vocals": {
+          "sha256": "68815ab1535440c562c723cf5c1d1b9f8882bc728368f42a2620f3e33e9cb5fa",
+          "bytes": 125354098
+        }
+      },
+      "samples": 15669248
+    },
+    {
+      "id": "train/Skelpolu - Human Mistakes.stem.mp4",
+      "source_sha256": "608e9611b2f14bbd28ef6bd3c020c7212b91c99ff56c272b56380171740d5cb3",
+      "files": {
+        "mixture": {
+          "sha256": "9305408997c1538a7e792d095681d61233b1d0f5b524d6ffd830928571fea18b",
+          "bytes": 114483314
+        },
+        "drums": {
+          "sha256": "c560139f5955c26ad0f959cd5df6df4dbb09f63cf6e9cacb6311a64c39d4d618",
+          "bytes": 114483314
+        },
+        "bass": {
+          "sha256": "fa1fbf3a7606506261c4f3cd178098de6a4a6db801138e7ffdbe0fa59489c210",
+          "bytes": 114483314
+        },
+        "other": {
+          "sha256": "dfec67b8c65a793d50e73630ea33fe55a8e42b38985ca3bd87e5a289f2235b36",
+          "bytes": 114483314
+        },
+        "vocals": {
+          "sha256": "8833b13cd1b4a4fd12f8dfc4c1ed08de11d97c46f713d51b18f44102bf5baed2",
+          "bytes": 114483314
+        }
+      },
+      "samples": 14310400
+    },
+    {
+      "id": "train/Skelpolu - Together Alone.stem.mp4",
+      "source_sha256": "8a7410000d3d42e5007133f04912b523b57c6a9a1b973b5887c71d8177ca0b7f",
+      "files": {
+        "mixture": {
+          "sha256": "78c43f10fb8813cd6bcbcff792ff07de816ae7abd7023f9926015e57d298520d",
+          "bytes": 114950258
+        },
+        "drums": {
+          "sha256": "24db2945835b79ba0e85128b7460e9b30a44a746715d41f3ec0f1e8351e5a787",
+          "bytes": 114950258
+        },
+        "bass": {
+          "sha256": "d2491fbbdcaa760dda3f4ce701b9b60a07dc63f2d829ba75405b1fb31218eb68",
+          "bytes": 114950258
+        },
+        "other": {
+          "sha256": "2a43873d583fdae311a3717a3db8705bbf5a9e97878bd3b3dc992d53474afb55",
+          "bytes": 114950258
+        },
+        "vocals": {
+          "sha256": "b71ffadb5a484a62a6179022d001abeee8bd518ab7a39a84f9f12ebe892ac92b",
+          "bytes": 114950258
+        }
+      },
+      "samples": 14368768
+    },
+    {
+      "id": "train/Snowmine - Curfews.stem.mp4",
+      "source_sha256": "d1d389538392c3db5ac49a13d0c3e383c8509719592c587a989cd4b7cf5a8afc",
+      "files": {
+        "mixture": {
+          "sha256": "2c3575fff2219e92bc97f01cf4905670737af8f39d981210c1bf281473043b78",
+          "bytes": 97026162
+        },
+        "drums": {
+          "sha256": "ff4ca42b7985d4560e6817e5df34b75907b5e2f81377a56e862344d614024fb7",
+          "bytes": 97026162
+        },
+        "bass": {
+          "sha256": "8321d1ae125c9fd8bd776b80f19ed9d5a79e1a1bb6cffa3d220c328af8cbab72",
+          "bytes": 97026162
+        },
+        "other": {
+          "sha256": "81c61e2f050c912b2549ba52fc0c8d9dd3a42e89b02e1730fcb75c82660d1d94",
+          "bytes": 97026162
+        },
+        "vocals": {
+          "sha256": "52317bc69198d256df985fbd1564ea4ebf8bae7a0abc866514ddc0b48a18b41c",
+          "bytes": 97026162
+        }
+      },
+      "samples": 12128256
+    },
+    {
+      "id": "train/Spike Mullings - Mike's Sulking.stem.mp4",
+      "source_sha256": "b8478e7f5fd25fe40afa7133b4561099ef19fdf67402f5b86d0b4d4e20e668c3",
+      "files": {
+        "mixture": {
+          "sha256": "139e7ba4f80c34b59df6302ed07b6e9b10ba3fd348c4df443cfd0ccdd0843fed",
+          "bytes": 90562674
+        },
+        "drums": {
+          "sha256": "50334373f4612401e5e2137fc24a937cdba9868614cdc4018e391a35897c8c28",
+          "bytes": 90562674
+        },
+        "bass": {
+          "sha256": "38765fecb331e9441ebc54735437e399c4fa6523f5aa38c23887ae76c31922cb",
+          "bytes": 90562674
+        },
+        "other": {
+          "sha256": "b8c22f8c0d9d023c1900d09425f929d3e2fba24ee61c2f7bfbb731e6c7116e26",
+          "bytes": 90562674
+        },
+        "vocals": {
+          "sha256": "b3af168e2c93b14edfd355af202f890e9d8ded61c19a1671b84858c9abcaf369",
+          "bytes": 90562674
+        }
+      },
+      "samples": 11320320
+    },
+    {
+      "id": "train/St Vitus - Word Gets Around.stem.mp4",
+      "source_sha256": "83cb4ff6c76e48a2c40c03670884e551b4029412aad5718b3535debc9b9af45f",
+      "files": {
+        "mixture": {
+          "sha256": "1b164f545ae895156400a2fbe7bdd4408678308cb4d47e5c067a00a197d51564",
+          "bytes": 87146610
+        },
+        "drums": {
+          "sha256": "114d3a7e9ed2c48c82ef4c394a2b8100745235741c52162dd7caa4c85c87a2f5",
+          "bytes": 87146610
+        },
+        "bass": {
+          "sha256": "985f3d32e0fbe7aa7b9969234b5c39249803d6871aa27c9d66f0a089771b44f3",
+          "bytes": 87146610
+        },
+        "other": {
+          "sha256": "bdeea6c224482d450243826de517eb042c60c506e4267fe3bd28b97b94e7909e",
+          "bytes": 87146610
+        },
+        "vocals": {
+          "sha256": "0030e32266af1594a08796518077bdeed32ee1bb926a0759cb5c5fc76804cb5b",
+          "bytes": 87146610
+        }
+      },
+      "samples": 10893312
+    },
+    {
+      "id": "train/Steven Clark - Bounty.stem.mp4",
+      "source_sha256": "6de62db96db6c38cafa46bb886bf7b0657cf3cafbf60272a8c0cbe2d346287f8",
+      "files": {
+        "mixture": {
+          "sha256": "14f6042e1b9abb562ad42b5e8c5189b6dabe596c9ad478ad34ee3834d87b93c3",
+          "bytes": 102056050
+        },
+        "drums": {
+          "sha256": "511c592331ab33860c6103dd6e92a63d2ce9d02c96cc194f3680c6cb5f6ea888",
+          "bytes": 102056050
+        },
+        "bass": {
+          "sha256": "df3b34be24b495b60ad90b79e98b44b2efc5d1c2b397488c83b4e9de7ec0a725",
+          "bytes": 102056050
+        },
+        "other": {
+          "sha256": "19c89369b6c301c7f330f221dca6bd5e1bfa21a2e02cce3b1176a6a7f0b17f2f",
+          "bytes": 102056050
+        },
+        "vocals": {
+          "sha256": "983b55d913fdf1231dee6018c82b2cf3974716f70b03edfc1edd1d541b14b856",
+          "bytes": 102056050
+        }
+      },
+      "samples": 12756992
+    },
+    {
+      "id": "train/Strand Of Oaks - Spacestation.stem.mp4",
+      "source_sha256": "12fa12c593e404aadcaa9e80e811b81c7c51d5806081dfe923f07a1c915447cf",
+      "files": {
+        "mixture": {
+          "sha256": "0a36beb87e9578862eff2024045b2752077dc59468dd3527314d4e7a58ac4b91",
+          "bytes": 85966962
+        },
+        "drums": {
+          "sha256": "c9b15f7237eeefcdac097ea96c604ab54a8438b996d7904108a68a92e5a9d4ec",
+          "bytes": 85966962
+        },
+        "bass": {
+          "sha256": "f7337fbcfebc980add8443e6caf854cd2791a27cb959f3d533a11a267b44a601",
+          "bytes": 85966962
+        },
+        "other": {
+          "sha256": "a5d4ae685f212a6fbb84be39d99e75dca6622d95d9afd4a03c02f01132b912ee",
+          "bytes": 85966962
+        },
+        "vocals": {
+          "sha256": "55ba9a8245ed0ec6fdbb49fc051209d4563b8fcfc91fe96cedc1a1ca24d0985b",
+          "bytes": 85966962
+        }
+      },
+      "samples": 10745856
+    },
+    {
+      "id": "train/Sweet Lights - You Let Me Down.stem.mp4",
+      "source_sha256": "b7b1f0eb1426c4665c9388dde2e72f3f105e0419542cc112f9112e3d100f7be3",
+      "files": {
+        "mixture": {
+          "sha256": "5e6e9cc197af2afc24a70dee2e409945837dd88cfedb2b05101679bbda4f38f2",
+          "bytes": 138223730
+        },
+        "drums": {
+          "sha256": "9407d761c8536a8d883341b2e7525dadc658aa22887cfeca2d8b5aea9da07041",
+          "bytes": 138223730
+        },
+        "bass": {
+          "sha256": "cb82638cabdb576d4a19c12793fafbb151182b818400a3798c41dbbec2e321da",
+          "bytes": 138223730
+        },
+        "other": {
+          "sha256": "ac529524baaf76ff1941a3b1574b27777e439418f5f32bed1a9598771c926885",
+          "bytes": 138223730
+        },
+        "vocals": {
+          "sha256": "99e26f8afc43386fb5147137f1cb81143b4e28d4364ec370be83ed00ea56cde2",
+          "bytes": 138223730
+        }
+      },
+      "samples": 17277952
+    },
+    {
+      "id": "train/Swinging Steaks - Lost My Way.stem.mp4",
+      "source_sha256": "ab64c5c7f293de8ab753179503fcdcf7534e75fa08a1991b34d2b5cca5711801",
+      "files": {
+        "mixture": {
+          "sha256": "88b84b7afa3344b18c6d53b132ac74383cfdfc10491421acca0506ed17a07a84",
+          "bytes": 109355122
+        },
+        "drums": {
+          "sha256": "5b849fe4534de31988928e85b428c785b5382813843c2265c1b12031162b2178",
+          "bytes": 109355122
+        },
+        "bass": {
+          "sha256": "17e5a6200049a76197566b85cb038943fb045413d70ca299fa52a850b6ad26c4",
+          "bytes": 109355122
+        },
+        "other": {
+          "sha256": "801932d166b06658c03c62d777b393a9f4005af82dffb478290fd4c4eeac191a",
+          "bytes": 109355122
+        },
+        "vocals": {
+          "sha256": "6325f030a4d15bc073728df43d35aa83e9cceea1bf8689fca7f112325e1424c2",
+          "bytes": 109355122
+        }
+      },
+      "samples": 13669376
+    },
+    {
+      "id": "train/The Districts - Vermont.stem.mp4",
+      "source_sha256": "3364ee5ecde4fbc54723677c88c476887e52dc025b23b3c7592995f18bff33a8",
+      "files": {
+        "mixture": {
+          "sha256": "973137aca70337842c5b6866df0129907b432b4c9aa2a800b34ace39167c0a32",
+          "bytes": 80429170
+        },
+        "drums": {
+          "sha256": "10207f5052a2174f68ace70fab3cb632c79d7222748eb4142add54be03b72ad8",
+          "bytes": 80429170
+        },
+        "bass": {
+          "sha256": "2eee38b1b606490aca161ded955596028d2f3939358474c258e8c45cec519dd3",
+          "bytes": 80429170
+        },
+        "other": {
+          "sha256": "c32f4e000b9ff2efe0593a966fc00ee4ce73b95e367011cfc9faf72470d7659d",
+          "bytes": 80429170
+        },
+        "vocals": {
+          "sha256": "541b1c8413752ccb5d72f2d34f40b9419ee0558d12ef44cdd9edb5939a749d64",
+          "bytes": 80429170
+        }
+      },
+      "samples": 10053632
+    },
+    {
+      "id": "train/The Long Wait - Back Home To Blue.stem.mp4",
+      "source_sha256": "cb173cd30dd4351685fd944e50335274f2626850ac4172d2a2a965356f791dd5",
+      "files": {
+        "mixture": {
+          "sha256": "d996e9797ffbc9818b3e42a549fbb60c35b900089047a3d032e32e061e26ffe1",
+          "bytes": 91889778
+        },
+        "drums": {
+          "sha256": "9c6bad3a61b69dda6dcf0591241a24a024b84981456ccb2c999dcb6c1082a6aa",
+          "bytes": 91889778
+        },
+        "bass": {
+          "sha256": "8ed13687b350f31b22b447d8418107b28e05d9fd2191d58cc685cc8d36dbc755",
+          "bytes": 91889778
+        },
+        "other": {
+          "sha256": "ca991506fdd735f9aaf51eb7eb56ba7ac2e05157f38281b86c9c6f639000c984",
+          "bytes": 91889778
+        },
+        "vocals": {
+          "sha256": "f61d69b71663099c5ee44d54ebeb4a0b47830e4d83bb5fa29b146c92816911bd",
+          "bytes": 91889778
+        }
+      },
+      "samples": 11486208
+    },
+    {
+      "id": "train/The Scarlet Brand - Les Fleurs Du Mal.stem.mp4",
+      "source_sha256": "1c30250a7e90c8d5ca51e12753e54088d72f5855d4698f12836b61a3bf6bc996",
+      "files": {
+        "mixture": {
+          "sha256": "b8aaac9a6709f5cf791ddc87e4eab94b59ee4c09e1399fc0d064380d5ca7a28f",
+          "bytes": 107053170
+        },
+        "drums": {
+          "sha256": "b29a961c20d2f2027de0f3531974767d17bd1333ca4b4c1e1642c6cf462d1bba",
+          "bytes": 107053170
+        },
+        "bass": {
+          "sha256": "63e583a1f5b4a10d75258ec76c2b8641f1a0e3b4d4860df3562ccac3cb464880",
+          "bytes": 107053170
+        },
+        "other": {
+          "sha256": "ff628bc82286cbec39e4335b85eb334278a90dd056fb71efb6db9b336e580495",
+          "bytes": 107053170
+        },
+        "vocals": {
+          "sha256": "680d4b6278d59f91c39b864d786696ecb7946d5e6de81e7d324e414c815af3bc",
+          "bytes": 107053170
+        }
+      },
+      "samples": 13381632
+    },
+    {
+      "id": "train/The So So Glos - Emergency.stem.mp4",
+      "source_sha256": "883e539d7d2169b2b3967fe19826b3717e11d374268d99c0c52c12547a9498a0",
+      "files": {
+        "mixture": {
+          "sha256": "6f818b18f0ea72aec9dc5460a1fba093279ca530b68ff08543baf03aebab391a",
+          "bytes": 58851442
+        },
+        "drums": {
+          "sha256": "032fcb9a515c14484fa0b21544de2039b547aeb711a15c362e5aa1209a2fd2db",
+          "bytes": 58851442
+        },
+        "bass": {
+          "sha256": "15259e13d7b0e499ab4a1ced42dcf17e1a0d850f609803b68fca55841dd85136",
+          "bytes": 58851442
+        },
+        "other": {
+          "sha256": "ac0fed9e2f7b199214dc2673a919ec0ca3845ab9482f6930ca634c7f6ac0ec6e",
+          "bytes": 58851442
+        },
+        "vocals": {
+          "sha256": "c6e2defd284c6da15443c31b68f7b2f45478cbff583120ded91e8621f79170a0",
+          "bytes": 58851442
+        }
+      },
+      "samples": 7356416
+    },
+    {
+      "id": "train/The Wrong'Uns - Rothko.stem.mp4",
+      "source_sha256": "38f87139ffd5bec4aac98953eca73b18df80b3457e02a3458bf21e0aee60e31e",
+      "files": {
+        "mixture": {
+          "sha256": "599b1387460c1c182fc4148f6cc4c894cbce5a42275d8b48c61b74617c41c35a",
+          "bytes": 71319666
+        },
+        "drums": {
+          "sha256": "ce6925c87450f73a8355f69e8827f741b9a77972dc877284f2a6bf2d27bcc35c",
+          "bytes": 71319666
+        },
+        "bass": {
+          "sha256": "0818fe9d8374ed638ef60c921cc590910d7a936f5c4dfc9ded67cbddcad01b91",
+          "bytes": 71319666
+        },
+        "other": {
+          "sha256": "2c5d3faedbeffae1fdead0dfbb550d6e16f1f7499c344c2e66be0592745d00cd",
+          "bytes": 71319666
+        },
+        "vocals": {
+          "sha256": "110b43fd594adea798dc6181b158a08317c231fddfcdda7445dc882a6f67707f",
+          "bytes": 71319666
+        }
+      },
+      "samples": 8914944
+    },
+    {
+      "id": "train/Tim Taler - Stalker.stem.mp4",
+      "source_sha256": "8bde5616d53addb911924a4c67b0fbe4b7942c1c161052b3137490ba34a9d1fb",
+      "files": {
+        "mixture": {
+          "sha256": "a5ff7c5fc2011cb5a4cb74cad3c96848eccf97786f417ae18a0c898209bc56c4",
+          "bytes": 83837042
+        },
+        "drums": {
+          "sha256": "150cc8716276268442b6b4a7a44c337d72129d7df7babad9aef78ae031f6b66e",
+          "bytes": 83837042
+        },
+        "bass": {
+          "sha256": "f665167d9eeda9f613964f49db4d2a6884d69e57db68639f8335096ed5f426d7",
+          "bytes": 83837042
+        },
+        "other": {
+          "sha256": "cf8fe02ba89ce329364cdf08edd0eeafaa67f2672f51cd743a485a2f772bbd64",
+          "bytes": 83837042
+        },
+        "vocals": {
+          "sha256": "06ed2d82418f6769f2b578efabf9442239b50e3b2f98ea7660cc4a4c8097005a",
+          "bytes": 83837042
+        }
+      },
+      "samples": 10479616
+    },
+    {
+      "id": "train/Titanium - Haunted Age.stem.mp4",
+      "source_sha256": "2a0495b9b1aa64fd8a6b309f01c0e2c498fec75435a0ede75c2c52073b257e7c",
+      "files": {
+        "mixture": {
+          "sha256": "e9b34b03ece5a5e3747fa7a7c09bb1b7445e29dc57ef8577cc5c37a4a5c762fb",
+          "bytes": 87531634
+        },
+        "drums": {
+          "sha256": "50419f6b5a782db000c6cfecada9db527202208edbbf359149442d673c743016",
+          "bytes": 87531634
+        },
+        "bass": {
+          "sha256": "015ea93407c43c2c0cfb1f409a4c21e3f9c8bdff924667d9f44552fd51475bc3",
+          "bytes": 87531634
+        },
+        "other": {
+          "sha256": "4c06c4f8abd954b528373a1099d1582dfed61a3fd086c2cc62e8ebc15b63cbcf",
+          "bytes": 87531634
+        },
+        "vocals": {
+          "sha256": "bac52ec44a8475c0423ce1c527d460be8a49e887a376ce0d31c8e46a3afab569",
+          "bytes": 87531634
+        }
+      },
+      "samples": 10941440
+    },
+    {
+      "id": "train/Traffic Experiment - Once More (With Feeling).stem.mp4",
+      "source_sha256": "ff6a8854f850270b2346682a2bec71ebf34276f4758d71d766d212aa541bcd42",
+      "files": {
+        "mixture": {
+          "sha256": "cfd3c01bc376df250e91ce61da872004328f0c94634ef1b980a5a7fcc0458943",
+          "bytes": 153493618
+        },
+        "drums": {
+          "sha256": "ff355a982e366ce13648bd25c7152a79f82ebd2a7d12f9d67b202d44bb7eb506",
+          "bytes": 153493618
+        },
+        "bass": {
+          "sha256": "692b317b3db62bfad9e2a7f4ce7aad340e80445806b1cb90e258b12bbf1d7c28",
+          "bytes": 153493618
+        },
+        "other": {
+          "sha256": "76054943acff046e5176c8c03bb92d317ad4cb5ddda6be91723363af98efb724",
+          "bytes": 153493618
+        },
+        "vocals": {
+          "sha256": "b86f1439bb49253404d0e2a476c931af8bdfb39fdd62c6fadedbc95dacfba35b",
+          "bytes": 153493618
+        }
+      },
+      "samples": 19186688
+    },
+    {
+      "id": "train/Traffic Experiment - Sirens.stem.mp4",
+      "source_sha256": "1e4bd1eefe3a0e21edbee0927cd2c86397bd5ab79a4b4d9c0d0fb841026b0303",
+      "files": {
+        "mixture": {
+          "sha256": "46c8b0072f989a4ad54fa8fd266331b034f2f55633645fc85afd94569ffcbc60",
+          "bytes": 148627570
+        },
+        "drums": {
+          "sha256": "6e453e7661396d9ec823d4f74207840518a7e8760b451da3ef31e98ad3d019f3",
+          "bytes": 148627570
+        },
+        "bass": {
+          "sha256": "25c7f5e1148d1b9730f13a2cff2861f8fbace6f05425039d07d619b72f6c67c0",
+          "bytes": 148627570
+        },
+        "other": {
+          "sha256": "c2847f5c904a9e2d8cfa27103bc8dcafbe5b1f50f880fa91d96046d5e5ee229d",
+          "bytes": 148627570
+        },
+        "vocals": {
+          "sha256": "44e92f8b3e3caaf0868ec44f243bb8e0b033256441234563b4598b8ad4eeac17",
+          "bytes": 148627570
+        }
+      },
+      "samples": 18578432
+    },
+    {
+      "id": "train/Triviul - Angelsaint.stem.mp4",
+      "source_sha256": "5ecbaf323fb5d3a9dd9b7a3b4dee0b330a59e45186871a743069be2ef9073a0a",
+      "files": {
+        "mixture": {
+          "sha256": "ace38d7562499f90341b90dcfaf926def39a16ae50b27ede29d7de4e586d03b5",
+          "bytes": 83509362
+        },
+        "drums": {
+          "sha256": "53393335fe79a11600866198ce988149b9b9d9130eb75bf70814e917c94aebb7",
+          "bytes": 83509362
+        },
+        "bass": {
+          "sha256": "8c5c98288ed1f20ab7b0102f5aae62f0fa425fb3ba8068c8aaa6d721cb24b873",
+          "bytes": 83509362
+        },
+        "other": {
+          "sha256": "de3340d2398d9c1cd8ab24d9b269c4817914950ad72c3465004d5d00b12e0909",
+          "bytes": 83509362
+        },
+        "vocals": {
+          "sha256": "5dddf3513338843f4e230db41d42ce4e6ad7420a95ba43e79df8ecd5500999ba",
+          "bytes": 83509362
+        }
+      },
+      "samples": 10438656
+    },
+    {
+      "id": "train/Triviul - Dorothy.stem.mp4",
+      "source_sha256": "cd2a9ddacbc37439e19d47a9af4732ae1e116557f9e39fb458e1e0db97d361dc",
+      "files": {
+        "mixture": {
+          "sha256": "50f323a5c4abf6f066fbbadeccf49bcfdef7bfa9e6d4cc3010ce7a8ed3215967",
+          "bytes": 66101362
+        },
+        "drums": {
+          "sha256": "b38bf2eff47c3deeb358b55dc3a196e3e7d6480592e78d08b0754c772ab0c453",
+          "bytes": 66101362
+        },
+        "bass": {
+          "sha256": "25364976e69266d45b70f839587585d2977a606a8908b27c0a494935001bd5aa",
+          "bytes": 66101362
+        },
+        "other": {
+          "sha256": "cfcf58dcf705de30f24cdf13197c25c339f004e5ae0b7e4e51c1875bed97468f",
+          "bytes": 66101362
+        },
+        "vocals": {
+          "sha256": "36cf5a8c3940f2bfabf3d3da61bad228c55a55d71627f074ddecb733c5085525",
+          "bytes": 66101362
+        }
+      },
+      "samples": 8262656
+    },
+    {
+      "id": "train/Voelund - Comfort Lives In Belief.stem.mp4",
+      "source_sha256": "b9cc1775143a8af69683fd78fd78d7788689d34bb473647be3de4348415c7b63",
+      "files": {
+        "mixture": {
+          "sha256": "c93eb4d7c8259bab2990ba2b84a0991c694f4a7caff743d9e02305a5e8d5a57e",
+          "bytes": 74055794
+        },
+        "drums": {
+          "sha256": "6a6947c5b5c729d3f63490719f811710cce451b293b1d2c266057d211fd6404e",
+          "bytes": 74055794
+        },
+        "bass": {
+          "sha256": "f07d35be08647185f96311db973d20864b9261b2721d7809239cfdd271f295f5",
+          "bytes": 74055794
+        },
+        "other": {
+          "sha256": "f4d3ef4decafd9b40aed45f6517026adbe97518c5bbf576a6d0537ea59818182",
+          "bytes": 74055794
+        },
+        "vocals": {
+          "sha256": "384bf259a1316d2f73bd78d35be1b2bd99f2389a9b878a2a1926d91420cfefdd",
+          "bytes": 74055794
+        }
+      },
+      "samples": 9256960
+    },
+    {
+      "id": "train/Wall Of Death - Femme.stem.mp4",
+      "source_sha256": "5d7f9ce9867f5e29b08111baee952ae9ec594acffd813a300066c9f3eb91a9e0",
+      "files": {
+        "mixture": {
+          "sha256": "d8f1807a0652a559b8c594886bc1e05023ff2c86f8c840eb3f501fa9afb6a301",
+          "bytes": 84295794
+        },
+        "drums": {
+          "sha256": "2a108389ce236fdbdaf74871d7c880305d77131fa921bdb4a9356e371cdf177b",
+          "bytes": 84295794
+        },
+        "bass": {
+          "sha256": "b2e25428a4fc1e34cc52a3eb63ae343fbf1c3951be393932deb0693e00b331c8",
+          "bytes": 84295794
+        },
+        "other": {
+          "sha256": "a4512382814e974150b008a3de85bf95517af3e242aa7d9c457de5dcb2d4a8ae",
+          "bytes": 84295794
+        },
+        "vocals": {
+          "sha256": "82df108719196d824e3b5d327932f2f0d0f0cb0a0a3084c70d80cd2993cb4836",
+          "bytes": 84295794
+        }
+      },
+      "samples": 10536960
+    },
+    {
+      "id": "train/Young Griffo - Blood To Bone.stem.mp4",
+      "source_sha256": "d4ffdd4129b0815e261ab4b418015904819f8e0c1c488728601dcf5d559494ac",
+      "files": {
+        "mixture": {
+          "sha256": "37e450242618e64dd4f03aa4a3928fc146b05e5d7023800fd83276f09568bb0d",
+          "bytes": 89751666
+        },
+        "drums": {
+          "sha256": "e7b4663653e9ac5d2b80b844e8fc6fe98ea66566725b53020e737f8edfd7b860",
+          "bytes": 89751666
+        },
+        "bass": {
+          "sha256": "44cfb25458c0359811c9efc3c96ac437604e5c931f17e8a50f3d4fea536f95f8",
+          "bytes": 89751666
+        },
+        "other": {
+          "sha256": "8cd20fa1763d99a2927c446163bff620ef052883a2cb69db14d58aea3de6532a",
+          "bytes": 89751666
+        },
+        "vocals": {
+          "sha256": "6d2278e4b0fa28f6606a28f5feeaef680da6ea38a6537c79789e46750e323456",
+          "bytes": 89751666
+        }
+      },
+      "samples": 11218944
+    },
+    {
+      "id": "train/Young Griffo - Facade.stem.mp4",
+      "source_sha256": "9802139ed06e4b7e97aa41d67f834b434d7530f0915f28deb4264a69e1a00428",
+      "files": {
+        "mixture": {
+          "sha256": "d57412c1a8de94515a5d151782ab7b0f3f3da94267b516b0b36305b488fc655f",
+          "bytes": 59220082
+        },
+        "drums": {
+          "sha256": "22e4722663511da89a4795ae1f1822fff8b555bd2a1b276e905aefbff896515a",
+          "bytes": 59220082
+        },
+        "bass": {
+          "sha256": "93a7c9170cc365568851664269cfa8ca81cf1696f6495fcc3c4fe878e3f4cd6d",
+          "bytes": 59220082
+        },
+        "other": {
+          "sha256": "8b774865f134586ce36e026945838fb72dfebbccfbbe11b38a5c305139e50d1c",
+          "bytes": 59220082
+        },
+        "vocals": {
+          "sha256": "a4a0e98d01e22d3ba78f1e438d061af2ee967914f496db08c34507cd5641dfd8",
+          "bytes": 59220082
+        }
+      },
+      "samples": 7402496
+    },
+    {
+      "id": "train/Young Griffo - Pennies.stem.mp4",
+      "source_sha256": "1fe3e09b2fd3ad4aaa734227e768bece5202d20cfd1a23d5d8c83ec7e5033638",
+      "files": {
+        "mixture": {
+          "sha256": "4ecb8591f9262e5bbd3beab426ee65b4c41d596ffabebf1b88cf67a566376bc9",
+          "bytes": 98009202
+        },
+        "drums": {
+          "sha256": "1e508883e3e82d186354ef866e7d61bf21943e5d0152ba61437e43414eb1af3f",
+          "bytes": 98009202
+        },
+        "bass": {
+          "sha256": "32865382acafc5184f8fc02cec2f0d6ab35f0194c1a12195c8fdaac309cb41b5",
+          "bytes": 98009202
+        },
+        "other": {
+          "sha256": "355169df039897e4c918c00f456fc57f1625bddcf0005c6090938a7f73c2ad60",
+          "bytes": 98009202
+        },
+        "vocals": {
+          "sha256": "9ce25395a20b736e25c8bcb9515272f6539ea399e7405c176b6833772df0e746",
+          "bytes": 98009202
+        }
+      },
+      "samples": 12251136
+    }
+  ],
+  "split_track_ids": {
+    "train": [
+      "train/Black Bloc - If You Want Success",
+      "train/Music Delta - 80s Rock",
+      "train/Lushlife - Toynbee Suite",
+      "train/Fergessen - Nos Palpitants",
+      "train/Traffic Experiment - Sirens",
+      "train/Wall Of Death - Femme",
+      "train/Actions - One Minute Smile",
+      "train/Sweet Lights - You Let Me Down",
+      "train/Atlantis Bound - It Was My Fault For Waiting",
+      "train/Music Delta - Punk",
+      "train/Fergessen - Back From The Start",
+      "train/Actions - Devil's Words",
+      "train/Music Delta - Country1",
+      "train/Dark Ride - Burning Bridges",
+      "train/The Scarlet Brand - Les Fleurs Du Mal",
+      "train/Secret Mountains - High Horse",
+      "train/Helado Negro - Mitad Del Mundo",
+      "train/Actions - South Of The Water",
+      "train/Night Panther - Fire",
+      "train/Music Delta - Hendrix",
+      "train/ANiMAL - Easy Tiger",
+      "train/Skelpolu - Together Alone",
+      "train/Johnny Lokke - Whisper To A Scream",
+      "train/Music Delta - Disco",
+      "train/Grants - PunchDrunk",
+      "train/Young Griffo - Pennies",
+      "train/AvaLuna - Waterduct",
+      "train/Tim Taler - Stalker",
+      "train/Snowmine - Curfews",
+      "train/Remember December - C U Next Time",
+      "train/Skelpolu - Human Mistakes",
+      "train/A Classic Education - NightOwl",
+      "train/Voelund - Comfort Lives In Belief",
+      "train/Music Delta - Country2",
+      "train/Fergessen - The Wind",
+      "train/The Long Wait - Back Home To Blue",
+      "train/Triviul - Dorothy",
+      "train/Leaf - Come Around",
+      "train/Leaf - Summerghost",
+      "train/The So So Glos - Emergency",
+      "train/Hollow Ground - Left Blind",
+      "train/Creepoid - OldTree",
+      "train/Faces On Film - Waiting For Ga",
+      "train/ANiMAL - Clinic A",
+      "train/Clara Berry And Wooldog - Waltz For My Victims",
+      "train/Swinging Steaks - Lost My Way",
+      "train/Music Delta - Rock",
+      "train/Port St Willow - Stay Even",
+      "train/Steven Clark - Bounty",
+      "train/Jay Menon - Through My Eyes",
+      "train/Alexander Ross - Velvet Curtain",
+      "train/Young Griffo - Blood To Bone",
+      "train/Strand Of Oaks - Spacestation",
+      "train/Music Delta - Gospel",
+      "train/Angela Thomas Wade - Milk Cow Blues",
+      "train/Meaxic - Take A Step",
+      "train/James May - All Souls Moon",
+      "train/Alexander Ross - Goodbye Bolero",
+      "train/Bill Chudziak - Children Of No-one",
+      "train/Traffic Experiment - Once More (With Feeling)",
+      "train/James May - On The Line",
+      "train/Drumtracks - Ghost Bitch",
+      "train/Phre The Eon - Everybody's Falling Apart",
+      "train/North To Alaska - All The Same",
+      "train/Clara Berry And Wooldog - Air Traffic",
+      "train/Dreamers Of The Ghetto - Heavy Love",
+      "train/St Vitus - Word Gets Around",
+      "train/Aimee Norwich - Child",
+      "train/Patrick Talbot - Set Me Free",
+      "train/Celestial Shore - Die For Us",
+      "train/Matthew Entwistle - Dont You Ever",
+      "train/James May - Dont Let Go",
+      "train/Music Delta - Reggae",
+      "train/Giselle - Moss",
+      "train/Young Griffo - Facade",
+      "train/Leaf - Wicked",
+      "train/Flags - 54",
+      "train/ANiMAL - Rockshow",
+      "train/BigTroubles - Phantom",
+      "train/Hezekiah Jones - Borrowed Heart",
+      "train/The Districts - Vermont",
+      "train/Patrick Talbot - A Reason To Leave",
+      "train/Triviul - Angelsaint",
+      "train/Titanium - Haunted Age",
+      "train/Cnoc An Tursa - Bannockburn",
+      "train/Hop Along - Sister Cities",
+      "train/Jokers, Jacks & Kings - Sea Of Leaves",
+      "train/Invisible Familiars - Disturbing Wildlife",
+      "train/Meaxic - You Listen",
+      "train/Music Delta - Rockabilly"
+    ],
+    "validation": [
+      "train/The Wrong'Uns - Rothko",
+      "train/Music Delta - Britpop",
+      "train/Chris Durban - Celebrate",
+      "train/Music Delta - Grunge",
+      "train/Johnny Lokke - Promises & Lies",
+      "train/Music Delta - Beatles",
+      "train/Clara Berry And Wooldog - Stella",
+      "train/Spike Mullings - Mike's Sulking",
+      "train/Auctioneer - Our Future Faces",
+      "train/James May - If You Say"
+    ]
+  },
+  "preparation_script_sha256": "06a18e6c33c9ce5494f1ac8a0e0a78234432d3b580f536fa8d728bf0b2e2f94e",
+  "prepared_date": "2026-10-31",
+  "storage_note": "Decoded audio is in the current working environment; not uploaded to GitHub or a persistent cloud dataset volume."
+}
