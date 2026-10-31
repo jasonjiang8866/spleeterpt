@@ -166,7 +166,7 @@ def resolve_image():
 
 
 def launch(api, task="smoke"):
-    if task not in {"smoke", "quality"}:
+    if task not in {"smoke", "quality", "training"}:
         raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
     if os.environ.get("GITHUB_REF") != "refs/heads/main":
@@ -254,6 +254,10 @@ def launch(api, task="smoke"):
 
                     validate_quality(result, sha, output / "quality")
                     print("PASS: complete CUDA quality pilot (not a full benchmark)", flush=True)
+                elif task == "training":
+                    from training_result import validate_training
+
+                    validate_training(result, sha)
                 else:
                     validate_result(result, sha)
                     print("PASS: full-size CUDA train/validation/resume/inference", flush=True)
@@ -267,14 +271,16 @@ def launch(api, task="smoke"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["preflight", "smoke", "quality", "cleanup", "reap"])
+    parser.add_argument(
+        "action", choices=["preflight", "smoke", "quality", "training", "cleanup", "reap"]
+    )
     args = parser.parse_args()
     identity()
     api = Runpod()
     if args.action == "preflight":
         api.pods()
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
-    elif args.action in {"smoke", "quality"}:
+    elif args.action in {"smoke", "quality", "training"}:
         launch(api, args.action)
     else:
         cleanup(api, expired=args.action == "reap")

@@ -1,0 +1,9 @@
+{
+  "train": {
+    "train/A Classic Education - NightOwl.stem.mp4": "4ca541371b2d07d65f81ddda3d82cd57b49c403a5480b9e508cda239568b8a55",
+    "train/ANiMAL - Clinic A.stem.mp4": "d22a6e93ede523c154b67460179029329f5913759ed7ad66779ed6f08af97f69"
+  },
+  "validation": {
+    "train/ANiMAL - Easy Tiger.stem.mp4": "b367dfb99cdf709b85c65b34789d962d698fe82ee5578ef2ef319b66d9e35eb1"
+  }
+}

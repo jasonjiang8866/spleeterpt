@@ -2,8 +2,9 @@
 
 For GitHub Actions provisioning, see [Actions setup](actions.md). That workflow
 uses the repository Secret `RUNPOD_API_KEY` and rents a GPU only on explicit manual
-dispatch. The commands below are for an already configured GPU Pod. Real RunPod
-CUDA validation is still pending; offline tests do not establish GPU compatibility.
+dispatch. The commands below are for an already configured GPU Pod. Full-size synthetic CUDA training/resume and the five-clip music-quality pilot
+have passed on RunPod. For real train-pool music acceptance, see
+[training acceptance](training.md); for quality scope, see [quality pilot](quality.md).
 
 ## 1. Environment and persistent storage
 
@@ -90,5 +91,6 @@ without deterministic kernels; measure throughput before a long run.
 
 Measure held-out quality and listening samples, record steps/sec and peak VRAM,
 and test a real Pod restart/resume. This version uses single-device Adam;
-multi-GPU/DDP, alternative optimizers, and SDR evaluation are follow-up work.
+multi-GPU/DDP and alternative optimizers are follow-up work.
+The [MUSDB evaluator](../docs/musdb-evaluation.md) handles held-out SDR comparisons.
 No cloud credentials belong in this repository.
