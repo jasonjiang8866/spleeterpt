@@ -223,7 +223,8 @@ def launch(api, task="smoke"):
         if task == "finetune" and volume["id"] != "j3aqjpw393":
             raise RuntimeError("Fine-tune validation requires the verified data volume")
     image = resolve_image()
-    expiry = int(time.time()) + 1800
+    lease_seconds = 3600 if task == "finetune" else 1800
+    expiry = int(time.time()) + lease_seconds
     name = f"spt-{repo_id}-{run}-{attempt}-{expiry}"
     token = secrets.token_urlsafe(32)
     print("::add-mask::" + token, flush=True)
@@ -290,7 +291,7 @@ def launch(api, task="smoke"):
             raise RuntimeError("Pod rate missing or above $1/hour; releasing immediately")
         metadata["cost_per_hour"] = rate
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
-        print(f"Created {pod_id}: ${rate}/hour; lease 30 minutes", flush=True)
+        print(f"Created {pod_id}: ${rate}/hour; lease {lease_seconds // 60} minutes", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last_phase = None
         last_progress = None

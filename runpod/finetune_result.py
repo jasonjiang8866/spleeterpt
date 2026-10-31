@@ -39,6 +39,7 @@ def validate_finetune(result, sha, volume_id, pod_id):
         or volume_id != evidence["volume"]["id"]
         or r.get("pod_id") != pod_id
         or r.get("experiment") != "41189465452-1"
+        or r.get("results_directory") != f"/data/evaluations/41189465452-1/{pod_id}"
         or r.get("protocol") != PROTOCOL
         or r.get("dataset") != evidence["resume"]["dataset"]
         or r.get("backup") != evidence["resume"]["backup"]

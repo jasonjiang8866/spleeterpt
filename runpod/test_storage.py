@@ -9,6 +9,31 @@ from test_control import ENV, FakeAPI, control, pod, worker
 
 
 class StorageTests(unittest.TestCase):
+    def test_only_fullsong_evaluation_gets_longer_lease_with_same_price_cleanup_guard(self):
+        volume = {
+            "id": "j3aqjpw393",
+            "name": NAME,
+            "size": 80,
+            "type": "STANDARD",
+            "dataCenter": "EU-RO-1",
+        }
+        for task, seconds in (("smoke", 1800), ("finetune", 3600)):
+            api = FakeAPI()
+            api.rate = "1.01"
+            with (
+                tempfile.TemporaryDirectory() as folder,
+                patch.dict("os.environ", {**ENV, "SPT_EXPERIMENT": "41189465452-1"}),
+                patch.object(control, "Path", side_effect=lambda p: Path(folder) / p),
+                patch.object(control, "resolve_image", return_value="image"),
+                patch.object(control.time, "time", return_value=100),
+                patch("storage.ensure_volume", return_value=volume),
+                self.assertRaisesRegex(RuntimeError, "rate"),
+            ):
+                control.launch(api, task)
+            self.assertEqual(int(api.payload["env"]["SPT_EXPIRY"]), 100 + seconds)
+            self.assertEqual(api.creates, 1)
+            self.assertEqual(api.deleted, ["/pods/abc"])
+
     def test_volume_selection_fails_closed_and_never_deletes(self):
         v = {"id": "vol123", "name": NAME, "size": 80, "type": "STANDARD", "dataCenter": "US-KS-2"}
         api = FakeAPI()

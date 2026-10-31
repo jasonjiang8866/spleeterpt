@@ -113,6 +113,7 @@ def report(modules, monkeypatch):
             "volume_id": evidence["volume"]["id"],
             "pod_id": "example",
             "experiment": "41189465452-1",
+            "results_directory": "/data/evaluations/41189465452-1/example",
             "protocol": ev.PROTOCOL,
             "dataset": evidence["resume"]["dataset"],
             "provenance_json": provenance_json,
