@@ -188,6 +188,14 @@ def launch(api, task="smoke"):
     sha = os.environ["GITHUB_SHA"]
     if not re.fullmatch(r"[a-f0-9]{40}", sha):
         raise RuntimeError("Invalid source commit")
+    source_commit = os.environ.get("SPT_SOURCE_COMMIT", "")
+    if source_commit and (
+        task != "persistent-resume" or not re.fullmatch(r"[a-f0-9]{40}", source_commit)
+    ):
+        raise RuntimeError("Invalid persistent source commit")
+    experiment = os.environ.get("SPT_EXPERIMENT", "")
+    if experiment and not re.fullmatch(r"[0-9]+-[0-9]+", experiment):
+        raise RuntimeError("Invalid persistent experiment")
     restore_source = None
     if task == "recovery-resume":
         from recovery_result import validate_bundle, validate_recovery
@@ -258,6 +266,8 @@ def launch(api, task="smoke"):
             SPT_VOLUME_NAME=volume["name"],
             SPT_EXPERIMENT=os.environ.get("SPT_EXPERIMENT", run + "-" + attempt),
         )
+        if source_commit:
+            payload["env"]["SPT_SOURCE_COMMIT"] = source_commit
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
     if restore_source:
         payload["env"]["SPT_RESTORE_DESCRIPTOR"] = json.dumps(restore_source["bundle"])
@@ -321,6 +331,12 @@ def launch(api, task="smoke"):
                     from persistent_result import validate_persistent
 
                     validate_persistent(result, sha, task, volume["id"], pod_id)
+                    if result["report"].get("experiment") != payload["env"]["SPT_EXPERIMENT"]:
+                        raise RuntimeError("Persistent experiment mismatch")
+                    if task == "persistent-resume" and result["report"].get("source_commit") != (
+                        source_commit or sha
+                    ):
+                        raise RuntimeError("Persistent source commit mismatch")
                 elif task == "quality":
                     from quality_result import validate_quality
 

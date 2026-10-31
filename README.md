@@ -14,7 +14,7 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
-| Persistent training pilot | 80 GB STANDARD volume created in EU-RO-1; full data preparation and 500-file hash validation passed. Periodic checkpoint training / new-Pod continuation acceptance is running |
+| Persistent training pilot | 80 GB STANDARD volume created in EU-RO-1; full data preparation and 500-file hash validation passed. Step 10 checkpoint generations saved; a tuple/list config acceptance bug blocked the original run. The validator is fixed; replacement-Pod continuation is pending |
 | Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),

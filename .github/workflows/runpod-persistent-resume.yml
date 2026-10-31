@@ -1,0 +1,52 @@
+name: RunPod resume persistent pilot
+on:
+  workflow_dispatch:
+    inputs:
+      experiment:
+        description: 'Existing experiment directory: original Actions run ID-attempt'
+        type: string
+        required: true
+      source_commit:
+        description: 'Exact 40-character source commit recorded in experiment.json; review training compatibility before resuming'
+        type: string
+        required: true
+      confirm_paid_gpu:
+        description: 'Rent one RTX 4090 for up to 30 minutes to resume a verified step-10 pilot'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+jobs:
+  resume:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_gpu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      SPT_EXPERIMENT: ${{ inputs.experiment }}
+      SPT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore verified step 10 and finish the persistent pilot
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py persistent-resume
+      - name: Delete compute only; retain network volume
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: persistent-resume-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          retention-days: 14

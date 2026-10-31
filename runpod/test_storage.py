@@ -60,3 +60,38 @@ class ProgressTests(unittest.TestCase):
             self.assertIsNone(worker.progress(path))
             path.write_text("Durable checkpoint committed: step 10\n" + "x" * 70000)
             self.assertIsNone(worker.progress(path))
+
+
+class PersistentAcceptanceTests(unittest.TestCase):
+    def test_real_step_ten_report_accepts_tuple_and_json_config(self):
+        import json
+
+        from persistent_result import validate_persistent
+
+        r = json.loads(
+            (
+                Path(__file__).resolve().parents[1]
+                / "docs/results/persistent-pilot-41189465452.json"
+            ).read_text()
+        )["interrupted_training"]
+        for in_memory in (False, True):
+            report = copy.deepcopy(r)
+            if in_memory:
+                for key in ("instruments", "filters"):
+                    report["config"][key] = tuple(report["config"][key])
+            validate_persistent(
+                {"status": "passed", "report": report},
+                r["commit"],
+                "persistent-train",
+                r["volume_id"],
+                r["pod_id"],
+            )
+            report["config"]["encoder_activation"] = "relu"
+            with self.assertRaisesRegex(RuntimeError, "wrong config"):
+                validate_persistent(
+                    {"status": "passed", "report": report},
+                    r["commit"],
+                    "persistent-train",
+                    r["volume_id"],
+                    r["pod_id"],
+                )

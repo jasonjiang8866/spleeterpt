@@ -185,7 +185,8 @@ def run(stage):
             meta = json.loads(meta_path.read_text())
             if (
                 meta["dataset"] != dataset
-                or meta["commit"] != os.environ["SPT_COMMIT"]
+                or meta["commit"]
+                != (os.environ.get("SPT_SOURCE_COMMIT") or os.environ["SPT_COMMIT"])
                 or meta["source_pod"] == os.environ["RUNPOD_POD_ID"]
             ):
                 raise RuntimeError("Resume must use same data/commit on a different Pod")
@@ -238,6 +239,7 @@ def run(stage):
         r = base_report(stage, started, dataset)
         r.update(
             source_pod=meta["source_pod"],
+            source_commit=meta["commit"],
             cursor=[cp[k] for k in ("step", "epoch", "next_batch")],
             optimizer_steps=sorted({int(v["step"]) for v in cp["optimizer"]["state"].values()}),
             weights_finite=all(torch.isfinite(t).all().item() for t in cp["model"].values()),
