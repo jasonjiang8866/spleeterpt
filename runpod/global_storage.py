@@ -10,7 +10,8 @@ CPU_RATE_CAP = 0.20
 
 
 def valid_id(value):
-    return isinstance(value, str) and re.fullmatch(r"gsb_[A-Za-z0-9_-]{1,100}", value)
+    # REST v2 specifies an opaque string, not the `gsb_` prefix used in examples.
+    return isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,128}", value)
 
 
 def ensure_global(api, *, create=False):
