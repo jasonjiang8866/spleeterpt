@@ -1,8 +1,10 @@
 """Serve a token-protected, bounded result over the Runpod HTTPS proxy."""
 
+import hashlib
 import hmac
 import json
 import os
+import shutil
 import signal
 import subprocess
 import threading
@@ -12,6 +14,9 @@ from pathlib import Path
 
 RESULT = {"status": "running"}
 TOKEN = os.environ.get("SPT_RESULT_TOKEN", "")
+RESTORE_LOCK = threading.Lock()
+EXPORT_FILE = Path("/workspace/checkpoint.tar")
+RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -20,6 +25,17 @@ class Handler(BaseHTTPRequestHandler):
             self.headers.get("Authorization", ""), "Bearer " + TOKEN
         ):
             self.send_error(401)
+            return
+        if (
+            self.path == "/checkpoint"
+            and RESULT.get("status") == "passed"
+            and EXPORT_FILE.is_file()
+        ):
+            self.send_response(200)
+            self.send_header("Content-Length", str(EXPORT_FILE.stat().st_size))
+            self.end_headers()
+            with EXPORT_FILE.open("rb") as stream:
+                shutil.copyfileobj(stream, self.wfile)
             return
         if self.path != "/result":
             self.send_error(404)
@@ -30,6 +46,58 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+
+    def do_PUT(self):
+        from recovery_result import MAX_BUNDLE
+
+        if not TOKEN or not hmac.compare_digest(
+            self.headers.get("Authorization", ""), "Bearer " + TOKEN
+        ):
+            self.send_error(401)
+            return
+        if self.path != "/restore" or os.environ.get("SPT_TASK") != "recovery-resume":
+            self.send_error(404)
+            return
+        with RESTORE_LOCK:
+            temporary = RESTORE_FILE.with_suffix(".part")
+            try:
+                spec = json.loads(os.environ["SPT_RESTORE_DESCRIPTOR"])
+                size = int(self.headers.get("Content-Length", "-1"))
+                offset = int(self.headers.get("X-Offset", "0"))
+                existing = temporary.stat().st_size if temporary.exists() else 0
+                if (
+                    not 0 < size <= 8 * 1024 * 1024
+                    or not 0 < spec["bytes"] <= MAX_BUNDLE
+                    or offset != existing
+                    or offset + size > spec["bytes"]
+                    or RESTORE_FILE.exists()
+                ):
+                    self.send_error(409)
+                    return
+                self.connection.settimeout(120)
+                chunk = self.rfile.read(size)
+                if len(chunk) != size:
+                    raise ValueError("Short upload")
+                with temporary.open("ab") as stream:
+                    stream.write(chunk)
+                reply = {"received": offset + size}
+                if offset + size == spec["bytes"]:
+                    h = hashlib.sha256()
+                    with temporary.open("rb") as stream:
+                        for block in iter(lambda: stream.read(1024 * 1024), b""):
+                            h.update(block)
+                    if h.hexdigest() != spec["sha256"]:
+                        temporary.unlink()
+                        raise ValueError("Upload checksum mismatch")
+                    os.replace(temporary, RESTORE_FILE)
+                    reply["sha256"] = h.hexdigest()
+                data = json.dumps(reply).encode()
+                self.send_response(201)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+            except (ValueError, OSError):
+                self.send_error(400)
 
     def log_message(self, *args):
         pass
@@ -49,7 +117,7 @@ def run():
             ["python", "-m", "pip", "install", "-e", "."],
             ["python", "runpod/gpu_smoke.py", "--output", str(report)],
         ]
-        if task in {"quality", "training"}:
+        if task in {"quality", "training", "recovery-export", "recovery-resume"}:
             python = "/workspace/eval-venv/bin/python"
             commands = [
                 [
@@ -80,7 +148,18 @@ def run():
                     "scipy==1.15.3",
                 ],
                 [python, "-m", "pip", "check"],
-                [python, f"runpod/{task}.py", "--output", str(report)],
+                (
+                    [
+                        python,
+                        "runpod/recovery.py",
+                        "--stage",
+                        task.split("-", 1)[1],
+                        "--output",
+                        str(report),
+                    ]
+                    if task.startswith("recovery-")
+                    else [python, f"runpod/{task}.py", "--output", str(report)]
+                ),
             ]
         elif task != "smoke":
             raise ValueError("Unknown worker task")

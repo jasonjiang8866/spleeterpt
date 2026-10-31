@@ -56,24 +56,10 @@ def phase(argv, output):
     )
 
 
-def run():
+def prepare_preview(folder):
     import numpy as np
     import soundfile as sf
-    import torch
 
-    from spleeterpt.audio import read_audio, separate
-    from spleeterpt.checkpoint import load_model, read_checkpoint
-    from spleeterpt.config import ModelConfig
-
-    if torch.__version__ != "2.8.0+cu128" or not torch.cuda.is_available():
-        raise RuntimeError("Stable torch 2.8.0+cu128 and CUDA required")
-    torch.set_num_threads(4)
-    torch.backends.cuda.matmul.allow_tf32 = False
-    torch.backends.cudnn.allow_tf32 = False
-    torch.backends.cudnn.benchmark = False
-    torch.use_deterministic_algorithms(True)
-    started = time.monotonic()
-    folder = Path("/workspace/training-preview")
     folder.mkdir(exist_ok=False)
     spec = json.loads((ROOT / "runpod/training-assets.json").read_text())
     archive = download("preview.zip", folder)
@@ -116,6 +102,26 @@ def run():
             (folder / f"{split}.jsonl").write_text(
                 "".join(json.dumps({"track": p}) + "\n" for p in paths)
             )
+    return spec, decoded
+
+
+def run():
+    import torch
+
+    from spleeterpt.audio import read_audio, separate
+    from spleeterpt.checkpoint import load_model, read_checkpoint
+    from spleeterpt.config import ModelConfig
+
+    if torch.__version__ != "2.8.0+cu128" or not torch.cuda.is_available():
+        raise RuntimeError("Stable torch 2.8.0+cu128 and CUDA required")
+    torch.set_num_threads(4)
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cudnn.benchmark = False
+    torch.use_deterministic_algorithms(True)
+    started = time.monotonic()
+    folder = Path("/workspace/training-preview")
+    spec, decoded = prepare_preview(folder)
     reports = []
     for stems in (2, 4):
         weights = folder / f"{stems}stems"

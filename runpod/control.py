@@ -166,7 +166,7 @@ def resolve_image():
 
 
 def launch(api, task="smoke"):
-    if task not in {"smoke", "quality", "training"}:
+    if task not in {"smoke", "quality", "training", "recovery-export", "recovery-resume"}:
         raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
     if os.environ.get("GITHUB_REF") != "refs/heads/main":
@@ -174,6 +174,16 @@ def launch(api, task="smoke"):
     sha = os.environ["GITHUB_SHA"]
     if not re.fullmatch(r"[a-f0-9]{40}", sha):
         raise RuntimeError("Invalid source commit")
+    restore_source = None
+    if task == "recovery-resume":
+        from recovery_result import validate_bundle, validate_recovery
+
+        restored = json.loads(Path("restore-input/result.json").read_text())
+        validate_recovery(restored, sha, "export")
+        restore_source = restored["report"]
+        validate_bundle(
+            Path("restore-input/checkpoint.tar"), restore_source["bundle"], complete=False
+        )
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     if not run.isdigit() or not attempt.isdigit():
         raise RuntimeError("Invalid Actions identity")
@@ -220,6 +230,8 @@ def launch(api, task="smoke"):
             "PYTHONUNBUFFERED": "1",
         },
     }
+    if restore_source:
+        payload["env"]["SPT_RESTORE_DESCRIPTOR"] = json.dumps(restore_source["bundle"])
     try:
         pod = api.call("/pods", "POST", payload)
         pod_id = pod["id"]
@@ -237,12 +249,24 @@ def launch(api, task="smoke"):
         print(f"Created {pod_id}: ${rate}/hour; lease 30 minutes", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last_phase = None
+        restore_uploaded = False
         while time.time() < expiry - 90:
             try:
                 result = request(url, token=token)
             except RuntimeError:
                 time.sleep(15)
                 continue
+            if restore_source and not restore_uploaded:
+                from transfer import upload_bundle
+
+                upload_bundle(
+                    url.removesuffix("result") + "restore",
+                    token,
+                    Path("restore-input/checkpoint.tar"),
+                    restore_source["bundle"],
+                )
+                restore_uploaded = True
+                print("Restore checkpoint delivered and SHA-256 verified", flush=True)
             phase = result.get("phase")
             if isinstance(phase, str) and phase != last_phase:
                 print("Worker: " + phase[:100], flush=True)
@@ -258,6 +282,22 @@ def launch(api, task="smoke"):
                     from training_result import validate_training
 
                     validate_training(result, sha)
+                elif task.startswith("recovery-"):
+                    from recovery_result import validate_recovery
+                    from transfer import download_bundle
+
+                    stage = task.split("-", 1)[1]
+                    validate_recovery(result, sha, stage, restore_source)
+                    if result["report"]["pod_id"] != pod_id:
+                        raise RuntimeError("Recovery Pod identity mismatch")
+                    download_bundle(
+                        url.removesuffix("result") + "checkpoint",
+                        token,
+                        result["report"]["bundle"],
+                        output / "checkpoint.tar",
+                        complete=stage == "resume",
+                    )
+                    print("PASS: checkpoint downloaded and every member hash verified", flush=True)
                 else:
                     validate_result(result, sha)
                     print("PASS: full-size CUDA train/validation/resume/inference", flush=True)
@@ -272,7 +312,17 @@ def launch(api, task="smoke"):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "action", choices=["preflight", "smoke", "quality", "training", "cleanup", "reap"]
+        "action",
+        choices=[
+            "preflight",
+            "smoke",
+            "quality",
+            "training",
+            "recovery-export",
+            "recovery-resume",
+            "cleanup",
+            "reap",
+        ],
     )
     args = parser.parse_args()
     identity()
@@ -280,7 +330,7 @@ def main():
     if args.action == "preflight":
         api.pods()
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
-    elif args.action in {"smoke", "quality", "training"}:
+    elif args.action in {"smoke", "quality", "training", "recovery-export", "recovery-resume"}:
         launch(api, args.action)
     else:
         cleanup(api, expired=args.action == "reap")
