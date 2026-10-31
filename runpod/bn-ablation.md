@@ -6,6 +6,12 @@ It scores global stereo SI-SDR only, with the exact previous implementation.
 BSSEval-v4 is deliberately not recomputed; the two metrics are not interchangeable.
 All 50 test songs remain untouched. GPU results are pending.
 
+Initial [launch attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41217176398)
+was rejected by the provider with HTTP 400 before a Pod ID was returned. Both cleanup
+checks found zero managed Pods. No scoring occurred; the cause is not yet established.
+A GET-only catalog check and bounded fixed-label error classification now aid diagnosis;
+neither retries provisioning nor prints provider response text.
+
 | Variant | Parameters, including BN gamma/beta | BN running buffers |
 |---|---|---|
 | official_converted | Official | Official |
