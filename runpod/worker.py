@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import json
 import os
-import shutil
+import re
 import signal
 import subprocess
 import threading
@@ -31,11 +31,23 @@ class Handler(BaseHTTPRequestHandler):
             and RESULT.get("status") == "passed"
             and EXPORT_FILE.is_file()
         ):
-            self.send_response(200)
-            self.send_header("Content-Length", str(EXPORT_FILE.stat().st_size))
+            match = re.fullmatch(r"bytes=(\d+)-(\d+)", self.headers.get("Range", ""))
+            total = EXPORT_FILE.stat().st_size
+            if not match:
+                self.send_error(416)
+                return
+            start, end = map(int, match.groups())
+            if not 0 <= start <= end < total or end - start + 1 > 8 * 1024 * 1024:
+                self.send_error(416)
+                return
+            self.send_response(206)
+            self.send_header("Content-Type", "application/octet-stream")
+            self.send_header("Content-Length", str(end - start + 1))
+            self.send_header("Content-Range", f"bytes {start}-{end}/{total}")
             self.end_headers()
             with EXPORT_FILE.open("rb") as stream:
-                shutil.copyfileobj(stream, self.wfile)
+                stream.seek(start)
+                self.wfile.write(stream.read(end - start + 1))
             return
         if self.path != "/result":
             self.send_error(404)
