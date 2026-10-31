@@ -248,6 +248,8 @@ def launch(api, task="smoke"):
         "persistent-train",
         "persistent-resume",
         "global-export",
+        "global-training-export",
+        "frozen",
     }:
         raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
@@ -284,21 +286,24 @@ def launch(api, task="smoke"):
         raise RuntimeError("A managed Pod already exists; run cleanup before another smoke test")
     volume, global_volume, cpu, regions, storage_proof = None, None, None, None, None
     global_bn = task == "bn" and os.environ.get("SPT_GLOBAL_BN") == "1"
+    global_gpu = global_bn or task == "frozen"
+    global_copy = task in {"global-export", "global-training-export"}
     if (
         task.startswith("persistent-")
-        or task in {"finetune", "global-export"}
+        or task == "finetune"
+        or global_copy
         or (task == "bn" and not global_bn)
     ):
         from storage import ensure_volume
 
         volume = ensure_volume(api, create=task == "persistent-prepare")
-        if task in {"finetune", "bn", "global-export"} and volume["id"] != "j3aqjpw393":
+        if (task in {"finetune", "bn"} or global_copy) and volume["id"] != "j3aqjpw393":
             raise RuntimeError("Fine-tune validation requires the verified data volume")
     gpu_id, rate_cap = profile(task)
-    if task == "global-export" or global_bn:
+    if global_copy or global_gpu:
         from global_storage import CPU_RATE_CAP, cpu_placement, ensure_global, mig_regions
 
-        if task == "global-export":
+        if global_copy:
             cpu = cpu_placement(api, volume["dataCenter"])
             rate_cap = CPU_RATE_CAP
             global_volume = ensure_global(api, create=True)
@@ -307,13 +312,19 @@ def launch(api, task="smoke"):
 
             global_volume = ensure_global(api)
             exported = json.loads(Path("global-input/result.json").read_text())
-            validate_report(exported, sha, global_volume["id"], exported["report"]["pod_id"])
+            validate_report(
+                exported,
+                sha,
+                global_volume["id"],
+                exported["report"]["pod_id"],
+                training=task == "frozen",
+            )
             storage_proof = {
                 "mode": "global-staged",
                 "global_volume_id": global_volume["id"],
                 "source_volume_id": "j3aqjpw393",
                 "snapshot_sha256": exported["report"]["snapshot_sha256"],
-                "verified_audio_files": 50,
+                "verified_audio_files": 500 if task == "frozen" else 50,
             }
             regions = mig_regions(api, gpu_id)
     if (
@@ -323,7 +334,7 @@ def launch(api, task="smoke"):
     ):
         raise RuntimeError("Selected MIG GPU unavailable at the pinned volume; no Pod created")
     image = resolve_image("library/python:3.12-bookworm") if cpu else resolve_image()
-    lease_seconds = 3600 if task == "finetune" else 1800
+    lease_seconds = 3600 if task in {"finetune", "frozen"} else 1800
     expiry = int(time.time()) + lease_seconds
     name = f"spt-{repo_id}-{run}-{attempt}-{expiry}"
     token = secrets.token_urlsafe(32)
@@ -386,12 +397,12 @@ def launch(api, task="smoke"):
         payload["env"].update(
             SPT_GLOBAL_VOLUME_ID=global_volume["id"], SPT_GLOBAL_VOLUME_NAME=GLOBAL_NAME
         )
-        if global_bn:
-            payload["disk"] = 40
+        if global_gpu:
+            payload["disk"] = 80 if task == "frozen" else 40
             payload["dataCenterIds"] = regions
             payload["env"].update(
                 SPT_VOLUME_ID=global_volume["id"],
-                SPT_EXPERIMENT="41189465452-1",
+                SPT_EXPERIMENT=run + "-" + attempt if task == "frozen" else "41189465452-1",
                 SPT_SNAPSHOT_SHA256=storage_proof["snapshot_sha256"],
             )
         if cpu:
@@ -411,7 +422,7 @@ def launch(api, task="smoke"):
         rate = float(detail.get("cost", "nan"))
         if not math.isfinite(rate) or not 0 < rate <= rate_cap:
             raise RuntimeError(f"Pod rate missing or above ${rate_cap}/hour; releasing immediately")
-        if task == "bn" and detail.get("gpu", {}).get("id") != gpu_id:
+        if task in {"bn", "frozen"} and detail.get("gpu", {}).get("id") != gpu_id:
             raise RuntimeError("Provider returned a different GPU; releasing immediately")
         if cpu:
             metadata["cpu"] = cpu
@@ -431,7 +442,9 @@ def launch(api, task="smoke"):
             except RuntimeError:
                 time.sleep(15)
                 continue
-            if (task.startswith("recovery-") or task in {"finetune", "bn"}) and not transfer_probed:
+            if (
+                task.startswith("recovery-") or task in {"finetune", "bn", "frozen"}
+            ) and not transfer_probed:
                 from transfer import probe_transfer
 
                 probe_transfer(url.removesuffix("result") + "checkpoint", token)
@@ -461,12 +474,35 @@ def launch(api, task="smoke"):
                 last_phase = phase
             if result.get("status") in {"passed", "failed"}:
                 (output / "result.json").write_text(json.dumps(result, indent=2))
-                if task == "global-export":
+                if global_copy:
                     from global_inputs import validate_report
 
-                    validate_report(result, sha, global_volume["id"], pod_id)
+                    validate_report(
+                        result,
+                        sha,
+                        global_volume["id"],
+                        pod_id,
+                        training=task == "global-training-export",
+                    )
                     print(
                         "PASS: pinned validation snapshot copied and read-back verified", flush=True
+                    )
+                elif task == "frozen":
+                    from frozen_result import validate_frozen
+                    from finetune_result import download_export
+
+                    validate_frozen(
+                        result, sha, pod_id, storage_proof, payload["env"]["SPT_EXPERIMENT"]
+                    )
+                    download_export(
+                        url.removesuffix("result") + "checkpoint",
+                        token,
+                        result["report"],
+                        output / "listening-and-metrics.tar",
+                    )
+                    print(
+                        "PASS: matched BN training, durable checkpoints and full-song evaluation",
+                        flush=True,
                     )
                 elif task.startswith("persistent-"):
                     from persistent_result import validate_persistent
@@ -553,6 +589,8 @@ def main():
             "persistent-train",
             "persistent-resume",
             "global-export",
+            "global-training-export",
+            "frozen",
             "cleanup",
             "reap",
         ],

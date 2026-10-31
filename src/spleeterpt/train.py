@@ -17,6 +17,17 @@ from .data import StemDataset, manifest_fingerprint
 from .model import Spleeter
 
 
+def training_mode(model, *, freeze_bn_stats=False):
+    """Train parameters and dropout; optionally keep BN's stored moments fixed."""
+    model.train()
+    if freeze_bn_stats:
+        for module in model.modules():
+            if isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
+                if not module.track_running_stats:
+                    raise ValueError("freezing BN statistics requires tracked running statistics")
+                module.eval()
+
+
 def spectral_loss(model, mixture, targets, config, *, precision, device):
     # STFT stays float32; only convolutions use mixed precision.
     mix = stft(mixture.float(), config).abs()[..., : config.frequency_bins]
@@ -83,6 +94,7 @@ def run_training(args):
         "lr": args.lr,
         "grad_clip": args.grad_clip,
         "deterministic": args.deterministic,
+        "freeze_bn_stats": getattr(args, "freeze_bn_stats", False),
     }
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
@@ -99,7 +111,8 @@ def run_training(args):
         model.load_state_dict(initial["model"], strict=True)
     if args.resume:
         checkpoint = read_checkpoint(args.resume)
-        if ModelConfig(**checkpoint["config"]) != config or checkpoint["signature"] != signature:
+        previous_signature = {"freeze_bn_stats": False, **checkpoint["signature"]}
+        if ModelConfig(**checkpoint["config"]) != config or previous_signature != signature:
             raise ValueError(
                 "resume configuration/data differs; use --init for a new fine-tuning run"
             )
@@ -168,7 +181,7 @@ def run_training(args):
             pin_memory=pin,
             generator=torch.Generator().manual_seed(args.seed + current_epoch),
         )
-        model.train()
+        training_mode(model, freeze_bn_stats=signature["freeze_bn_stats"])
         for batch_index, (mixture, targets) in enumerate(loader):
             if current_epoch == epoch and batch_index < next_batch:
                 continue

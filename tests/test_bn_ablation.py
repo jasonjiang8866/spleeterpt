@@ -132,9 +132,16 @@ def test_full_report_and_tamper_rejection(bn, modules, report):  # noqa: F811
             )
         ),
     }
-    validate = lambda q: checker.validate_finetune(
-        {"status": "passed", "report": q}, q["commit"], q["volume_id"], q["pod_id"], ablation=True
-    )
+
+    def validate(q):
+        checker.validate_finetune(
+            {"status": "passed", "report": q},
+            q["commit"],
+            q["volume_id"],
+            q["pod_id"],
+            ablation=True,
+        )
+
     validate(r)
     for mutate in (
         lambda q: q["records"].pop(),

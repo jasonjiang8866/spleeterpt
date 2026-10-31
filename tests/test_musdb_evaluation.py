@@ -345,7 +345,10 @@ def test_runner_atomic_completion_and_failed_track(ev, tmp_path, monkeypatch, fa
             threadpool_limits=lambda **kw: SimpleNamespace(restore_original_limits=lambda: None)
         ),
     )
-    outputs = lambda audio: {name: audio * 0.5 for name in config.instruments}
+
+    def outputs(audio):
+        return {name: audio * 0.5 for name in config.instruments}
+
     monkeypatch.setattr(spleeterpt.audio, "separate", lambda model, audio: outputs(audio))
     monkeypatch.setitem(
         sys.modules,

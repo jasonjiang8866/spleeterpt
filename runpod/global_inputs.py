@@ -13,6 +13,7 @@ from global_storage import SOURCE_ID, valid_id
 from quality import ROOT, digest
 
 PREFIX = "step90-validation-v1"
+TRAIN_PREFIX = "musdb18-training-v1"
 MAX_BYTES = 8 * 1024**3
 EXPERIMENT = "41189465452-1"
 BACKUP = "experiments/" + EXPERIMENT + "/backups/"
@@ -26,7 +27,20 @@ def evidence():
     return json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
 
 
-def generated(provenance_json):
+def generated(provenance_json, *, training=False):
+    if training:
+        pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
+        provenance = json.loads(provenance_json)
+        files = {"musdb18/provenance.json": provenance_json.encode()}
+        for split, tracks in pinned["split_track_ids"].items():
+            raw = "".join(
+                json.dumps({"track": "/data/musdb18/train-pool/" + t.removeprefix("train/")}) + "\n"
+                for t in tracks
+            ).encode()
+            if hashlib.sha256(raw).hexdigest() != provenance["manifests"][split + ".jsonl"]:
+                raise ValueError("Training manifest reconstruction differs from pinned bytes")
+            files["musdb18/manifests/" + split + ".jsonl"] = raw
+        return files
     backup = evidence()["resume"]["backup"]
     return {
         "musdb18/provenance.json": provenance_json.encode(),
@@ -35,7 +49,7 @@ def generated(provenance_json):
     }
 
 
-def manifest(provenance_json):
+def manifest(provenance_json, *, training=False):
     record = evidence()
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
     if (
@@ -53,6 +67,8 @@ def manifest(provenance_json):
     ):
         raise ValueError("Source inventory mismatch")
     selected = set(pinned["split_track_ids"]["validation"])
+    if training:
+        selected.update(pinned["split_track_ids"]["train"])
     files = {}
     found = set()
     for track in provenance["tracks"]:
@@ -66,23 +82,25 @@ def manifest(provenance_json):
             files[f"musdb18/train-pool/{PurePosixPath(track_id).name}/{stem}.wav"] = {
                 k: info[k] for k in ("bytes", "sha256")
             }
-    if found != selected or len(selected) != 10 or len(files) != 50:
-        raise ValueError("Expected ten complete validation songs")
-    backup = record["resume"]["backup"]
-    for name, spec in backup["files"].items():
-        files[BACKUP + backup["generation"] + "/" + name] = spec
-    for name, data in generated(provenance_json).items():
+    count = 100 if training else 10
+    if found != selected or len(selected) != count or len(files) != count * 5:
+        raise ValueError("Expected complete pinned songs")
+    if not training:
+        backup = record["resume"]["backup"]
+        for name, spec in backup["files"].items():
+            files[BACKUP + backup["generation"] + "/" + name] = spec
+    for name, data in generated(provenance_json, training=training).items():
         files[name] = {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
     total = sum(v["bytes"] for v in files.values())
-    if not 0 < total <= MAX_BYTES:
-        raise ValueError("Global snapshot exceeds 8 GiB bound")
+    if not 0 < total <= (40 * 1024**3 if training else MAX_BYTES):
+        raise ValueError(f"Global snapshot exceeds {40 if training else 8} GiB bound")
     return {
         "format": 1,
-        "kind": PREFIX,
+        "kind": TRAIN_PREFIX if training else PREFIX,
         "source_volume_id": SOURCE_ID,
         "experiment": EXPERIMENT,
         "selected_tracks": sorted(selected),
-        "verified_audio_files": 50,
+        "verified_audio_files": count * 5,
         "bytes": total,
         "files": files,
     }
@@ -136,11 +154,11 @@ def copy_inputs(source, target, spec, generated_files=None):
         print(f"Progress: global input files {index}/{len(spec['files'])}", flush=True)
 
 
-def validate_report(result, sha, global_id, pod_id):
+def validate_report(result, sha, global_id, pod_id, *, training=False):
     r = result.get("report", {})
     if (
         result.get("status") != "passed"
-        or r.get("kind") != "global-export"
+        or r.get("kind") != ("global-training-export" if training else "global-export")
         or r.get("commit") != sha
         or r.get("global_volume_id") != global_id
         or not valid_id(global_id)
@@ -148,7 +166,7 @@ def validate_report(result, sha, global_id, pod_id):
         or r.get("source_volume_id") != SOURCE_ID
     ):
         raise RuntimeError("Global export identity mismatch")
-    spec = manifest(r["provenance_json"])
+    spec = manifest(r["provenance_json"], training=training)
     if (
         r.get("snapshot") != spec
         or r.get("snapshot_sha256") != hashlib.sha256(encoded(spec)).hexdigest()
@@ -157,20 +175,22 @@ def validate_report(result, sha, global_id, pod_id):
     return spec
 
 
-def export_inputs():
+def export_inputs(*, training=False):
     if not os.path.ismount("/data") or not os.path.ismount("/global"):
         raise RuntimeError("Both source and global volumes must be mounted")
     if os.environ.get("SPT_VOLUME_ID") != SOURCE_ID:
         raise RuntimeError("Wrong source volume")
     started = time.monotonic()
-    source, target = Path("/data"), Path("/global") / PREFIX
+    source, target = Path("/data"), Path("/global") / (TRAIN_PREFIX if training else PREFIX)
     with (source / ".spleeterpt.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         provenance_json = (source / "musdb18/provenance.json").read_text()
-        spec = manifest(provenance_json)
+        spec = manifest(provenance_json, training=training)
         backup = evidence()["resume"]["backup"]
 
         def check_generation():
+            if training:
+                return
             if (
                 json.loads((source / BACKUP / "latest.json").read_text())
                 != {"generation": backup["generation"]}
@@ -194,14 +214,14 @@ def export_inputs():
                     or digest(existing) != info["sha256"]
                 ):
                     raise ValueError("Completed global snapshot is corrupted; refusing overwrite")
-        copy_inputs(source, target, spec, generated(provenance_json))
+        copy_inputs(source, target, spec, generated(provenance_json, training=training))
         check_generation()
         # No locks, chmod or atomic rename on object storage. This marker is written last.
         marker.write_bytes(encoded(spec))
         if marker.read_bytes() != encoded(spec):
             raise ValueError("Snapshot completion marker read-back failed")
     return {
-        "kind": "global-export",
+        "kind": "global-training-export" if training else "global-export",
         "commit": os.environ["SPT_COMMIT"],
         "pod_id": os.environ["RUNPOD_POD_ID"],
         "source_volume_id": SOURCE_ID,
@@ -213,14 +233,14 @@ def export_inputs():
     }
 
 
-def stage_inputs():
+def stage_inputs(*, training=False):
     if not os.path.ismount("/global") or os.path.ismount("/data") or Path("/data").exists():
         raise RuntimeError("Global inputs require an empty local staging path")
-    source = Path("/global") / PREFIX
+    source = Path("/global") / (TRAIN_PREFIX if training else PREFIX)
     raw = (source / "snapshot.json").read_bytes()
     if hashlib.sha256(raw).hexdigest() != os.environ["SPT_SNAPSHOT_SHA256"]:
         raise RuntimeError("Global snapshot is missing, stale or changed")
-    spec = manifest((source / "musdb18/provenance.json").read_text())
+    spec = manifest((source / "musdb18/provenance.json").read_text(), training=training)
     if raw != encoded(spec):
         raise RuntimeError("Global inputs differ from pinned validation inputs")
     if shutil.disk_usage("/").free < spec["bytes"] + 1024**3:
@@ -231,19 +251,21 @@ def stage_inputs():
         "global_volume_id": os.environ["SPT_GLOBAL_VOLUME_ID"],
         "source_volume_id": SOURCE_ID,
         "snapshot_sha256": hashlib.sha256(raw).hexdigest(),
-        "verified_audio_files": 50,
+        "verified_audio_files": 500 if training else 50,
     }
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--training", action="store_true")
     args = parser.parse_args()
-    report = export_inputs()
+    report = export_inputs(training=args.training)
     validate_report(
         {"status": "passed", "report": report},
         os.environ["SPT_COMMIT"],
         os.environ["SPT_GLOBAL_VOLUME_ID"],
         os.environ["RUNPOD_POD_ID"],
+        training=args.training,
     )
     args.output.write_text(json.dumps(report, indent=2))

@@ -50,6 +50,11 @@ def parser():
         "--max-steps", type=int, help="absolute total batch limit, useful for smoke tests"
     )
     train.add_argument("--deterministic", action="store_true")
+    train.add_argument(
+        "--freeze-bn-stats",
+        action="store_true",
+        help="use fixed BatchNorm running statistics while training affine parameters and dropout",
+    )
     infer = commands.add_parser("separate")
     infer.add_argument("input")
     infer.add_argument("--checkpoint", required=True)

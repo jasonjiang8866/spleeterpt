@@ -10,6 +10,46 @@ from spleeterpt.data import StemDataset
 from spleeterpt.train import run_training
 
 
+def test_frozen_bn_keeps_dropout_training_and_affine_gradients():
+    from spleeterpt.train import training_mode
+
+    model = torch.nn.Sequential(torch.nn.BatchNorm1d(8), torch.nn.Dropout(0.5))
+    before = {k: t.clone() for k, t in model[0].named_buffers()}
+    model.eval()
+    training_mode(model, freeze_bn_stats=True)
+    assert model.training and model[1].training and not model[0].training
+    x = torch.randn(16, 8)
+    y = model(x)
+    assert not torch.equal(y, model(x))
+    y.square().mean().backward()
+    assert all(p.requires_grad and p.grad.abs().sum() > 0 for p in model[0].parameters())
+    assert all(torch.equal(before[k], t) for k, t in model[0].named_buffers())
+
+
+def test_frozen_bn_resume_and_policy_guard(audio_dataset, tmp_path):
+    complete, resumed = tmp_path / "frozen", tmp_path / "frozen-resume"
+
+    def args(out, *extra):
+        return training_args(audio_dataset, out, "--freeze-bn-stats", *extra)
+
+    run_training(args(complete))
+    run_training(args(resumed, "--max-steps", "2"))
+    checkpoint = resumed / "last.pt"
+    with pytest.raises(ValueError, match="resume configuration/data differs"):
+        run_training(training_args(audio_dataset, resumed, "--resume", str(checkpoint)))
+    run_training(args(resumed, "--resume", str(checkpoint)))
+    a, b = read_checkpoint(complete / "last.pt"), read_checkpoint(checkpoint)
+    assert a["signature"]["freeze_bn_stats"] is True
+    for k, t in a["model"].items():
+        assert torch.equal(t, b["model"][k])
+        if k.endswith("num_batches_tracked"):
+            assert t.item() == 0
+        elif k.endswith("running_mean"):
+            assert torch.count_nonzero(t) == 0
+        elif k.endswith("running_var"):
+            assert torch.equal(t, torch.ones_like(t))
+
+
 def training_args(audio_dataset, output, *extra):
     config, train, val, _ = audio_dataset
     return parser().parse_args(
