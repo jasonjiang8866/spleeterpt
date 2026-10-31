@@ -1,0 +1,27 @@
+name: RunPod expired smoke cleanup
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-cleanup
+  cancel-in-progress: false
+jobs:
+  cleanup:
+    if: github.repository == 'jasonjiang8866/spleeterpt'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Delete only expired temporary smoke Pods owned by this repository
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py reap
