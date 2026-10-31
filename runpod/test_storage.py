@@ -1,9 +1,11 @@
 import copy
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from storage import NAME, ensure_volume, safe_mounts
-from test_control import ENV, FakeAPI, control, pod
+from test_control import ENV, FakeAPI, control, pod, worker
 
 
 class StorageTests(unittest.TestCase):
@@ -46,3 +48,15 @@ class StorageTests(unittest.TestCase):
             self.assertFalse(safe_mounts(bad))
             with self.assertRaises(RuntimeError):
                 control.owned(bad, ENV["GITHUB_REPOSITORY"], "123")
+
+
+class ProgressTests(unittest.TestCase):
+    def test_only_complete_allowlisted_progress_lines_are_exposed(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "log"
+            path.write_text("private diagnostics\nProgress: archive chunks 10/70\nsecret=hidden\n")
+            self.assertEqual(worker.progress(path), "Progress: archive chunks 10/70")
+            path.write_text("Progress: archive chunks 10/70 secret=hidden\n")
+            self.assertIsNone(worker.progress(path))
+            path.write_text("Durable checkpoint committed: step 10\n" + "x" * 70000)
+            self.assertIsNone(worker.progress(path))

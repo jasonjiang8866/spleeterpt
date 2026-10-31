@@ -78,3 +78,5 @@ independent offsite checkpoint policy and a multi-epoch/SDR evaluation protocol.
   this pilot does not silently remove them or automatically expand storage.
 
 Cloud execution status and run links are recorded in the main README once observed.
+Future executions expose allowlisted download-chunk, decoded-track, verified-track
+and checkpoint-step progress in Actions without forwarding arbitrary live logs.

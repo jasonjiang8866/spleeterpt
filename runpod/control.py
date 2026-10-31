@@ -278,6 +278,7 @@ def launch(api, task="smoke"):
         print(f"Created {pod_id}: ${rate}/hour; lease 30 minutes", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last_phase = None
+        last_progress = None
         restore_uploaded = False
         transfer_probed = False
         while time.time() < expiry - 90:
@@ -303,6 +304,13 @@ def launch(api, task="smoke"):
                 )
                 restore_uploaded = True
                 print("Restore checkpoint delivered and SHA-256 verified", flush=True)
+            progress = result.get("progress")
+            if isinstance(progress, str) and progress != last_progress:
+                from worker import PROGRESS
+
+                if PROGRESS.fullmatch(progress):
+                    print(progress, flush=True)
+                    last_progress = progress
             phase = result.get("phase")
             if isinstance(phase, str) and phase != last_phase:
                 print("Worker: " + phase[:100], flush=True)

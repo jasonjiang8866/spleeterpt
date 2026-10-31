@@ -1,0 +1,28 @@
+{
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452",
+  "volume": {
+    "dataCenter": "EU-RO-1",
+    "id": "j3aqjpw393",
+    "name": "spt-1436489970-musdb18-v1",
+    "size": 80,
+    "type": "STANDARD"
+  },
+  "prepare": {
+    "kind": "persistent-pilot",
+    "stage": "prepare",
+    "commit": "d25dc50f22165022a7122e0c10711c88ed16fddf",
+    "pod_id": "4t1x6zkqefdlc2",
+    "volume_id": "j3aqjpw393",
+    "experiment": "41189465452-1",
+    "dataset": {
+      "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+      "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+      "train_tracks": 90,
+      "validation_tracks": 10,
+      "verified_audio_files": 500,
+      "test_audio_extracted": false
+    },
+    "seconds": 1019.0398715839256
+  },
+  "training_status": "running; not yet accepted"
+}
