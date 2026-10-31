@@ -4,13 +4,14 @@
 
 1. Add the RunPod key as repository Actions Secret `RUNPOD_API_KEY`. The key must
    allow Pod management (GraphQL Read/Write in the current key UI); AI endpoint
-   permissions are not needed. `preflight` verifies the REST management API with
+   permissions are not needed. `preflight` verifies the REST v2 management API with
    an authenticated **read-only** list request. It does not prove write access.
 2. Merge the RunPod Actions PR into `main`. The authentication workflow also runs
    on pushes to its setup branch, `codex/runpod-actions`, so this initial check can
    run before merging. No key or account inventory is printed.
 3. Under Actions, verify **RunPod authentication** succeeds. HTTP 401/403 means
-   the key/account/permission needs correction; do not widen permissions blindly.
+   the request was rejected; check key status, permissions, and transient network
+   filtering before changing credentials. Do not widen permissions blindly.
 4. Open **RunPod GPU smoke → Run workflow**, select `main`, and tick the paid-GPU
    checkbox. GPU creation is never triggered by a push or pull request.
 
@@ -45,7 +46,7 @@ this smoke workflow is not suitable for retaining a real training run.
 
 - Maximum one managed smoke Pod at a time. Existing managed Pods block creation.
 - Lease: 30 minutes from provisioning, including image download and setup.
-- Actual `costPerHr` is checked immediately **after** allocation. A missing rate
+- Actual `cost` (hourly compute rate) is checked immediately **after** allocation. A missing rate
   or a rate above **US$1/hour** triggers cleanup. A rejected Pod can still incur a
   brief charge; this is not a pre-allocation price guarantee or total spend cap.
 - Controller `finally` cleanup and an `always()` Actions cleanup step delete only
@@ -82,5 +83,5 @@ Tests simulate creation responses/timeouts, price rejection, ownership boundarie
 persistent-volume refusal, incomplete reports, and actual local HTTP auth handling.
 
 References: [RunPod credentials](https://docs.runpod.io/get-started/credentials),
-[Pod API](https://docs.runpod.io/api-reference/pods/POST/pods),
+[Pod API](https://docs.runpod.io/api-reference-v2/pods/create-a-pod),
 [GitHub schedules](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).

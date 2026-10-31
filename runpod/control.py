@@ -8,10 +8,11 @@ import re
 import secrets
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
-API = "https://rest.runpod.io/v1"
+API = "https://api.runpod.io/v2"
 IMAGE = "runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04"
 GPU = "NVIDIA GeForce RTX 4090"
 
@@ -54,10 +55,21 @@ class Runpod:
         return request(API + path, token=self.key, method=method, payload=payload)
 
     def pods(self):
-        result = self.call("/pods")
-        if not isinstance(result, list):
-            raise TypeError("Unexpected Pod list response")
-        return result
+        items, seen = [], set()
+        path = "/pods"
+        while True:
+            result = self.call(path)
+            if not isinstance(result, dict) or not isinstance(result.get("pods"), list):
+                raise TypeError("Unexpected Pod list response")
+            items.extend(result["pods"])
+            page = result.get("pagination", {})
+            if page.get("hasNextPage") is False:
+                return items
+            cursor = page.get("nextCursor")
+            if not isinstance(cursor, str) or not cursor or cursor in seen:
+                raise RuntimeError("Invalid Pod pagination; refusing incomplete inventory")
+            seen.add(cursor)
+            path = "/pods?" + urllib.parse.urlencode({"cursor": cursor})
 
 
 def identity():
@@ -72,7 +84,7 @@ def owned(pod, repo, repo_id):
     match = re.fullmatch(rf"spt-{re.escape(repo_id)}-(\d+)-(\d+)-(\d+)", pod.get("name", ""))
     if not match or pod.get("env", {}).get("SPT_MANAGED_BY") != repo:
         return None
-    if pod.get("networkVolumeId") or pod.get("networkVolume") or pod.get("volumeInGb", 0):
+    if any((pod.get("mounts") or {}).values()):
         raise RuntimeError("Refusing to delete managed Pod with persistent storage")
     return match
 
@@ -183,19 +195,20 @@ def launch(api):
     )
     payload = {
         "name": name,
-        "imageName": image,
-        "cloudType": "SECURE",
-        "computeType": "GPU",
-        "gpuTypeIds": [GPU],
-        "gpuCount": 1,
-        "interruptible": False,
-        "containerDiskInGb": 30,
-        "volumeInGb": 0,
-        "minRAMPerGPU": 16,
-        "minVCPUPerGPU": 4,
+        "image": image,
+        "cloud": "SECURE",
+        "gpu": {
+            "id": GPU,
+            "count": 1,
+            "minRamPerGpu": 16,
+            "minVcpuCountPerGpu": 4,
+            "minCudaVersion": "12.8",
+        },
+        "disk": 30,
+        "mounts": {},
         "ports": ["8888/http"],
-        "dockerEntrypoint": ["/bin/bash", "-lc"],
-        "dockerStartCmd": [bootstrap],
+        "entrypoint": ["/bin/bash", "-lc"],
+        "cmd": [bootstrap],
         "env": {
             "SPT_MANAGED_BY": repo,
             "SPT_RESULT_TOKEN": token,
@@ -213,7 +226,7 @@ def launch(api):
         (output / "provision.json").write_text(json.dumps(metadata, indent=2))
         # Actual price is returned only after creation; fail closed on missing/high rates.
         detail = api.call("/pods/" + pod_id)
-        rate = float(detail.get("costPerHr", "nan"))
+        rate = float(detail.get("cost", "nan"))
         if not math.isfinite(rate) or not 0 < rate <= 1.0:
             raise RuntimeError("Pod rate missing or above $1/hour; releasing immediately")
         metadata["cost_per_hour"] = rate
@@ -245,22 +258,8 @@ def main():
     identity()
     api = Runpod()
     if args.action == "preflight":
-        # Diagnose the permission shown in RunPod's key UI independently of REST.
-        try:
-            response = request(
-                "https://api.runpod.io/graphql",
-                token=api.key,
-                method="POST",
-                payload={"query": "query { myself { pods { id } } }"},
-            )
-            if response.get("errors") or response.get("data", {}).get("myself") is None:
-                print("GraphQL read-only authentication: rejected (response withheld)")
-            else:
-                print("GraphQL read-only authentication: PASS")
-        except RuntimeError as error:
-            print("GraphQL read-only authentication: " + str(error))
         api.pods()
-        print("PASS: RUNPOD_API_KEY authenticates to REST Pod management (read-only check).")
+        print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
     elif args.action == "smoke":
         launch(api)
     else:

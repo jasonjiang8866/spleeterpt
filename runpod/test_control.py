@@ -39,7 +39,7 @@ def pod(run="456", expiry=200):
         "id": "pod" + run,
         "name": f"spt-123-{run}-1-{expiry}",
         "env": {"SPT_MANAGED_BY": ENV["GITHUB_REPOSITORY"]},
-        "volumeInGb": 0,
+        "mounts": {},
     }
 
 
@@ -89,7 +89,7 @@ class FakeAPI:
         if method == "DELETE":
             self.deleted.append(path)
             return None
-        return {"costPerHr": self.rate}
+        return {"cost": self.rate}
 
 
 class ControlTests(unittest.TestCase):
@@ -97,6 +97,27 @@ class ControlTests(unittest.TestCase):
         self.env = patch.dict(os.environ, ENV)
         self.env.start()
         self.addCleanup(self.env.stop)
+
+    def test_v2_inventory_follows_cursor_without_losing_pods(self):
+        with patch.dict(os.environ, {"RUNPOD_API_KEY": "fake"}):
+            api = control.Runpod()
+        pages = [
+            {"pods": [pod()], "pagination": {"hasNextPage": True, "nextCursor": "a+b/="}},
+            {"pods": [pod("999")], "pagination": {"hasNextPage": False, "nextCursor": None}},
+        ]
+        with patch.object(api, "call", side_effect=pages) as call:
+            self.assertEqual(api.pods(), [pod(), pod("999")])
+            self.assertEqual(call.call_args_list[1].args, ("/pods?cursor=a%2Bb%2F%3D",))
+
+    def test_v2_inventory_rejects_missing_or_repeated_cursor(self):
+        with patch.dict(os.environ, {"RUNPOD_API_KEY": "fake"}):
+            api = control.Runpod()
+        for page in ({}, {"hasNextPage": True, "nextCursor": "repeat"}):
+            with (
+                patch.object(api, "call", return_value={"pods": [], "pagination": page}),
+                self.assertRaisesRegex(RuntimeError, "pagination"),
+            ):
+                api.pods()
 
     def test_cleanup_current_run_not_other_runs_or_resources(self):
         api = FakeAPI()
@@ -118,9 +139,9 @@ class ControlTests(unittest.TestCase):
 
     def test_refuse_persistent_storage(self):
         for extra in (
-            {"networkVolumeId": "valuable"},
-            {"networkVolume": {"id": "v"}},
-            {"volumeInGb": 20},
+            {"mounts": {"network": [{"volumeId": "valuable", "path": "/workspace"}]}},
+            {"mounts": {"global": [{"volumeId": "valuable", "path": "/workspace"}]}},
+            {"mounts": {"persistent": {"size": 20, "path": "/workspace"}}},
         ):
             api = FakeAPI()
             api.items = [{**pod(), **extra}]
