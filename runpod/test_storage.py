@@ -34,6 +34,41 @@ class StorageTests(unittest.TestCase):
             self.assertEqual(api.creates, 1)
             self.assertEqual(api.deleted, ["/pods/abc"])
 
+    def test_capacity_probe_is_read_only(self):
+        import io
+        from contextlib import redirect_stdout
+
+        api = FakeAPI()
+        with (
+            patch("storage.ensure_volume", return_value={"dataCenter": "TEST"}) as volume,
+            patch.object(
+                api, "call", return_value={"dataCenters": [{"id": "TEST", "availability": "LOW"}]}
+            ) as call,
+            redirect_stdout(io.StringIO()) as output,
+        ):
+            control.capacity_preflight(api)
+        volume.assert_called_once_with(api, create=False)
+        self.assertEqual(len(call.call_args.args), 1)
+        self.assertIn("availability=LOW", output.getvalue())
+        self.assertEqual(api.creates, 0)
+        self.assertEqual(api.deleted, [])
+
+    def test_error_categories_do_not_echo_provider_payload(self):
+        import json
+
+        for detail, expected in (
+            ("No available GPU; secret-value", "capacity-unavailable"),
+            ("bad input secret-value", "unclassified"),
+            ("insufficient balance secret-value", "billing-rejected"),
+        ):
+            category = control.error_category(json.dumps({"detail": detail}))
+            self.assertEqual(category, expected)
+            self.assertNotIn("secret-value", category)
+        self.assertEqual(control.error_category("not-json secret-value"), "unclassified")
+        self.assertEqual(
+            control.error_category('{"errors":["secret-value"]}'), "request-validation"
+        )
+
     def test_volume_selection_fails_closed_and_never_deletes(self):
         v = {"id": "vol123", "name": NAME, "size": 80, "type": "STANDARD", "dataCenter": "US-KS-2"}
         api = FakeAPI()

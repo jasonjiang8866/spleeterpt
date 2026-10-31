@@ -18,7 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify Secret using a read-only Pod list request
+      - name: Verify authentication and inspect pinned-volume capacity (read-only)
         env:
+          SPT_CHECK_CAPACITY: '1'
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
         run: python runpod/control.py preflight

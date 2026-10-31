@@ -22,6 +22,55 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def error_category(raw):
+    """Classify bounded provider text without ever returning echoed input/credentials."""
+    try:
+        body = json.loads(raw)
+        if not isinstance(body, dict):
+            return "unclassified"
+        detail = str(body.get("detail", "")).lower()
+        if any(
+            x in detail
+            for x in (
+                "no available",
+                "no capacity",
+                "insufficient capacity",
+                "out of stock",
+                "no gpu",
+                "could not find any",
+            )
+        ):
+            return "capacity-unavailable"
+        if any(
+            x in detail
+            for x in ("insufficient balance", "insufficient funds", "billing", "payment")
+        ):
+            return "billing-rejected"
+        if body.get("errors"):
+            return "request-validation"
+        return "unclassified"
+    except (ValueError, TypeError, UnicodeError):
+        return "unclassified"
+
+
+def capacity_preflight(api):
+    """GET-only observation; never creates, retries, moves or deletes resources."""
+    from storage import ensure_volume
+
+    volume = ensure_volume(api, create=False)
+    gpu = api.call(
+        "/catalog/gpus/"
+        + urllib.parse.quote(GPU, safe="")
+        + "?include=AVAILABILITY&product=POD&cloud=SECURE&count=1&minCudaVersion=12.8"
+    )
+    matches = [d for d in gpu.get("dataCenters", []) if d.get("id") == volume["dataCenter"]]
+    value = matches[0].get("availability") if len(matches) == 1 else "NOT_LISTED"
+    if value not in {"HIGH", "MEDIUM", "LOW", "NONE", "NOT_LISTED"}:
+        value = "UNKNOWN"
+    print("READ-ONLY: pinned-volume RTX 4090 catalog availability=" + value, flush=True)
+    print("Catalog availability is advisory; it does not guarantee a launch or quote.", flush=True)
+
+
 def request(url, *, token=None, method="GET", payload=None, limit=8_000_000):
     headers = {"Content-Type": "application/json", "User-Agent": "spleeterpt-runpod-actions/0.1"}
     if token:
@@ -39,8 +88,10 @@ def request(url, *, token=None, method="GET", payload=None, limit=8_000_000):
                 raise RuntimeError("Response exceeds size limit")
             return json.loads(raw) if raw else None
     except urllib.error.HTTPError as error:
-        # Never print response bodies: provider errors can echo env credentials.
-        raise RuntimeError(f"HTTP {error.code} from remote service") from None
+        # Only fixed categories leave this handler; raw provider text can echo credentials.
+        category = error_category(error.read(4096))
+        suffix = "" if category == "unclassified" else f" ({category})"
+        raise RuntimeError(f"HTTP {error.code} from remote service{suffix}") from None
     except (urllib.error.URLError, TimeoutError):
         raise RuntimeError("Remote service unavailable or timed out") from None
 
@@ -419,6 +470,8 @@ def main():
     api = Runpod()
     if args.action == "preflight":
         api.pods()
+        if os.environ.get("SPT_CHECK_CAPACITY") == "1":
+            capacity_preflight(api)
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
     elif args.action in {
         "smoke",
