@@ -39,3 +39,7 @@ References (checked 2026-10-31):
 - https://docs.runpod.io/storage/globalvolume/overview
 - https://docs.runpod.io/storage/globalvolume/globalvolume-pods
 - REST v2 `POST /global-volumes`, `mounts.global`, and CPU catalog availability.
+
+## Measured trial
+
+[Run 41221906972](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41221906972) passed both copy and evaluation. See [storage evidence and BN results](../docs/bn-ablation-41221906972.md). Both compute Pods were deleted; the 3.87 GiB snapshot and original regional data remain.

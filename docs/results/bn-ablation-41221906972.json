@@ -1,0 +1,497 @@
+{
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41221906972",
+  "source_commit": "a825625060205d971c633d3948de451c89ac240c",
+  "protocol": {
+    "scope": "all 10 project validation songs, complete recordings",
+    "sample_rate": 44100,
+    "start_sample": 0,
+    "length_policy": "strict",
+    "precision": "fp32",
+    "tf32": false,
+    "paired_delta": "candidate minus baseline per-song median; median paired differences",
+    "si_sdr": "global stereo, mean removed, one scalar; separate from BSSEval SDR",
+    "undefined": "null; infinities as strings; counts explicit; paired deltas finite-only",
+    "test_pool_used": false,
+    "aggregation": "one global stereo SI-SDR per full song; median songs per stem",
+    "bsseval": "not computed in this diagnostic",
+    "listening": "none; metric-only ablation",
+    "intervention": "swap only BN running_mean, running_var and num_batches_tracked; affine stays with parameters"
+  },
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "baseline_tolerance_db": 0.001,
+  "baseline_max_abs_summary_delta_db": 2.3380403391115578e-07,
+  "recording_minutes": 30.371313681027967,
+  "evaluation_seconds_excluding_staging": 80.92288698791526,
+  "peak_allocated_bytes": 7907410944,
+  "storage_validation": {
+    "mode": "global-staged",
+    "snapshot_bytes": 4158217826,
+    "snapshot_files": 58,
+    "verified_audio_files": 50,
+    "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+    "source_region": "EU-RO-1",
+    "allowed_gpu_regions": [
+      "US-PA-1",
+      "US-WA-1"
+    ],
+    "source_and_global_volumes_retained": true,
+    "copy_and_gpu_pods_deleted": true
+  },
+  "observed_rates_usd_per_hour": {
+    "cpu": 0.06,
+    "gpu": 0.69
+  },
+  "summary": {
+    "track_count": 10,
+    "metrics": {
+      "vocals": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.434087569575999,
+          "mean": 7.270640693623756
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -5.338805702662009,
+          "mean": -5.546583142663909
+        },
+        "learned_official_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.152189446405328,
+          "mean": 7.1360863182493235
+        },
+        "official_learned_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -5.346380471828964,
+          "mean": -5.555094277947992
+        }
+      },
+      "drums": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.242344024072542,
+          "mean": 4.613003578694723
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.153640685077135,
+          "mean": -5.585868917189047
+        },
+        "learned_official_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.9319710668522596,
+          "mean": 4.428400377150517
+        },
+        "official_learned_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.159862706355566,
+          "mean": -5.590349824201724
+        }
+      },
+      "bass": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 2.9075950059763174,
+          "mean": 2.640974685661827
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.04220457724142,
+          "mean": -5.634908372021212
+        },
+        "learned_official_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 2.957468541085442,
+          "mean": 2.660105587188209
+        },
+        "official_learned_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.0464203795158795,
+          "mean": -5.640279588219026
+        }
+      },
+      "other": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.0928753898877757,
+          "mean": 2.923067651494693
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.909339207638058,
+          "mean": -4.310657196376621
+        },
+        "learned_official_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 2.8878171978643197,
+          "mean": 2.808088280297648
+        },
+        "official_learned_bn": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.911671260582306,
+          "mean": -4.30964259607252
+        }
+      }
+    },
+    "contrasts": {
+      "vocals": {
+        "tuned_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -12.91442506007235,
+          "mean": -12.817223836287663,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "learned_params_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.11178031516403841,
+          "mean": -0.13455437537443343,
+          "better": 3,
+          "worse": 7,
+          "equal": 0
+        },
+        "learned_stats_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -12.924787870025089,
+          "mean": -12.825734971571748,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "restore_stats_effect": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 12.634180568541609,
+          "mean": 12.682669460913232,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        },
+        "learned_params_at_learned_stats": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.008486527033377378,
+          "mean": 0.008511135284082405,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        },
+        "interaction": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.11920451401549004,
+          "mean": 0.14306551065851583
+        }
+      },
+      "drums": {
+        "tuned_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -10.087909500919066,
+          "mean": -10.19887249588377,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "learned_params_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.14816269841031438,
+          "mean": -0.18460320154420598,
+          "better": 2,
+          "worse": 8,
+          "equal": 0
+        },
+        "learned_stats_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -10.088424285337041,
+          "mean": -10.203353402896445,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "restore_stats_effect": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 9.742046792574484,
+          "mean": 10.014269294339565,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        },
+        "learned_params_at_learned_stats": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.005453146834380029,
+          "mean": 0.004480907012677238,
+          "better": 8,
+          "worse": 2,
+          "equal": 0
+        },
+        "interaction": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.15438471968874667,
+          "mean": 0.18908410855688307
+        }
+      },
+      "bass": {
+        "tuned_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -8.409541687906046,
+          "mean": -8.27588305768304,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "learned_params_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.0013190743531920068,
+          "mean": 0.01913090152638176,
+          "better": 5,
+          "worse": 5,
+          "equal": 0
+        },
+        "learned_stats_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -8.412744269204742,
+          "mean": -8.281254273880855,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "restore_stats_effect": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 8.17672292997911,
+          "mean": 8.29501395920942,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        },
+        "learned_params_at_learned_stats": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.004631338428159104,
+          "mean": 0.005371216197814843,
+          "better": 9,
+          "worse": 1,
+          "equal": 0
+        },
+        "interaction": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.009311980160252142,
+          "mean": -0.013759685328566973
+        }
+      },
+      "other": {
+        "tuned_minus_official": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -7.978874722704804,
+          "mean": -7.233724847871312,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "learned_params_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.0856666019158509,
+          "mean": -0.11497937119704468,
+          "better": 2,
+          "worse": 8,
+          "equal": 0
+        },
+        "learned_stats_only": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -7.979477992290695,
+          "mean": -7.232710247567215,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        },
+        "restore_stats_effect": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.8062357016821196,
+          "mean": 7.11874547667427,
+          "better": 10,
+          "worse": 0,
+          "equal": 0
+        },
+        "learned_params_at_learned_stats": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -0.0011783145285182428,
+          "mean": -0.0010146003040996492,
+          "better": 4,
+          "worse": 6,
+          "equal": 0
+        },
+        "interaction": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.08259317637255603,
+          "mean": 0.11396477089294507
+        }
+      }
+    }
+  },
+  "interpretation": "BN running buffers dominate the observed regression for this checkpoint and validation split. Restoring official statistics reverses most of the loss; learned statistics alone reproduce the collapse. Training-time cause and a retrained fix remain unverified."
+}

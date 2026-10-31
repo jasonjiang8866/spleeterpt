@@ -35,7 +35,7 @@ aggregate medians. [Summary, SI-SDR, protocol and listening method](docs/step90-
 and [successful GPU run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747). The export contains 26 fixed listening WAVs;
 all file hashes, lengths and audio samples were checked. No listening verdict is claimed.
 
-**Next:** [Four-cell BatchNorm ablation](runpod/bn-ablation.md) is implemented: official/step-90 parameters crossed with official/step-90 running statistics, scored on all ten complete validation songs with global stereo SI-SDR. Original controls must reproduce the previous scores. GPU results are pending; keep official converted weights as the inference baseline until the cause and a validated fix are established.
+**BN diagnosis:** The [four-cell GPU intervention](docs/bn-ablation-41221906972.md) completed on PRO 6000 MIG 24GB using a verified Global Volume snapshot. Restoring official BN running statistics recovers most of the step-90 quality loss; learned statistics alone reproduce the collapse. The training-time cause and a frozen-BN retraining fix remain unverified. Keep official converted weights as the inference baseline.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),

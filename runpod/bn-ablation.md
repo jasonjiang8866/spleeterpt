@@ -4,7 +4,7 @@ This inference-only diagnostic uses the same ten **complete** validation recordi
 and pinned original/step-90 checkpoints as the [previous evaluation](../docs/step90-validation-41196010747.md).
 It scores global stereo SI-SDR only, with the exact previous implementation.
 BSSEval-v4 is deliberately not recomputed; the two metrics are not interchangeable.
-All 50 test songs remain untouched. GPU results are pending.
+All 50 test songs remain untouched. The [Global Volume GPU trial passed](../docs/bn-ablation-41221906972.md); see measured four-cell results and interpretation.
 
 Initial [launch attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41217176398)
 was rejected by the provider with HTTP 400 before a Pod ID was returned. Both cleanup
@@ -59,9 +59,9 @@ follow-up experiment, and any proposed fix requires full SDR and listening check
 Use the exact RunPod ID `NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb`
 ([official GPU table](https://docs.runpod.io/references/gpu-types)). Other workflows
 retain the RTX 4090 default. The authentication preflight now queries this MIG
-profile. A BN launch requires advertised availability in the existing volume's
+profile. The original existing-volume workflow requires advertised availability in the volume's
 region, the actual Pod GPU ID and an actual hourly rate no greater than $0.69.
-No region migration, volume creation or automatic GPU substitution is allowed.
+That workflow creates no new storage and does not migrate regions. The separately authorized [Global Volume trial](global-bn.md) copies a bounded immutable validation snapshot and permits MIG placement in other available regions; it does not substitute another GPU.
 Runtime checks require one visible Blackwell 12.0 device with 22–25 GiB visible
 memory; a full 96GB card or a different MIG size is rejected. Original FP32/CUDA
 settings, dataset, checkpoint and all four comparisons remain unchanged.
