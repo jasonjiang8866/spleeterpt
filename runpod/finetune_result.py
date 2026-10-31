@@ -16,7 +16,7 @@ def load_evidence():
     return json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
 
 
-def validate_finetune(result, sha, volume_id, pod_id):
+def validate_finetune(result, sha, volume_id, pod_id, *, ablation=False):
     sys.path.insert(0, str(ROOT / "scripts"))
     from finetune_evaluation import (
         PROTOCOL,
@@ -28,18 +28,22 @@ def validate_finetune(result, sha, volume_id, pod_id):
         validation_inventory,
     )
 
+    if ablation:
+        from bn_ablation import PROTOCOL, VARIANTS, summarize_pair, validate_records
+
     r = result.get("report", {})
     evidence = load_evidence()
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
     if (
         result.get("status") != "passed"
-        or r.get("kind") != "finetune-validation"
+        or r.get("kind") != ("bn-ablation" if ablation else "finetune-validation")
         or r.get("commit") != sha
         or r.get("volume_id") != volume_id
         or volume_id != evidence["volume"]["id"]
         or r.get("pod_id") != pod_id
         or r.get("experiment") != "41189465452-1"
-        or r.get("results_directory") != f"/data/evaluations/41189465452-1/{pod_id}"
+        or r.get("results_directory")
+        != f"/data/evaluations/41189465452-1/{'bn-' if ablation else ''}{pod_id}"
         or r.get("protocol") != PROTOCOL
         or r.get("dataset") != evidence["resume"]["dataset"]
         or r.get("backup") != evidence["resume"]["backup"]
@@ -59,7 +63,15 @@ def validate_finetune(result, sha, volume_id, pod_id):
         if isinstance(r[k], bool) or not math.isfinite(r[k]) or r[k] <= 0:
             raise RuntimeError("Invalid runtime measurement")
     expected_names = {"report.json", "LISTENING.txt"} | {f"track-{i:02d}.json" for i in range(10)}
-    if len(r["listening"]) != 2:
+    if ablation:
+        from bn_ablation import validate_baselines, validate_proof
+
+        validate_proof(r["bn_proof"])
+        validate_baselines(
+            r["summary"],
+            json.loads((ROOT / "docs/results/step90-validation-41196010747.json").read_text()),
+        )
+    if len(r["listening"]) != (0 if ablation else 2):
         raise RuntimeError("Missing listening samples")
     for index, sample in enumerate(r["listening"]):
         track_id = sorted(expected)[index]
