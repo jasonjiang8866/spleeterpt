@@ -565,21 +565,10 @@ def main():
         if os.environ.get("SPT_CHECK_CAPACITY") == "1":
             capacity_preflight(api)
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
-    elif args.action in {
-        "smoke",
-        "quality",
-        "finetune",
-        "bn",
-        "training",
-        "recovery-export",
-        "recovery-resume",
-        "persistent-prepare",
-        "persistent-train",
-        "persistent-resume",
-    }:
-        launch(api, args.action)
-    else:
+    elif args.action in {"cleanup", "reap"}:
         cleanup(api, expired=args.action == "reap")
+    else:
+        launch(api, args.action)
 
 
 if __name__ == "__main__":
