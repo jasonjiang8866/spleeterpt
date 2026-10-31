@@ -184,6 +184,37 @@ class RecoveryTests(unittest.TestCase):
                 server.server_close()
                 thread.join()
 
+    def test_streamed_checkpoint_download_through_actual_http_handler(self):
+        transfer = load("transfer")
+        with tempfile.TemporaryDirectory() as folder:
+            source, descriptor = bundle(folder)
+            output = Path(folder) / "downloaded.tar"
+            server = worker.ThreadingHTTPServer(("127.0.0.1", 0), worker.Handler)
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                with (
+                    patch.object(worker, "TOKEN", "secret"),
+                    patch.object(worker, "EXPORT_FILE", source),
+                    patch.object(worker, "RESULT", {"status": "passed"}),
+                ):
+                    url = f"http://127.0.0.1:{server.server_port}/checkpoint"
+                    with self.assertRaisesRegex(RuntimeError, "HTTP 401"):
+                        transfer.download_bundle(url, "bad", descriptor, output, complete=False)
+                    self.assertFalse(output.exists())
+                    transfer.download_bundle(url, "secret", descriptor, output, complete=False)
+                    self.assertEqual(source.read_bytes(), output.read_bytes())
+                    req = urllib.request.Request(
+                        url, headers={"Authorization": "Bearer secret", "Range": "bytes=0-99999999"}
+                    )
+                    with self.assertRaises(urllib.error.HTTPError) as err:
+                        urllib.request.urlopen(req)
+                    self.assertEqual(err.exception.code, 416)
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join()
+
     def test_full_archive_inventory_rejects_preview_or_unsafe_paths(self):
         names = [f"train/song{i}.stem.mp4" for i in range(100)] + [
             f"test/song{i}.stem.mp4" for i in range(50)
