@@ -1,0 +1,545 @@
+{
+  "kind": "step90-validation-summary",
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747",
+  "source_commit": "7ef7287f66def88edb87f4e10eee60ebd7d214f1",
+  "track_count": 10,
+  "evaluated_minutes": 30.371313681027967,
+  "protocol": {
+    "scope": "all 10 project validation songs, complete recordings",
+    "sample_rate": 44100,
+    "start_sample": 0,
+    "length_policy": "strict",
+    "precision": "fp32",
+    "tf32": false,
+    "bsseval": "museval 0.4.1 v4 source images, fixed 512-tap filters, no permutation",
+    "window_samples": 44100,
+    "hop_samples": 44100,
+    "padding": false,
+    "aggregation": "median 1-second frames per song; median songs per stem",
+    "paired_delta": "candidate minus baseline per-song median; median paired differences",
+    "si_sdr": "global stereo, mean removed, one scalar; separate from BSSEval SDR",
+    "undefined": "null; infinities as strings; counts explicit; paired deltas finite-only",
+    "listening": "first two sorted validation IDs, centered 8 seconds, shared gain per song",
+    "test_pool_used": false
+  },
+  "metrics": {
+    "bsseval_v4_sdr_db": {
+      "vocals": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.446344750432283,
+          "mean": 7.135616006969966
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 1.0546267078001872,
+          "mean": 0.9099996141814751
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.386544431941893,
+          "mean": -6.225616392788491,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "drums": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 5.587254910248595,
+          "mean": 6.068725085709431
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.6058288481638703,
+          "mean": 0.5061280085006847
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -4.695246482107011,
+          "mean": -5.562597077208745,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "bass": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.645183598668405,
+          "mean": 4.633951300244921
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 0.7257463141876384,
+          "mean": 0.5927076658480208
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.5335091757280095,
+          "mean": -4.0412436343969,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "other": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.382051746406214,
+          "mean": 4.675249122959712
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 1.5060256979119555,
+          "mean": 1.1730961029198048
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.8555859189226567,
+          "mean": -3.502153020039907,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      }
+    },
+    "global_stereo_si_sdr_db": {
+      "vocals": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 7.434087803380033,
+          "mean": 7.270640629569256
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -5.338805706312751,
+          "mean": -5.5465831442220495
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -12.914425386939996,
+          "mean": -12.817223773791307,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "drums": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 4.2423441327257825,
+          "mean": 4.613003625003612
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.153640688973225,
+          "mean": -5.585868915661775
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -10.087909517010212,
+          "mean": -10.198872540665388,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "bass": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 2.9075949747598395,
+          "mean": 2.6409746446332085
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -6.042204576151853,
+          "mean": -5.634908369478625
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -8.409541832879844,
+          "mean": -8.275883014111836,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      },
+      "other": {
+        "official_converted": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": 3.092875569217421,
+          "mean": 2.923067631266884
+        },
+        "finetuned_step90": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -3.9093392080764806,
+          "mean": -4.310657195816841
+        },
+        "paired_delta": {
+          "total": 10,
+          "finite": 10,
+          "undefined": 0,
+          "positive_infinity": 0,
+          "negative_infinity": 0,
+          "median": -7.978874737995348,
+          "mean": -7.233724827083725,
+          "better": 0,
+          "worse": 10,
+          "equal": 0
+        }
+      }
+    }
+  },
+  "frame_coverage": {
+    "official_converted": {
+      "vocals": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "drums": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "bass": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "other": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      }
+    },
+    "finetuned_step90": {
+      "vocals": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "drums": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "bass": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      },
+      "other": {
+        "sdr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "isr": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sir": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        },
+        "sar": {
+          "total": 1817,
+          "finite": 1351,
+          "undefined": 466,
+          "positive_infinity": 0,
+          "negative_infinity": 0
+        }
+      }
+    }
+  },
+  "verification": {
+    "all_500_training_pool_wavs_verified": true,
+    "ten_full_validation_songs": true,
+    "all_model_states_unchanged": true,
+    "report_summary_recomputed": true,
+    "audio_export": {
+      "files": 26,
+      "stereo_44100_8sec": true,
+      "finite": true,
+      "common_gain_peak_bound": true
+    }
+  }
+}

@@ -3,8 +3,8 @@
 The manually dispatched **RunPod fine-tune validation** workflow compares the
 official converted 4-stem initialization against the exact step-90 / epoch-1
 checkpoint from experiment `41189465452-1`. It performs inference only and leaves
-training checkpoints unchanged. GPU execution and measured results are pending
-until recorded with an Actions run link below.
+training checkpoints unchanged. GPU evaluation completed successfully in [run 41196010747](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747).
+See [measured results and listening evidence](../docs/step90-validation-41196010747.md).
 
 ## Frozen protocol
 
@@ -69,7 +69,7 @@ training without relaxing source, sample-count or checksum checks.
 
 The [second attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41194464761)
 passed the corrected data contract and completed two full-song comparisons. Its
-observed CPU scoring speed projected beyond the 27-minute worker window, so it was
+observed CPU scoring speed risked exceeding the 27-minute worker window, so it was
 stopped before spending the entire lease on an incomplete run. The 60-minute
 evaluation window and persistent per-song outputs address that operational limit;
 they do not change the models, selected audio or metric computation.

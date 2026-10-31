@@ -15,19 +15,27 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
-| Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
+| Quality / convergence | Completed official-initialization vs step-90 comparison on all ten full validation songs; see measured results below. Convergence and the full test benchmark remain unverified |
 
-Next evaluation: [full-song fine-tuning validation](runpod/finetune.md) compares the
-official initialization with the pinned step-90 checkpoint on all ten validation
-songs, using paired BSSEval-v4 SDR and separate SI-SDR. The workflow exports fixed
-listening excerpts and verifies that evaluation does not modify weights. GPU
-results are pending; no quality improvement is claimed yet. The first attempt
-stopped before scoring on a local/cloud decode-fingerprint mismatch and released
-its Pod; the evaluator now checks the exact cloud preparation record used in training.
-The corrected run completed two songs before being stopped because observed CPU
-scoring speed projected beyond its original time window. Full-song evaluation now
-has a 60-minute lease and retains completed per-song results on the existing volume;
-training and other GPU workflows retain their 30-minute limits.
+**Latest quality result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
+
+All ten complete validation songs (30.37 minutes), identical FP32
+PyTorch inference. BSSEval-v4 SDR in dB:
+
+| Stem | Official initialization | Step 90 | Median paired Δ | Better / worse |
+|---|---:|---:|---:|---:|
+| vocals | 7.446 | 1.055 | -6.387 | 0 / 10 |
+| drums | 5.587 | 0.606 | -4.695 | 0 / 10 |
+| bass | 4.645 | 0.726 | -3.534 | 0 / 10 |
+| other | 4.382 | 1.506 | -3.856 | 0 / 10 |
+
+Paired Δ is the median of within-song changes, not the difference of the two
+aggregate medians. [Summary, SI-SDR, protocol and listening method](docs/step90-validation-41196010747.md),
+[aggregate results](docs/results/step90-validation-41196010747.json),
+and [successful GPU run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41196010747). The export contains 26 fixed listening WAVs;
+all file hashes, lengths and audio samples were checked. No listening verdict is claimed.
+
+**Next:** Run a controlled BatchNorm-statistics ablation before extending training: compare the current candidate with the same learned parameters but restored official running statistics, and a baseline-parameter model using the candidate statistics. This can separate statistics drift from parameter-update effects; the current result alone does not establish the cause. Keep official converted weights as the inference baseline while investigating.
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
@@ -225,4 +233,5 @@ original legacy PyTorch and corrected legacy PyTorch on locally supplied MUSDB18
 or MUSDB18-HQ, see [the evaluation guide](docs/musdb-evaluation.md).
 The entry point supports full selected subsets, deterministic samples, BSSEval-v4
 SDR and separate global stereo SI-SDR, per-song records and integrity validation.
-Only 2/4-stem targets are supported. Full-dataset scores have not yet been measured.
+Only 2/4-stem targets are supported. The full four-way port comparison has not yet been run. The separate ten-song
+official-initialization vs step-90 result is recorded above.
