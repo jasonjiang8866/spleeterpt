@@ -22,7 +22,7 @@ RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 PROGRESS = re.compile(
-    r"(?:Progress: (?:archive chunks \d+/\d+|verifying audio \d+/100)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+    r"(?:Progress: (?:archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
 )
 
 
@@ -170,6 +170,7 @@ def run():
         ]
         if task in {
             "quality",
+            "finetune",
             "training",
             "recovery-export",
             "recovery-resume",

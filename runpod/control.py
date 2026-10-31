@@ -174,6 +174,7 @@ def launch(api, task="smoke"):
     if task not in {
         "smoke",
         "quality",
+        "finetune",
         "training",
         "recovery-export",
         "recovery-resume",
@@ -196,6 +197,8 @@ def launch(api, task="smoke"):
     experiment = os.environ.get("SPT_EXPERIMENT", "")
     if experiment and not re.fullmatch(r"[0-9]+-[0-9]+", experiment):
         raise RuntimeError("Invalid persistent experiment")
+    if task == "finetune" and experiment != "41189465452-1":
+        raise RuntimeError("Fine-tune validation requires the pinned step-90 experiment")
     restore_source = None
     if task == "recovery-resume":
         from recovery_result import validate_bundle, validate_recovery
@@ -213,10 +216,12 @@ def launch(api, task="smoke"):
     if any(owned(p, repo, repo_id) for p in api.pods()):
         raise RuntimeError("A managed Pod already exists; run cleanup before another smoke test")
     volume = None
-    if task.startswith("persistent-"):
+    if task.startswith("persistent-") or task == "finetune":
         from storage import ensure_volume
 
         volume = ensure_volume(api, create=task == "persistent-prepare")
+        if task == "finetune" and volume["id"] != "j3aqjpw393":
+            raise RuntimeError("Fine-tune validation requires the verified data volume")
     image = resolve_image()
     expiry = int(time.time()) + 1800
     name = f"spt-{repo_id}-{run}-{attempt}-{expiry}"
@@ -297,7 +302,7 @@ def launch(api, task="smoke"):
             except RuntimeError:
                 time.sleep(15)
                 continue
-            if task.startswith("recovery-") and not transfer_probed:
+            if (task.startswith("recovery-") or task == "finetune") and not transfer_probed:
                 from transfer import probe_transfer
 
                 probe_transfer(url.removesuffix("result") + "checkpoint", token)
@@ -337,6 +342,20 @@ def launch(api, task="smoke"):
                         source_commit or sha
                     ):
                         raise RuntimeError("Persistent source commit mismatch")
+                elif task == "finetune":
+                    from finetune_result import download_export, validate_finetune
+
+                    validate_finetune(result, sha, volume["id"], pod_id)
+                    download_export(
+                        url.removesuffix("result") + "checkpoint",
+                        token,
+                        result["report"],
+                        output / "listening-and-metrics.tar",
+                    )
+                    print(
+                        "PASS: ten full validation songs, paired metrics and listening export verified",
+                        flush=True,
+                    )
                 elif task == "quality":
                     from quality_result import validate_quality
 
@@ -381,6 +400,7 @@ def main():
             "preflight",
             "smoke",
             "quality",
+            "finetune",
             "training",
             "recovery-export",
             "recovery-resume",
@@ -400,6 +420,7 @@ def main():
     elif args.action in {
         "smoke",
         "quality",
+        "finetune",
         "training",
         "recovery-export",
         "recovery-resume",
