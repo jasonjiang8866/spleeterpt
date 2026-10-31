@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "runpod"))
-from quality import command, digest, download  # noqa: E402 -- script-local module path
+from quality import command, digest, download
 
 
 def equal_state(a, b):

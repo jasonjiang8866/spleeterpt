@@ -12,8 +12,8 @@ from unittest.mock import patch
 import global_inputs as inputs
 import global_storage as gs
 from gpu_profile import MIG24, profile
-from test_control import ENV, FakeAPI, control
 from storage import safe_mounts
+from test_control import ENV, FakeAPI, control
 
 
 class FrozenTests(unittest.TestCase):

@@ -488,8 +488,8 @@ def launch(api, task="smoke"):
                         "PASS: pinned validation snapshot copied and read-back verified", flush=True
                     )
                 elif task == "frozen":
-                    from frozen_result import validate_frozen
                     from finetune_result import download_export
+                    from frozen_result import validate_frozen
 
                     validate_frozen(
                         result, sha, pod_id, storage_proof, payload["env"]["SPT_EXPERIMENT"]
