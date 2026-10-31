@@ -3,6 +3,12 @@
 Environment: Linux CPU, Python 3.12, PyTorch 2.6.0+cpu, TensorFlow CPU 2.18.1
 (optional oracle/conversion dependency). No RunPod or other paid GPU was used.
 
+Follow-up: [complete waveform tests, legacy-port diagnosis, and five-track preview
+scores](audio-parity-and-legacy-diagnosis.md). Those tests use current upstream's
+audio pipeline because the archived v1.4.0 `.meta` frontend predates its padding
+fix. The network-only comparisons below remain valid. Two/four-stem waveform
+checks pass; five stems has a small residual that fails the tighter waveform gate.
+
 ## Automated checks
 
 - 32 tests with TensorFlow installed; 28 core tests plus 4 optional TF tests.

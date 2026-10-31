@@ -1,0 +1,243 @@
+{
+  "dataset": "MUSDB18-7-STEMS preview, test subset",
+  "selection": "first 5 lexicographically sorted test filenames, selected before inference",
+  "metric": "global stereo SI-SDR (dB), not BSSEval-v4 SDR",
+  "aggregation": "median per instrument across selected tracks",
+  "instruments": [
+    "vocals",
+    "accompaniment"
+  ],
+  "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+  "legacy_commit": "8015f4309f51e84d8a9b270711f4c1cf2ae2389e",
+  "tracks": [
+    {
+      "track": "AM Contra - Heart Peripheral.stem.mp4",
+      "sha256": "5e0f133467dd04a2de18f994aec8f0bca419de6e7ba6f963bf37c46198444cb8",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 8.951568687689614,
+          "accompaniment": 11.823349576045242
+        },
+        "spleeterpt": {
+          "vocals": 8.951568957993684,
+          "accompaniment": 11.823349785030139
+        },
+        "legacy_unmodified": {
+          "vocals": 9.163366093706031,
+          "accompaniment": 11.969656539184736
+        },
+        "legacy_corrected": {
+          "vocals": 8.9515689665342,
+          "accompaniment": 11.823349781058571
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.384185791015625e-07,
+          "rmse": 2.9159417121921394e-08,
+          "relative_l2_error": 3.659401956612274e-07,
+          "reference_snr_db": 128.7317976809927
+        },
+        "accompaniment": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.682209014892578e-07,
+          "rmse": 3.555133410302868e-08,
+          "relative_l2_error": 2.7031650790626944e-07,
+          "reference_snr_db": 131.36254863292257
+        }
+      }
+    },
+    {
+      "track": "Al James - Schoolboy Facination.stem.mp4",
+      "sha256": "67a7f1353855648eae075fa28c7cb050bb57a78633a1f24e293b7b12ec21291d",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 5.363350215191833,
+          "accompaniment": 6.5103200695704135
+        },
+        "spleeterpt": {
+          "vocals": 5.363350514998343,
+          "accompaniment": 6.510320350076081
+        },
+        "legacy_unmodified": {
+          "vocals": 5.272381402198909,
+          "accompaniment": 6.425157869837261
+        },
+        "legacy_corrected": {
+          "vocals": 5.363350522855828,
+          "accompaniment": 6.5103203417654685
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.371387720108032e-07,
+          "rmse": 3.358387902432472e-08,
+          "relative_l2_error": 5.025892509567821e-07,
+          "reference_snr_db": 125.97573608088858
+        },
+        "accompaniment": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.5762786865234375e-07,
+          "rmse": 3.492676272335268e-08,
+          "relative_l2_error": 4.0897947857552073e-07,
+          "reference_snr_db": 127.76596966210286
+        }
+      }
+    },
+    {
+      "track": "Angels In Amplifiers - I'm Alright.stem.mp4",
+      "sha256": "16b132c663550ca0d7b20c43c556628bdf95a4bb5a191a1f9ec9e7364ee93187",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 9.351061378620765,
+          "accompaniment": 11.18656421862269
+        },
+        "spleeterpt": {
+          "vocals": 9.351061291024225,
+          "accompaniment": 11.186564140747343
+        },
+        "legacy_unmodified": {
+          "vocals": 9.559321787248482,
+          "accompaniment": 11.358791313804579
+        },
+        "legacy_corrected": {
+          "vocals": 9.351061311380612,
+          "accompaniment": 11.186564152251396
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.5331974029541016e-07,
+          "rmse": 2.9041381587127248e-08,
+          "relative_l2_error": 3.2413268339441424e-07,
+          "reference_snr_db": 129.78554350757582
+        },
+        "accompaniment": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 2.682209014892578e-07,
+          "rmse": 3.36411625664867e-08,
+          "relative_l2_error": 2.8339179125002045e-07,
+          "reference_snr_db": 130.9522546743224
+        }
+      }
+    },
+    {
+      "track": "Arise - Run Run Run.stem.mp4",
+      "sha256": "2717258e43d6feb260bcbd7f60ab0ff65818dc6c65f5eedc5291084d553fe75d",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 2.9018233180193316,
+          "accompaniment": 12.598011238537252
+        },
+        "spleeterpt": {
+          "vocals": 2.9018237874509984,
+          "accompaniment": 12.598011636823955
+        },
+        "legacy_unmodified": {
+          "vocals": 3.090131707415525,
+          "accompaniment": 12.677280366811953
+        },
+        "legacy_corrected": {
+          "vocals": 2.9018237930125923,
+          "accompaniment": 12.598011637093427
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 7.674098014831543e-07,
+          "rmse": 4.4676198302163896e-08,
+          "relative_l2_error": 8.864395070244804e-07,
+          "reference_snr_db": 121.04701792910942
+        },
+        "accompaniment": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 8.344650268554688e-07,
+          "rmse": 5.123282031330483e-08,
+          "relative_l2_error": 3.488339196094827e-07,
+          "reference_snr_db": 129.14762584273674
+        }
+      }
+    },
+    {
+      "track": "BKS - Bulldozer.stem.mp4",
+      "sha256": "f85f9fb2e8fc18f9a40fa65488daf11520da805c39e58334abf38f202a622fd4",
+      "decoded_samples": 300032,
+      "evaluated_samples": 300032,
+      "si_sdr_db": {
+        "tensorflow_current": {
+          "vocals": 0.47551498513965196,
+          "accompaniment": 9.012726947698006
+        },
+        "spleeterpt": {
+          "vocals": 0.4755135802703714,
+          "accompaniment": 9.012726371747528
+        },
+        "legacy_unmodified": {
+          "vocals": 0.9665376272039293,
+          "accompaniment": 9.312243832939487
+        },
+        "legacy_corrected": {
+          "vocals": 0.47551358549530914,
+          "accompaniment": 9.012726363305587
+        }
+      },
+      "torch_vs_tf": {
+        "vocals": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 3.8743019104003906e-07,
+          "rmse": 4.3833453022281124e-08,
+          "relative_l2_error": 1.0156280502846083e-06,
+          "reference_snr_db": 119.86530626003103
+        },
+        "accompaniment": {
+          "reference_samples": 300032,
+          "candidate_samples": 300032,
+          "max_absolute_error": 4.76837158203125e-07,
+          "rmse": 5.119978644523645e-08,
+          "relative_l2_error": 3.6523339898322445e-07,
+          "reference_snr_db": 128.74859030014323
+        }
+      }
+    }
+  ],
+  "median_si_sdr_db": {
+    "tensorflow_current": {
+      "vocals": 5.363350215191833,
+      "accompaniment": 11.18656421862269
+    },
+    "spleeterpt": {
+      "vocals": 5.363350514998343,
+      "accompaniment": 11.186564140747343
+    },
+    "legacy_unmodified": {
+      "vocals": 5.272381402198909,
+      "accompaniment": 11.358791313804579
+    },
+    "legacy_corrected": {
+      "vocals": 5.363350522855828,
+      "accompaniment": 11.186564152251396
+    }
+  },
+  "max_abs_torch_tf_score_difference_db": 1.4048692805745944e-06
+}

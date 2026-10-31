@@ -14,9 +14,16 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-      - run: python -m pip install -e '.[dev]'
+      - name: Install museval system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: python -m pip install -e '.[dev]' museval==0.4.1
       - run: ruff check . && ruff format --check .
       - run: pytest -q
+        env:
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '2'
       - run: python scripts/smoke_test.py
   tensorflow-parity:
     runs-on: ubuntu-latest
@@ -32,4 +39,4 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
       - run: python -m pip install -e '.[dev]' tensorflow-cpu==2.18.1
-      - run: pytest -q tests/test_tensorflow_parity.py
+      - run: pytest -q tests/test_tensorflow_parity.py tests/test_evaluation_tools.py tests/test_numerical_diagnostics.py

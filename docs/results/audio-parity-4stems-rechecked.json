@@ -1,0 +1,212 @@
+{
+  "input": "audio_example.mp3",
+  "input_sha256": "4b431d535d235bd81b62f816f08c3f1afb6679d2706d84b3b75903b7df909507",
+  "sample_rate": 44100,
+  "instruments": [
+    "vocals",
+    "drums",
+    "bass",
+    "other"
+  ],
+  "reference": "upstream EstimatorSpecBuilder audio pipeline + original pretrained network graph",
+  "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+  "metric_note": "Reference is TF output, not isolated ground truth; this is not separation SDR.",
+  "environment": {
+    "torch": "2.6.0+cpu",
+    "tensorflow": "2.18.1",
+    "device": "cpu"
+  },
+  "cases": {
+    "music_original": {
+      "vocals": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 5.550682544708252e-07,
+        "rmse": 3.8501243991928266e-08,
+        "relative_l2_error": 3.4388729635819713e-07,
+        "reference_snr_db": 129.27167734563818,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "drums": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 7.301568984985352e-07,
+        "rmse": 6.923251403743484e-08,
+        "relative_l2_error": 4.993781712539066e-07,
+        "reference_snr_db": 126.03140890774183,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "bass": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 3.8743019104003906e-07,
+        "rmse": 4.955712252913144e-08,
+        "relative_l2_error": 5.309466735987994e-07,
+        "reference_snr_db": 125.49898191451993,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "other": {
+        "reference_samples": 479832,
+        "candidate_samples": 479832,
+        "max_absolute_error": 8.344650268554688e-07,
+        "rmse": 7.295212455842442e-08,
+        "relative_l2_error": 6.465994558957857e-07,
+        "reference_snr_db": 123.78729330353835,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "music_multiwindow": {
+      "vocals": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 1.296401023864746e-06,
+        "rmse": 3.9359458718124984e-08,
+        "relative_l2_error": 3.667754348053544e-07,
+        "reference_snr_db": 128.71199518772528,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "drums": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 7.301568984985352e-07,
+        "rmse": 6.223770549642631e-08,
+        "relative_l2_error": 4.529681707067167e-07,
+        "reference_snr_db": 126.8786462808071,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "bass": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 5.960464477539062e-07,
+        "rmse": 6.420681189771284e-08,
+        "relative_l2_error": 6.841317073553171e-07,
+        "reference_snr_db": 123.29720561848345,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "other": {
+        "reference_samples": 1048713,
+        "candidate_samples": 1048713,
+        "max_absolute_error": 1.3709068298339844e-06,
+        "rmse": 7.772488912742111e-08,
+        "relative_l2_error": 6.884785004294165e-07,
+        "reference_snr_db": 123.24219234389003,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "music_short": {
+      "vocals": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 4.3655745685100555e-09,
+        "rmse": 6.632957018641137e-10,
+        "relative_l2_error": 3.2372793046037966e-06,
+        "reference_snr_db": 109.79639658213516,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "drums": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 5.247784429229796e-10,
+        "rmse": 1.1818218008655953e-10,
+        "relative_l2_error": 2.612268135621155e-06,
+        "reference_snr_db": 111.65964494117064,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "bass": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 1.5625118976458907e-09,
+        "rmse": 4.857274103795635e-10,
+        "relative_l2_error": 2.12859577922932e-05,
+        "reference_snr_db": 93.43813606684363,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "other": {
+        "reference_samples": 2000,
+        "candidate_samples": 2000,
+        "max_absolute_error": 1.4901161193847656e-08,
+        "rmse": 2.5623406167343943e-09,
+        "relative_l2_error": 1.7635717317944762e-07,
+        "reference_snr_db": 135.07213742150108,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "silence": {
+      "vocals": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "drums": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "bass": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "other": {
+        "reference_samples": 4097,
+        "candidate_samples": 4097,
+        "max_absolute_error": 0.0,
+        "rmse": 0.0,
+        "relative_l2_error": null,
+        "reference_snr_db": null,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    },
+    "boundary_impulses": {
+      "vocals": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 3.5762786865234375e-07,
+        "rmse": 6.405059922509921e-09,
+        "relative_l2_error": 3.063751129846528e-05,
+        "reference_snr_db": 90.27493031162459,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "drums": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 3.8743019104003906e-07,
+        "rmse": 6.7126097136936855e-09,
+        "relative_l2_error": 3.3210700139923057e-06,
+        "reference_snr_db": 109.57443937228403,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "bass": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 1.7462298274040222e-09,
+        "rmse": 2.2188847378149097e-10,
+        "relative_l2_error": 1.2267652370418956e-05,
+        "reference_snr_db": 98.22477078314847,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      },
+      "other": {
+        "reference_samples": 8201,
+        "candidate_samples": 8201,
+        "max_absolute_error": 2.9802322387695312e-08,
+        "rmse": 1.4553134781619249e-09,
+        "relative_l2_error": 3.5141517327082635e-06,
+        "reference_snr_db": 109.0835898126752,
+        "allclose_atol_1e-5_rtol_1e-4": true
+      }
+    }
+  },
+  "passed": true
+}
