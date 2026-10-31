@@ -18,6 +18,12 @@ from test_control import ENV, FakeAPI, control, pod
 
 
 class GlobalTests(unittest.TestCase):
+    def test_global_ids_are_opaque_not_a_documentation_example_prefix(self):
+        for value in ("gsb_unit", "550e8400-e29b-41d4-a716-446655440000", "abc123"):
+            self.assertTrue(gs.valid_id(value))
+        for value in ("", "../other", "two words", "id\n", None):
+            self.assertFalse(gs.valid_id(value))
+
     def test_cli_global_export_dispatches_compute_instead_of_cleanup(self):
         with (
             patch.dict(os.environ, ENV),
@@ -65,7 +71,7 @@ class GlobalTests(unittest.TestCase):
     def test_global_identity_and_no_automatic_create_retry(self):
         api = FakeAPI()
         v = {"id": "gsb_unit", "name": gs.NAME}
-        for vs in ([v], [v, v], [{**v, "id": "bad"}]):
+        for vs in ([v], [v, v], [{**v, "id": "bad/id"}]):
             with patch.object(
                 api,
                 "call",
