@@ -38,6 +38,9 @@ def parser():
     train.add_argument("--lr", type=float, default=1e-4)
     train.add_argument("--grad-clip", type=float, default=5.0)
     train.add_argument("--save-every", type=int, default=150)
+    train.add_argument(
+        "--backup-dir", help="publish last three checkpoint generations on persistent storage"
+    )
     train.add_argument("--seed", type=int, default=0)
     train.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     train.add_argument("--precision", choices=["fp32", "fp16", "bf16"], default="fp32")

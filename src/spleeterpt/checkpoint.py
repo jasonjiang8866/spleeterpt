@@ -22,6 +22,9 @@ def atomic_save(payload, path):
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temporary, path)
+        from .backup import sync_dir
+
+        sync_dir(path.parent)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)

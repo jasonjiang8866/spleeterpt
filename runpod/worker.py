@@ -149,7 +149,15 @@ def run():
             ["python", "-m", "pip", "install", "-e", "."],
             ["python", "runpod/gpu_smoke.py", "--output", str(report)],
         ]
-        if task in {"quality", "training", "recovery-export", "recovery-resume"}:
+        if task in {
+            "quality",
+            "training",
+            "recovery-export",
+            "recovery-resume",
+            "persistent-prepare",
+            "persistent-train",
+            "persistent-resume",
+        }:
             python = "/workspace/eval-venv/bin/python"
             commands = [
                 [
@@ -190,7 +198,18 @@ def run():
                         str(report),
                     ]
                     if task.startswith("recovery-")
-                    else [python, f"runpod/{task}.py", "--output", str(report)]
+                    else (
+                        [
+                            python,
+                            "runpod/persistent.py",
+                            "--stage",
+                            task.split("-", 1)[1],
+                            "--output",
+                            str(report),
+                        ]
+                        if task.startswith("persistent-")
+                        else [python, f"runpod/{task}.py", "--output", str(report)]
+                    )
                 ),
             ]
         elif task != "smoke":

@@ -137,6 +137,11 @@ def run_training(args):
             output / name,
         )
 
+        if name == "last.pt" and getattr(args, "backup_dir", None):
+            from .backup import publish
+
+            publish(output, args.backup_dir, step)
+
     def log(record):
         print(json.dumps(record), flush=True)
         with (output / "metrics.jsonl").open("a") as stream:

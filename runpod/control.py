@@ -85,7 +85,12 @@ def owned(pod, repo, repo_id):
     if not match or pod.get("env", {}).get("SPT_MANAGED_BY") != repo:
         return None
     if any((pod.get("mounts") or {}).values()):
-        raise RuntimeError("Refusing to delete managed Pod with persistent storage")
+        from storage import safe_mounts
+
+        if not safe_mounts(pod):
+            raise RuntimeError(
+                "Refusing to delete managed Pod with unrecognized persistent storage"
+            )
     return match
 
 
@@ -166,7 +171,16 @@ def resolve_image():
 
 
 def launch(api, task="smoke"):
-    if task not in {"smoke", "quality", "training", "recovery-export", "recovery-resume"}:
+    if task not in {
+        "smoke",
+        "quality",
+        "training",
+        "recovery-export",
+        "recovery-resume",
+        "persistent-prepare",
+        "persistent-train",
+        "persistent-resume",
+    }:
         raise RuntimeError("Unsupported GPU task")
     repo, repo_id = identity()
     if os.environ.get("GITHUB_REF") != "refs/heads/main":
@@ -190,6 +204,11 @@ def launch(api, task="smoke"):
     # Do not retry provisioning: a timed-out POST may already have created a paid Pod.
     if any(owned(p, repo, repo_id) for p in api.pods()):
         raise RuntimeError("A managed Pod already exists; run cleanup before another smoke test")
+    volume = None
+    if task.startswith("persistent-"):
+        from storage import ensure_volume
+
+        volume = ensure_volume(api, create=task == "persistent-prepare")
     image = resolve_image()
     expiry = int(time.time()) + 1800
     name = f"spt-{repo_id}-{run}-{attempt}-{expiry}"
@@ -230,6 +249,16 @@ def launch(api, task="smoke"):
             "PYTHONUNBUFFERED": "1",
         },
     }
+    if volume:
+        metadata["volume"] = volume
+        payload["mounts"] = {"network": [{"volumeId": volume["id"], "path": "/data"}]}
+        payload["dataCenterIds"] = [volume["dataCenter"]]
+        payload["env"].update(
+            SPT_VOLUME_ID=volume["id"],
+            SPT_VOLUME_NAME=volume["name"],
+            SPT_EXPERIMENT=os.environ.get("SPT_EXPERIMENT", run + "-" + attempt),
+        )
+        (output / "provision.json").write_text(json.dumps(metadata, indent=2))
     if restore_source:
         payload["env"]["SPT_RESTORE_DESCRIPTOR"] = json.dumps(restore_source["bundle"])
     try:
@@ -280,7 +309,11 @@ def launch(api, task="smoke"):
                 last_phase = phase
             if result.get("status") in {"passed", "failed"}:
                 (output / "result.json").write_text(json.dumps(result, indent=2))
-                if task == "quality":
+                if task.startswith("persistent-"):
+                    from persistent_result import validate_persistent
+
+                    validate_persistent(result, sha, task, volume["id"], pod_id)
+                elif task == "quality":
                     from quality_result import validate_quality
 
                     validate_quality(result, sha, output / "quality")
@@ -327,6 +360,9 @@ def main():
             "training",
             "recovery-export",
             "recovery-resume",
+            "persistent-prepare",
+            "persistent-train",
+            "persistent-resume",
             "cleanup",
             "reap",
         ],
@@ -337,7 +373,16 @@ def main():
     if args.action == "preflight":
         api.pods()
         print("PASS: RUNPOD_API_KEY authenticates to REST v2 Pod management (read-only check).")
-    elif args.action in {"smoke", "quality", "training", "recovery-export", "recovery-resume"}:
+    elif args.action in {
+        "smoke",
+        "quality",
+        "training",
+        "recovery-export",
+        "recovery-resume",
+        "persistent-prepare",
+        "persistent-train",
+        "persistent-resume",
+    }:
         launch(api, args.action)
     else:
         cleanup(api, expired=args.action == "reap")
