@@ -34,16 +34,16 @@ is `(tuned - official_learned_bn) - (learned_official_bn - official)`.
 Do not infer additive attribution from differences of aggregate medians.
 
 The two unmodified controls must reproduce the earlier aggregate SI-SDR means,
-medians and coverage within 1e-5 dB, otherwise the run fails acceptance.
+medians and coverage within 1e-5 dB on the original RTX 4090 or **1e-3 dB** on the user-selected Blackwell MIG GPU (absolute tolerance fixed before execution), otherwise the run fails acceptance.
 Missing songs, wrong lengths, missing variants, changed provenance, altered
 summaries and swapped tensor groups are rejected by the Actions-side validator.
 Per-song records persist during evaluation; incomplete runs are not accepted.
 No new listening audio is exported in this metric-only diagnostic.
 
 Run **RunPod BatchNorm ablation** from main with `confirm_paid_gpu` checked.
-One existing-volume RTX 4090 lease, **30 minutes maximum**, **$1/hour rate guard**,
+One existing-volume **PRO 6000 MIG 24GB** lease, **30 minutes maximum**, **$0.69/hour rate guard**,
 27-minute worker window and automatic compute deletion. Storage is retained at its
-existing charge. Maximum intended GPU compute is approximately $0.50, excluding
+existing charge. Maximum intended GPU compute is approximately $0.345, excluding
 cleanup delays or billing rounding. No new storage subscription is created.
 
 Interpretation: recovery after restoring official statistics implicates the BN
@@ -52,3 +52,20 @@ and learned statistics tests whether those buffers alone are sufficient to repro
 it. These are checkpoint-level interventions, not proof of the training-time cause,
 convergence, or general superiority. Training with frozen BN statistics is a separate
 follow-up experiment, and any proposed fix requires full SDR and listening checks.
+
+
+## Selected GPU (2026-11-01)
+
+Use the exact RunPod ID `NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb`
+([official GPU table](https://docs.runpod.io/references/gpu-types)). Other workflows
+retain the RTX 4090 default. The authentication preflight now queries this MIG
+profile. A BN launch requires advertised availability in the existing volume's
+region, the actual Pod GPU ID and an actual hourly rate no greater than $0.69.
+No region migration, volume creation or automatic GPU substitution is allowed.
+Runtime checks require one visible Blackwell 12.0 device with 22–25 GiB visible
+memory; a full 96GB card or a different MIG size is rejected. Original FP32/CUDA
+settings, dataset, checkpoint and all four comparisons remain unchanged.
+The original control scores remain a mandatory gate; cross-architecture tolerance
+is not a claim of bitwise parity or a change to scoring. Report the actual device,
+visible memory and tolerance alongside measured results. A cheaper hourly rate
+does not guarantee lower total runtime or cost.

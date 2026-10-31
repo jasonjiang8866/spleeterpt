@@ -195,7 +195,9 @@ def validate_records(records, expected):
                 decode_number(x["global_stereo_si_sdr_db"])
 
 
-def validate_baselines(summary, previous):
+def validate_baselines(summary, previous, *, tolerance=1e-5):
+    if tolerance not in (1e-5, 1e-3):
+        raise ValueError("Unapproved baseline tolerance")
     for stem in STEMS:
         for variant in VARIANTS[:2]:
             actual = summary["metrics"][stem][variant]
@@ -207,6 +209,6 @@ def validate_baselines(summary, previous):
                 raise ValueError("Baseline coverage changed")
             for k in ("median", "mean"):
                 if not math.isclose(
-                    decode_number(actual[k]), decode_number(old[k]), abs_tol=1e-5, rel_tol=0
+                    decode_number(actual[k]), decode_number(old[k]), abs_tol=tolerance, rel_tol=0
                 ):
                     raise ValueError("Baseline SI-SDR does not reproduce prior run")

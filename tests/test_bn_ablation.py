@@ -88,6 +88,14 @@ def test_real_scores_identity_degradation_lengths_and_interaction(bn):
 def test_full_report_and_tamper_rejection(bn, modules, report):  # noqa: F811
     _, checker = modules
     r = copy.deepcopy(report["report"])
+    r["gpu_runtime"] = {
+        "requested_gpu": "NVIDIA GeForce RTX 4090",
+        "name": "NVIDIA GeForce RTX 4090",
+        "device_count": 1,
+        "capability": [8, 9],
+        "total_memory_bytes": 24 * 1024**3,
+    }
+    r["baseline_tolerance_db"] = 1e-5
     r["kind"] = "bn-ablation"
     r["protocol"] = bn.PROTOCOL
     r["results_directory"] = "/data/evaluations/41189465452-1/bn-example"
@@ -143,3 +151,46 @@ def test_full_report_and_tamper_rejection(bn, modules, report):  # noqa: F811
     changed["metrics"]["vocals"]["official_converted"]["mean"] += 0.01
     with pytest.raises(ValueError, match="reproduce"):
         bn.validate_baselines(changed, previous)
+
+
+def test_blackwell_runtime_and_fixed_cross_arch_tolerance(bn, modules):  # noqa: F811
+    from gpu_profile import ADA, BLACKWELL, MIG24, baseline_tolerance, validate_runtime
+
+    r = {
+        "requested_gpu": MIG24,
+        "name": MIG24,
+        "device_count": 1,
+        "capability": [12, 0],
+        "total_memory_bytes": 24 * 1024**3,
+    }
+    validate_runtime(r, MIG24)
+    validate_runtime({**r, "name": BLACKWELL}, MIG24)
+    for patch in (
+        {"total_memory_bytes": 96 * 1024**3},
+        {"name": ADA},
+        {"device_count": 2},
+        {"requested_gpu": ADA},
+        {"capability": [8, 9]},
+    ):
+        with pytest.raises(ValueError):
+            validate_runtime({**r, **patch}, MIG24)
+    assert baseline_tolerance(MIG24) == 1e-3
+    with pytest.raises(ValueError):
+        baseline_tolerance("unapproved")
+    previous = json.loads((ROOT / "docs/results/step90-validation-41196010747.json").read_text())
+    summary = {
+        "metrics": {
+            s: {
+                v: copy.deepcopy(previous["metrics"]["global_stereo_si_sdr_db"][s][v])
+                for v in bn.VARIANTS[:2]
+            }
+            for s in bn.STEMS
+        }
+    }
+    summary["metrics"]["vocals"]["official_converted"]["mean"] += 0.0005
+    bn.validate_baselines(summary, previous, tolerance=1e-3)
+    with pytest.raises(ValueError):
+        bn.validate_baselines(summary, previous)
+    summary["metrics"]["vocals"]["official_converted"]["mean"] += 0.002
+    with pytest.raises(ValueError):
+        bn.validate_baselines(summary, previous, tolerance=1e-3)
