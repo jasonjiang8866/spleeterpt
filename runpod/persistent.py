@@ -50,7 +50,12 @@ def archive_download(path):
         return target
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        paths = list(pool.map(part, range(0, ARCHIVE_BYTES, chunk_size)))
+        futures = {pool.submit(part, start): start for start in range(0, ARCHIVE_BYTES, chunk_size)}
+        completed = {}
+        for future in concurrent.futures.as_completed(futures):
+            completed[futures[future]] = future.result()
+            print(f"Progress: archive chunks {len(completed)}/{len(futures)}", flush=True)
+        paths = [completed[start] for start in sorted(completed)]
     temporary = path.with_suffix(".partial")
     with temporary.open("wb") as f:
         for p in paths:
@@ -76,7 +81,7 @@ def verify_data():
     expected = {x["id"]: x["source_sha256"] for x in pinned["tracks"]}
     if {x["id"]: x["source_sha256"] for x in provenance["tracks"]} != expected:
         raise RuntimeError("Source inventory differs from verified official release")
-    for track in provenance["tracks"]:
+    for index, track in enumerate(provenance["tracks"], 1):
         folder = DATA / "train-pool" / Path(track["id"]).name.removesuffix(".stem.mp4")
         if set(track["files"]) != {"mixture", "drums", "bass", "other", "vocals"}:
             raise RuntimeError("Wrong stem inventory")
@@ -84,6 +89,7 @@ def verify_data():
             p = folder / f"{stem}.wav"
             if p.stat().st_size != spec["bytes"] or digest(p) != spec["sha256"]:
                 raise RuntimeError("Persistent audio checksum mismatch")
+        print(f"Progress: verifying audio {index}/100", flush=True)
     splits = {}
     for split in ("train", "validation"):
         path = DATA / "manifests" / f"{split}.jsonl"
@@ -179,7 +185,8 @@ def run(stage):
             meta = json.loads(meta_path.read_text())
             if (
                 meta["dataset"] != dataset
-                or meta["commit"] != os.environ["SPT_COMMIT"]
+                or meta["commit"]
+                != (os.environ.get("SPT_SOURCE_COMMIT") or os.environ["SPT_COMMIT"])
                 or meta["source_pod"] == os.environ["RUNPOD_POD_ID"]
             ):
                 raise RuntimeError("Resume must use same data/commit on a different Pod")
@@ -232,6 +239,7 @@ def run(stage):
         r = base_report(stage, started, dataset)
         r.update(
             source_pod=meta["source_pod"],
+            source_commit=meta["commit"],
             cursor=[cp[k] for k in ("step", "epoch", "next_batch")],
             optimizer_steps=sorted({int(v["step"]) for v in cp["optimizer"]["state"].values()}),
             weights_finite=all(torch.isfinite(t).all().item() for t in cp["model"].values()),

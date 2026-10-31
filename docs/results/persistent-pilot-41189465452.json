@@ -1,0 +1,195 @@
+{
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452",
+  "volume": {
+    "dataCenter": "EU-RO-1",
+    "id": "j3aqjpw393",
+    "name": "spt-1436489970-musdb18-v1",
+    "size": 80,
+    "type": "STANDARD"
+  },
+  "prepare": {
+    "kind": "persistent-pilot",
+    "stage": "prepare",
+    "commit": "d25dc50f22165022a7122e0c10711c88ed16fddf",
+    "pod_id": "4t1x6zkqefdlc2",
+    "volume_id": "j3aqjpw393",
+    "experiment": "41189465452-1",
+    "dataset": {
+      "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+      "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+      "train_tracks": 90,
+      "validation_tracks": 10,
+      "verified_audio_files": 500,
+      "test_audio_extracted": false
+    },
+    "seconds": 1019.0398715839256
+  },
+  "training_status": "step 10 saved; worker acceptance failed on tuple/list config representation; resume pending",
+  "interrupted_training": {
+    "kind": "persistent-pilot",
+    "stage": "train",
+    "commit": "d25dc50f22165022a7122e0c10711c88ed16fddf",
+    "pod_id": "3vy22g8gzy815k",
+    "volume_id": "j3aqjpw393",
+    "experiment": "41189465452-1",
+    "dataset": {
+      "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+      "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+      "train_tracks": 90,
+      "validation_tracks": 10,
+      "verified_audio_files": 500,
+      "test_audio_extracted": false
+    },
+    "seconds": 104.11421456700191,
+    "source_pod": "3vy22g8gzy815k",
+    "cursor": [
+      10,
+      0,
+      10
+    ],
+    "optimizer_steps": [
+      10
+    ],
+    "weights_finite": true,
+    "metrics": [
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 1,
+        "loss": 9.255226135253906,
+        "grad_norm": 0.16907437145709991,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 2,
+        "loss": 7.590274810791016,
+        "grad_norm": 0.14904150366783142,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 3,
+        "loss": 7.868463516235352,
+        "grad_norm": 0.11872398853302002,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 4,
+        "loss": 5.688495635986328,
+        "grad_norm": 0.12924614548683167,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 5,
+        "loss": 2.825373649597168,
+        "grad_norm": 0.06578322499990463,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 6,
+        "loss": 6.609165191650391,
+        "grad_norm": 0.118880994617939,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 7,
+        "loss": 5.87777853012085,
+        "grad_norm": 0.18023312091827393,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 8,
+        "loss": 0.852050244808197,
+        "grad_norm": 0.021601157262921333,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 9,
+        "loss": 8.336858749389648,
+        "grad_norm": 0.18066032230854034,
+        "update_skipped": false
+      },
+      {
+        "kind": "train",
+        "epoch": 0,
+        "step": 10,
+        "loss": 4.760902404785156,
+        "grad_norm": 0.1241721510887146,
+        "update_skipped": false
+      }
+    ],
+    "backup": {
+      "format": 1,
+      "step": 10,
+      "generation": "step-000000010-84bcf72d64aa489e9fda02bab00f9eb3",
+      "files": {
+        "arguments.json": {
+          "bytes": 630,
+          "sha256": "902d8caba5275999003fcc16a7d380ba27b9e7fadc0e4a09aa3dc703242d2156"
+        },
+        "config.json": {
+          "bytes": 415,
+          "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+        },
+        "last.pt": {
+          "bytes": 471800627,
+          "sha256": "a99829008eb2d7c13f4d9ca8b5f571eb014f282de8bd2f9a7cc1285670e0bbee"
+        },
+        "metrics.jsonl": {
+          "bytes": 1268,
+          "sha256": "50ec1246c0efbc64025f765d99a80c0ed2b717f2f365a6cf41c9cc1441a51618"
+        }
+      }
+    },
+    "restored": null,
+    "initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+    "timing": {
+      "seconds": 14.151075799018145,
+      "peak_allocated_bytes": 1118093824
+    },
+    "config": {
+      "instruments": [
+        "vocals",
+        "drums",
+        "bass",
+        "other"
+      ],
+      "filters": [
+        16,
+        32,
+        64,
+        128,
+        256,
+        512
+      ],
+      "sample_rate": 44100,
+      "n_fft": 4096,
+      "hop_length": 1024,
+      "segment_frames": 512,
+      "frequency_bins": 1024,
+      "encoder_activation": "elu",
+      "decoder_activation": "elu",
+      "mask_activation": "sigmoid",
+      "mask_extension": "zeros",
+      "separation_exponent": 2.0
+    },
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  }
+}

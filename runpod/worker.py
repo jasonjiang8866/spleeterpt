@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import signal
 import subprocess
 import threading
@@ -18,6 +19,21 @@ TOKEN = os.environ.get("SPT_RESULT_TOKEN", "")
 RESTORE_LOCK = threading.Lock()
 EXPORT_FILE = Path("/workspace/checkpoint.tar")
 RESTORE_FILE = Path("/workspace/restore.tar")
+
+
+PROGRESS = re.compile(
+    r"(?:Progress: (?:archive chunks \d+/\d+|verifying audio \d+/100)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+)
+
+
+def progress(path=Path("/workspace/smoke.log")):
+    try:
+        with path.open("rb") as stream:
+            stream.seek(max(0, path.stat().st_size - 65536))
+            lines = stream.read(65536).decode(errors="replace").splitlines()
+        return next((line for line in reversed(lines) if PROGRESS.fullmatch(line)), None)
+    except OSError:
+        return None
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -71,7 +87,10 @@ class Handler(BaseHTTPRequestHandler):
         if self.path != "/result":
             self.send_error(404)
             return
-        data = json.dumps(RESULT).encode()
+        result = dict(RESULT)
+        if result.get("status") == "running":
+            result["progress"] = progress()
+        data = json.dumps(result).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(data)))

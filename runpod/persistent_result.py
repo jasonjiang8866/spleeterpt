@@ -39,7 +39,7 @@ def validate_persistent(result, sha, task, volume_id, pod_id):
             "unexpected runtime",
         )
         require(
-            r.get("config")
+            json.loads(json.dumps(r.get("config")))
             == json.loads(
                 (Path(__file__).resolve().parents[1] / "configs/4stems.json").read_text()
             ),

@@ -14,15 +14,16 @@ point for RunPod. This is an independent project, not an official Deezer release
 | Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
-| Persistent training pilot | Implementation added: 80 GB network volume, periodic checkpoint generations, new-Pod restore and one 90-track epoch; cloud acceptance pending |
+| Persistent training pilot | 80 GB STANDARD volume created in EU-RO-1; full data preparation and 500-file hash validation passed. Step 10 checkpoint generations saved; a tuple/list config acceptance bug blocked the original run. The validator is fixed; replacement-Pod continuation is pending |
 | Quality / convergence | Full-dataset SDR comparison and convergence training have **not** completed; engineering acceptance does not demonstrate improved separation quality |
 
 Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41179746234),
 [replacement-Pod recovery](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41187527968),
 and [full-data provenance](docs/results/musdb18-training-provenance.json).
 Recovery artifacts expire on **2026-11-14**; both test Pods were deleted.
-Decoded data was prepared in the working environment; the new persistent workflow
-must pass before considering it available on RunPod. No pretrained weights or
+Decoded data is now checksum-verified on RunPod volume `j3aqjpw393` (EU-RO-1),
+mounted at `/data/musdb18`. The retained 80 GB STANDARD volume costs approximately
+**$5.60/month** even when no Pod runs. See the [persistent pilot run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452). No pretrained weights or
 training audio are bundled in this repository.
 
 ## Install
