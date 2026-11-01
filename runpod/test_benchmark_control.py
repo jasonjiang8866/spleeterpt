@@ -214,6 +214,23 @@ class Tests(unittest.TestCase):
         self.assertEqual(api.calls[0][2]["env"]["SPT_BENCHMARK_PROFILE"], "vocal")
         self.assertEqual(api.items, [])
 
+    def test_bounded_branch_gate_and_compute_cleanup(self):
+        for branch, accepted in [
+            ("refs/heads/codex/bounded-memory-inference", False),
+            ("refs/heads/main", True),
+            ("refs/heads/other", False),
+        ]:
+            api = Fake()
+            result = self.run_controller(
+                api, env={"SPT_BENCHMARK_PROFILE": "bounded", "GITHUB_REF": branch}
+            )
+            self.assertEqual(sum(m == "POST" for _, m, _ in api.calls), int(accepted))
+            if accepted:
+                self.assertTrue(result["cleanup_confirmed"])
+                self.assertEqual(api.calls[0][2]["env"]["SPT_BENCHMARK_PROFILE"], "bounded")
+                self.assertNotIn("RUNPOD_API_KEY", api.calls[0][2]["env"])
+            self.assertEqual(api.items, [])
+
 
 if __name__ == "__main__":
     unittest.main()

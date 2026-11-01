@@ -65,6 +65,11 @@ def parser():
     infer.add_argument("--cache-dir", help="cache directory for --model")
     infer.add_argument("--output", required=True)
     infer.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    infer.add_argument(
+        "--bounded-memory",
+        action="store_true",
+        help="stream file blocks at the model sample rate into a new output directory",
+    )
     download = commands.add_parser("download", help="fetch and verify released inference weights")
     download.add_argument("--stems", type=int, choices=[2, 4], required=True)
     download.add_argument("--cache-dir")
@@ -107,6 +112,11 @@ def main(argv=None):
 
             checkpoint = download_model(args.model, args.cache_dir)
         model = load_model(checkpoint, args.device)
+        if args.bounded_memory:
+            from .streaming import separate_file
+
+            separate_file(model, args.input, args.output)
+            return
         output = Path(args.output)
         output.mkdir(parents=True, exist_ok=True)
         if any((output / f"{name}.wav").exists() for name in model.config.instruments):

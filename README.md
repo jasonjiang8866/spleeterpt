@@ -1,12 +1,53 @@
 # spleeterpt
 
 A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter),
-with official weight conversion, audio separation, and a single-GPU training entry
-point for RunPod. This is an independent project, not an official Deezer release.
+with official weight conversion, **bounded-memory long-audio inference**, and a
+single-GPU training entry point for RunPod. This is an independent project, not an
+official Deezer release.
 
+[Long-audio inference](#long-audio-inference-with-bounded-memory) ·
 [Beginner's stem guide](#what-is-a-stem-and-which-model-should-i-choose) ·
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
 [When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
+
+## Long-audio inference with bounded memory
+
+[![Measured CUDA memory versus audio duration for official 2-stem and 4-stem checkpoints: bounded memory stays at 244 and 462 MiB from 60 to 600 seconds, about 96.7% below the original spleeterpt path at 600 seconds.](docs/assets/bounded-memory.svg)](docs/bounded-memory.md)
+
+**Separate longer recordings without CPU/GPU working memory growing with audio
+duration.** The opt-in `--bounded-memory` path reads audio, processes spectral
+windows, reconstructs overlapping samples and writes stems incrementally. For a
+fixed checkpoint and window configuration, working memory stays bounded while
+output files grow on disk. This makes long recordings and sequential batch jobs
+practical without holding full-track spectrograms or stem waveforms in memory.
+
+This is an added capability over **Deezer Spleeter's standard file pipeline**,
+which [loads the requested audio, separates it and then saves the complete stem arrays](https://github.com/deezer/spleeter/blob/master/spleeter/separator.py).
+The official converted weights, model windows and acoustic parameters stay the same;
+no retraining is needed.
+
+**Measured on an RTX PRO 6000 24GB MIG: about 96.7% lower peak allocated CUDA
+memory for 10-minute synthetic audio**, compared with this port's original path:
+
+| Official checkpoint | Original path | Bounded-memory path |
+|---|---:|---:|
+| 2-stem | 7,367 MiB | **244 MiB** |
+| 4-stem | 13,921 MiB | **462 MiB** |
+
+The bounded peaks were unchanged between 1-minute and 10-minute inputs. Across
+the measured official 2/4-stem GPU comparisons, including real-music prefixes,
+the maximum absolute waveform difference was **5.22e-7**. These are comparisons
+against this port's original inference path, not a TensorFlow/upstream memory
+benchmark or a claim of better separation quality.
+
+Add `--bounded-memory` to `spleeterpt separate` to enable it. The file interface
+requires seekable mono/stereo audio at the checkpoint sample rate (44.1 kHz for
+official presets) and a new output directory. It is intended for offline file
+processing; production acceptance and low-latency live audio are outside this
+validation scope.
+
+[Usage and batch API](#long-audio-and-batch-jobs-opt-in) ·
+[Benchmark evidence, numerical tolerances and limitations](docs/bounded-memory.md)
 
 ## What is a stem, and which model should I choose?
 
@@ -81,6 +122,36 @@ convert a matching official 5-stem checkpoint and supply `--checkpoint`, subject
 to the validation limitation above. Changing a filename or output directory does
 not change how many stems a checkpoint produces.
 
+## Long audio and batch jobs (opt-in)
+
+Use `--bounded-memory` to read, separate and write one spectral window at a time,
+with bounded CPU and GPU working memory for a fixed checkpoint. The official
+weights, model windows and acoustic parameters are unchanged:
+
+```bash
+uv run --no-sync spleeterpt separate "long-song-44100.wav" --model 2stems \
+  --bounded-memory --output outputs/long-song --device cpu
+```
+
+Use `--device cuda` after installing the CUDA environment. This path requires
+seekable mono/stereo audio **already at the checkpoint sample rate** (44,100 Hz
+for official presets) and a **new, nonexistent output directory**. It writes stereo
+float WAV stems incrementally and publishes the directory after successful completion.
+It does not perform implicit resampling. The default path remains available and
+unchanged, including its automatic resampling and full-length spectral allocations.
+
+For batch services, load one model and call `spleeterpt.streaming.separate_file`
+sequentially with a unique output directory per job. `separate_iter` is available
+for CPU tensors and sinks that consume output blocks immediately. These are
+file/block interfaces, not a low-latency live audio service.
+
+[Design, API examples, numerical/memory benchmark and limitations](docs/bounded-memory.md).
+Measured on an RTX PRO 6000 **24GB MIG**, 10-minute synthetic 4-stem audio uses
+**462 MiB** peak allocated CUDA memory versus **13,921 MiB** on the default path;
+the bounded peak is unchanged from 60 seconds. Official 2/4-stem CPU comparisons
+use synthetic audio; GPU comparisons also include one real validation song's prefixes.
+This is **not production acceptance**; 5-stem official parity limitations remain unchanged.
+
 ## Model architecture
 
 [![spleeterpt architecture: stereo STFT, independent six-level U-Nets with raw convolution skips, magnitude estimates, ratio masks and audio reconstruction](docs/assets/model-architecture.svg)](docs/assets/model-architecture.svg)
@@ -146,7 +217,9 @@ four-stem RoFormer setup. HTDemucs and one pinned Kim Mel-Band RoFormer now have
 separate local measurements below; the other candidates remain evaluation priorities.
 Our default high-band truncation and mixture-phase masks are limitations for
 full-band, high-fidelity deliverables. Fixed inference windows do not make this
-implementation streaming: the full STFT remains in memory. The measurements below
+default path streaming: the full STFT remains in memory. The optional
+[bounded-memory path](docs/bounded-memory.md) processes spectra and reconstruction
+in blocks. The measurements below predate that path and
 apply to the named pinned configurations on one MIG profile, not all models or devices.
 
 The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
@@ -386,7 +459,9 @@ For 4/5 stems, use the corresponding official `4stems.tar.gz` / `5stems.tar.gz`
 archive and matching `--stems`. Inference accepts audio formats supported by
 libsndfile, duplicates mono to stereo, and resamples to the checkpoint sample rate.
 Output is stereo float WAV at that rate, avoiding silent PCM clipping. Network
-inference uses fixed windows; the full STFT still resides in memory.
+inference uses fixed windows; the full STFT still resides in memory in this default
+path. See [bounded-memory inference](docs/bounded-memory.md) for the opt-in file API
+and its explicit sample-rate requirement.
 
 ## Prepare training data
 

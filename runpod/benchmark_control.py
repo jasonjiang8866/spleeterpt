@@ -26,7 +26,7 @@ class BenchmarkDeadline(Exception):
 def launch(api):
     repo, repo_id = identity()
     profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
-    if profile not in ("four-stem", "vocal", "convergence"):
+    if profile not in ("four-stem", "vocal", "convergence", "bounded"):
         raise RuntimeError("Unknown benchmark profile; refusing compute")
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
@@ -154,8 +154,6 @@ def launch(api):
                 (output / "result.json").write_text(
                     json.dumps(result, indent=2, allow_nan=False) + "\n"
                 )
-                from benchmark_metrics import timing_summary
-                from benchmark_result import validate
                 from finetune_result import download_export
 
                 # Preserve a completed bounded export even if post-run acceptance failed.
@@ -167,11 +165,17 @@ def launch(api):
                         result["report"],
                         output / "listening-and-metrics.tar",
                     )
-                if profile == "convergence":
+                if profile == "bounded":
+                    from bounded_result import validate as validate_bounded
+
+                    validate_bounded(result, sha, global_volume["id"], pod_id, experiment)
+                elif profile == "convergence":
                     from convergence_result import validate as validate_convergence
 
                     validate_convergence(result, sha, global_volume["id"], pod_id, experiment)
                 else:
+                    from benchmark_result import validate
+
                     validate(
                         result,
                         sha,
@@ -180,7 +184,9 @@ def launch(api):
                         experiment,
                         vocal=profile == "vocal",
                     )
-                if profile != "convergence":
+                if profile not in {"convergence", "bounded"}:
+                    from benchmark_metrics import timing_summary
+
                     meta["timing_summary"] = timing_summary(result["report"]["measurements"], rate)
                 save()
                 print("PASS: independent benchmark validation and export checks", flush=True)

@@ -42,6 +42,7 @@ class WorkerDependencyTests(unittest.TestCase):
             ("benchmark", "four-stem"),
             ("benchmark", "vocal"),
             ("benchmark", "convergence"),
+            ("benchmark", "bounded"),
         ]:
             with self.subTest(task=task, profile=profile):
                 commands = self.commands(task, profile)
