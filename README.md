@@ -74,6 +74,9 @@ of fastest inference, lowest VRAM or lowest cost has been established.
 
 The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
 keeps the existing ten-song validation screen separate from a future final test.
+The [Spleeter-4 / HTDemucs preparation](docs/spleeter4-htdemucs-protocol.md)
+specifies the first controlled screen, resource checks, runtime compatibility
+probe and proposed budget. No competitor music-quality result is available yet.
 
 ## Current progress — 2026-11-01 (SGT)
 
