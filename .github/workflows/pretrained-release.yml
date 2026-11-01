@@ -35,15 +35,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.4'
+          enable-cache: true
       - name: Install fixed CPU conversion environment
         run: |
-          python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -e '.[convert,dev]' numpy==2.0.2 pandas==2.2.3
+          uv sync --locked --group dev --group release
       - name: Downloader and packaging regression tests
-        run: pytest -q tests/test_pretrained.py
+        run: uv run --no-sync pytest -q tests/test_pretrained.py
       - name: Rebuild and validate official conversions
         run: |
-          python scripts/build_pretrained_release.py \
+          uv run --no-sync python scripts/build_pretrained_release.py \
             --work "$RUNNER_TEMP/pretrained-source" \
             --output "$RUNNER_TEMP/pretrained-release" \
             --upstream-root upstream \

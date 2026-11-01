@@ -51,13 +51,13 @@ version 1 dictionary, loaded via `torch.load(..., weights_only=True)`.
 
 ## Download and use
 
-After installing this repository revision or a newer compatible version:
+From a checkout of this repository, with [uv installed](../README.md#install):
 
 ```bash
-python -m pip install .
-spleeterpt download --stems 4
-spleeterpt separate song.wav --model 4stems --output outputs/song --device cpu
-# On an environment with CUDA-enabled PyTorch, use --device cuda.
+uv sync --locked
+uv run --no-sync spleeterpt download --stems 4
+uv run --no-sync spleeterpt separate song.wav --model 4stems --output outputs/song --device cpu
+# For CUDA, first sync the cu128 group as described in the README, then use --device cuda.
 ```
 
 `--model 2stems` selects vocals/accompaniment; `4stems` produces vocals/drums/bass/

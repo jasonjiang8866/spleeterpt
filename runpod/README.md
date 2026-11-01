@@ -11,8 +11,8 @@ checksum-verified complete MUSDB18 training-pool preparation.
 
 ## 1. Environment and persistent storage
 
-Use Linux, Python 3.10–3.12, and working CUDA. Keep the image's CUDA-enabled torch
-installation if it satisfies `torch>=2.6,<3`; the tested CPU baseline is 2.6.0.
+Use Linux, Python 3.10–3.12, working CUDA, and [uv 0.13.4](../README.md#install).
+The locked CUDA group installs PyTorch 2.8.0+cu128 in a separate `.venv`.
 Record the exact image and package versions. Use your persistent volume for data,
 manifests, and checkpoints. `/workspace` below is an example mount point: verify
 it against your Pod setup.
@@ -22,14 +22,17 @@ cd /workspace
 git clone https://github.com/jasonjiang8866/spleeterpt.git
 cd spleeterpt
 git switch main
-python -m pip install -e '.[dev]'
-python -c 'import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'
-python scripts/smoke_test.py --device cuda --precision fp32
+uv sync --locked --no-default-groups --group cu128 --group dev
+uv run --no-sync python -c 'import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'
+uv run --no-sync python scripts/smoke_test.py --device cuda --precision fp32
 ```
 
 After fp32 succeeds, try `--precision bf16` on a supported GPU, or `fp16`. The smoke
 model is deliberately tiny and does not estimate full-model VRAM needs. Do not
-replace the CUDA build with a CPU wheel on the Pod.
+replace the CUDA build with a CPU wheel on the Pod. Use `uv run --no-sync`
+after the explicit CUDA sync; a bare `uv run` reselects the default CPU group.
+The automated comparison workers retain their separate pinned `uv pip`
+environments; this manual setup does not alter previous experiment records.
 
 ## 2. Data
 
@@ -37,7 +40,7 @@ Copy/extract aligned stereo 44.1 kHz WAV stems onto the volume. Follow the root
 README. Split only the training pool, preserving the independent test set:
 
 ```bash
-spleeterpt manifest --root /workspace/data/train-pool \
+uv run --no-sync spleeterpt manifest --root /workspace/data/train-pool \
   --output /workspace/data/manifests --validation-tracks 10 --seed 0
 ```
 
@@ -66,7 +69,7 @@ observing memory use on the chosen GPU.
 ```bash
 export RUN_DIR=/workspace/runs/2stems-baseline
 mkdir -p "$RUN_DIR"
-python -m pip freeze > /workspace/runs/2stems-baseline-packages.txt
+uv pip freeze --python .venv/bin/python > /workspace/runs/2stems-baseline-packages.txt
 bash runpod/train.sh
 ```
 

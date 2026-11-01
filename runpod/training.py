@@ -272,7 +272,9 @@ def run():
         "decoded": decoded,
         "runs": reports,
         "seconds": time.monotonic() - started,
-        "packages": subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True),
+        "packages": subprocess.check_output(
+            ["uv", "pip", "freeze", "--python", sys.executable], text=True
+        ),
     }
 
 

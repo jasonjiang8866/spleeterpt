@@ -33,13 +33,10 @@ MUSDB has no independent piano target, and its `other` target includes piano.
 
 ## Setup and assets
 
-From a checkout of this PR, use a dedicated environment:
+From a checkout of this repository on Linux x86-64, with uv installed:
 
 ```bash
-python -m venv .venv-eval
-. .venv-eval/bin/activate
-# Install an appropriate CPU torch build first if desired.
-python -m pip install -e '.[dev,evaluate]'
+uv sync --locked --group dev --extra evaluate
 ```
 
 The evaluation extra pins `museval==0.4.1` and `tensorflow-cpu==2.18.1`.
@@ -72,7 +69,7 @@ mixture, drums, bass, other, vocals). The manifest records ffmpeg's version.
 Example for a locally supplied MUSDB18-HQ test set and four-stem weights:
 
 ```bash
-python scripts/evaluate_musdb.py \
+uv run --no-sync python scripts/evaluate_musdb.py \
   --root /data/MUSDB18-HQ --layout wav --subsets test \
   --dataset-label MUSDB18-HQ --expected-tracks 50 \
   --upstream-root /sources/spleeter \
@@ -81,7 +78,7 @@ python scripts/evaluate_musdb.py \
   --checkpoint /weights/spleeterpt-4stems.pt \
   --output /results/musdb-hq-4stems
 
-python scripts/evaluate_musdb.py --validate-output /results/musdb-hq-4stems
+uv run --no-sync python scripts/evaluate_musdb.py --validate-output /results/musdb-hq-4stems
 ```
 
 Repeat with the corresponding two-stem TF/PyTorch checkpoint paths and a **new**

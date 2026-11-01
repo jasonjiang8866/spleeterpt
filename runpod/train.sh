@@ -13,8 +13,8 @@ config_path="${CONFIG:-configs/2stems.json}"
 precision="${PRECISION:-fp32}"
 batch_size="${BATCH_SIZE:-1}"
 
-python -c 'import torch; assert torch.cuda.is_available(), "CUDA is unavailable"; print(torch.__version__, torch.cuda.get_device_name(0))'
-python -m spleeterpt.cli train \
+uv run --no-sync python -c 'import torch; assert torch.cuda.is_available(), "CUDA is unavailable"; print(torch.__version__, torch.cuda.get_device_name(0))'
+uv run --no-sync spleeterpt train \
     --config "$config_path" \
     --train-manifest "$TRAIN_MANIFEST" \
     --val-manifest "$VAL_MANIFEST" \
