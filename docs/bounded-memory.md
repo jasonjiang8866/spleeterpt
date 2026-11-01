@@ -261,3 +261,16 @@ both confirm compute deletion; the Global Volume was retained.
 Production acceptance remains separate: test official weights and representative recordings
 on target GPUs, memory across longer durations and repeated jobs, numerical
 agreement, concurrent-job limits, failure recovery and downstream output consumers.
+
+### Regenerate the README memory chart
+
+The [SVG chart](assets/bounded-memory.svg) reads all four synthetic input durations
+for both official checkpoints directly from the accepted GPU report above. Both
+panels share linear axes starting at zero; connecting lines only guide the eye.
+Matplotlib is a documentation-only dependency:
+
+```bash
+uv run --no-project --with matplotlib==3.10.8 python scripts/draw_bounded_memory.py
+# Optional raster preview for visual review:
+uv run --no-project --with matplotlib==3.10.8 python scripts/draw_bounded_memory.py --preview /tmp/bounded-memory.png
+```

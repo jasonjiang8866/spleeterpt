@@ -12,6 +12,8 @@ official Deezer release.
 
 ## Long-audio inference with bounded memory
 
+[![Measured CUDA memory versus audio duration for official 2-stem and 4-stem checkpoints: bounded memory stays at 244 and 462 MiB from 60 to 600 seconds, about 96.7% below the original spleeterpt path at 600 seconds.](docs/assets/bounded-memory.svg)](docs/bounded-memory.md)
+
 **Separate longer recordings without CPU/GPU working memory growing with audio
 duration.** The opt-in `--bounded-memory` path reads audio, processes spectral
 windows, reconstructs overlapping samples and writes stems incrementally. For a
