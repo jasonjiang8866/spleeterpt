@@ -181,6 +181,9 @@ RTX PRO 6000 Blackwell **MIG 1g.24gb**, <= $0.69/hour quote, 60-minute lease,
 compute-only cleanup and expired-pod reaper. It uses the existing Global Volume,
 never creates/replaces a volume, and copies only one previously evaluated
 validation mixture. API credentials remain on the Actions runner.
+The final workflow is **manual dispatch only on main**, with an explicit paid-run
+input. The temporary feature-branch push trigger used for this experiment has
+been removed; routine pushes and pull requests do not rent GPUs.
 
 The worker measures 1/12/60/600-second synthetic inputs plus 1/12/60-second real
 music prefixes for both official checkpoints, and runs CUDA 2/4/5-stem regression
@@ -201,6 +204,59 @@ near-silence rule above and a second run with a 12-second FFT diagnostic.
 STFT slices to isolate FFT-batch differences from synthesis grouping. This short
 diagnostic intentionally holds a full spectrum and is excluded from timing and
 memory measurement processes. Its cache is never used by production inference.
+
+### Measured RTX PRO 6000 24GB MIG results (2026-11-01)
+
+[Accepted Actions run 41308828220](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41308828220)
+and [raw report, diagnostic and cleanup evidence](results/bounded-mig-41308828220.json).
+Measured source: `6482108518162423d940a810c2db8cf07edf940d`; subsequent changes
+document results, improve failed-worker error reporting and remove temporary launch
+authorization. The inference implementation is unchanged. Runtime: Torch 2.8.0+cu128,
+CUDA 12.8, capability 12.0, one MIG device with 25,367,150,592 visible bytes.
+
+| Stems | Synthetic duration | Legacy allocated (MiB) | Bounded allocated (MiB) | Legacy / bounded file-to-file seconds |
+|---|---:|---:|---:|---:|
+| 2 | 60 s | 823.93 | 243.50 | 0.321 / 0.296 |
+| 2 | 600 s | 7,367.14 | 243.50 | 2.482 / 2.196 |
+| 4 | 60 s | 1,562.94 | 462.25 | 0.653 / 0.611 |
+| 4 | 600 s | 13,920.76 | 462.25 | 4.897 / 4.154 |
+
+At ten minutes, allocated CUDA memory decreases **96.7%** for both presets.
+Reserved peaks at ten minutes are **9,526 -> 324 MiB** (2-stem) and
+**16,070 -> 572 MiB** (4-stem). Bounded allocated peaks stay constant between
+60 and 600 seconds. Small clips can have similar or slightly higher overhead;
+this change is principally a duration-scaling improvement.
+
+All 14 checkpoint/input/duration comparisons completed with exact output lengths.
+Synthetic lengths were 1, 12, 60 and 600 seconds; real lengths were 1, 12 and 60
+seconds from the previously evaluated validation mixture **Auctioneer - Our Future
+Faces**. No final test-pool audio was used. Maximum waveform error over all stems
+and cases was **5.216e-7**. Non-exact, non-near-silent cases had legacy-reference
+SI-SDR >= **100.668 dB** (real audio >= **136.77 dB**).
+
+The sole near-silence exception was the real 12-second bass stem: reference RMS
+**3.224e-6** (~-109.8 dBFS), RMS error **6.448e-11**, peak error **2.408e-9**,
+SI-SDR **94.228 dB**. It passed the documented absolute-error branch; its SI-SDR
+was not hidden or relabeled. The diagnostic found identical first-window spectra
+and a maximum **7.762e-6 complex STFT difference** in the short final FFT batch.
+Reusing full-STFT slices reduced bass peak error to **2.274e-13** and RMS error
+to **2.256e-15**, supporting FFT batch roundoff as the dominant source of that
+difference; residual synthesis differences remain ordinary float32 accumulation.
+
+Three actual CUDA 2/4/5-stem small-U-Net regressions passed. Official 5-stem
+checkpoint/TF parity was not measured here. Local full-suite verification passed
+**245 tests**, with 6 explicit environment skips (CUDA/TensorFlow), plus **67**
+offline RunPod lifecycle/report checks; lint, format and training/resume smoke
+checks passed. No subjective listening
+verdict, full MUSDB quality rescore, multi-hour RF64 consumer test or sustained
+concurrent-service acceptance is implied.
+
+The accepted run's controller elapsed time was 141.87 seconds at $0.69/hour,
+an upper compute-time estimate of **$0.0272**, excluding persistent storage/request
+charges. The initial strict-gate run cost estimate was $0.0266. A duplicate trigger
+was [canceled](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41308281564)
+and its short-lived Pod deleted. The accepted and initial run reports
+both confirm compute deletion; the Global Volume was retained.
 
 Production acceptance remains separate: test official weights and representative recordings
 on target GPUs, memory across longer durations and repeated jobs, numerical

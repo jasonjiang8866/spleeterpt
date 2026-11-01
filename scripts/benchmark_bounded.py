@@ -269,7 +269,10 @@ def main():
                     "--warmup",
                     str(args.warmup),
                 ]
-                completed = subprocess.run(command, check=True, capture_output=True, text=True)
+                completed = subprocess.run(command, check=False, capture_output=True, text=True)
+                if completed.returncode:
+                    print(completed.stderr[-16000:], file=sys.stderr)
+                    completed.check_returncode()
                 case["measurements"].append(json.loads(completed.stdout))
             case["stems"] = {
                 name: paired_metrics(

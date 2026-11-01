@@ -7,9 +7,6 @@ on:
         type: boolean
         required: true
         default: false
-  push:
-    branches: [codex/bounded-memory-inference]
-    paths: [runpod/bounded-launch.json]
 permissions:
   contents: read
 concurrency:
@@ -17,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   benchmark:
-    if: github.repository == 'jasonjiang8866/spleeterpt' && ((github.event_name == 'workflow_dispatch' && inputs.confirm_paid_benchmark) || (github.event_name == 'push' && github.ref == 'refs/heads/codex/bounded-memory-inference'))
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_benchmark
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     steps:
@@ -33,7 +30,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: bounded
-          SPT_CONFIRM_BENCHMARK: 'true'
+          SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark }}
         run: python runpod/benchmark_control.py
       - name: Delete compute only
         if: always()

@@ -105,8 +105,11 @@ for CPU tensors and sinks that consume output blocks immediately. These are
 file/block interfaces, not a low-latency live audio service.
 
 [Design, API examples, numerical/memory benchmark and limitations](docs/bounded-memory.md).
-CPU validation does **not** constitute GPU measurement or production acceptance;
-5-stem official parity limitations remain unchanged.
+Measured on an RTX PRO 6000 **24GB MIG**, 10-minute synthetic 4-stem audio uses
+**462 MiB** peak allocated CUDA memory versus **13,921 MiB** on the default path;
+the bounded peak is unchanged from 60 seconds. Official 2/4-stem CPU comparisons
+use synthetic audio; GPU comparisons also include one real validation song's prefixes.
+This is **not production acceptance**; 5-stem official parity limitations remain unchanged.
 
 ## Model architecture
 

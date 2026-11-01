@@ -31,17 +31,12 @@ def launch(api):
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     if (
-        os.environ["GITHUB_REF"]
-        not in (
-            {"refs/heads/main", "refs/heads/codex/bounded-memory-inference"}
-            if profile == "bounded"
-            else {"refs/heads/main"}
-        )
+        os.environ["GITHUB_REF"] != "refs/heads/main"
         or not re.fullmatch(r"[a-f0-9]{40}", sha)
         or not run.isdigit()
         or not attempt.isdigit()
     ):
-        raise RuntimeError("Benchmark requires an approved branch commit and Actions identity")
+        raise RuntimeError("Benchmark requires exact main commit and Actions identity")
     if os.environ.get("SPT_CONFIRM_BENCHMARK") != "true":
         raise RuntimeError("Explicit paid benchmark dispatch required")
     if any(owned(p, repo, repo_id) for p in api.pods()):

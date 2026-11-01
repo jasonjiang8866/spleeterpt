@@ -216,7 +216,7 @@ class Tests(unittest.TestCase):
 
     def test_bounded_branch_gate_and_compute_cleanup(self):
         for branch, accepted in [
-            ("refs/heads/codex/bounded-memory-inference", True),
+            ("refs/heads/codex/bounded-memory-inference", False),
             ("refs/heads/main", True),
             ("refs/heads/other", False),
         ]:
