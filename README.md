@@ -4,8 +4,40 @@ A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter
 with official weight conversion, audio separation, and a single-GPU training entry
 point for RunPod. This is an independent project, not an official Deezer release.
 
+[Beginner's stem guide](#what-is-a-stem-and-which-model-should-i-choose) ·
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
 [When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
+
+## What is a stem, and which model should I choose?
+
+A **stem** (声部 / 分组音轨) is an audio track containing one part of a song,
+such as its vocals or drums. Imagine starting with a finished song where the
+singer and all instruments play together: this tool estimates separate audio
+files so you can listen to, mute or adjust those parts independently.
+
+Here, **2-stem means two output files; 4-stem means four output files**. Each file
+is stereo (left and right audio), so stem count is different from speaker/channel
+count. These are AI estimates from the mixed song, not the original studio
+recordings: some vocals or instruments may leak into another file, and separation
+can introduce audible artifacts.
+
+**Not sure where to start? Choose 2-stem for vocals or karaoke. Choose 4-stem
+when you need separate drums or bass.** More stems give you more separate groups
+to control; they do not automatically mean cleaner vocals or better sound.
+
+| Model | Files you get | Choose it when… | Availability here |
+|---|---|---|---|
+| **2-stem** | `vocals.wav` (人声) + `accompaniment.wav` (all instruments together / 伴奏) | You want vocals to listen to or edit, or a backing track to sing over | Ready to use: `--model 2stems` |
+| **4-stem** | `vocals.wav` (人声), `drums.wav` (鼓与打击乐), `bass.wav` (贝斯), `other.wav` (remaining instruments / 其他乐器) | You want to study a drum/bass part or adjust vocals, drums and bass independently | Ready to use: `--model 4stems` |
+| **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Advanced only: code supports it, but no ready-to-use release; strict numerical validation is not yet fully passing |
+
+In the 4-stem model, `other.wav` groups instruments such as guitar, piano, strings
+and synthesizers together. It is not a separate file for each instrument, and
+there is no guitar-only option. Likewise, `vocals.wav` groups voices together;
+it does not provide one file per singer or guarantee separate lead/backing vocals.
+For karaoke, **start with 2-stem and use `accompaniment.wav`**. For drum practice,
+choose 4-stem and listen to `drums.wav`; to make a backing track without drums,
+combine vocals, bass and other in an audio editor, leaving drums out.
 
 ## Ready-to-use official weights
 
@@ -16,9 +48,26 @@ Install this repository in an environment with the appropriate CPU/CUDA PyTorch:
 
 ```bash
 python -m pip install .
-spleeterpt separate song.wav --model 4stems --output outputs/song --device cpu
-# For CUDA-enabled PyTorch, use --device cuda. For vocals/accompaniment: --model 2stems.
+# Vocals + backing track: a good first choice.
+spleeterpt separate "song.wav" --model 2stems --output outputs/song-2stems --device cpu
 ```
+
+Replace `"song.wav"` with your audio file's path; keep quotes around paths with
+spaces. After the command finishes, open `outputs/song-2stems/vocals.wav` to hear
+the vocals, or `outputs/song-2stems/accompaniment.wav` for the backing track.
+The original song is not overwritten.
+
+To get separate drums and bass instead, run:
+
+```bash
+spleeterpt separate "song.wav" --model 4stems --output outputs/song-4stems --device cpu
+```
+
+Open `outputs/song-4stems` for the four WAV files listed above. Both commands
+produce all of the selected model's stems; simply use the files you need. Choose
+a fresh output folder when rerunning: the tool refuses to overwrite existing stem
+files. CPU works without an NVIDIA GPU; in a CUDA-enabled PyTorch environment,
+replace `--device cpu` with `--device cuda`.
 
 The first invocation downloads the pinned release and verifies size/SHA-256;
 later invocations verify and reuse the cache. Prefetch with
@@ -27,6 +76,10 @@ Existing `--checkpoint /path/to/model.pt` usage remains supported for offline or
 custom weights. These are independent conversions, not a Deezer-endorsed release.
 [Model card, license basis, checksums and validation](docs/pretrained-release.md).
 Weight binaries live in Releases, not the Git history. Five-stem release is deferred.
+`--model 5stems` is therefore not an available download option. Advanced users can
+convert a matching official 5-stem checkpoint and supply `--checkpoint`, subject
+to the validation limitation above. Changing a filename or output directory does
+not change how many stems a checkpoint produces.
 
 ## Model architecture
 
