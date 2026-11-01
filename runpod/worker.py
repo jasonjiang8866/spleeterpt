@@ -22,7 +22,7 @@ RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 PROGRESS = re.compile(
-    r"(?:Progress: (?:training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+    r"(?:Progress: (?:benchmark (?:official_converted|htdemucs) songs \d+/(?:1|10)|training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
 )
 
 
@@ -234,6 +234,57 @@ def run():
                     )
                 ),
             ]
+        elif task == "benchmark":
+            python = "/workspace/eval-venv/bin/python"
+            commands = [
+                ["python", "-m", "venv", "/workspace/eval-venv"],
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-cache-dir",
+                    "torch==2.8.0",
+                    "torchaudio==2.8.0",
+                    "--index-url",
+                    "https://download.pytorch.org/whl/cu128",
+                ],
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-cache-dir",
+                    "-e",
+                    ".[evaluate]",
+                    "numpy==2.0.2",
+                    "scipy==1.15.3",
+                    "dora-search==0.1.12",
+                    "einops==0.8.1",
+                    "julius==0.2.7",
+                    "lameenc==1.8.1",
+                    "openunmix==1.3.0",
+                    "pyyaml==6.0.2",
+                    "tqdm==4.67.1",
+                ],
+                [
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-deps",
+                    "demucs @ git+https://github.com/facebookresearch/demucs.git@e976d93ecc3865e5757426930257e200846a520a",
+                ],
+                [python, "runpod/benchmark_dependencies.py"],
+                [python, "runpod/benchmark.py", "--output", str(report)],
+            ]
+            env.update(
+                OPENBLAS_NUM_THREADS="2",
+                OMP_NUM_THREADS="2",
+                TF_NUM_INTRAOP_THREADS="2",
+                TF_NUM_INTEROP_THREADS="2",
+                TF_CPP_MIN_LOG_LEVEL="2",
+            )
         elif task in {"global-export", "global-training-export"}:
             commands = [["python", "runpod/global_inputs.py", "--output", str(report)]]
             if task == "global-training-export":

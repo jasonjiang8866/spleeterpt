@@ -1,0 +1,69 @@
+{
+  "resources": {
+    "observed_at_utc": "2026-11-01T04:10:06.255699+00:00",
+    "source_commit": "1128bbdfb2a1830b9775bbbed5014134fe044872",
+    "read_only": true,
+    "account_pod_count": 0,
+    "project_pods": [],
+    "regional_volume": null,
+    "regional_volume_found": false,
+    "global_volume": {
+      "id": "cmvwmviz9000007jteci4ajn8",
+      "name": "spt-1436489970-step90-inputs-v1"
+    },
+    "gpu": {
+      "id": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "catalog_usd_per_hour": 0.69,
+      "within_proposed_rate_cap": true,
+      "available_regions": [
+        {
+          "id": "EUR-IS-2",
+          "availability": "LOW"
+        },
+        {
+          "id": "US-PA-1",
+          "availability": "LOW"
+        },
+        {
+          "id": "US-WA-1",
+          "availability": "LOW"
+        }
+      ],
+      "availability_is_advisory": true
+    },
+    "ready_for_paid_run": false,
+    "pending": [
+      "Mounted snapshot completion marker and all selected audio SHA-256 checks",
+      "Official converted Spleeter weight recreation/cache verification",
+      "HTDemucs full checkpoint hash and CPU/runtime compatibility verification",
+      "Account credit and current-month spend (not exposed by this inventory)",
+      "Benchmark worker, hard deadline, cleanup and independent result validation"
+    ]
+  },
+  "data": {
+    "dataset": "MUSDB18 AAC decoded to WAV; not MUSDB18-HQ",
+    "provenance_record_sha256": "22b51621fbf7bd5c76a0ce1c7b8c51ca32e04a82dc08f404f979a6c32b8242a7",
+    "original_provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+    "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+    "track_ids": [
+      "train/Auctioneer - Our Future Faces",
+      "train/Chris Durban - Celebrate",
+      "train/Clara Berry And Wooldog - Stella",
+      "train/James May - If You Say",
+      "train/Johnny Lokke - Promises & Lies",
+      "train/Music Delta - Beatles",
+      "train/Music Delta - Britpop",
+      "train/Music Delta - Grunge",
+      "train/Spike Mullings - Mike's Sulking",
+      "train/The Wrong'Uns - Rothko"
+    ],
+    "samples": 80362496,
+    "sample_rate": 44100,
+    "expected_audio_files": 50,
+    "test_pool_used": false,
+    "upstream_training_overlap": "unresolved; project validation is not a shared held-out set",
+    "spleeter_initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+    "evidence_scope": "repository provenance only; not a current mounted-file check"
+  },
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41271997588"
+}

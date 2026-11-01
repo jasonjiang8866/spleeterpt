@@ -1,0 +1,34 @@
+{
+  "source_commit": "e976d93ecc3865e5757426930257e200846a520a",
+  "python": "3.11.17",
+  "checkpoint_url": "https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th",
+  "checkpoint_sha256": "8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4",
+  "checkpoint_bytes": 84141911,
+  "sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals"
+  ],
+  "sample_rate": 44100,
+  "segment_seconds": 7.8,
+  "parameters": 41984456,
+  "versions": {
+    "torch": "2.8.0+cpu",
+    "torchaudio": "2.8.0+cpu",
+    "demucs": "4.1.0a2",
+    "dora-search": "0.1.12",
+    "einops": "0.8.1",
+    "julius": "0.2.7",
+    "openunmix": "1.3.0"
+  },
+  "cpu_output_shape": [
+    1,
+    4,
+    2,
+    44100
+  ],
+  "finite": true,
+  "scope": "synthetic CPU compatibility only; no music quality or GPU result",
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41271997588"
+}

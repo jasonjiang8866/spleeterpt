@@ -85,7 +85,7 @@ def safe_mounts(pod):
             if vid != SOURCE_ID or env.get("SPT_VOLUME_NAME") != NAME:
                 return False
             expected["network"] = [{"volumeId": SOURCE_ID, "path": "/data"}]
-        elif env.get("SPT_TASK") not in {"bn", "frozen"} or vid != gid:
+        elif env.get("SPT_TASK") not in {"bn", "frozen", "benchmark"} or vid != gid:
             return False
         return mounts == expected
     return (
