@@ -22,7 +22,7 @@ RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 PROGRESS = re.compile(
-    r"(?:Progress: (?:benchmark (?:official_converted|htdemucs) songs \d+/(?:1|10)|training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+    r"(?:Progress: (?:benchmark (?:official_converted|htdemucs|official_2stems|melband_kim) songs \d+/(?:1|10)|training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
 )
 
 
@@ -283,6 +283,25 @@ def run():
                 [python, "runpod/benchmark_dependencies.py"],
                 [python, "runpod/benchmark.py", "--output", str(report)],
             ]
+            profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
+            if profile == "vocal":
+                commands = commands[:3] + [
+                    [
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-cache-dir",
+                        "-e",
+                        ".[evaluate]",
+                        "-r",
+                        "runpod/roformer-requirements.txt",
+                    ],
+                    [python, "runpod/roformer_dependencies.py"],
+                    [python, "runpod/benchmark.py", "--profile", "vocal", "--output", str(report)],
+                ]
+            elif profile != "four-stem":
+                raise ValueError("Unknown benchmark profile")
             env.update(
                 OPENBLAS_NUM_THREADS="2",
                 OMP_NUM_THREADS="2",

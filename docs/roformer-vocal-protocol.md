@@ -98,5 +98,28 @@ Preserve partial evidence and always delete only the created compute Pod.
 The [no-GPU preflight workflow](../.github/workflows/roformer-preflight.yml) checks
 resource/budget state and runs the two real-weight CPU probes in an isolated
 environment. It cannot create compute or storage. Synthetic probe signals are
-not music-quality evidence. The paid vocal worker and independent result gates
-must be complete before dispatching a GPU run.
+not music-quality evidence. [Run 41280553169](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41280553169)
+passed both real-weight CPU probes and read-only resource/budget checks. Original
+author forward and overlap-add maximum absolute differences were both zero.
+Native Spleeter-2 conversion reproduced SHA-256
+`2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532`.
+At 06:22 UTC, the account had no Pods, the existing Global Volume was present,
+the regional volume was absent, and credit/monthly-headroom checks passed.
+The inventory in this first run used the prior four-stem data-plan label; its
+resource observations apply, but its baseline-weight field is not vocal evidence.
+The updated preflight explicitly selects the vocal profile.
+
+The [paid vocal workflow](../.github/workflows/runpod-vocal-benchmark.yml) is
+manual, main-only, defaults to no paid launch, and shares the existing GPU workflow
+concurrency lock. Its `vocal` profile selects native two-source inference, scoring,
+dependency checks and independent result validation. The original four-stem
+profile stays the default for existing entry points. Wrong profile, weight hash,
+recipe, dependency versions, output source count, memory counter, song selection
+or incomplete results are rejected. Four-stem historical score gates do not apply.
+
+Launch performs fresh resource and budget checks, a single creation attempt,
+lease-bounded execution, partial-evidence capture, export verification and compute
+cleanup. No automatic paid retry or fallback GPU/precision/chunk configuration.
+Successful exports contain 14 listening WAVs (two songs, seven files per song),
+full metrics, protocol, provenance and an answer key. A failed first attempt must
+be reported and reviewed before another paid attempt.

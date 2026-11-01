@@ -77,6 +77,14 @@ class Tests(unittest.TestCase):
         self.assertFalse(plan["test_pool_used"])
         self.assertEqual(plan["expected_audio_files"], 50)
 
+    def test_vocal_inventory_does_not_label_four_stem_baseline_as_native_two(self):
+        plan = data_plan(vocal=True)
+        self.assertNotEqual(plan["spleeter_initial_sha256"], data_plan()["spleeter_initial_sha256"])
+        self.assertEqual(plan["track_ids"], data_plan()["track_ids"])
+        report = observe(Fake(), vocal=True)
+        self.assertIn("Kim Mel-Band", str(report["pending"]))
+        self.assertNotIn("HTDemucs", str(report["pending"]))
+
 
 if __name__ == "__main__":
     unittest.main()

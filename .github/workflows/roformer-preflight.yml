@@ -8,6 +8,7 @@ on:
       - scripts/probe_roformer.py
       - scripts/probe_spleeter2.py
       - runpod/roformer-requirements.txt
+      - runpod/benchmark_preflight.py
       - .github/workflows/roformer-preflight.yml
 permissions:
   contents: read
@@ -27,7 +28,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
         run: |
-          python runpod/benchmark_preflight.py
+          python runpod/benchmark_preflight.py --profile vocal
           python runpod/benchmark_budget.py
       - uses: actions/upload-artifact@v4
         with:

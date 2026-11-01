@@ -49,11 +49,11 @@ def validation_inventory(provenance_json, expected_sha256, pinned):
     }
 
 
-def summarize_pair(records, *, variants=VARIANTS):
+def summarize_pair(records, *, variants=VARIANTS, stems=STEMS):
     result = {"track_count": len(records), "metrics": {}, "frame_coverage": {}}
     for metric in ("bsseval_v4_sdr_db", "global_stereo_si_sdr_db"):
         result["metrics"][metric] = {}
-        for stem in STEMS:
+        for stem in stems:
             values = {v: [track_score(r, v, stem, metric) for r in records] for v in variants}
             deltas = []
             for a, b in zip(values[variants[0]], values[variants[1]]):
@@ -79,12 +79,12 @@ def summarize_pair(records, *, variants=VARIANTS):
                 )
                 for m in BSS_METRICS
             }
-            for stem in STEMS
+            for stem in stems
         }
     return result
 
 
-def validate_records(records, expected, *, variants=VARIANTS):
+def validate_records(records, expected, *, variants=VARIANTS, stems=STEMS):
     """Reject selective songs, cropped audio, missing stems/windows and invalid scores."""
     if [r["id"] for r in records] != sorted(expected):
         raise ValueError("Validation selection differs from pinned ten-song split")
@@ -97,14 +97,14 @@ def validate_records(records, expected, *, variants=VARIANTS):
             or r["evaluated_samples"] != n
             or r["segment_start_sample"] != 0
             or r["discarded_reference_tail_samples"] != 0
-            or r["output_samples"] != {v: dict.fromkeys(STEMS, n) for v in variants}
+            or r["output_samples"] != {v: dict.fromkeys(stems, n) for v in variants}
             or set(r["scores"]) != set(variants)
         ):
             raise ValueError("Input identity, length or variant mismatch")
         for v in variants:
-            if set(r["scores"][v]) != set(STEMS):
+            if set(r["scores"][v]) != set(stems):
                 raise ValueError("Missing stem")
-            for stem in STEMS:
+            for stem in stems:
                 scores = r["scores"][v][stem]
                 decode_number(scores["global_stereo_si_sdr_db"])
                 if set(scores["bsseval_v4"]) != set(BSS_METRICS):

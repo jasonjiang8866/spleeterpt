@@ -122,6 +122,7 @@ class Tests(unittest.TestCase):
         for env, error in [
             ({"SPT_CONFIRM_BENCHMARK": "false"}, None),
             ({"GITHUB_REF": "refs/heads/feature"}, None),
+            ({"SPT_BENCHMARK_PROFILE": "unknown"}, None),
             ({}, RuntimeError("budget")),
         ]:
             api = Fake()
@@ -147,6 +148,15 @@ class Tests(unittest.TestCase):
             self.assertEqual(sum(method == "POST" for _, method, _ in api.calls), 1)
             self.assertEqual(api.calls[-1][:2], ("/pods/abc", "DELETE"))
             self.assertTrue(result["cleanup_confirmed"])
+
+    def test_vocal_profile_retains_single_launch_and_cleanup(self):
+        api = Fake()
+        result = self.run_controller(api, env={"SPT_BENCHMARK_PROFILE": "vocal"})
+        self.assertEqual(result["benchmark_profile"], "vocal")
+        self.assertTrue(result["cleanup_confirmed"])
+        self.assertEqual(sum(method == "POST" for _, method, _ in api.calls), 1)
+        self.assertEqual(api.calls[0][2]["env"]["SPT_BENCHMARK_PROFILE"], "vocal")
+        self.assertEqual(api.items, [])
 
 
 if __name__ == "__main__":
