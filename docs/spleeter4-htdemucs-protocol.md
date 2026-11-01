@@ -77,10 +77,11 @@ explicit `weights_only=False` is confined to that checksum-checked artifact.
 1. First run a fixed one-song GPU smoke on the first sorted validation ID. Verify
    source mapping, exact length, finite outputs, device identity and memory headroom.
    Abort on a mismatch. This song is included again in the complete ten-song pass.
-2. Use a fresh subprocess per model. Record process startup/import separately from
+2. Use a fresh subprocess per model. Record dependency import separately from
    weight loading (CPU read, deserialize, device transfer). Download and staging are
    setup costs, not model-loading latency. Do not claim filesystem cold-cache timing
-   unless cache state is actually controlled.
+   unless cache state is actually controlled. Import timing covers numeric/model
+   dependencies inside the runner, not interpreter startup or shared protocol imports.
 3. Warm up with a fixed excerpt, synchronize CUDA before/after inference, then
    reset peak allocated/reserved counters. Run three complete inference repetitions
    per song; reseed each repetition, keep first-pass outputs for quality, report
@@ -91,7 +92,8 @@ explicit `weights_only=False` is confined to that checksum-checked artifact.
 5. Report seconds, audio duration, RTF (`seconds / audio_seconds`), throughput,
    per-song and corpus peak allocated/reserved VRAM, and per-process peak CPU RSS.
    Include absolute resident-model memory in peaks; do not subtract it away. Record
-   MIG identity, visible VRAM, host CPU, driver, image and competing processes.
+   MIG identity, visible VRAM, host CPU, driver and image. Sibling tenant activity
+   on the physical GPU is not controlled or assumed absent.
 6. Use the existing `museval==0.4.1` BSSEval-v4 source-image implementation: fixed
    512-tap filters, no permutation, one-second windows/hops, no padding. Separately
    report global stereo SI-SDR (mean removed, one scale). Strict sample alignment;
@@ -141,17 +143,53 @@ separately from incremental trial cost; that regional charge is historical and m
 not be treated as current after the missing-volume observation. Global usage/request fees remain separately
 billable and must be checked. Do not label historical catalog prices as a live quote.
 
-Before launch, implement and test a creation-based deadline, `finally` cleanup,
+The runner implements a creation-based deadline, `finally` cleanup,
 independent cleanup/reaper, result validation and immutable result export. Retain
 volumes; delete only the newly created compute. No automatic paid retry, GPU
 upgrade, second Pod or over-budget continuation. If the one-song timing projects
 an overrun, stop with the partial evidence and revise the budget explicitly.
 
-`runpod/benchmark_preflight.py` and its workflow perform GET-only observations;
-they cannot create compute or storage. They deliberately report
+`runpod/benchmark_preflight.py` performs GET-only resource observations;
+the workflow also runs a read-only GraphQL account query. Neither can create
+compute or storage. The inventory deliberately reports
 `ready_for_paid_run=false`: API inventory, mounted-byte verification, credit,
 CPU/GPU compatibility and a complete benchmark worker are distinct checks.
-This preparation PR does not yet implement the paid benchmark worker or launch it.
+The worker and controller are implemented; a paid result is not yet available.
+
+## Implemented launch path
+
+Dispatch **RunPod Spleeter-4 vs HTDemucs benchmark** on `main`, selecting the paid
+benchmark checkbox. The default is false. Do not rerun a paid job automatically.
+The controller requires a uniquely named existing Global Volume, an available
+MIG region, no existing project Pod, at least $1 account credit and room below
+the $500 monthly budget. The [account query](https://graphql-spec.runpod.io/)
+uses current UTC-month daily charges (absolute amounts, conservatively including
+refunds) plus one hour of current spending; billing lag remains possible. Only
+pass/fail and thresholds leave the runner, not balances or raw billing history.
+
+The worker copies only 50 audio files plus provenance from the authenticated
+`snapshot.json`, recreates official Spleeter weights and verifies both model
+hashes. Each model gets a fresh first-song smoke process, then a fresh ten-song
+process. A real first-song scoring pass projects the remaining work with 50%
+time margin and 120 seconds export allowance; an overrun prediction stops the
+trial with smoke evidence. Raw repeat measurements, independent quality checks,
+A/B clips and the answer key are exported. Complete outputs are copied into
+`/global/benchmarks/<run>-<attempt>/`, with a completion marker written last.
+
+The worker kills its command process group 180 seconds before expiry. Controller
+polling stops 120 seconds before expiry; an alarm interrupts remaining work at
+60 seconds before expiry so `finally` can delete compute. The workflow repeats
+cleanup with `always()`, and the existing scheduled reaper recognizes benchmark
+mounts. Provider outages or delayed Actions scheduling can delay deletion: the
+lease is enforced operationally, not a provider-guaranteed billing cap. A final
+inventory must confirm the created Pod is gone. The cost estimate covers elapsed
+time at the returned quote; persistent storage/request fees and invoices are
+reported separately. The workflow never changes payment settings or storage.
+
+The dependency validator allows exactly one documented exception: the pinned,
+CPU-probed Demucs commit's `torchaudio<2.1` metadata versus `2.8.0+cu128`. All
+other installed requirements must resolve. This does not assert GPU compatibility;
+the real-song GPU smoke remains mandatory.
 
 ## Preparation validation
 

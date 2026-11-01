@@ -5,6 +5,7 @@ on:
     branches: [codex/htdemucs-preflight]
     paths:
       - runpod/benchmark_preflight.py
+      - runpod/benchmark_budget.py
       - scripts/probe_htdemucs.py
       - .github/workflows/benchmark-preflight.yml
 permissions:
@@ -25,10 +26,14 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
         run: python runpod/benchmark_preflight.py
+      - name: Check account budget without exposing balances
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/benchmark_budget.py
       - uses: actions/upload-artifact@v4
         with:
           name: benchmark-preflight-${{ github.run_id }}
-          path: runpod-results/benchmark-preflight.json
+          path: runpod-results/benchmark-*.json
           if-no-files-found: error
           retention-days: 14
   htdemucs-cpu:

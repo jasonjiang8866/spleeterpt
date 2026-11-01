@@ -49,14 +49,14 @@ def validation_inventory(provenance_json, expected_sha256, pinned):
     }
 
 
-def summarize_pair(records):
+def summarize_pair(records, *, variants=VARIANTS):
     result = {"track_count": len(records), "metrics": {}, "frame_coverage": {}}
     for metric in ("bsseval_v4_sdr_db", "global_stereo_si_sdr_db"):
         result["metrics"][metric] = {}
         for stem in STEMS:
-            values = {v: [track_score(r, v, stem, metric) for r in records] for v in VARIANTS}
+            values = {v: [track_score(r, v, stem, metric) for r in records] for v in variants}
             deltas = []
-            for a, b in zip(values[VARIANTS[0]], values[VARIANTS[1]]):
+            for a, b in zip(values[variants[0]], values[variants[1]]):
                 a, b = decode_number(a), decode_number(b)
                 deltas.append(b - a if math.isfinite(a) and math.isfinite(b) else None)
             finite = [d for d in deltas if d is not None]
@@ -70,7 +70,7 @@ def summarize_pair(records):
                     "per_track": dict(zip([r["id"] for r in records], deltas)),
                 },
             }
-    for v in VARIANTS:
+    for v in variants:
         result["frame_coverage"][v] = {
             stem: {
                 m: statistics(
@@ -84,7 +84,7 @@ def summarize_pair(records):
     return result
 
 
-def validate_records(records, expected):
+def validate_records(records, expected, *, variants=VARIANTS):
     """Reject selective songs, cropped audio, missing stems/windows and invalid scores."""
     if [r["id"] for r in records] != sorted(expected):
         raise ValueError("Validation selection differs from pinned ten-song split")
@@ -97,11 +97,11 @@ def validate_records(records, expected):
             or r["evaluated_samples"] != n
             or r["segment_start_sample"] != 0
             or r["discarded_reference_tail_samples"] != 0
-            or r["output_samples"] != {v: dict.fromkeys(STEMS, n) for v in VARIANTS}
-            or set(r["scores"]) != set(VARIANTS)
+            or r["output_samples"] != {v: dict.fromkeys(STEMS, n) for v in variants}
+            or set(r["scores"]) != set(variants)
         ):
             raise ValueError("Input identity, length or variant mismatch")
-        for v in VARIANTS:
+        for v in variants:
             if set(r["scores"][v]) != set(STEMS):
                 raise ValueError("Missing stem")
             for stem in STEMS:
