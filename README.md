@@ -173,6 +173,14 @@ the complete retained metrics pass the corrected offline audit. GPU cleanup is
 confirmed (~$0.479 compute); the listening archive was not retrieved.
 [Results, curves, failure analysis and recovery limits](docs/convergence-pilot-41290811204.md).
 
+The [offline loss/quality audit](docs/loss-quality-audit-41290811204.md) recommends
+**no further extension of this recipe yet**: declining crop loss does not track
+consistent full-song quality gains. A CPU counterexample through the existing
+loss and synthesis functions proves that lower raw magnitude loss can produce
+worse reconstructed audio; it does not establish the cause of the music result.
+Next measure loss and waveform quality on identical fixed crops, including the
+official baseline, using existing checkpoints before running more optimizer steps.
+
 **Earlier 90-step training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
 
 **Earlier ordinary-BN result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.

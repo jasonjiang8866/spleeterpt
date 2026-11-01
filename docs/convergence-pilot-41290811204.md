@@ -145,6 +145,11 @@ records and the offline audit. Checkpoint files stay on Global Volume.
 
 ## Next decision
 
+The follow-up [offline loss/quality audit](loss-quality-audit-41290811204.md)
+pairs checkpoint transitions by song and reproduces a magnitude-loss/reconstruction
+counterexample on CPU. It recommends matched-crop measurements with existing
+checkpoints before any additional training; the real-music cause remains open.
+
 Do not simply extend this recipe or replace the official baseline. First inspect
 the relationship between the magnitude training objective and reconstructed-
 audio quality, and review the identified zero-loss crop. Treat objective mismatch,

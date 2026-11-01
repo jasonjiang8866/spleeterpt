@@ -1,0 +1,912 @@
+{
+  "source_commit": "7c47e4b6c416c758e6bb3d0549a783b090553d02",
+  "experiment": "41290811204-1",
+  "source_worker_status": "failed",
+  "scope": "descriptive; 3 matched milestones per arm, reused 10-song validation set",
+  "baseline_crop_loss_available": false,
+  "same_crop_audio_quality_available": false,
+  "per_track_crop_loss_available": false,
+  "arms": {
+    "lr1e5": {
+      "milestones": [
+        {
+          "step": 90,
+          "validation_loss": 1.2209723949432374,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.03513097457674563,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.004606105695780016,
+                "train/Chris Durban - Celebrate": -0.042972592861392656,
+                "train/Clara Berry And Wooldog - Stella": -0.2043120017153086,
+                "train/James May - If You Say": 0.06358451639671614,
+                "train/Johnny Lokke - Promises & Lies": 0.13296184736931327,
+                "train/Music Delta - Beatles": -0.02728935629209861,
+                "train/Music Delta - Britpop": -0.007893390241589415,
+                "train/Music Delta - Grunge": -0.08655056465383915,
+                "train/Spike Mullings - Mike's Sulking": -0.08657591459055336,
+                "train/The Wrong'Uns - Rothko": -0.07412717599246221
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.02934338633847683,
+              "improved_tracks": 2,
+              "worsened_tracks": 8,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.047068089315497,
+                "train/Chris Durban - Celebrate": -0.3519616151723153,
+                "train/Clara Berry And Wooldog - Stella": 0.01770981896372037,
+                "train/James May - If You Say": -0.18750244565487384,
+                "train/Johnny Lokke - Promises & Lies": -0.008440642926457187,
+                "train/Music Delta - Beatles": -0.19341294991036406,
+                "train/Music Delta - Britpop": -0.00467673126959145,
+                "train/Music Delta - Grunge": -0.011618683361456661,
+                "train/Spike Mullings - Mike's Sulking": -0.08439277659754474,
+                "train/The Wrong'Uns - Rothko": 0.05208706956646658
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.0227033308086515,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.006786773103954147,
+                "train/Chris Durban - Celebrate": 0.26081358911033226,
+                "train/Clara Berry And Wooldog - Stella": -0.09994389186289432,
+                "train/James May - If You Say": -0.9090470887308797,
+                "train/Johnny Lokke - Promises & Lies": -0.0696990017949275,
+                "train/Music Delta - Beatles": 0.10697949006002094,
+                "train/Music Delta - Britpop": 0.0090173991009177,
+                "train/Music Delta - Grunge": -0.39632445425640395,
+                "train/Spike Mullings - Mike's Sulking": 0.08990049899359387,
+                "train/The Wrong'Uns - Rothko": -0.05219343472125715
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.019387331311433886,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.014467034650378352,
+                "train/Chris Durban - Celebrate": 0.22721876128273144,
+                "train/Clara Berry And Wooldog - Stella": -0.18940931219795673,
+                "train/James May - If You Say": 0.015749077483105722,
+                "train/Johnny Lokke - Promises & Lies": -0.06318567768692596,
+                "train/Music Delta - Beatles": 0.24746173942567395,
+                "train/Music Delta - Britpop": 0.05722445850571578,
+                "train/Music Delta - Grunge": -0.15293692837672124,
+                "train/Spike Mullings - Mike's Sulking": -0.09872423414441855,
+                "train/The Wrong'Uns - Rothko": -0.053241697273246125
+              }
+            }
+          }
+        },
+        {
+          "step": 450,
+          "validation_loss": 1.2171935901045798,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.06095374276719734,
+              "improved_tracks": 1,
+              "worsened_tracks": 9,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.001635634111797124,
+                "train/Chris Durban - Celebrate": -0.046882536093533655,
+                "train/Clara Berry And Wooldog - Stella": -0.5373266481547692,
+                "train/James May - If You Say": -0.022962687268080373,
+                "train/Johnny Lokke - Promises & Lies": 0.5696340469429009,
+                "train/Music Delta - Beatles": -0.0015974535170002468,
+                "train/Music Delta - Britpop": -0.07502494944086102,
+                "train/Music Delta - Grunge": -0.16051583409840653,
+                "train/Spike Mullings - Mike's Sulking": -0.3245702544290374,
+                "train/The Wrong'Uns - Rothko": -0.10935350734924221
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.1012371157985188,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.21033098463241495,
+                "train/Chris Durban - Celebrate": -0.18111506774762715,
+                "train/Clara Berry And Wooldog - Stella": -0.011717050656177536,
+                "train/James May - If You Say": -0.13715071317855143,
+                "train/Johnny Lokke - Promises & Lies": 0.05845863729505929,
+                "train/Music Delta - Beatles": -0.7694750522556131,
+                "train/Music Delta - Britpop": 0.03508639374997635,
+                "train/Music Delta - Grunge": -0.06532351841848616,
+                "train/Spike Mullings - Mike's Sulking": -0.47588472574575613,
+                "train/The Wrong'Uns - Rothko": 0.09298627014360772
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.008359914496586462,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.05425581071956742,
+                "train/Chris Durban - Celebrate": 1.058249632123172,
+                "train/Clara Berry And Wooldog - Stella": 0.037535981726394496,
+                "train/James May - If You Say": -1.9225599790718475,
+                "train/Johnny Lokke - Promises & Lies": -0.18113980058523216,
+                "train/Music Delta - Beatles": 0.04233383027432858,
+                "train/Music Delta - Britpop": 0.20999770771967086,
+                "train/Music Delta - Grunge": -0.5634933102085666,
+                "train/Spike Mullings - Mike's Sulking": 0.3073960821942976,
+                "train/The Wrong'Uns - Rothko": -0.24131936156212452
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.09932663262487194,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.04821495883572524,
+                "train/Chris Durban - Celebrate": 0.6178982839937186,
+                "train/Clara Berry And Wooldog - Stella": -0.12330105387431597,
+                "train/James May - If You Say": -0.34363024179704027,
+                "train/Johnny Lokke - Promises & Lies": -0.07535221137542791,
+                "train/Music Delta - Beatles": 0.3621186340140454,
+                "train/Music Delta - Britpop": 0.19389852381499928,
+                "train/Music Delta - Grunge": -0.2374250964367426,
+                "train/Spike Mullings - Mike's Sulking": -0.18318900009408856,
+                "train/The Wrong'Uns - Rothko": -0.3065071575695293
+              }
+            }
+          }
+        },
+        {
+          "step": 900,
+          "validation_loss": 1.2177255570888519,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.08612632855285529,
+              "improved_tracks": 1,
+              "worsened_tracks": 9,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.02953803368162511,
+                "train/Chris Durban - Celebrate": -0.1404699170729944,
+                "train/Clara Berry And Wooldog - Stella": -0.9750283994882025,
+                "train/James May - If You Say": -0.08021323760050159,
+                "train/Johnny Lokke - Promises & Lies": 0.617047900782441,
+                "train/Music Delta - Beatles": -0.08471639479070703,
+                "train/Music Delta - Britpop": -0.08753626231500355,
+                "train/Music Delta - Grunge": -0.1427068079206677,
+                "train/Spike Mullings - Mike's Sulking": -0.3486991895248144,
+                "train/The Wrong'Uns - Rothko": -0.06655207662192808
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.028625548680079715,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.35975767467745046,
+                "train/Chris Durban - Celebrate": -0.018463155231495332,
+                "train/Clara Berry And Wooldog - Stella": -0.13486733045536983,
+                "train/James May - If You Say": 0.11861175887710318,
+                "train/Johnny Lokke - Promises & Lies": 0.04246675826643731,
+                "train/Music Delta - Beatles": -0.8114128290272049,
+                "train/Music Delta - Britpop": -0.01136215795193607,
+                "train/Music Delta - Grunge": -0.0387879421286641,
+                "train/Spike Mullings - Mike's Sulking": -0.6746174216084411,
+                "train/The Wrong'Uns - Rothko": 0.06678451041149014
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.0755281453858303,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.233053669466738,
+                "train/Chris Durban - Celebrate": 1.2690458169428083,
+                "train/Clara Berry And Wooldog - Stella": -0.004478678242037404,
+                "train/James May - If You Say": -1.9501272358008455,
+                "train/Johnny Lokke - Promises & Lies": -0.1465776125296232,
+                "train/Music Delta - Beatles": 0.11122022715904922,
+                "train/Music Delta - Britpop": 0.17190632323513633,
+                "train/Music Delta - Grunge": -0.6112152393990815,
+                "train/Spike Mullings - Mike's Sulking": 0.4759795108616849,
+                "train/The Wrong'Uns - Rothko": -0.2507144719763317
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.14605166014758186,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.2398382014952043,
+                "train/Chris Durban - Celebrate": 0.8042296748104152,
+                "train/Clara Berry And Wooldog - Stella": -0.2655697555066367,
+                "train/James May - If You Say": -0.5545273832509396,
+                "train/Johnny Lokke - Promises & Lies": 0.017825120219924884,
+                "train/Music Delta - Beatles": 0.25784264671476276,
+                "train/Music Delta - Britpop": 0.17989825208221344,
+                "train/Music Delta - Grunge": -0.21001714886002842,
+                "train/Spike Mullings - Mike's Sulking": -0.0820861714351353,
+                "train/The Wrong'Uns - Rothko": -0.28256286855605417
+              }
+            }
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "start_step": 90,
+          "end_step": 450,
+          "validation_loss_delta": -0.003778804838657557,
+          "si_sdr": {
+            "vocals": {
+              "median_paired_delta_db": -0.0511789452780258,
+              "improved_tracks": 2,
+              "worsened_tracks": 8,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.00624173980757714,
+                "train/Chris Durban - Celebrate": -0.003909943232141,
+                "train/Clara Berry And Wooldog - Stella": -0.33301464643946055,
+                "train/James May - If You Say": -0.08654720366479651,
+                "train/Johnny Lokke - Promises & Lies": 0.4366721995735876,
+                "train/Music Delta - Beatles": 0.025691902775098363,
+                "train/Music Delta - Britpop": -0.0671315591992716,
+                "train/Music Delta - Grunge": -0.07396526944456738,
+                "train/Spike Mullings - Mike's Sulking": -0.23799433983848406,
+                "train/The Wrong'Uns - Rothko": -0.035226331356779994
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": 0.0051681276998349485,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.16326289531691796,
+                "train/Chris Durban - Celebrate": 0.1708465474246881,
+                "train/Clara Berry And Wooldog - Stella": -0.029426869619897905,
+                "train/James May - If You Say": 0.05035173247632241,
+                "train/Johnny Lokke - Promises & Lies": 0.06689928022151648,
+                "train/Music Delta - Beatles": -0.576062102345249,
+                "train/Music Delta - Britpop": 0.0397631250195678,
+                "train/Music Delta - Grunge": -0.0537048350570295,
+                "train/Spike Mullings - Mike's Sulking": -0.3914919491482114,
+                "train/The Wrong'Uns - Rothko": 0.04089920057714114
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.06284412180460697,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.06104258382352157,
+                "train/Chris Durban - Celebrate": 0.7974360430128398,
+                "train/Clara Berry And Wooldog - Stella": 0.13747987358928881,
+                "train/James May - If You Say": -1.0135128903409678,
+                "train/Johnny Lokke - Promises & Lies": -0.11144079879030466,
+                "train/Music Delta - Beatles": -0.06464565978569237,
+                "train/Music Delta - Britpop": 0.20098030861875316,
+                "train/Music Delta - Grunge": -0.1671688559521627,
+                "train/Spike Mullings - Mike's Sulking": 0.21749558320070372,
+                "train/The Wrong'Uns - Rothko": -0.18912592684086738
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.037424263587302775,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.0626819934861036,
+                "train/Chris Durban - Celebrate": 0.39067952271098716,
+                "train/Clara Berry And Wooldog - Stella": 0.06610825832364076,
+                "train/James May - If You Say": -0.359379319280146,
+                "train/Johnny Lokke - Promises & Lies": -0.012166533688501957,
+                "train/Music Delta - Beatles": 0.11465689458837147,
+                "train/Music Delta - Britpop": 0.1366740653092835,
+                "train/Music Delta - Grunge": -0.08448816806002135,
+                "train/Spike Mullings - Mike's Sulking": -0.08446476594967,
+                "train/The Wrong'Uns - Rothko": -0.25326546029628316
+              }
+            }
+          },
+          "lower_loss_but_worse_median_stems": [
+            "vocals",
+            "bass",
+            "other"
+          ]
+        },
+        {
+          "start_step": 450,
+          "end_step": 900,
+          "validation_loss_delta": 0.0005319669842720476,
+          "si_sdr": {
+            "vocals": {
+              "median_paired_delta_db": -0.026015667332802472,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.027902399569827985,
+                "train/Chris Durban - Celebrate": -0.09358738097946073,
+                "train/Clara Berry And Wooldog - Stella": -0.43770175133343336,
+                "train/James May - If You Say": -0.05725055033242121,
+                "train/Johnny Lokke - Promises & Lies": 0.04741385383954011,
+                "train/Music Delta - Beatles": -0.08311894127370678,
+                "train/Music Delta - Britpop": -0.012511312874142533,
+                "train/Music Delta - Grunge": 0.01780902617773883,
+                "train/Spike Mullings - Mike's Sulking": -0.02412893509577696,
+                "train/The Wrong'Uns - Rothko": 0.04280143072731413
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.034069768251854704,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.1494266900450355,
+                "train/Chris Durban - Celebrate": 0.1626519125161318,
+                "train/Clara Berry And Wooldog - Stella": -0.1231502797991923,
+                "train/James May - If You Say": 0.2557624720556546,
+                "train/Johnny Lokke - Promises & Lies": -0.01599187902862198,
+                "train/Music Delta - Beatles": -0.04193777677159183,
+                "train/Music Delta - Britpop": -0.04644855170191242,
+                "train/Music Delta - Grunge": 0.02653557628982206,
+                "train/Spike Mullings - Mike's Sulking": -0.19873269586268494,
+                "train/The Wrong'Uns - Rothko": -0.02620175973211758
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.018481183571602555,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.17879785874717058,
+                "train/Chris Durban - Celebrate": 0.21079618481963625,
+                "train/Clara Berry And Wooldog - Stella": -0.0420146599684319,
+                "train/James May - If You Say": -0.027567256728997958,
+                "train/Johnny Lokke - Promises & Lies": 0.034562188055608956,
+                "train/Music Delta - Beatles": 0.06888639688472065,
+                "train/Music Delta - Britpop": -0.03809138448453453,
+                "train/Music Delta - Grunge": -0.04772192919051488,
+                "train/Spike Mullings - Mike's Sulking": 0.1685834286673873,
+                "train/The Wrong'Uns - Rothko": -0.009395110414207153
+              }
+            },
+            "other": {
+              "median_paired_delta_db": 0.004972008640344638,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.19162324265947905,
+                "train/Chris Durban - Celebrate": 0.18633139081669658,
+                "train/Clara Berry And Wooldog - Stella": -0.1422687016323207,
+                "train/James May - If You Say": -0.21089714145389937,
+                "train/Johnny Lokke - Promises & Lies": 0.0931773315953528,
+                "train/Music Delta - Beatles": -0.10427598729928267,
+                "train/Music Delta - Britpop": -0.01400027173278584,
+                "train/Music Delta - Grunge": 0.027407947576714164,
+                "train/Spike Mullings - Mike's Sulking": 0.10110282865895326,
+                "train/The Wrong'Uns - Rothko": 0.023944289013475117
+              }
+            }
+          },
+          "lower_loss_but_worse_median_stems": []
+        }
+      ],
+      "step90_to900_validation_loss_relative_change": -0.0026592229831178564
+    },
+    "lr3e6": {
+      "milestones": [
+        {
+          "step": 90,
+          "validation_loss": 1.2211679346859454,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.0015991179214449591,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.0024373888383362186,
+                "train/Chris Durban - Celebrate": -0.0007538488709344371,
+                "train/Clara Berry And Wooldog - Stella": -0.09118954732945284,
+                "train/James May - If You Say": 0.04161931677723807,
+                "train/Johnny Lokke - Promises & Lies": 0.011076496471014607,
+                "train/Music Delta - Beatles": -0.025006393909389857,
+                "train/Music Delta - Britpop": 0.01690749997057761,
+                "train/Music Delta - Grunge": -0.01167217367749629,
+                "train/Spike Mullings - Mike's Sulking": -0.002444386971955481,
+                "train/The Wrong'Uns - Rothko": -0.009033993861903511
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.008155380752706387,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.0069637536764397545,
+                "train/Chris Durban - Celebrate": -0.07706067476643186,
+                "train/Clara Berry And Wooldog - Stella": 0.010798962480765867,
+                "train/James May - If You Say": -0.08352596659779488,
+                "train/Johnny Lokke - Promises & Lies": -0.0016811287212536996,
+                "train/Music Delta - Beatles": -0.041405737513865226,
+                "train/Music Delta - Britpop": -0.00934700782897302,
+                "train/Music Delta - Grunge": 0.0028069704338324897,
+                "train/Spike Mullings - Mike's Sulking": -0.014330129789855928,
+                "train/The Wrong'Uns - Rothko": 0.017355925927037497
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.0010850379173850122,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.008458915479730322,
+                "train/Chris Durban - Celebrate": 0.19106286921842175,
+                "train/Clara Berry And Wooldog - Stella": -0.040091070393765804,
+                "train/James May - If You Say": -0.21103033403301608,
+                "train/Johnny Lokke - Promises & Lies": -0.01670019070686246,
+                "train/Music Delta - Beatles": 0.06065089496388243,
+                "train/Music Delta - Britpop": 0.0036658785687624373,
+                "train/Music Delta - Grunge": -0.11525604195610661,
+                "train/Spike Mullings - Mike's Sulking": 0.012341472932553277,
+                "train/The Wrong'Uns - Rothko": -0.005835954403532462
+              }
+            },
+            "other": {
+              "median_paired_delta_db": 0.005741234115399951,
+              "improved_tracks": 6,
+              "worsened_tracks": 4,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.009240995328214652,
+                "train/Chris Durban - Celebrate": 0.08835461486120932,
+                "train/Clara Berry And Wooldog - Stella": -0.08061293599916641,
+                "train/James May - If You Say": 0.023623130599722764,
+                "train/Johnny Lokke - Promises & Lies": -0.02536495649458015,
+                "train/Music Delta - Beatles": 0.1039851866375292,
+                "train/Music Delta - Britpop": 0.025253544329841837,
+                "train/Music Delta - Grunge": -0.03955951859345719,
+                "train/Spike Mullings - Mike's Sulking": -0.044473322413797645,
+                "train/The Wrong'Uns - Rothko": 0.002241472902585251
+              }
+            }
+          }
+        },
+        {
+          "step": 450,
+          "validation_loss": 1.218359001725912,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.021971263365492044,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.0019631951890080046,
+                "train/Chris Durban - Celebrate": -0.016484110568651733,
+                "train/Clara Berry And Wooldog - Stella": -0.22473140797115576,
+                "train/James May - If You Say": 0.04725564892842904,
+                "train/Johnny Lokke - Promises & Lies": 0.2569731841331917,
+                "train/Music Delta - Beatles": 0.01999598746773046,
+                "train/Music Delta - Britpop": -0.027458416162332355,
+                "train/Music Delta - Grunge": -0.10022876292306648,
+                "train/Spike Mullings - Mike's Sulking": -0.1695372512850506,
+                "train/The Wrong'Uns - Rothko": -0.10819592057199223
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.04331865350108427,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.06598334885137314,
+                "train/Chris Durban - Celebrate": -0.3941359013810893,
+                "train/Clara Berry And Wooldog - Stella": 0.02962048647340601,
+                "train/James May - If You Say": -0.07525357820773027,
+                "train/Johnny Lokke - Promises & Lies": -0.010747018272095232,
+                "train/Music Delta - Beatles": -0.2694382462390452,
+                "train/Music Delta - Britpop": 0.020510634111098547,
+                "train/Music Delta - Grunge": -0.020653958150795404,
+                "train/Spike Mullings - Mike's Sulking": -0.13179581252912298,
+                "train/The Wrong'Uns - Rothko": 0.1258079643730845
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.018710375735054185,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.005087186791058684,
+                "train/Chris Durban - Celebrate": 0.32125167757617756,
+                "train/Clara Berry And Wooldog - Stella": -0.03233356467904969,
+                "train/James May - If You Say": -1.0244969927175838,
+                "train/Johnny Lokke - Promises & Lies": -0.09553341423809081,
+                "train/Music Delta - Beatles": 0.2302657163889874,
+                "train/Music Delta - Britpop": 0.08304465218266799,
+                "train/Music Delta - Grunge": -0.48386529700877556,
+                "train/Spike Mullings - Mike's Sulking": 0.11132648469645257,
+                "train/The Wrong'Uns - Rothko": -0.08974370768458106
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.02576166820148096,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.020370846453561242,
+                "train/Chris Durban - Celebrate": 0.21798987226932098,
+                "train/Clara Berry And Wooldog - Stella": -0.11801283315256789,
+                "train/James May - If You Say": 0.01816653943383084,
+                "train/Johnny Lokke - Promises & Lies": -0.06968987583679276,
+                "train/Music Delta - Beatles": 0.4001846089926211,
+                "train/Music Delta - Britpop": 0.1194915048901839,
+                "train/Music Delta - Grunge": -0.16936595077235017,
+                "train/Spike Mullings - Mike's Sulking": -0.17668117374008374,
+                "train/The Wrong'Uns - Rothko": -0.09684924978305265
+              }
+            }
+          }
+        },
+        {
+          "step": 900,
+          "validation_loss": 1.2152140788733958,
+          "si_sdr_vs_official": {
+            "vocals": {
+              "median_paired_delta_db": -0.05377630325764704,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.006873156739144903,
+                "train/Chris Durban - Celebrate": -0.058709722839580536,
+                "train/Clara Berry And Wooldog - Stella": -0.44502462821585986,
+                "train/James May - If You Say": 0.06809575200107787,
+                "train/Johnny Lokke - Promises & Lies": 0.5031190326342081,
+                "train/Music Delta - Beatles": -0.048842883675713544,
+                "train/Music Delta - Britpop": -0.028503366842662636,
+                "train/Music Delta - Grunge": -0.09944473794702002,
+                "train/Spike Mullings - Mike's Sulking": -0.19245040180359307,
+                "train/The Wrong'Uns - Rothko": -0.09230458348515747
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.01486864789803631,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.19044031211953483,
+                "train/Chris Durban - Celebrate": -0.4019052163285448,
+                "train/Clara Berry And Wooldog - Stella": -0.013139758023885867,
+                "train/James May - If You Say": 0.00408878052910866,
+                "train/Johnny Lokke - Promises & Lies": 0.03616824504361382,
+                "train/Music Delta - Beatles": -0.48010169184602347,
+                "train/Music Delta - Britpop": 0.02462392149219994,
+                "train/Music Delta - Grunge": -0.016597537772186755,
+                "train/Spike Mullings - Mike's Sulking": -0.30521632679999255,
+                "train/The Wrong'Uns - Rothko": 0.12221326379342567
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.06945535311922058,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.074031210614244,
+                "train/Chris Durban - Celebrate": 0.4731457605957119,
+                "train/Clara Berry And Wooldog - Stella": -0.06487949562419715,
+                "train/James May - If You Say": -1.3489057407754521,
+                "train/Johnny Lokke - Promises & Lies": -0.09923097040884987,
+                "train/Music Delta - Beatles": 0.12412083577065136,
+                "train/Music Delta - Britpop": 0.09684718909396217,
+                "train/Music Delta - Grunge": -0.7109595426347388,
+                "train/Spike Mullings - Mike's Sulking": 0.17845138770739588,
+                "train/The Wrong'Uns - Rothko": -0.13838313514990075
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.05659037560016378,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.0313475876506617,
+                "train/Chris Durban - Celebrate": 0.4658761324799292,
+                "train/Clara Berry And Wooldog - Stella": -0.18011428033340043,
+                "train/James May - If You Say": -0.08183316354966585,
+                "train/Johnny Lokke - Promises & Lies": 0.03342996763054451,
+                "train/Music Delta - Beatles": 0.35470692160391737,
+                "train/Music Delta - Britpop": 0.14754332768774958,
+                "train/Music Delta - Grunge": -0.1960146033353689,
+                "train/Spike Mullings - Mike's Sulking": -0.1461972771103206,
+                "train/The Wrong'Uns - Rothko": -0.13867027679902977
+              }
+            }
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "start_step": 90,
+          "end_step": 450,
+          "validation_loss_delta": -0.0028089329600333723,
+          "si_sdr": {
+            "vocals": {
+              "median_paired_delta_db": -0.03004808891531363,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.00047419364932821395,
+                "train/Chris Durban - Celebrate": -0.015730261697717296,
+                "train/Clara Berry And Wooldog - Stella": -0.13354186064170293,
+                "train/James May - If You Say": 0.00563633215119097,
+                "train/Johnny Lokke - Promises & Lies": 0.2458966876621771,
+                "train/Music Delta - Beatles": 0.045002381377120315,
+                "train/Music Delta - Britpop": -0.044365916132909966,
+                "train/Music Delta - Grunge": -0.0885565892455702,
+                "train/Spike Mullings - Mike's Sulking": -0.1670928643130951,
+                "train/The Wrong'Uns - Rothko": -0.09916192671008872
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.016263409067734713,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.05901959517493338,
+                "train/Chris Durban - Celebrate": -0.3170752266146574,
+                "train/Clara Berry And Wooldog - Stella": 0.018821523992640143,
+                "train/James May - If You Say": 0.008272388390064611,
+                "train/Johnny Lokke - Promises & Lies": -0.009065889550841533,
+                "train/Music Delta - Beatles": -0.22803250872518,
+                "train/Music Delta - Britpop": 0.029857641940071566,
+                "train/Music Delta - Grunge": -0.023460928584627894,
+                "train/Spike Mullings - Mike's Sulking": -0.11746568273926705,
+                "train/The Wrong'Uns - Rothko": 0.108452038446047
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.0028942982780364446,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.013546102270789007,
+                "train/Chris Durban - Celebrate": 0.13018880835775581,
+                "train/Clara Berry And Wooldog - Stella": 0.0077575057147161175,
+                "train/James May - If You Say": -0.8134666586845677,
+                "train/Johnny Lokke - Promises & Lies": -0.07883322353122835,
+                "train/Music Delta - Beatles": 0.16961482142510498,
+                "train/Music Delta - Britpop": 0.07937877361390555,
+                "train/Music Delta - Grunge": -0.36860925505266895,
+                "train/Spike Mullings - Mike's Sulking": 0.09898501176389929,
+                "train/The Wrong'Uns - Rothko": -0.0839077532810486
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.021428244159646698,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.01112985112534659,
+                "train/Chris Durban - Celebrate": 0.12963525740811166,
+                "train/Clara Berry And Wooldog - Stella": -0.037399897153401473,
+                "train/James May - If You Say": -0.005456591165891922,
+                "train/Johnny Lokke - Promises & Lies": -0.04432491934221261,
+                "train/Music Delta - Beatles": 0.2961994223550919,
+                "train/Music Delta - Britpop": 0.09423796056034206,
+                "train/Music Delta - Grunge": -0.12980643217889298,
+                "train/Spike Mullings - Mike's Sulking": -0.1322078513262861,
+                "train/The Wrong'Uns - Rothko": -0.0990907226856379
+              }
+            }
+          },
+          "lower_loss_but_worse_median_stems": [
+            "vocals",
+            "drums",
+            "bass",
+            "other"
+          ]
+        },
+        {
+          "start_step": 450,
+          "end_step": 900,
+          "validation_loss_delta": -0.0031449228525162187,
+          "si_sdr": {
+            "vocals": {
+              "median_paired_delta_db": -0.00013046285214191045,
+              "improved_tracks": 5,
+              "worsened_tracks": 5,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": 0.004909961550136899,
+                "train/Chris Durban - Celebrate": -0.0422256122709288,
+                "train/Clara Berry And Wooldog - Stella": -0.2202932202447041,
+                "train/James May - If You Say": 0.02084010307264883,
+                "train/Johnny Lokke - Promises & Lies": 0.2461458485010164,
+                "train/Music Delta - Beatles": -0.068838871143444,
+                "train/Music Delta - Britpop": -0.001044950680330281,
+                "train/Music Delta - Grunge": 0.0007840249760464602,
+                "train/Spike Mullings - Mike's Sulking": -0.02291315051854248,
+                "train/The Wrong'Uns - Rothko": 0.015891337086834767
+              }
+            },
+            "drums": {
+              "median_paired_delta_db": -0.005682007763557172,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.12445696326816169,
+                "train/Chris Durban - Celebrate": -0.007769314947455516,
+                "train/Clara Berry And Wooldog - Stella": -0.04276024449729188,
+                "train/James May - If You Say": 0.07934235873683892,
+                "train/Johnny Lokke - Promises & Lies": 0.046915263315709055,
+                "train/Music Delta - Beatles": -0.21066344560697825,
+                "train/Music Delta - Britpop": 0.004113287381101394,
+                "train/Music Delta - Grunge": 0.0040564203786086495,
+                "train/Spike Mullings - Mike's Sulking": -0.17342051427086957,
+                "train/The Wrong'Uns - Rothko": -0.003594700579658827
+              }
+            },
+            "bass": {
+              "median_paired_delta_db": -0.04059267920523357,
+              "improved_tracks": 3,
+              "worsened_tracks": 7,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.06894402382318532,
+                "train/Chris Durban - Celebrate": 0.15189408301953433,
+                "train/Clara Berry And Wooldog - Stella": -0.03254593094514746,
+                "train/James May - If You Say": -0.32440874805786835,
+                "train/Johnny Lokke - Promises & Lies": -0.0036975561707590643,
+                "train/Music Delta - Beatles": -0.10614488061833605,
+                "train/Music Delta - Britpop": 0.013802536911294183,
+                "train/Music Delta - Grunge": -0.22709424562596325,
+                "train/Spike Mullings - Mike's Sulking": 0.06712490301094332,
+                "train/The Wrong'Uns - Rothko": -0.048639427465319685
+              }
+            },
+            "other": {
+              "median_paired_delta_db": -0.03423483978949793,
+              "improved_tracks": 4,
+              "worsened_tracks": 6,
+              "unchanged_tracks": 0,
+              "per_track_delta_db": {
+                "train/Auctioneer - Our Future Faces": -0.05171843410422294,
+                "train/Chris Durban - Celebrate": 0.24788626021060822,
+                "train/Clara Berry And Wooldog - Stella": -0.06210144718083255,
+                "train/James May - If You Say": -0.0999997029834967,
+                "train/Johnny Lokke - Promises & Lies": 0.10311984346733727,
+                "train/Music Delta - Beatles": -0.045477687388703725,
+                "train/Music Delta - Britpop": 0.028051822797565684,
+                "train/Music Delta - Grunge": -0.026648652563018738,
+                "train/Spike Mullings - Mike's Sulking": 0.03048389662976314,
+                "train/The Wrong'Uns - Rothko": -0.04182102701597712
+              }
+            }
+          },
+          "lower_loss_but_worse_median_stems": [
+            "vocals",
+            "drums",
+            "bass",
+            "other"
+          ]
+        }
+      ],
+      "step90_to900_validation_loss_relative_change": -0.004875542211219931
+    }
+  },
+  "source_sha256": "aeb63b755342a2947923219f1e3af7bbfde49a1e83a70c1d6dc5446ffd1dc674",
+  "torch_version": "2.8.0+cpu",
+  "synthetic_counterexample": {
+    "scope": "synthetic possibility proof only; not the measured MUSDB cause",
+    "config": {
+      "instruments": [
+        "vocals",
+        "drums",
+        "bass",
+        "other"
+      ],
+      "filters": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "sample_rate": 8000,
+      "n_fft": 256,
+      "hop_length": 64,
+      "segment_frames": 64,
+      "frequency_bins": 128,
+      "encoder_activation": "leaky_relu",
+      "decoder_activation": "relu",
+      "mask_activation": "sigmoid",
+      "mask_extension": "zeros",
+      "separation_exponent": 2.0
+    },
+    "tone_bins": [
+      16,
+      64
+    ],
+    "source_coefficients": [
+      [
+        0.550000011920929,
+        0.10000000149011612
+      ],
+      [
+        0.25,
+        0.20000000298023224
+      ],
+      [
+        0.15000000596046448,
+        0.30000001192092896
+      ],
+      [
+        0.05000000074505806,
+        0.4000000059604645
+      ]
+    ],
+    "candidates": {
+      "ratio_aligned": {
+        "summed_magnitude_l1": 1.7961456775665283,
+        "global_stereo_si_sdr_db": {
+          "vocals": 43.41921597657662,
+          "drums": 57.31428378644839,
+          "bass": 48.477654681707484,
+          "other": 42.75580561975184
+        },
+        "waveform_mae": {
+          "vocals": 0.00013837506412528455,
+          "drums": 2.8196496714372188e-05,
+          "bass": 5.9569531003944576e-05,
+          "other": 0.00011862278188345954
+        }
+      },
+      "magnitude_aligned": {
+        "summed_magnitude_l1": 7.267023534041073e-07,
+        "global_stereo_si_sdr_db": {
+          "vocals": 17.2106835799377,
+          "drums": 34.306868656533176,
+          "bass": 11.033213288113984,
+          "other": 18.92958507652272
+        },
+        "waveform_mae": {
+          "vocals": 0.14189723134040833,
+          "drums": 0.06448021531105042,
+          "bass": 0.058041512966156006,
+          "other": 0.07983002811670303
+        }
+      }
+    }
+  }
+}
