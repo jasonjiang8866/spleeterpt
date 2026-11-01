@@ -174,5 +174,6 @@ Keep converted official Spleeter weights as this port's reproducible compatibili
 baseline; the frozen-BN pilot does not justify replacing them. Use these paired
 quality and resource measurements to choose whether HTDemucs fits a four-stem
 workflow, then audition the fixed excerpts. A pinned RoFormer vocal/accompaniment
-evaluation remains a separate experiment. Do not tune on the untouched 50-song
+evaluation was subsequently completed as a [separate native two-source screen](vocal-benchmark-41281557441.md).
+Do not tune on the untouched 50-song
 test set or relabel the AAC source as HQ.

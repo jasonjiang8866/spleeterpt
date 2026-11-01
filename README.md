@@ -68,12 +68,12 @@ challengers; this project does not claim the best current separation quality.
 
 For final vocal extraction, audition a pinned **Mel-Band / BS-RoFormer** checkpoint;
 for a four-stem comparison, start with **HTDemucs**, then **SCNet** and a suitable
-four-stem RoFormer setup. HTDemucs now has local measurements below; the other
-families remain evaluation priorities.
+four-stem RoFormer setup. HTDemucs and one pinned Kim Mel-Band RoFormer now have
+separate local measurements below; the other candidates remain evaluation priorities.
 Our default high-band truncation and mixture-phase masks are limitations for
 full-band, high-fidelity deliverables. Fixed inference windows do not make this
 implementation streaming: the full STFT remains in memory. The measurements below
-apply to these two pinned configurations on one MIG workload, not all models or devices.
+apply to the named pinned configurations on one MIG profile, not all models or devices.
 
 The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
 keeps the existing ten-song validation screen separate from a future final test.
@@ -126,10 +126,29 @@ compute (**$0.33352** including the earlier failed trial), and its Pod was delet
 Raw CPU RSS counters are not a valid isolated memory comparison; see the report.
 [Full results, SI-SDR, raw timing repeats, limitations and A/B package details](docs/separator-benchmark-41277234620.md).
 
-The next [vocal/accompaniment screen](docs/roformer-vocal-protocol.md) pins native
-official Spleeter-2 against Kimberley Jensen's Mel-Band RoFormer checkpoint.
-Real-weight CPU compatibility and original-author parity are checked before a
-bounded GPU trial. This separate two-source task does not reuse four-stem scores.
+### Separate vocal/accompaniment screen
+
+Native official Spleeter-2 versus the pinned Kim Mel-Band RoFormer checkpoint,
+on the same ten complete **AAC-derived** validation songs (30.37 minutes).
+This independent two-source task uses its own scores; it does not reuse the
+four-stem results above. FP32, eager attention, PRO 6000 MIG 24GB, three repeats.
+
+| Measurement | Native Spleeter-2 | Kim Mel-Band RoFormer |
+|---|---:|---:|
+| Vocal SDR median (dB) | 7.545 | 11.897 |
+| Accompaniment SDR median (dB) | 13.549 | 19.209 |
+| Inference seconds, sum of song medians | 5.314 | 295.851 |
+| Local WAV end-to-end seconds | 9.252 | 300.236 |
+| Peak allocated CUDA GiB | 3.663 | 4.297 |
+| Modeled inference USD / audio hour | 0.00201 | 0.11202 |
+
+RoFormer improves both SDR and SI-SDR on every song/source in this screen.
+The median **paired** vocal gains are **+5.030 dB SDR / +5.543 dB SI-SDR**;
+these are within-song changes, not differences of the table medians. Spleeter-2
+has **55.67× faster inference** with these recipes. One-attempt compute estimate:
+**$0.29377**, with deletion confirmed after 25.55 minutes. Storage/request charges
+are additional. Upstream training overlap remains unresolved, and all 50 test
+songs remain untouched. [Full results, protocol, CPU memory and listening package](docs/vocal-benchmark-41281557441.md).
 
 ## Current progress — 2026-11-01 (SGT)
 
@@ -144,6 +163,7 @@ bounded GPU trial. This separate two-source task does not reuse four-stem scores
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
 | Quality / convergence | Matched normal/frozen-BN 90-step trial complete on MIG with Global Volume: freezing avoids collapse but does not beat official weights consistently. Convergence and the full test benchmark remain unverified |
 | Four-stem comparison | Ten-song AAC screen complete: HTDemucs improves both metrics on every song/stem; Spleeter has 4.53× faster inference, while HTDemucs uses less allocated GPU memory. Test pool untouched |
+| Vocal comparison | Separate native two-source screen complete: Kim Mel-Band RoFormer improves both metrics on every song/source; paired vocal SDR +5.030 dB. Spleeter-2 has 55.67× faster FP32 inference and lower allocated GPU memory |
 
 **Latest training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
 
