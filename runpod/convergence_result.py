@@ -28,6 +28,15 @@ def positive(value):
     )
 
 
+def nonnegative(value):
+    return (
+        not isinstance(value, bool)
+        and isinstance(value, (int, float))
+        and math.isfinite(value)
+        and value >= 0
+    )
+
+
 def validate_training(r):
     if set(r["arms"]) != set(ARMS):
         raise ValueError("Missing training arm")
@@ -78,9 +87,10 @@ def validate_training(r):
                 [m["step"] for m in train] != list(range(1, step + 1))
                 or [(m["epoch"], m["step"]) for m in val]
                 != [(e, (e + 1) * 90) for e in range(epoch)]
+                or any(m["epoch"] != (m["step"] - 1) // 90 for m in train)
                 or len(proof["metrics"]) != step + epoch
-                or any(m["update_skipped"] or not positive(m["grad_norm"]) for m in train)
-                or any(not positive(m["loss"]) for m in proof["metrics"])
+                or any(m["update_skipped"] or not nonnegative(m["grad_norm"]) for m in train)
+                or any(not nonnegative(m["loss"]) for m in proof["metrics"])
             ):
                 raise ValueError("Incomplete/nonfinite training history")
             timing = proof["timing"]
@@ -110,11 +120,16 @@ def validate_training(r):
 
 
 def validate(result, sha, global_id, pod_id, experiment):
-    r = result.get("report", {})
+    if result.get("status") != "passed":
+        raise ValueError("Worker did not report success")
+    validate_report(result.get("report", {}), sha, global_id, pod_id, experiment)
+
+
+def validate_report(r, sha, global_id, pod_id, experiment):
+    """Audit retained data independently; never relabel a failed worker as passed."""
     storage = r.get("storage", {})
     if (
-        result.get("status") != "passed"
-        or r.get("kind") != "convergence-pilot"
+        r.get("kind") != "convergence-pilot"
         or r.get("commit") != sha
         or r.get("pod_id") != pod_id
         or r.get("experiment") != experiment

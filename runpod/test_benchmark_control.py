@@ -4,6 +4,7 @@ import copy
 import io
 import json
 import os
+import sys
 import tempfile
 import unittest
 from contextlib import ExitStack, redirect_stdout
@@ -89,7 +90,9 @@ class Tests(unittest.TestCase):
             ):
                 budget.check(SimpleNamespace(key="unused"))
 
-    def run_controller(self, api, *, env=None, budget_error=None, polling_error=None):
+    def run_controller(
+        self, api, *, env=None, budget_error=None, polling_error=None, polling_result=None
+    ):
         with tempfile.TemporaryDirectory() as temp, ExitStack() as stack:
             old = Path.cwd()
             os.chdir(temp)
@@ -109,7 +112,10 @@ class Tests(unittest.TestCase):
                 patch.object(
                     control,
                     "request",
-                    side_effect=polling_error or control.BenchmarkDeadline("deadline"),
+                    side_effect=(polling_error or control.BenchmarkDeadline("deadline"))
+                    if polling_result is None
+                    else None,
+                    return_value=polling_result,
                 )
             )
             stack.enter_context(redirect_stdout(io.StringIO()))
@@ -148,6 +154,39 @@ class Tests(unittest.TestCase):
             self.assertEqual(sum(method == "POST" for _, method, _ in api.calls), 1)
             self.assertEqual(api.calls[-1][:2], ("/pods/abc", "DELETE"))
             self.assertTrue(result["cleanup_confirmed"])
+
+    def test_failed_acceptance_preserves_export_before_cleanup(self):
+        events = []
+
+        def download(url, token, report, path):
+            self.assertEqual(report["bundle"], {"bytes": 10})
+            path.write_bytes(b"test bytes")
+            events.append("download")
+
+        def reject(*args, **kwargs):
+            self.assertTrue(Path("runpod-results/result.json").is_file())
+            self.assertEqual(
+                Path("runpod-results/listening-and-metrics.tar").read_bytes(), b"test bytes"
+            )
+            events.append("reject")
+            raise RuntimeError("Acceptance failure")
+
+        mocks = {
+            "benchmark_metrics": SimpleNamespace(timing_summary=lambda *a: {}),
+            "benchmark_result": SimpleNamespace(validate=reject),
+            "convergence_result": SimpleNamespace(validate=reject),
+            "finetune_result": SimpleNamespace(download_export=download),
+        }
+        api = Fake()
+        with patch.dict(sys.modules, mocks):
+            meta = self.run_controller(
+                api,
+                env={"SPT_BENCHMARK_PROFILE": "convergence"},
+                polling_result={"status": "failed", "report": {"bundle": {"bytes": 10}}},
+            )
+        self.assertEqual(events, ["download", "reject"])
+        self.assertTrue(meta["cleanup_confirmed"])
+        self.assertEqual(api.items, [])
 
     def test_convergence_profile_pins_snapshot_and_cleanup(self):
         api = Fake()

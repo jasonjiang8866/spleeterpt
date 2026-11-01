@@ -1,0 +1,67 @@
+{
+  "profile": "convergence",
+  "resources": {
+    "observed_at_utc": "2026-11-01T08:49:27.850296+00:00",
+    "source_commit": "4cb0150deb60ac4f5587054263df9b1f5e2ceed7",
+    "read_only": true,
+    "account_pod_count": 0,
+    "project_pods": [],
+    "regional_volume": null,
+    "regional_volume_found": false,
+    "global_volume": {
+      "id": "cmvwmviz9000007jteci4ajn8",
+      "name": "spt-1436489970-step90-inputs-v1"
+    },
+    "gpu": {
+      "id": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "catalog_usd_per_hour": 0.69,
+      "within_proposed_rate_cap": true,
+      "available_regions": [
+        {
+          "id": "EUR-IS-2",
+          "availability": "LOW"
+        },
+        {
+          "id": "US-PA-1",
+          "availability": "LOW"
+        },
+        {
+          "id": "US-WA-1",
+          "availability": "LOW"
+        }
+      ],
+      "availability_is_advisory": true
+    },
+    "ready_for_paid_run": false,
+    "pending": [
+      "Mounted training snapshot SHA-256 and all 500 audio hashes",
+      "Official Spleeter-4 recreation hash and frozen-BN training acceptance",
+      "Measured runtime projection within the single 60-minute lease"
+    ]
+  },
+  "budget": {
+    "checked_at_utc": "2026-11-01T08:49:27.850333+00:00",
+    "month_basis": "UTC",
+    "reserve_usd": 1.0,
+    "monthly_budget_usd": 500.0,
+    "balance_sufficient": true,
+    "month_headroom_sufficient": true,
+    "history_scope": "reported account daily charges plus one hour current spend; billing may lag",
+    "gpu_rate_cap_usd_per_hour": 0.69,
+    "lease_seconds": 3600,
+    "scope": "compute rate/deadline plus reserve; storage/request fees are not an all-in hard cap"
+  },
+  "data": {
+    "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+    "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+    "train_tracks": 90,
+    "validation_tracks": 10,
+    "verified_audio_files": 500,
+    "test_audio_extracted": false
+  },
+  "initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+  "snapshot_sha256": "172c50e5310b22ceab3d4813a4ba1146c682db682c8aebc4c03ad235de376964",
+  "snapshot_path": "/global/musdb18-training-v1/snapshot.json",
+  "data_format": "MUSDB18 AAC; not HQ",
+  "test_pool_used": false
+}

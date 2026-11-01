@@ -161,16 +161,19 @@ songs remain untouched. [Full results, protocol, CPU memory and listening packag
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
-| Quality / convergence | Matched normal/frozen-BN 90-step trial complete on MIG with Global Volume: freezing avoids collapse but does not beat official weights consistently. Convergence and the full test benchmark remain unverified |
+| Quality / convergence | Two frozen-BN learning rates completed 900 steps: paired SDR/SI-SDR medians remain negative on all stems. Metrics revalidated offline after a finite-zero acceptance bug; convergence and the final test remain unverified |
 | Four-stem comparison | Ten-song AAC screen complete: HTDemucs improves both metrics on every song/stem; Spleeter has 4.53× faster inference, while HTDemucs uses less allocated GPU memory. Test pool untouched |
 | Vocal comparison | Separate native two-source screen complete: Kim Mel-Band RoFormer improves both metrics on every song/source; paired vocal SDR +5.030 dB. Spleeter-2 has 55.67× faster FP32 inference and lower allocated GPU memory |
 
-The next [bounded longer-training screen](docs/convergence-pilot-protocol.md) compares two
-frozen-BN learning rates through 900 steps, with full-song quality curves and durable
-Global Volume checkpoints. This is official-initialized fine-tuning; convergence
-and improved weights still require measurement.
+**Longer-training update:** both frozen-BN learning rates (`1e-5`, `3e-6`) completed
+900 steps and ten-song endpoint scoring. All four median paired SDR and SI-SDR
+changes remain negative, so **keep official weights**. The workflow failed in
+post-run acceptance because finite zero loss/gradient was incorrectly rejected;
+the complete retained metrics pass the corrected offline audit. GPU cleanup is
+confirmed (~$0.479 compute); the listening archive was not retrieved.
+[Results, curves, failure analysis and recovery limits](docs/convergence-pilot-41290811204.md).
 
-**Latest training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
+**Earlier 90-step training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
 
 **Earlier ordinary-BN result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
 

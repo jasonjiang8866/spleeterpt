@@ -1,0 +1,41 @@
+{
+  "workflow_run": 41290811204,
+  "worker_status": "failed",
+  "workflow_conclusion": "failure",
+  "retained_report_complete": true,
+  "corrected_report_validation_passed": true,
+  "rule_correction": "finite nonnegative loss and gradient norm; zero is valid; negative/nonfinite/skipped/missing updates still rejected",
+  "validator_sha256": "f3bfe5dd9a45dd4fa7148ff55ba903b2d92547fe8abc67a0fab019fb7ddacfb2",
+  "numpy": "2.0.2",
+  "artifact_id": 13078856191,
+  "artifact_sha256": "82c0dfdb6e1da1d0537328c0e604fbddd398da55dde3bf7ff30063055fbaba6a",
+  "raw_result_sha256": "511f3a5305d0e79d272eeb574971c6e891eac08b3b744b2aac9da113318e157a",
+  "baseline_max_mean_median_absolute_difference_db": 6.91271254460446e-07,
+  "zero_steps": {
+    "lr1e5": [
+      598
+    ],
+    "lr3e6": [
+      598
+    ]
+  },
+  "reconstructed_step598_input": {
+    "track_id": "train/Atlantis Bound - It Was My Fault For Waiting",
+    "epoch_zero_based": 6,
+    "crop_start_sample": 67181,
+    "crop_samples": 527360,
+    "method": "reconstructed torch2.8 DataLoader order and deterministic loader crop rule; actual WAV not re-read locally"
+  },
+  "matched_rng": true,
+  "training_updates": 1800,
+  "epoch_validations": 20,
+  "full_song_scored_models": 3,
+  "full_validation_songs": 10,
+  "checkpoint_exports": 6,
+  "reported_checkpoint_bytes": 2831181828,
+  "listening_export_retrieved": false,
+  "archive_bytes_independently_verified": false,
+  "cleanup_confirmed": true,
+  "compute_cost_upper_estimate_usd": 0.47876482257246966,
+  "paid_retry": false
+}
