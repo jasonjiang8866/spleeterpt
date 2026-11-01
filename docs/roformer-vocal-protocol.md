@@ -2,8 +2,8 @@
 
 Prepared 2026-11-01 (Asia/Singapore), following the completed
 [Spleeter-4 / HTDemucs comparison](separator-benchmark-41277234620.md).
-This is a separate **two-source** task. No RoFormer music-quality result is
-available at preparation time. Native official Spleeter-2 is the baseline;
+This is a separate **two-source** task. [The subsequent measured run](vocal-benchmark-41281557441.md)
+completed this predeclared protocol. Native official Spleeter-2 is the baseline;
 the previous four-stem BSSEval scores cannot be reused as two-source scores.
 
 ## Pinned candidate and implementation
@@ -98,16 +98,16 @@ Preserve partial evidence and always delete only the created compute Pod.
 The [no-GPU preflight workflow](../.github/workflows/roformer-preflight.yml) checks
 resource/budget state and runs the two real-weight CPU probes in an isolated
 environment. It cannot create compute or storage. Synthetic probe signals are
-not music-quality evidence. [Run 41280553169](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41280553169)
+not music-quality evidence. [Run 41281255782](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41281255782)
 passed both real-weight CPU probes and read-only resource/budget checks. Original
 author forward and overlap-add maximum absolute differences were both zero.
 Native Spleeter-2 conversion reproduced SHA-256
 `2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532`.
-At 06:22 UTC, the account had no Pods, the existing Global Volume was present,
+At 06:32 UTC, the account had no Pods, the existing Global Volume was present,
 the regional volume was absent, and credit/monthly-headroom checks passed.
-The inventory in this first run used the prior four-stem data-plan label; its
-resource observations apply, but its baseline-weight field is not vocal evidence.
-The updated preflight explicitly selects the vocal profile.
+The inventory explicitly selects the vocal profile and its native two-source
+weight fingerprint. [Pinned CPU, inventory and budget evidence](results/roformer-preflight-41281255782.json)
+is retained separately from music-quality measurements.
 
 The [paid vocal workflow](../.github/workflows/runpod-vocal-benchmark.yml) is
 manual, main-only, defaults to no paid launch, and shares the existing GPU workflow

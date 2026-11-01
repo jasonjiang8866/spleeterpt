@@ -18,7 +18,12 @@ full AAC-derived validation songs on PRO 6000 MIG 24GB. HTDemucs improved both
 metrics on all songs/stems; this Spleeter port was 4.53× faster in inference,
 while HTDemucs used less allocated GPU memory. Training overlap is unresolved,
 so these local numbers are kept separate from the published HQ results below.
-The untouched 50-song test set and separate RoFormer vocal evaluation remain pending.
+The separate [native Spleeter-2 / Kim Mel-Band RoFormer screen](vocal-benchmark-41281557441.md)
+also completed the same ten AAC-derived songs. Kim improved both metrics on every
+song/source, with median paired vocal SDR +5.030 dB and SI-SDR +5.543 dB.
+Native Spleeter-2 had 55.67× faster inference and lower peak CUDA allocation
+under the fixed FP32 eager recipe. These two-source scores are not interchangeable
+with four-source scores or the paper results below. The 50-song test set remains unused.
 
 ## Architecture map
 
@@ -142,8 +147,9 @@ limitations. Inspect the [local architecture](architecture.md) and
 
 ## Next comparison in this repository
 
-This is a proposed protocol; **no new competitor inference or GPU spend was
-performed for this research update**.
+This was the proposed protocol for the original literature update, which itself
+used no competitor inference or GPU spend. The subsequent four-stem and vocal
+screens are linked above; other candidates and final held-out testing remain pending.
 
 1. **Fix the tasks.** Four-stem track: converted official Spleeter-4 versus
    `htdemucs`, then official SCNet and a fully specified four-stem BS-RoFormer
