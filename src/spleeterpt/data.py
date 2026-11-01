@@ -93,17 +93,21 @@ class StemDataset(Dataset):
     def __len__(self):
         return len(self.records) * self.samples_per_track
 
-    def __getitem__(self, index):
+    def crop_start(self, index):
+        """Return the exact deterministic sample offset used by the loader."""
         track_index, crop_index = divmod(index, self.samples_per_track)
-        mixture, targets, frames = self.records[track_index]
-        length = self.config.segment_samples
-        latest = max(frames - length, 0)
+        frames = self.records[track_index][2]
+        latest = max(frames - self.config.segment_samples, 0)
         if self.training:
             rng = random.Random(f"{self.seed}/{self.epoch}/{index}")
-            start = rng.randint(0, latest)
-        else:
-            # Fixed, evenly spaced validation crops, independent of epoch/workers.
-            start = round(latest * (crop_index + 0.5) / self.samples_per_track)
+            return rng.randint(0, latest)
+        # Fixed, evenly spaced validation crops, independent of epoch/workers.
+        return round(latest * (crop_index + 0.5) / self.samples_per_track)
+
+    def __getitem__(self, index):
+        mixture, targets, _ = self.records[index // self.samples_per_track]
+        length = self.config.segment_samples
+        start = self.crop_start(index)
 
         def read(file):
             audio, _ = sf.read(file, start=start, frames=length, dtype="float32", always_2d=True)

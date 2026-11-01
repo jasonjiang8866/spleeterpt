@@ -22,7 +22,7 @@ RESTORE_FILE = Path("/workspace/restore.tar")
 
 
 PROGRESS = re.compile(
-    r"(?:Progress: (?:benchmark (?:official_converted|htdemucs|official_2stems|melband_kim) songs \d+/(?:1|10)|training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
+    r"(?:Progress: (?:benchmark (?:official_converted|htdemucs|official_2stems|melband_kim) songs \d+/(?:1|10)|convergence (?:official_converted|lr1e5_step(?:90|450|900)|lr3e6_step(?:90|450|900)) songs \d+/10|convergence (?:lr1e5|lr3e6) step (?:90|450|900) complete|training arm (?:normal|frozen) complete|global input files \d+/\d+|archive chunks \d+/\d+|verifying audio \d+/100|evaluated validation songs \d+/10)|Prepared training-pool track \d+/100|Durable checkpoint committed: step \d+)"
 )
 
 
@@ -299,6 +299,22 @@ def run():
                     ],
                     [python, "runpod/roformer_dependencies.py"],
                     [python, "runpod/benchmark.py", "--profile", "vocal", "--output", str(report)],
+                ]
+            elif profile == "convergence":
+                commands = commands[:3] + [
+                    [
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-cache-dir",
+                        "-e",
+                        ".[evaluate]",
+                        "numpy==2.0.2",
+                        "scipy==1.15.3",
+                    ],
+                    [python, "-m", "pip", "check"],
+                    [python, "runpod/convergence.py", "--output", str(report)],
                 ]
             elif profile != "four-stem":
                 raise ValueError("Unknown benchmark profile")

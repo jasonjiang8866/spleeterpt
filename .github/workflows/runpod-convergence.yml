@@ -1,0 +1,45 @@
+name: RunPod frozen-BN longer-training screen
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_training:
+        description: 'One MIG 24GB <=$0.69/hour, 60-minute lease, existing Global Volume; $1 reserve, $500/month budget check; storage/request fees additional'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: runpod-spleeterpt-smoke
+  cancel-in-progress: false
+jobs:
+  training:
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_training
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.0.2
+      - name: Check budget, launch once, validate and download results
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+          SPT_BENCHMARK_PROFILE: convergence
+          SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_training }}
+        run: python runpod/benchmark_control.py
+      - name: Delete compute only
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/control.py cleanup
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: convergence-pilot-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runpod-results/
+          if-no-files-found: error
+          retention-days: 14
