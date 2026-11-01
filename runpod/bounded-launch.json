@@ -2,6 +2,7 @@
   "experiment": "bounded-memory-v1",
   "authorization": "User requested RunPod GPU measurements, preferring RTX PRO 6000 24GB MIG",
   "attempt": 1,
+  "activation": "2026-11-01",
   "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
   "max_compute_rate_usd_hour": 0.69,
   "lease_seconds": 3600
