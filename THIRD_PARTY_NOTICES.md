@@ -19,5 +19,12 @@ Spleeter paper: Romain Hennequin, Anis Khlif, Felix Voituret, Manuel Moussallam,
 models,” Journal of Open Source Software 5(50), 2154 (2020).
 https://doi.org/10.21105/joss.02154
 
-Official pretrained model archives are downloaded separately by the user and are
-not redistributed in this repository. No third-party audio dataset is included.
+Official pretrained archives remain hosted by Deezer. This project redistributes
+converted 2/4-stem inference checkpoints as GitHub Release assets, with original
+and converted SHA-256 hashes, source attribution, validation evidence, and the
+complete MIT notice. The JOSS paper explicitly includes pretrained models in its
+MIT distribution statement (page 3); that is the recorded licensing basis. The
+README's code-only wording and still-open upstream clarification issue #959 are
+documented in [the model card](docs/pretrained-release.md). This is an independent
+format conversion, not an official Deezer release or a newly trained model.
+No third-party audio dataset is included in Git or the model release.

@@ -57,9 +57,17 @@ def parser():
     )
     infer = commands.add_parser("separate")
     infer.add_argument("input")
-    infer.add_argument("--checkpoint", required=True)
+    weights = infer.add_mutually_exclusive_group(required=True)
+    weights.add_argument("--checkpoint")
+    weights.add_argument(
+        "--model", choices=["2stems", "4stems"], help="download pinned official conversion"
+    )
+    infer.add_argument("--cache-dir", help="cache directory for --model")
     infer.add_argument("--output", required=True)
     infer.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    download = commands.add_parser("download", help="fetch and verify released inference weights")
+    download.add_argument("--stems", type=int, choices=[2, 4], required=True)
+    download.add_argument("--cache-dir")
     convert = commands.add_parser(
         "convert", help="convert an official TF1 checkpoint (optional TF dependency)"
     )
@@ -88,8 +96,17 @@ def main(argv=None):
 
         count = convert_checkpoint(args.checkpoint, args.stems, args.output)
         print(f"Converted {count} tensors to {args.output}")
+    elif args.command == "download":
+        from .pretrained import download_model
+
+        print(download_model(f"{args.stems}stems", args.cache_dir))
     elif args.command == "separate":
-        model = load_model(args.checkpoint, args.device)
+        checkpoint = args.checkpoint
+        if args.model:
+            from .pretrained import download_model
+
+            checkpoint = download_model(args.model, args.cache_dir)
+        model = load_model(checkpoint, args.device)
         output = Path(args.output)
         output.mkdir(parents=True, exist_ok=True)
         if any((output / f"{name}.wav").exists() for name in model.config.instruments):

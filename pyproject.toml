@@ -23,6 +23,9 @@ spleeterpt = "spleeterpt.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+spleeterpt = ["pretrained.json", "pretrained-notice.txt"]
+
 [tool.setuptools]
 license-files = ["LICENSE", "licenses/*.txt", "THIRD_PARTY_NOTICES.md"]
 
