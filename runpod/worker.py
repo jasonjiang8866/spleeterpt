@@ -8,6 +8,7 @@ import os
 import re
 import signal
 import subprocess
+import sys
 import threading
 import time
 import urllib.parse
@@ -167,7 +168,19 @@ def run():
     try:
         task = os.environ.get("SPT_TASK", "smoke")
         commands = [
-            ["python", "-m", "pip", "install", "-e", "."],
+            [
+                "python",
+                "-m",
+                "uv",
+                "pip",
+                "install",
+                "--system",
+                "--python",
+                sys.executable,
+                "--no-sources",
+                "-e",
+                ".",
+            ],
             ["python", "runpod/gpu_smoke.py", "--output", str(report)],
         ]
         if task in {
@@ -189,29 +202,45 @@ def run():
                     "-lc",
                     "command -v ffmpeg && command -v ffprobe || (apt-get update && apt-get install -y --no-install-recommends ffmpeg)",
                 ],
-                ["python", "-m", "venv", "/workspace/eval-venv"],
                 [
-                    python,
+                    "python",
                     "-m",
+                    "uv",
+                    "venv",
+                    "--python",
+                    sys.executable,
+                    "/workspace/eval-venv",
+                ],
+                [
+                    "python",
+                    "-m",
+                    "uv",
                     "pip",
                     "install",
+                    "--python",
+                    python,
+                    "--no-sources",
                     "--no-cache-dir",
                     "torch==2.8.0",
                     "--index-url",
                     "https://download.pytorch.org/whl/cu128",
                 ],
                 [
-                    python,
+                    "python",
                     "-m",
+                    "uv",
                     "pip",
                     "install",
+                    "--python",
+                    python,
+                    "--no-sources",
                     "--no-cache-dir",
                     "-e",
                     ".[evaluate]",
                     "numpy==2.0.2",
                     "scipy==1.15.3",
                 ],
-                [python, "-m", "pip", "check"],
+                ["python", "-m", "uv", "pip", "check", "--python", python],
                 (
                     [
                         python,
@@ -244,12 +273,24 @@ def run():
                     "-lc",
                     "command -v ffmpeg && command -v ffprobe || (apt-get update && apt-get install -y --no-install-recommends ffmpeg)",
                 ],
-                ["python", "-m", "venv", "/workspace/eval-venv"],
                 [
-                    python,
+                    "python",
                     "-m",
+                    "uv",
+                    "venv",
+                    "--python",
+                    sys.executable,
+                    "/workspace/eval-venv",
+                ],
+                [
+                    "python",
+                    "-m",
+                    "uv",
                     "pip",
                     "install",
+                    "--python",
+                    python,
+                    "--no-sources",
                     "--no-cache-dir",
                     "torch==2.8.0",
                     "torchaudio==2.8.0",
@@ -257,10 +298,14 @@ def run():
                     "https://download.pytorch.org/whl/cu128",
                 ],
                 [
-                    python,
+                    "python",
                     "-m",
+                    "uv",
                     "pip",
                     "install",
+                    "--python",
+                    python,
+                    "--no-sources",
                     "--no-cache-dir",
                     "-e",
                     ".[evaluate]",
@@ -275,10 +320,14 @@ def run():
                     "tqdm==4.67.1",
                 ],
                 [
-                    python,
+                    "python",
                     "-m",
+                    "uv",
                     "pip",
                     "install",
+                    "--python",
+                    python,
+                    "--no-sources",
                     "--no-deps",
                     "demucs @ git+https://github.com/facebookresearch/demucs.git@e976d93ecc3865e5757426930257e200846a520a",
                 ],
@@ -289,10 +338,14 @@ def run():
             if profile == "vocal":
                 commands = commands[:3] + [
                     [
-                        python,
+                        "python",
                         "-m",
+                        "uv",
                         "pip",
                         "install",
+                        "--python",
+                        python,
+                        "--no-sources",
                         "--no-cache-dir",
                         "-e",
                         ".[evaluate]",
@@ -305,17 +358,21 @@ def run():
             elif profile == "convergence":
                 commands = commands[:3] + [
                     [
-                        python,
+                        "python",
                         "-m",
+                        "uv",
                         "pip",
                         "install",
+                        "--python",
+                        python,
+                        "--no-sources",
                         "--no-cache-dir",
                         "-e",
                         ".[evaluate]",
                         "numpy==2.0.2",
                         "scipy==1.15.3",
                     ],
-                    [python, "-m", "pip", "check"],
+                    ["python", "-m", "uv", "pip", "check", "--python", python],
                     [python, "runpod/convergence.py", "--output", str(report)],
                 ]
             elif profile != "four-stem":
@@ -333,6 +390,9 @@ def run():
                 commands[0].append("--training")
         elif task != "smoke":
             raise ValueError("Unknown worker task")
+        if task not in {"global-export", "global-training-export"}:
+            # Bootstrap only; all dependency resolution/installation below uses uv.
+            commands.insert(0, ["python", "-m", "pip", "install", "uv==0.13.4"])
         with log.open("w") as stream:
             for index, cmd in enumerate(commands):
                 RESULT = {

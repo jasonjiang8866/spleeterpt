@@ -169,24 +169,25 @@ Raw scores: [2 stems](results/musdb-preview-2stems.json),
 
 ## Reproduce
 
-Install `pip install -e '.[dev,verify]'` and ffmpeg. Separately clone/check out the
+On Linux x86-64, install uv, run `uv sync --locked --group dev --extra verify`,
+and install ffmpeg. Separately clone/check out the
 two pinned source revisions above, download/convert the official weights as in
 the root README, and download/unzip SigSep's `MUSDB18-7-STEMS.zip` preview into a
 directory containing `test/*.stem.mp4`. Scripts do not download datasets, modify
 the external repositories, or start training.
 
 ```bash
-python scripts/verify_audio_parity.py ../upstream-spleeter/audio_example.mp3 \
+uv run --no-sync python scripts/verify_audio_parity.py ../upstream-spleeter/audio_example.mp3 \
   --upstream-root ../upstream-spleeter \
   --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt \
   --include-edges --output runs/audio-parity-2stems.json
 
-python scripts/diagnose_legacy_port.py ../upstream-spleeter/audio_example.mp3 \
+uv run --no-sync python scripts/diagnose_legacy_port.py ../upstream-spleeter/audio_example.mp3 \
   --upstream-root ../upstream-spleeter --legacy-root ../comparison-fwcd \
   --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt \
   --include-multiwindow --output runs/legacy-ablation-2stems.json
 
-python scripts/evaluate_preview.py --root ../musdb-preview \
+uv run --no-sync python scripts/evaluate_preview.py --root ../musdb-preview \
   --upstream-root ../upstream-spleeter --legacy-root ../comparison-fwcd \
   --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt \
   --tracks 5 --output runs/musdb-preview-2stems.json

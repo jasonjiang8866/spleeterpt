@@ -44,12 +44,12 @@ combine vocals, bass and other in an audio editor, leaving drums out.
 The [weights-v1.0.0 Release](https://github.com/jasonjiang8866/spleeterpt/releases/tag/weights-v1.0.0)
 provides Deezer's official **2-stem and 4-stem** pretrained weights converted to
 this PyTorch port. No fine-tuning is needed and inference does not require TensorFlow.
-Install this repository in an environment with the appropriate CPU/CUDA PyTorch:
+From a checkout of this repository, with [uv installed](#install):
 
 ```bash
-python -m pip install .
+uv sync --locked
 # Vocals + backing track: a good first choice.
-spleeterpt separate "song.wav" --model 2stems --output outputs/song-2stems --device cpu
+uv run --no-sync spleeterpt separate "song.wav" --model 2stems --output outputs/song-2stems --device cpu
 ```
 
 Replace `"song.wav"` with your audio file's path; keep quotes around paths with
@@ -60,7 +60,7 @@ The original song is not overwritten.
 To get separate drums and bass instead, run:
 
 ```bash
-spleeterpt separate "song.wav" --model 4stems --output outputs/song-4stems --device cpu
+uv run --no-sync spleeterpt separate "song.wav" --model 4stems --output outputs/song-4stems --device cpu
 ```
 
 Open `outputs/song-4stems` for the four WAV files listed above. Both commands
@@ -71,7 +71,7 @@ replace `--device cpu` with `--device cuda`.
 
 The first invocation downloads the pinned release and verifies size/SHA-256;
 later invocations verify and reuse the cache. Prefetch with
-`spleeterpt download --stems 4`, or set `--cache-dir /your/cache` on either command.
+`uv run --no-sync spleeterpt download --stems 4`, or set `--cache-dir /your/cache` on either command.
 Existing `--checkpoint /path/to/model.pt` usage remains supported for offline or
 custom weights. These are independent conversions, not a Deezer-endorsed release.
 [Model card, license basis, checksums and validation](docs/pretrained-release.md).
@@ -302,21 +302,65 @@ storage/Actions charges. The original run exposed a tuple/list acceptance bug
 
 ## Install
 
-Use Python 3.10–3.12 and a PyTorch build appropriate for your CPU/GPU. The tested
-CPU CI baseline is PyTorch 2.6.0 on Python 3.10/3.12. The real-music RunPod
-training/recovery baseline is PyTorch 2.8.0+cu128 in FP32; those results do not
-establish equivalent quality or reproducibility for AMP.
+Use **uv 0.13.4** to create the environment and install the committed `uv.lock`.
+Python 3.10–3.12 is supported; `.python-version` selects 3.12 by default, and uv
+can download it if needed. No manual virtualenv activation is required.
+
+Install uv using the [official installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
+For Linux/macOS:
 
 ```bash
+curl -LsSf https://astral.sh/uv/0.13.4/install.sh | sh
+# Open a new terminal, or add the installation directory to this shell:
+export PATH="$HOME/.local/bin:$PATH"
 git clone https://github.com/jasonjiang8866/spleeterpt.git
 cd spleeterpt
-python -m venv .venv
-source .venv/bin/activate
-# CPU example. On RunPod keep/install the CUDA-enabled PyTorch build instead.
-python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -e '.[dev]'
-python scripts/smoke_test.py
+uv sync --locked
+uv run --no-sync python scripts/smoke_test.py
 ```
+
+`uv sync` creates `.venv` and installs this repository in editable mode. The
+**default is PyTorch 2.8.0 for CPU** (on Apple Silicon, the native PyPI build).
+Choose the environment for your task:
+
+| Task | Command, from the repository root |
+| --- | --- |
+| CPU inference or training | `uv sync --locked` |
+| Development and tests | `uv sync --locked --group dev` |
+| NVIDIA GPU, CUDA 12.8 (Linux/Windows) | `uv sync --locked --no-default-groups --group cu128` |
+| Development on CUDA 12.8 | `uv sync --locked --no-default-groups --group cu128 --group dev` |
+| Original CPU CI compatibility baseline | `uv sync --locked --no-default-groups --group cpu-legacy --group dev` |
+| Official weight conversion (Linux x86-64) | `uv sync --locked --extra convert` |
+| Evaluation tools (Linux x86-64) | `uv sync --locked --extra evaluate` |
+| Reproduce the release environment (Linux x86-64, Python 3.12) | `uv sync --locked --group dev --group release` |
+
+The three backend groups (`cpu`, `cpu-legacy`, `cu128`) are mutually exclusive;
+CUDA requires a compatible NVIDIA driver. `cpu-legacy` pins PyTorch 2.6.0, tested
+on Python 3.10/3.12. The release and CUDA groups retain PyTorch 2.8.0, and the lock
+retains NumPy 2.0.2 / SciPy 1.15.3 from the numerical experiment baseline.
+TensorFlow extras and release conversion are supported on **Linux x86-64 only**;
+the pinned `tensorflow-cpu` dependency is Linux-only. Ordinary inference does
+not need these extras. macOS/Windows GPU/runtime execution is not covered by CI.
+
+After syncing your chosen environment, use **`uv run --no-sync ...`** for commands
+below. This keeps that environment intact, including CUDA and optional tools;
+a bare `uv run` or default `uv sync` would select the default CPU group again.
+Repeat the appropriate `uv sync --locked ...` command when changing environments
+or updating the checkout. Avoid `--all-groups`: it would select conflicting backends.
+For development/tests, install system **FFmpeg** too (for example,
+`sudo apt-get install ffmpeg` on Ubuntu) for the museval audio reader.
+
+To change dependencies deliberately, edit `pyproject.toml` (or use `uv add` /
+`uv add --group dev`), run `uv lock`, then commit **both** `pyproject.toml` and
+`uv.lock`. CI uses `--locked` to reject a stale lockfile. `uv lock --check` checks
+consistency without installing packages. Update the pinned uv version in project
+configuration, workflows, worker bootstrap and these instructions together.
+
+The real-music RunPod training/recovery baseline is PyTorch 2.8.0+cu128 in FP32;
+those results do not establish equivalent quality or reproducibility for AMP.
+Automated legacy comparison workers use `uv pip` with their existing explicit
+pins and dependency checks (including Demucs's intentional compatibility override);
+they are isolated from the main project's locked environment.
 
 The smoke test uses small synthetic audio and temporary files. It checks training,
 validation, resume, checkpoint reload, and WAV inference; it does not assess music
@@ -330,12 +374,12 @@ Only the official name-based checkpoint layout is supported; unknown model tenso
 or shape mismatches are rejected. Converted files retain source SHA-256 hashes.
 
 ```bash
-python -m pip install -e '.[convert]'
+uv sync --locked --extra convert
 mkdir -p weights/2stems
 curl -fL https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz -o /tmp/2stems.tar.gz
 tar -xzf /tmp/2stems.tar.gz -C weights/2stems
-spleeterpt convert --checkpoint weights/2stems/model --stems 2 --output weights/2stems.pt
-spleeterpt separate song.wav --checkpoint weights/2stems.pt --output outputs/song --device cpu
+uv run --no-sync spleeterpt convert --checkpoint weights/2stems/model --stems 2 --output weights/2stems.pt
+uv run --no-sync spleeterpt separate song.wav --checkpoint weights/2stems.pt --output outputs/song --device cpu
 ```
 
 For 4/5 stems, use the corresponding official `4stems.tar.gz` / `5stems.tar.gz`
@@ -359,7 +403,7 @@ resampling stems independently. Expected files under each `data/train-pool/<trac
 Split the **training pool** by song; keep a separate test set untouched:
 
 ```bash
-spleeterpt manifest --root data/train-pool --output data/manifests --validation-tracks 10 --seed 0
+uv run --no-sync spleeterpt manifest --root data/train-pool --output data/manifests --validation-tracks 10 --seed 0
 ```
 
 Or supply your own train/validation JSONL manifests. Each line is
@@ -376,7 +420,7 @@ that recorded experiment.
 ## Train or fine-tune
 
 ```bash
-spleeterpt train \
+uv run --no-sync spleeterpt train \
   --config configs/2stems.json \
   --train-manifest data/manifests/train.jsonl \
   --val-manifest data/manifests/validation.jsonl \
@@ -454,13 +498,15 @@ training are not reproduced. Quality must be measured on held-out music.
 ## Verification
 
 ```bash
-pytest -q
-ruff check .
-ruff format --check .
-# Optional TF numerical oracle (skipped when TensorFlow is absent):
-pytest -q tests/test_tensorflow_parity.py
+uv sync --locked --group dev
+uv run --no-sync pytest -q
+uv run --no-sync ruff check .
+uv run --no-sync ruff format --check .
+# Optional TF numerical oracle (Linux x86-64):
+uv sync --locked --group dev --extra verify
+uv run --no-sync pytest -q tests/test_tensorflow_parity.py
 # Compare with the ORIGINAL official serialized inference graph:
-python scripts/verify_official_checkpoint.py \
+uv run --no-sync python scripts/verify_official_checkpoint.py \
   --tf-checkpoint weights/2stems/model --checkpoint weights/2stems.pt
 ```
 

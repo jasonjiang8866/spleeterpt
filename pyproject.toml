@@ -7,15 +7,14 @@ name = "spleeterpt"
 version = "0.1.0"
 description = "Trainable PyTorch port of Deezer Spleeter"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"
 license = {file = "LICENSE"}
 dependencies = ["torch>=2.6,<3", "numpy>=1.26,<3", "soundfile>=0.12,<1", "scipy>=1.11,<2"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10", "ruff>=0.9,<1"]
-convert = ["tensorflow-cpu==2.18.1"]
-evaluate = ["museval==0.4.1", "tensorflow-cpu==2.18.1", "pandas>=2.2,<4", "threadpoolctl>=3,<4"]
-verify = ["tensorflow-cpu==2.18.1", "pandas>=2.2,<4"]
+convert = ["tensorflow-cpu==2.18.1; sys_platform == 'linux'"]
+evaluate = ["museval==0.4.1", "tensorflow-cpu==2.18.1; sys_platform == 'linux'", "pandas>=2.2,<4", "threadpoolctl>=3,<4"]
+verify = ["tensorflow-cpu==2.18.1; sys_platform == 'linux'", "pandas>=2.2,<4"]
 
 [project.scripts]
 spleeterpt = "spleeterpt.cli:main"
@@ -34,3 +33,37 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
+
+# Runtime extras remain installable by other Python package managers. Repository
+# environments use these mutually exclusive backends and the committed uv.lock.
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1", "museval==0.4.1"]
+cpu = ["torch==2.8.0"]
+cpu-legacy = ["torch==2.6.0"]
+cu128 = ["torch==2.8.0; sys_platform == 'linux' or sys_platform == 'win32'"]
+release = ["tensorflow-cpu==2.18.1; sys_platform == 'linux'", "numpy==2.0.2", "pandas==2.2.3"]
+
+[tool.uv]
+required-version = "==0.13.4"
+environments = ["sys_platform == 'linux'", "sys_platform == 'darwin'", "sys_platform == 'win32'"]
+default-groups = ["cpu"]
+conflicts = [[{group = "cpu"}, {group = "cpu-legacy"}, {group = "cu128"}]]
+# Preserve the real-audio experiment's numerical dependency baseline.
+constraint-dependencies = ["torch<=2.8.0", "numpy==2.0.2", "scipy==1.15.3"]
+
+[tool.uv.sources]
+torch = [
+  {index = "pytorch-cpu", group = "cpu", marker = "sys_platform != 'darwin'"},
+  {index = "pytorch-cpu", group = "cpu-legacy", marker = "sys_platform != 'darwin'"},
+  {index = "pytorch-cu128", group = "cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'"},
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

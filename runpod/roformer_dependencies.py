@@ -16,7 +16,7 @@ def check():
     for name, version in {**DEPENDENCIES, "torch": "2.8.0+cu128"}.items():
         if importlib.metadata.version(name) != version:
             raise ValueError("Vocal dependency drift: " + name)
-    subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
+    subprocess.run(["uv", "pip", "check", "--python", sys.executable], check=True)
     print("PASS: pinned vocal dependencies and scoring runtime", flush=True)
 
 

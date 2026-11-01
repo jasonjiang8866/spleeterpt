@@ -57,8 +57,8 @@ the source files above whenever the implementation changes.
 Use a separate documentation environment; Matplotlib is not a model dependency:
 
 ```bash
-python -m venv /tmp/spleeterpt-diagram
-/tmp/spleeterpt-diagram/bin/python -m pip install matplotlib==3.10.8
+uv venv /tmp/spleeterpt-diagram
+uv pip install --python /tmp/spleeterpt-diagram/bin/python matplotlib==3.10.8
 /tmp/spleeterpt-diagram/bin/python scripts/draw_architecture.py
 # Optional PNG for reviewing labels and layout:
 /tmp/spleeterpt-diagram/bin/python scripts/draw_architecture.py --preview /tmp/model-architecture.png

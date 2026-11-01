@@ -6,6 +6,7 @@ import json
 import math
 import os
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -129,7 +130,9 @@ def run():
             "cuda": torch.version.cuda,
             "gpu": torch.cuda.get_device_name(0),
             "metrics": records,
-            "packages": subprocess.check_output(["python", "-m", "pip", "freeze"], text=True),
+            "packages": subprocess.check_output(
+                ["uv", "pip", "freeze", "--python", sys.executable], text=True
+            ),
         }
 
 

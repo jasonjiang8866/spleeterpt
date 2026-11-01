@@ -224,8 +224,9 @@ def run(args):
                     "musdb",
                 )
             },
+            # Keep the historical report key; capture this interpreter with uv.
             "pip_freeze": subprocess.check_output(
-                [sys.executable, "-m", "pip", "freeze"], text=True
+                ["uv", "pip", "freeze", "--python", sys.executable], text=True
             ),
             "threads": args.threads,
             "ffmpeg": subprocess.check_output(["ffmpeg", "-version"], text=True).splitlines()[0],
