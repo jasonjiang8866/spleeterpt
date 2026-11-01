@@ -158,6 +158,15 @@ def launch(api):
                 from benchmark_result import validate
                 from finetune_result import download_export
 
+                # Preserve a completed bounded export even if post-run acceptance failed.
+                # The retained report and archive still require independent acceptance.
+                if isinstance(result.get("report", {}).get("bundle"), dict):
+                    download_export(
+                        url.removesuffix("result") + "checkpoint",
+                        token,
+                        result["report"],
+                        output / "listening-and-metrics.tar",
+                    )
                 if profile == "convergence":
                     from convergence_result import validate as validate_convergence
 
@@ -171,12 +180,6 @@ def launch(api):
                         experiment,
                         vocal=profile == "vocal",
                     )
-                download_export(
-                    url.removesuffix("result") + "checkpoint",
-                    token,
-                    result["report"],
-                    output / "listening-and-metrics.tar",
-                )
                 if profile != "convergence":
                     meta["timing_summary"] = timing_summary(result["report"]["measurements"], rate)
                 save()

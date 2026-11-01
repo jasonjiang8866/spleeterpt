@@ -219,3 +219,21 @@ def test_global_restore_requires_real_copy_and_rejects_corruption(modules, tmp_p
     (source / "last.pt").write_bytes(b"corrupted")
     with pytest.raises((ValueError, RuntimeError)):
         worker.restore(descriptor, tmp_path / "restore2")
+
+
+def test_finite_zero_step_is_accepted_without_relabeling_failed_worker(convergence):
+    checker, result = convergence
+    r = result["report"]
+    for proofs in r["arms"].values():
+        entry = next(m for m in proofs[-1]["metrics"] if m["kind"] == "train" and m["step"] == 598)
+        entry.update(loss=0.0, grad_norm=0.0)
+    args = ("a" * 40, "global", "example", "41189465452-1")
+    checker.validate(result, *args)
+    result["status"] = "failed"
+    checker.validate_report(r, *args)
+    with pytest.raises(ValueError, match="Worker did not report success"):
+        checker.validate(result, *args)
+    for value in (-1.0, float("nan"), float("inf"), True):
+        entry["grad_norm"] = value
+        with pytest.raises(ValueError, match="training history"):
+            checker.validate_report(r, *args)

@@ -100,5 +100,8 @@ official baseline. Freeze a validated recipe before any future final test.
 CPU tests cover multi-epoch fresh-process resume versus uninterrupted training,
 all checkpoint/optimizer/RNG state and metrics, crop offsets/coverage, the actual
 spectral loss and gradients, corrupt Global restores, incomplete reports and
-single-launch cleanup. GPU measurements remain pending until a completed run is
-linked here.
+single-launch cleanup. [Run 41290811204](convergence-pilot-41290811204.md) completed training and scoring,
+but failed post-run acceptance due to an erroneous strict-positive loss/gradient
+rule. Retained metrics pass the corrected finite-nonnegative audit; the original
+failed status and missing listening export remain explicit. Both endpoints show
+negative paired quality medians. No paid retry was launched.

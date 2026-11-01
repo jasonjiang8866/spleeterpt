@@ -1,0 +1,5547 @@
+{
+  "kind": "convergence-pilot-summary",
+  "commit": "7c47e4b6c416c758e6bb3d0549a783b090553d02",
+  "pod_id": "cicz0ovd3f19gw",
+  "experiment": "41290811204-1",
+  "storage": {
+    "mode": "global-staged",
+    "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+    "source_volume_id": "j3aqjpw393",
+    "snapshot_sha256": "172c50e5310b22ceab3d4813a4ba1146c682db682c8aebc4c03ad235de376964",
+    "verified_audio_files": 500
+  },
+  "dataset": {
+    "archive_sha256": "2765dd51fed264bbe2dac5c382f7120b7cf1932698fc67d100aa0f3811479152",
+    "provenance_sha256": "63c909246b293b04b6cd103d6498c90c55623bf25cce6e2599332141939bb54e",
+    "train_tracks": 90,
+    "validation_tracks": 10,
+    "verified_audio_files": 500,
+    "test_audio_extracted": false
+  },
+  "protocol": {
+    "scope": "all 10 project validation songs, complete recordings",
+    "sample_rate": 44100,
+    "start_sample": 0,
+    "length_policy": "strict",
+    "precision": "fp32",
+    "tf32": false,
+    "bsseval": "museval 0.4.1 v4 source images, fixed 512-tap filters, no permutation",
+    "window_samples": 44100,
+    "hop_samples": 44100,
+    "padding": false,
+    "aggregation": "median 1-second frames per song; median songs per stem",
+    "paired_delta": "candidate minus baseline per-song median; median paired differences",
+    "si_sdr": "global stereo, mean removed, one scalar; separate from BSSEval SDR",
+    "undefined": "null; infinities as strings; counts explicit; paired deltas finite-only",
+    "listening": "first two sorted validation IDs, centered 8 seconds, shared gain per song",
+    "test_pool_used": false,
+    "variants": [
+      "official_converted",
+      "lr1e5_step900",
+      "lr3e6_step900"
+    ],
+    "training": "two independent official-initialized frozen-BN arms; longer-training screen",
+    "objective": "sum of per-stem mean L1 magnitude error; original Spleeter port objective",
+    "milestones": [
+      90,
+      450,
+      900
+    ],
+    "learning_rates": {
+      "lr1e5": 1e-05,
+      "lr3e6": 3e-06
+    },
+    "recipe": {
+      "epochs": 10,
+      "batch_size": 1,
+      "crops_per_track": 1,
+      "validation_crops": 4,
+      "workers": 0,
+      "seed": 17,
+      "grad_clip": 5.0,
+      "optimizer": "Adam eps=1e-8",
+      "save_every": 90,
+      "deterministic": true,
+      "freeze_bn_stats": true,
+      "precision": "fp32"
+    },
+    "selection": "fixed step900 endpoints; validation loss does not select or promote weights",
+    "curves": "global stereo SI-SDR on all ten full songs at 0/90/450/900; BSSEval only 0/900",
+    "resume": "fresh process at each milestone; preceding full checkpoint read back from Global",
+    "baseline_tolerance_db": 0.001,
+    "convergence_established": false
+  },
+  "initial_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+  "initial_bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "museval": "0.4.1",
+  "coverage": {
+    "epochs": 10,
+    "crop_samples": 527360,
+    "tracks": [
+      {
+        "id": "train/Black Bloc - If You Want Success",
+        "samples": 17575936,
+        "starts": [
+          11461072,
+          4293351,
+          1918940,
+          11326796,
+          10539408,
+          13251289,
+          537102,
+          9498061,
+          16023997,
+          7448240
+        ],
+        "covered_samples": 4880516
+      },
+      {
+        "id": "train/Music Delta - 80s Rock",
+        "samples": 1619968,
+        "starts": [
+          839619,
+          680175,
+          489211,
+          751539,
+          558142,
+          297407,
+          144605,
+          689654,
+          306092,
+          926034
+        ],
+        "covered_samples": 1308789
+      },
+      {
+        "id": "train/Lushlife - Toynbee Suite",
+        "samples": 27711488,
+        "starts": [
+          24535323,
+          22021750,
+          26378723,
+          2570335,
+          23943226,
+          18188525,
+          12138547,
+          24276660,
+          17253136,
+          20899640
+        ],
+        "covered_samples": 4810977
+      },
+      {
+        "id": "train/Fergessen - Nos Palpitants",
+        "samples": 8741888,
+        "starts": [
+          1527992,
+          7189450,
+          6917782,
+          1890891,
+          6041220,
+          784160,
+          7525875,
+          6728277,
+          5316059,
+          7361648
+        ],
+        "covered_samples": 3797297
+      },
+      {
+        "id": "train/Traffic Experiment - Sirens",
+        "samples": 18578432,
+        "starts": [
+          2878704,
+          4802697,
+          9566965,
+          14253642,
+          2468560,
+          5841058,
+          4092095,
+          14450843,
+          4171797,
+          16687532
+        ],
+        "covered_samples": 4378567
+      },
+      {
+        "id": "train/Wall Of Death - Femme",
+        "samples": 10536960,
+        "starts": [
+          7311986,
+          7829885,
+          6678399,
+          6371649,
+          6351605,
+          8253545,
+          6007808,
+          8540042,
+          3658154,
+          9928283
+        ],
+        "covered_samples": 4008087
+      },
+      {
+        "id": "train/Actions - One Minute Smile",
+        "samples": 7204864,
+        "starts": [
+          3151153,
+          4993486,
+          3872105,
+          5991105,
+          1736101,
+          6583565,
+          1220529,
+          2102228,
+          1515240,
+          3515788
+        ],
+        "covered_samples": 4239451
+      },
+      {
+        "id": "train/Sweet Lights - You Let Me Down",
+        "samples": 17277952,
+        "starts": [
+          9830,
+          2755688,
+          8371828,
+          4259376,
+          16557110,
+          5119664,
+          5801507,
+          15113831,
+          10754163,
+          3288592
+        ],
+        "covered_samples": 5273600
+      },
+      {
+        "id": "train/Atlantis Bound - It Was My Fault For Waiting",
+        "samples": 11821056,
+        "starts": [
+          6582747,
+          10085226,
+          8360572,
+          1309319,
+          10349128,
+          6384406,
+          67181,
+          6930534,
+          7650742,
+          8249522
+        ],
+        "covered_samples": 4085240
+      },
+      {
+        "id": "train/Music Delta - Punk",
+        "samples": 1260544,
+        "starts": [
+          439959,
+          112237,
+          420130,
+          74478,
+          191821,
+          479449,
+          296673,
+          197912,
+          688557,
+          455132
+        ],
+        "covered_samples": 1141439
+      },
+      {
+        "id": "train/Fergessen - Back From The Start",
+        "samples": 7433216,
+        "starts": [
+          6162352,
+          4557868,
+          6150175,
+          2746913,
+          5417209,
+          6084729,
+          5515380,
+          4098851,
+          6178432,
+          3105410
+        ],
+        "covered_samples": 3118828
+      },
+      {
+        "id": "train/Actions - Devil's Words",
+        "samples": 8671232,
+        "starts": [
+          3828658,
+          675787,
+          2928731,
+          5739517,
+          3729234,
+          4864523,
+          1984884,
+          1261990,
+          6939652,
+          4481872
+        ],
+        "covered_samples": 4700955
+      },
+      {
+        "id": "train/Music Delta - Country1",
+        "samples": 1523712,
+        "starts": [
+          988533,
+          888559,
+          82037,
+          45310,
+          298842,
+          573474,
+          985331,
+          397937,
+          202963,
+          214772
+        ],
+        "covered_samples": 1470583
+      },
+      {
+        "id": "train/Dark Ride - Burning Bridges",
+        "samples": 10260480,
+        "starts": [
+          9549379,
+          969947,
+          1992864,
+          3854688,
+          8887303,
+          6202940,
+          3545548,
+          5555456,
+          4677717,
+          6489058
+        ],
+        "covered_samples": 4814138
+      },
+      {
+        "id": "train/The Scarlet Brand - Les Fleurs Du Mal",
+        "samples": 13381632,
+        "starts": [
+          10135557,
+          6545792,
+          10996573,
+          406333,
+          8079722,
+          9087819,
+          4714987,
+          6392924,
+          7445137,
+          3084444
+        ],
+        "covered_samples": 4899108
+      },
+      {
+        "id": "train/Secret Mountains - High Horse",
+        "samples": 15669248,
+        "starts": [
+          11882742,
+          11556498,
+          1623338,
+          11885091,
+          10109426,
+          10552833,
+          49656,
+          1856999,
+          7891204,
+          7202091
+        ],
+        "covered_samples": 4169821
+      },
+      {
+        "id": "train/Helado Negro - Mitad Del Mundo",
+        "samples": 8011776,
+        "starts": [
+          2577878,
+          5110101,
+          2626772,
+          5412797,
+          6055929,
+          1657505,
+          5806384,
+          4669793,
+          6576030,
+          979429
+        ],
+        "covered_samples": 4064571
+      },
+      {
+        "id": "train/Actions - South Of The Water",
+        "samples": 7788544,
+        "starts": [
+          3296111,
+          5221167,
+          4160901,
+          4542037,
+          1347109,
+          4729705,
+          5842059,
+          3175462,
+          20235,
+          4674784
+        ],
+        "covered_samples": 3817715
+      },
+      {
+        "id": "train/Night Panther - Fire",
+        "samples": 9384960,
+        "starts": [
+          2366052,
+          5885665,
+          4438188,
+          2613038,
+          6228197,
+          1806127,
+          1149060,
+          7529628,
+          2795844,
+          7202051
+        ],
+        "covered_samples": 4264061
+      },
+      {
+        "id": "train/Music Delta - Hendrix",
+        "samples": 866304,
+        "starts": [
+          140732,
+          176112,
+          201857,
+          60282,
+          193033,
+          286638,
+          35695,
+          277262,
+          303557,
+          16654
+        ],
+        "covered_samples": 814263
+      },
+      {
+        "id": "train/ANiMAL - Easy Tiger",
+        "samples": 9061376,
+        "starts": [
+          1058422,
+          1389281,
+          7020087,
+          5756878,
+          7047225,
+          157029,
+          2492993,
+          4420518,
+          3501746,
+          2909750
+        ],
+        "covered_samples": 4466274
+      },
+      {
+        "id": "train/Skelpolu - Together Alone",
+        "samples": 14368768,
+        "starts": [
+          3463141,
+          11277888,
+          4369541,
+          4445483,
+          10003114,
+          12650546,
+          6285879,
+          6342832,
+          8056669,
+          11204241
+        ],
+        "covered_samples": 3898062
+      },
+      {
+        "id": "train/Johnny Lokke - Whisper To A Scream",
+        "samples": 11259904,
+        "starts": [
+          446424,
+          2276470,
+          2110422,
+          1556038,
+          2076288,
+          8503280,
+          2009927,
+          7047772,
+          3247804,
+          5821264
+        ],
+        "covered_samples": 3884592
+      },
+      {
+        "id": "train/Music Delta - Disco",
+        "samples": 5494784,
+        "starts": [
+          552386,
+          907273,
+          3050186,
+          3502679,
+          1070158,
+          3989721,
+          3640781,
+          2369038,
+          4914456,
+          721315
+        ],
+        "covered_samples": 3566747
+      },
+      {
+        "id": "train/Grants - PunchDrunk",
+        "samples": 9014272,
+        "starts": [
+          524111,
+          6827306,
+          6692546,
+          1686609,
+          4604656,
+          5382653,
+          8047014,
+          3074105,
+          7471120,
+          4733927
+        ],
+        "covered_samples": 4482911
+      },
+      {
+        "id": "train/Young Griffo - Pennies",
+        "samples": 12251136,
+        "starts": [
+          4248057,
+          9761353,
+          9717727,
+          8883683,
+          7018931,
+          2722304,
+          11237400,
+          156679,
+          6759965,
+          8989916
+        ],
+        "covered_samples": 4100345
+      },
+      {
+        "id": "train/AvaLuna - Waterduct",
+        "samples": 11426816,
+        "starts": [
+          4701155,
+          8313200,
+          1317886,
+          3028750,
+          4184193,
+          2337795,
+          6039896,
+          5855999,
+          6592849,
+          8106835
+        ],
+        "covered_samples": 4598744
+      },
+      {
+        "id": "train/Tim Taler - Stalker",
+        "samples": 10479616,
+        "starts": [
+          3568330,
+          926017,
+          5582466,
+          4742569,
+          3017271,
+          6073109,
+          7805949,
+          4771882,
+          8142241,
+          2250725
+        ],
+        "covered_samples": 4547768
+      },
+      {
+        "id": "train/Snowmine - Curfews",
+        "samples": 12128256,
+        "starts": [
+          11125967,
+          404423,
+          9087715,
+          6523097,
+          6667965,
+          9922547,
+          8464972,
+          8933585,
+          11051032,
+          1878455
+        ],
+        "covered_samples": 4006706
+      },
+      {
+        "id": "train/Remember December - C U Next Time",
+        "samples": 10695680,
+        "starts": [
+          8905238,
+          8025171,
+          5652278,
+          7363794,
+          9021717,
+          3711451,
+          6549199,
+          7958679,
+          5312929,
+          4375016
+        ],
+        "covered_samples": 4213840
+      },
+      {
+        "id": "train/Skelpolu - Human Mistakes",
+        "samples": 14310400,
+        "starts": [
+          4834166,
+          8172139,
+          5878324,
+          13591433,
+          12654894,
+          1110629,
+          8160407,
+          5804151,
+          3841211,
+          9195415
+        ],
+        "covered_samples": 4304785
+      },
+      {
+        "id": "train/A Classic Education - NightOwl",
+        "samples": 7552000,
+        "starts": [
+          828814,
+          2300007,
+          6170085,
+          838238,
+          2230457,
+          1531084,
+          4206776,
+          2868093,
+          2671052,
+          4399383
+        ],
+        "covered_samples": 3476467
+      },
+      {
+        "id": "train/Voelund - Comfort Lives In Belief",
+        "samples": 9256960,
+        "starts": [
+          1486111,
+          6710622,
+          1315919,
+          5116568,
+          2021673,
+          5573889,
+          5829548,
+          7652174,
+          7927826,
+          1171824
+        ],
+        "covered_samples": 3939719
+      },
+      {
+        "id": "train/Music Delta - Country2",
+        "samples": 761856,
+        "starts": [
+          150582,
+          111920,
+          40973,
+          7749,
+          234431,
+          39642,
+          120469,
+          153986,
+          39354,
+          223381
+        ],
+        "covered_samples": 754042
+      },
+      {
+        "id": "train/Fergessen - The Wind",
+        "samples": 8459264,
+        "starts": [
+          3281330,
+          322671,
+          3452017,
+          6041335,
+          1198394,
+          4813725,
+          3727518,
+          6427037,
+          5368401,
+          6868583
+        ],
+        "covered_samples": 4437596
+      },
+      {
+        "id": "train/The Long Wait - Back Home To Blue",
+        "samples": 11486208,
+        "starts": [
+          6448914,
+          3887254,
+          1745734,
+          7292693,
+          3071957,
+          10830841,
+          9903483,
+          9538175,
+          10534220,
+          4877986
+        ],
+        "covered_samples": 4880809
+      },
+      {
+        "id": "train/Triviul - Dorothy",
+        "samples": 8262656,
+        "starts": [
+          1360704,
+          2726953,
+          469137,
+          5000551,
+          2105485,
+          1527591,
+          7730784,
+          605427,
+          486211,
+          798781
+        ],
+        "covered_samples": 3660691
+      },
+      {
+        "id": "train/Leaf - Come Around",
+        "samples": 11659264,
+        "starts": [
+          3297499,
+          4097860,
+          9963661,
+          10715755,
+          8415931,
+          8183256,
+          6046889,
+          2729628,
+          3850812,
+          7351730
+        ],
+        "covered_samples": 4698603
+      },
+      {
+        "id": "train/Leaf - Summerghost",
+        "samples": 10222592,
+        "starts": [
+          8236454,
+          2590913,
+          2948305,
+          3300488,
+          6101381,
+          9143183,
+          9674343,
+          9324137,
+          250488,
+          3941994
+        ],
+        "covered_samples": 4404895
+      },
+      {
+        "id": "train/The So So Glos - Emergency",
+        "samples": 7356416,
+        "starts": [
+          5698863,
+          4608095,
+          1638337,
+          211780,
+          2317775,
+          249906,
+          6189390,
+          6194150,
+          6665208,
+          3239262
+        ],
+        "covered_samples": 4168631
+      },
+      {
+        "id": "train/Hollow Ground - Left Blind",
+        "samples": 7016448,
+        "starts": [
+          433004,
+          5372078,
+          4822657,
+          1168892,
+          531752,
+          5336468,
+          4756468,
+          1120984,
+          2848232,
+          3664310
+        ],
+        "covered_samples": 3399066
+      },
+      {
+        "id": "train/Creepoid - OldTree",
+        "samples": 13319168,
+        "starts": [
+          4256421,
+          1887209,
+          8887668,
+          9001265,
+          1342770,
+          9417186,
+          9455853,
+          3799272,
+          4110792,
+          6342924
+        ],
+        "covered_samples": 3662134
+      },
+      {
+        "id": "train/Faces On Film - Waiting For Ga",
+        "samples": 11353088,
+        "starts": [
+          9281722,
+          6646390,
+          2603642,
+          4795334,
+          2372710,
+          5047744,
+          10124318,
+          799033,
+          305941,
+          5630211
+        ],
+        "covered_samples": 4667954
+      },
+      {
+        "id": "train/ANiMAL - Clinic A",
+        "samples": 10489856,
+        "starts": [
+          3292774,
+          1489416,
+          7712764,
+          6419278,
+          8019556,
+          8410574,
+          3897342,
+          3338360,
+          5002431,
+          9284175
+        ],
+        "covered_samples": 4434916
+      },
+      {
+        "id": "train/Clara Berry And Wooldog - Waltz For My Victims",
+        "samples": 7728128,
+        "starts": [
+          1645136,
+          3089483,
+          4017968,
+          2769218,
+          2293308,
+          6729438,
+          1497416,
+          5130138,
+          1671131,
+          590135
+        ],
+        "covered_samples": 4134050
+      },
+      {
+        "id": "train/Swinging Steaks - Lost My Way",
+        "samples": 13669376,
+        "starts": [
+          4226752,
+          6514138,
+          11126444,
+          8080450,
+          7835123,
+          9958931,
+          9029557,
+          11280295,
+          3400,
+          8689713
+        ],
+        "covered_samples": 4430542
+      },
+      {
+        "id": "train/Music Delta - Rock",
+        "samples": 569344,
+        "starts": [
+          30314,
+          7109,
+          17887,
+          4936,
+          31621,
+          1508,
+          11669,
+          9151,
+          25964,
+          33674
+        ],
+        "covered_samples": 559526
+      },
+      {
+        "id": "train/Port St Willow - Stay Even",
+        "samples": 13972480,
+        "starts": [
+          12266400,
+          2031281,
+          2722580,
+          7074000,
+          8841296,
+          5722395,
+          3000348,
+          10060877,
+          3195131,
+          5836815
+        ],
+        "covered_samples": 4278491
+      },
+      {
+        "id": "train/Steven Clark - Bounty",
+        "samples": 12756992,
+        "starts": [
+          6936417,
+          7859104,
+          310189,
+          9628641,
+          11855546,
+          9199667,
+          11426846,
+          4690836,
+          8816236,
+          602619
+        ],
+        "covered_samples": 4697695
+      },
+      {
+        "id": "train/Jay Menon - Through My Eyes",
+        "samples": 11164672,
+        "starts": [
+          5550757,
+          8663361,
+          96140,
+          5855480,
+          4720573,
+          9862493,
+          676124,
+          7019342,
+          3018023,
+          3386522
+        ],
+        "covered_samples": 4892102
+      },
+      {
+        "id": "train/Alexander Ross - Velvet Curtain",
+        "samples": 22680576,
+        "starts": [
+          14093332,
+          8077020,
+          8069836,
+          11304553,
+          1801580,
+          12309322,
+          13699698,
+          15250685,
+          18346766,
+          21121535
+        ],
+        "covered_samples": 4619698
+      },
+      {
+        "id": "train/Young Griffo - Blood To Bone",
+        "samples": 11218944,
+        "starts": [
+          7721023,
+          5683418,
+          6141929,
+          10242915,
+          8574844,
+          5822980,
+          6627320,
+          4903925,
+          4600037,
+          2029514
+        ],
+        "covered_samples": 4411950
+      },
+      {
+        "id": "train/Strand Of Oaks - Spacestation",
+        "samples": 10745856,
+        "starts": [
+          3375375,
+          5898268,
+          2554589,
+          7972669,
+          8275437,
+          903660,
+          7402088,
+          8219029,
+          2172836,
+          1494285
+        ],
+        "covered_samples": 4376041
+      },
+      {
+        "id": "train/Music Delta - Gospel",
+        "samples": 3332096,
+        "starts": [
+          2119309,
+          461984,
+          142708,
+          2411027,
+          1779946,
+          1897730,
+          247614,
+          1675238,
+          631001,
+          2734339
+        ],
+        "covered_samples": 2602114
+      },
+      {
+        "id": "train/Angela Thomas Wade - Milk Cow Blues",
+        "samples": 9300992,
+        "starts": [
+          6562620,
+          7211670,
+          368637,
+          3430411,
+          3018349,
+          5790592,
+          6194415,
+          8610181,
+          8646931,
+          4713672
+        ],
+        "covered_samples": 4385000
+      },
+      {
+        "id": "train/Meaxic - Take A Step",
+        "samples": 12459008,
+        "starts": [
+          5242105,
+          11035681,
+          4856106,
+          1138542,
+          5989176,
+          179441,
+          6833809,
+          4581998,
+          9167326,
+          1161170
+        ],
+        "covered_samples": 4374255
+      },
+      {
+        "id": "train/James May - All Souls Moon",
+        "samples": 9739264,
+        "starts": [
+          3000940,
+          611703,
+          7428428,
+          4460478,
+          1978053,
+          5644876,
+          8091473,
+          9075624,
+          1869439,
+          3056320
+        ],
+        "covered_samples": 4382874
+      },
+      {
+        "id": "train/Alexander Ross - Goodbye Bolero",
+        "samples": 18461696,
+        "starts": [
+          14061737,
+          291125,
+          8160608,
+          110607,
+          10799840,
+          14116668,
+          17856283,
+          10703992,
+          13482698,
+          13662506
+        ],
+        "covered_samples": 3547136
+      },
+      {
+        "id": "train/Bill Chudziak - Children Of No-one",
+        "samples": 10175488,
+        "starts": [
+          5571601,
+          3615672,
+          2087613,
+          521962,
+          7210045,
+          222264,
+          4863952,
+          6579238,
+          4780590,
+          5348510
+        ],
+        "covered_samples": 4254869
+      },
+      {
+        "id": "train/Traffic Experiment - Once More (With Feeling)",
+        "samples": 19186688,
+        "starts": [
+          8358494,
+          5394077,
+          5967492,
+          16248225,
+          13348269,
+          17535304,
+          16877083,
+          12127050,
+          12197294,
+          17090915
+        ],
+        "covered_samples": 4419985
+      },
+      {
+        "id": "train/James May - On The Line",
+        "samples": 11293696,
+        "starts": [
+          4850844,
+          9282799,
+          10528295,
+          6495202,
+          5955479,
+          6032276,
+          4321291,
+          4740469,
+          6421486,
+          3961449
+        ],
+        "covered_samples": 3538558
+      },
+      {
+        "id": "train/Drumtracks - Ghost Bitch",
+        "samples": 15739904,
+        "starts": [
+          7424042,
+          7832830,
+          12065421,
+          885398,
+          6730073,
+          5001648,
+          2430867,
+          10394330,
+          14649540,
+          5283262
+        ],
+        "covered_samples": 4909282
+      },
+      {
+        "id": "train/Phre The Eon - Everybody's Falling Apart",
+        "samples": 9888768,
+        "starts": [
+          6248685,
+          1330804,
+          4084426,
+          6294906,
+          7410342,
+          3423108,
+          5849710,
+          2791052,
+          4419854,
+          3987907
+        ],
+        "covered_samples": 4041303
+      },
+      {
+        "id": "train/North To Alaska - All The Same",
+        "samples": 10935296,
+        "starts": [
+          7333381,
+          9793981,
+          1968326,
+          6566493,
+          31660,
+          8372393,
+          2529352,
+          2910945,
+          3700971,
+          6796007
+        ],
+        "covered_samples": 4829987
+      },
+      {
+        "id": "train/Clara Berry And Wooldog - Air Traffic",
+        "samples": 7641088,
+        "starts": [
+          5291317,
+          2029182,
+          6345259,
+          3937464,
+          2205531,
+          6825959,
+          399481,
+          4963650,
+          3419065,
+          2346215
+        ],
+        "covered_samples": 4280599
+      },
+      {
+        "id": "train/Dreamers Of The Ghetto - Heavy Love",
+        "samples": 13000704,
+        "starts": [
+          968532,
+          10824231,
+          4544280,
+          7126671,
+          2863543,
+          5617326,
+          10981047,
+          560190,
+          3956604,
+          8314672
+        ],
+        "covered_samples": 4784038
+      },
+      {
+        "id": "train/St Vitus - Word Gets Around",
+        "samples": 10893312,
+        "starts": [
+          158117,
+          7627867,
+          2852142,
+          6290721,
+          6971194,
+          1496653,
+          2610574,
+          5790875,
+          5728196,
+          9782126
+        ],
+        "covered_samples": 4495613
+      },
+      {
+        "id": "train/Aimee Norwich - Child",
+        "samples": 8338432,
+        "starts": [
+          7059519,
+          6175360,
+          7340596,
+          206775,
+          4494823,
+          5082505,
+          6905290,
+          1072518,
+          1287175,
+          6232532
+        ],
+        "covered_samples": 3871295
+      },
+      {
+        "id": "train/Patrick Talbot - Set Me Free",
+        "samples": 12779520,
+        "starts": [
+          7290347,
+          2519393,
+          3703439,
+          9368802,
+          6562753,
+          8568101,
+          6065982,
+          10982187,
+          7587740,
+          1063022
+        ],
+        "covered_samples": 5013044
+      },
+      {
+        "id": "train/Celestial Shore - Die For Us",
+        "samples": 12280832,
+        "starts": [
+          9133146,
+          1812920,
+          1143089,
+          9801228,
+          4020529,
+          5315451,
+          8751514,
+          10464834,
+          10554210,
+          4828311
+        ],
+        "covered_samples": 4649668
+      },
+      {
+        "id": "train/Matthew Entwistle - Dont You Ever",
+        "samples": 5019648,
+        "starts": [
+          3906963,
+          187659,
+          1893070,
+          3592566,
+          3413173,
+          945654,
+          4207479,
+          2290411,
+          86199,
+          2325246
+        ],
+        "covered_samples": 3437382
+      },
+      {
+        "id": "train/James May - Dont Let Go",
+        "samples": 10670080,
+        "starts": [
+          8226772,
+          5044454,
+          2532655,
+          2689917,
+          8711570,
+          7431287,
+          1520453,
+          6538990,
+          7096357,
+          9771723
+        ],
+        "covered_samples": 4668510
+      },
+      {
+        "id": "train/Music Delta - Reggae",
+        "samples": 761856,
+        "starts": [
+          111630,
+          183359,
+          97813,
+          24517,
+          56925,
+          161488,
+          230803,
+          29875,
+          161258,
+          172514
+        ],
+        "covered_samples": 733646
+      },
+      {
+        "id": "train/Giselle - Moss",
+        "samples": 8895488,
+        "starts": [
+          2563296,
+          1429590,
+          7498486,
+          3041901,
+          5185989,
+          4602911,
+          2066274,
+          2686933,
+          1598557,
+          136039
+        ],
+        "covered_samples": 4249111
+      },
+      {
+        "id": "train/Young Griffo - Facade",
+        "samples": 7402496,
+        "starts": [
+          5069613,
+          6857606,
+          2138227,
+          6420160,
+          3007961,
+          3116182,
+          1255981,
+          708774,
+          252076,
+          243274
+        ],
+        "covered_samples": 4175327
+      },
+      {
+        "id": "train/Leaf - Wicked",
+        "samples": 8407040,
+        "starts": [
+          2707288,
+          5555455,
+          3101721,
+          1039670,
+          1371,
+          4694249,
+          7452936,
+          3582279,
+          1045317,
+          83039
+        ],
+        "covered_samples": 4126466
+      },
+      {
+        "id": "train/Flags - 54",
+        "samples": 13898752,
+        "starts": [
+          8771413,
+          262943,
+          10090998,
+          9015984,
+          3924660,
+          8321061,
+          11498239,
+          11787795,
+          614482,
+          7722713
+        ],
+        "covered_samples": 4500178
+      },
+      {
+        "id": "train/ANiMAL - Rockshow",
+        "samples": 7299072,
+        "starts": [
+          1584550,
+          2837805,
+          6041330,
+          4075946,
+          837981,
+          4454623,
+          3850201,
+          4297700,
+          6250607,
+          1200715
+        ],
+        "covered_samples": 3669708
+      },
+      {
+        "id": "train/BigTroubles - Phantom",
+        "samples": 6471680,
+        "starts": [
+          591932,
+          3005101,
+          3059071,
+          2107575,
+          4693355,
+          1162691,
+          2623811,
+          1329627,
+          2940630,
+          1765697
+        ],
+        "covered_samples": 3478460
+      },
+      {
+        "id": "train/Hezekiah Jones - Borrowed Heart",
+        "samples": 10645504,
+        "starts": [
+          9262770,
+          1127239,
+          5716928,
+          9842586,
+          9902739,
+          4519321,
+          792918,
+          9001301,
+          8257015,
+          136552
+        ],
+        "covered_samples": 4347463
+      },
+      {
+        "id": "train/The Districts - Vermont",
+        "samples": 10053632,
+        "starts": [
+          3129467,
+          7132153,
+          3880597,
+          2284734,
+          8713479,
+          3357492,
+          6251714,
+          3166179,
+          2650561,
+          6101643
+        ],
+        "covered_samples": 3855374
+      },
+      {
+        "id": "train/Patrick Talbot - A Reason To Leave",
+        "samples": 11446272,
+        "starts": [
+          2641238,
+          2252499,
+          1535027,
+          6537657,
+          2822204,
+          2372966,
+          877544,
+          4869574,
+          10881794,
+          1666768
+        ],
+        "covered_samples": 3865606
+      },
+      {
+        "id": "train/Triviul - Angelsaint",
+        "samples": 10438656,
+        "starts": [
+          6221911,
+          4820718,
+          9771765,
+          653971,
+          1714229,
+          7212106,
+          9568657,
+          5173775,
+          3170007,
+          9809744
+        ],
+        "covered_samples": 4285664
+      },
+      {
+        "id": "train/Titanium - Haunted Age",
+        "samples": 10941440,
+        "starts": [
+          5122754,
+          4357703,
+          5909447,
+          10233185,
+          6392984,
+          4507347,
+          4399862,
+          8132717,
+          6975431,
+          4331856
+        ],
+        "covered_samples": 3823188
+      },
+      {
+        "id": "train/Cnoc An Tursa - Bannockburn",
+        "samples": 12988416,
+        "starts": [
+          360221,
+          805115,
+          3933290,
+          12300113,
+          3500890,
+          9406180,
+          11405694,
+          3542285,
+          2372445,
+          4121331
+        ],
+        "covered_samples": 4229495
+      },
+      {
+        "id": "train/Hop Along - Sister Cities",
+        "samples": 12490752,
+        "starts": [
+          6057628,
+          11178445,
+          2417560,
+          2068975,
+          2373076,
+          10445510,
+          6104928,
+          5658825,
+          11208463,
+          10272653
+        ],
+        "covered_samples": 3107003
+      },
+      {
+        "id": "train/Jokers, Jacks & Kings - Sea Of Leaves",
+        "samples": 8443904,
+        "starts": [
+          7089944,
+          6638078,
+          6320555,
+          2853039,
+          2189844,
+          3277737,
+          736654,
+          5632470,
+          4516269,
+          237536
+        ],
+        "covered_samples": 4857365
+      },
+      {
+        "id": "train/Invisible Familiars - Disturbing Wildlife",
+        "samples": 9635840,
+        "starts": [
+          522408,
+          7822431,
+          5396500,
+          3457085,
+          7173897,
+          8282428,
+          833876,
+          6263455,
+          5275699,
+          1252736
+        ],
+        "covered_samples": 4475286
+      },
+      {
+        "id": "train/Meaxic - You Listen",
+        "samples": 18192384,
+        "starts": [
+          4200098,
+          2755177,
+          12579197,
+          2139453,
+          4561723,
+          5171485,
+          2962384,
+          5213290,
+          13580240,
+          4501718
+        ],
+        "covered_samples": 3774797
+      },
+      {
+        "id": "train/Music Delta - Rockabilly",
+        "samples": 1135616,
+        "starts": [
+          518368,
+          587568,
+          465514,
+          290811,
+          397935,
+          104358,
+          566301,
+          282065,
+          49321,
+          516715
+        ],
+        "covered_samples": 1065607
+      }
+    ]
+  },
+  "curves": {
+    "official_converted": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.738553977881814,
+            "drums": 0.9255293805033806,
+            "bass": 8.252161890339504,
+            "other": 5.466042237139232
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.5783946221878846,
+            "drums": 0.48962246348385496,
+            "bass": 3.438101092199975,
+            "other": -1.684101448920953
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 9.319146647632454,
+            "drums": 0.19300872712889627,
+            "bass": 8.545701617852801,
+            "other": 0.2705926677602547
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.567456574352052,
+            "drums": 0.5631655873128729,
+            "bass": -0.33454589444283145,
+            "other": 5.925413364085706
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.121579876674328,
+            "drums": 10.451892624310686,
+            "bass": 1.1725938810126575,
+            "other": 4.668242863474731
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.718930350079374,
+            "drums": 7.894214978078066,
+            "bass": 4.061724268137147,
+            "other": 3.380213556197598
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.149244829681699,
+            "drums": 6.18126145022112,
+            "bass": 5.1211987575149,
+            "other": 4.498016056877291
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.813561880634536,
+            "drums": 10.946651493988186,
+            "bass": -5.021020071092651,
+            "other": 2.1579347332884007
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.818079842152211,
+            "drums": 3.1368524513518286,
+            "bass": -1.2032588900922156,
+            "other": 1.7427852860675277
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.881458714276189,
+            "drums": 5.347835621156713,
+            "bass": 2.3770891668395917,
+            "other": 2.8055375083878333
+          }
+        }
+      ],
+      "seconds": 520.0438321369002,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr1e5_step90": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.743160083577594,
+            "drums": 0.8784612911878836,
+            "bass": 8.258948663443459,
+            "other": 5.48050927178961
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.535422029326492,
+            "drums": 0.1376608483115397,
+            "bass": 3.698914681310307,
+            "other": -1.4568826876382215
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 9.114834645917146,
+            "drums": 0.21071854609261664,
+            "bass": 8.445757725989907,
+            "other": 0.08118335556229797
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.631041090748768,
+            "drums": 0.3756631416579991,
+            "bass": -1.2435929831737111,
+            "other": 5.941162441568812
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.254541724043642,
+            "drums": 10.443451981384229,
+            "bass": 1.10289487921773,
+            "other": 4.605057185787805
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.691640993787275,
+            "drums": 7.700802028167702,
+            "bass": 4.168703758197168,
+            "other": 3.627675295623272
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.141351439440109,
+            "drums": 6.176584718951529,
+            "bass": 5.130216156615818,
+            "other": 4.555240515383007
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.727011315980697,
+            "drums": 10.93503281062673,
+            "bass": -5.417344525349055,
+            "other": 2.0049978049116794
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.731503927561658,
+            "drums": 3.052459674754284,
+            "bass": -1.1133583910986218,
+            "other": 1.6440610519231091
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.807331538283727,
+            "drums": 5.399922690723179,
+            "bass": 2.3248957321183346,
+            "other": 2.752295811114587
+          }
+        }
+      ],
+      "seconds": 10.844696091022342,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr1e5_step450": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.736918343770017,
+            "drums": 0.7151983958709657,
+            "bass": 8.197906079619937,
+            "other": 5.417827278303506
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.531512086094351,
+            "drums": 0.3085073957362278,
+            "bass": 4.496350724323147,
+            "other": -1.0662031649272343
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 8.781819999477685,
+            "drums": 0.18129167647271874,
+            "bass": 8.583237599579196,
+            "other": 0.14729161388593873
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.544493887083972,
+            "drums": 0.4260148741343215,
+            "bass": -2.257105873514679,
+            "other": 5.581783122288666
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.691213923617229,
+            "drums": 10.510351261605745,
+            "bass": 0.9914540804274253,
+            "other": 4.592890652099303
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.7173328965623735,
+            "drums": 7.124739925822453,
+            "bass": 4.104058098411476,
+            "other": 3.7423321902116435
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.074219880240838,
+            "drums": 6.216347843971096,
+            "bass": 5.331196465234571,
+            "other": 4.69191458069229
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.653046046536129,
+            "drums": 10.8813279755697,
+            "bass": -5.5845133813012175,
+            "other": 1.920509636851658
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.493509587723174,
+            "drums": 2.6609677256060724,
+            "bass": -0.8958628078979181,
+            "other": 1.5595962859734391
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.772105206926947,
+            "drums": 5.44082189130032,
+            "bass": 2.135769805277467,
+            "other": 2.499030350818304
+          }
+        }
+      ],
+      "seconds": 10.89653479505796,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr1e5_step900": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.709015944200189,
+            "drums": 0.5657717058259302,
+            "bass": 8.019108220872766,
+            "other": 5.226204035644027
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.4379247051148902,
+            "drums": 0.47115930825235963,
+            "bass": 4.707146909142783,
+            "other": -0.8798717741105377
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 8.344118248144252,
+            "drums": 0.05814139667352645,
+            "bass": 8.541222939610764,
+            "other": 0.00502291225361802
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.48724333675155,
+            "drums": 0.6817773461899761,
+            "bass": -2.284673130243677,
+            "other": 5.370885980834767
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.738627777456769,
+            "drums": 10.494359382577123,
+            "bass": 1.0260162684830343,
+            "other": 4.686067983694656
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.634213955288667,
+            "drums": 7.0828021490508615,
+            "bass": 4.172944495296196,
+            "other": 3.638056202912361
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.061708567366695,
+            "drums": 6.169899292269184,
+            "bass": 5.293105080750037,
+            "other": 4.6779143089595046
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.670855072713868,
+            "drums": 10.907863551859522,
+            "bass": -5.632235310491732,
+            "other": 1.9479175844283723
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.469380652627397,
+            "drums": 2.4622350297433875,
+            "bass": -0.7272793792305308,
+            "other": 1.6606991146323924
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.81490663765426,
+            "drums": 5.414620131568203,
+            "bass": 2.12637469486326,
+            "other": 2.522974639831779
+          }
+        }
+      ],
+      "seconds": 515.5151662529679,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr3e6_step90": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.74099136672015,
+            "drums": 0.9185656268269409,
+            "bass": 8.260620805819235,
+            "other": 5.475283232467446
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.57764077331695,
+            "drums": 0.4125617887174231,
+            "bass": 3.6291639614183966,
+            "other": -1.5957468340597436
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 9.227957100303001,
+            "drums": 0.20380768960966214,
+            "bass": 8.505610547459035,
+            "other": 0.1899797317610883
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.60907589112929,
+            "drums": 0.47963962071507804,
+            "bass": -0.5455762284758475,
+            "other": 5.949036494685429
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.132656373145343,
+            "drums": 10.450211495589432,
+            "bass": 1.155893690305795,
+            "other": 4.642877906980151
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.693923956169984,
+            "drums": 7.852809240564201,
+            "bass": 4.1223751631010295,
+            "other": 3.4841987428351273
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.166152329652276,
+            "drums": 6.171914442392147,
+            "bass": 5.124864636083663,
+            "other": 4.523269601207133
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.80188970695704,
+            "drums": 10.949458464422019,
+            "bass": -5.1362761130487575,
+            "other": 2.1183752146949435
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.815635455180256,
+            "drums": 3.1225223215619726,
+            "bass": -1.1909174171596624,
+            "other": 1.69831196365373
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.872424720414285,
+            "drums": 5.36519154708375,
+            "bass": 2.3712532124360592,
+            "other": 2.8077789812904186
+          }
+        }
+      ],
+      "seconds": 10.835647783940658,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr3e6_step450": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.740517173070822,
+            "drums": 0.8595460316520075,
+            "bass": 8.247074703548446,
+            "other": 5.486413083592793
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.561910511619233,
+            "drums": 0.0954865621027657,
+            "bass": 3.7593527697761524,
+            "other": -1.466111576651632
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 9.094415239661299,
+            "drums": 0.22262921360230228,
+            "bass": 8.513368053173751,
+            "other": 0.15257983460768682
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.614712223280481,
+            "drums": 0.48791200910514265,
+            "bass": -1.3590428871604152,
+            "other": 5.943579903519537
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.37855306080752,
+            "drums": 10.44114560603859,
+            "bass": 1.0770604667745667,
+            "other": 4.598552987637938
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.738926337547104,
+            "drums": 7.624776731839021,
+            "bass": 4.2919899845261344,
+            "other": 3.780398165190219
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.1217864135193665,
+            "drums": 6.201772084332219,
+            "bass": 5.204243409697568,
+            "other": 4.617507561767475
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.7133331177114695,
+            "drums": 10.925997535837391,
+            "bass": -5.5048853681014265,
+            "other": 1.9885687825160505
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.6485425908671605,
+            "drums": 3.0050566388227056,
+            "bass": -1.091932405395763,
+            "other": 1.566104112327444
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.773262793704196,
+            "drums": 5.473643585529797,
+            "bass": 2.2873454591550106,
+            "other": 2.7086882586047807
+          }
+        }
+      ],
+      "seconds": 10.828801576979458,
+      "peak_allocated_bytes": 7435576320
+    },
+    "lr3e6_step900": {
+      "tracks": [
+        {
+          "id": "train/Auctioneer - Our Future Faces",
+          "samples": 9159680,
+          "scores": {
+            "vocals": 7.745427134620959,
+            "drums": 0.7350890683838458,
+            "bass": 8.17813067972526,
+            "other": 5.43469464948857
+          }
+        },
+        {
+          "id": "train/Chris Durban - Celebrate",
+          "samples": 13300736,
+          "scores": {
+            "vocals": 3.519684899348304,
+            "drums": 0.08771724715531018,
+            "bass": 3.9112468527956867,
+            "other": -1.2182253164410237
+          }
+        },
+        {
+          "id": "train/Clara Berry And Wooldog - Stella",
+          "samples": 8624128,
+          "scores": {
+            "vocals": 8.874122019416594,
+            "drums": 0.1798689691050104,
+            "bass": 8.480822122228604,
+            "other": 0.09047838742685427
+          }
+        },
+        {
+          "id": "train/James May - If You Say",
+          "samples": 11392000,
+          "scores": {
+            "vocals": 8.63555232635313,
+            "drums": 0.5672543678419816,
+            "bass": -1.6834516352182836,
+            "other": 5.84358020053604
+          }
+        },
+        {
+          "id": "train/Johnny Lokke - Promises & Lies",
+          "samples": 12604416,
+          "scores": {
+            "vocals": 7.624698909308536,
+            "drums": 10.4880608693543,
+            "bass": 1.0733629106038076,
+            "other": 4.701672831105276
+          }
+        },
+        {
+          "id": "train/Music Delta - Beatles",
+          "samples": 1595392,
+          "scores": {
+            "vocals": 7.67008746640366,
+            "drums": 7.414113286232043,
+            "bass": 4.185845103907798,
+            "other": 3.7349204778015155
+          }
+        },
+        {
+          "id": "train/Music Delta - Britpop",
+          "samples": 1613824,
+          "scores": {
+            "vocals": 7.120741462839036,
+            "drums": 6.20588537171332,
+            "bass": 5.2180459466088625,
+            "other": 4.645559384565041
+          }
+        },
+        {
+          "id": "train/Music Delta - Grunge",
+          "samples": 1837056,
+          "scores": {
+            "vocals": 6.714117142687516,
+            "drums": 10.930053956216,
+            "bass": -5.73197961372739,
+            "other": 1.9619201299530318
+          }
+        },
+        {
+          "id": "train/Spike Mullings - Mike's Sulking",
+          "samples": 11320320,
+          "scores": {
+            "vocals": 4.625629440348618,
+            "drums": 2.831636124551836,
+            "bass": -1.0248075023848198,
+            "other": 1.596588008957207
+          }
+        },
+        {
+          "id": "train/The Wrong'Uns - Rothko",
+          "samples": 8914944,
+          "scores": {
+            "vocals": 9.789154130791031,
+            "drums": 5.470048884950138,
+            "bass": 2.238706031689691,
+            "other": 2.6668672315888036
+          }
+        }
+      ],
+      "seconds": 509.9850911189569,
+      "peak_allocated_bytes": 7435576320
+    }
+  },
+  "summary": {
+    "lr1e5_step900": {
+      "track_count": 10,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.446344907084608,
+              "mean": 7.135616190334981
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.351950773413941,
+              "mean": 6.847054874922932
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.08674401096676232,
+              "mean": -0.2885613154120494,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.06394153782998035,
+                "train/Chris Durban - Celebrate": -0.10954648410354428,
+                "train/Clara Berry And Wooldog - Stella": -1.885718874286777,
+                "train/James May - If You Say": 0.1436305637389097,
+                "train/Johnny Lokke - Promises & Lies": 0.04713593042964348,
+                "train/Music Delta - Beatles": 0.02894424860002509,
+                "train/Music Delta - Britpop": -0.038779391330376,
+                "train/Music Delta - Grunge": -0.19568715996672825,
+                "train/Spike Mullings - Mike's Sulking": -0.6363360963032543,
+                "train/The Wrong'Uns - Rothko": -0.17531435306841203
+              }
+            }
+          },
+          "drums": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 5.587254218977341,
+              "mean": 6.068724996077529
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 5.436092139454852,
+              "mean": 5.953556917626804
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.12438528686459227,
+              "mean": -0.11516807845072588,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.226763674976854,
+                "train/Chris Durban - Celebrate": -0.17483874704381597,
+                "train/Clara Berry And Wooldog - Stella": -0.21396758586623021,
+                "train/James May - If You Say": -0.07393182668536857,
+                "train/Johnny Lokke - Promises & Lies": 0.02547475013042977,
+                "train/Music Delta - Beatles": -0.3591847090515259,
+                "train/Music Delta - Britpop": 0.16965137134538288,
+                "train/Music Delta - Grunge": 0.004203796685702699,
+                "train/Spike Mullings - Mike's Sulking": -0.45141670761186425,
+                "train/The Wrong'Uns - Rothko": 0.1490925485668848
+              }
+            }
+          },
+          "bass": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.645184196057619,
+              "mean": 4.633951643735221
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.885128555243505,
+              "mean": 4.488944596589398
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.15872138610757958,
+              "mean": -0.14500704714582394,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.07043070221644321,
+                "train/Chris Durban - Celebrate": 1.0225459763715463,
+                "train/Clara Berry And Wooldog - Stella": -0.16346119809435855,
+                "train/James May - If You Say": -1.2917234137618427,
+                "train/Johnny Lokke - Promises & Lies": -0.1539815741208006,
+                "train/Music Delta - Beatles": 0.22766957809996224,
+                "train/Music Delta - Britpop": 0.23657457175809782,
+                "train/Music Delta - Grunge": -0.2808726047479225,
+                "train/Spike Mullings - Mike's Sulking": -0.5614869044778386,
+                "train/The Wrong'Uns - Rothko": -0.4149042002686394
+              }
+            }
+          },
+          "other": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.382051771235727,
+              "mean": 4.675249021652222
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.603653022254599,
+              "mean": 4.5990748397815615
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.08878651377741331,
+              "mean": -0.07617418187066038,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.4258630896054889,
+                "train/Chris Durban - Celebrate": 0.6761335375628927,
+                "train/Clara Berry And Wooldog - Stella": -0.589698898364623,
+                "train/James May - If You Say": -0.728839986912396,
+                "train/Johnny Lokke - Promises & Lies": -0.02525479306161671,
+                "train/Music Delta - Beatles": 0.5955207365309523,
+                "train/Music Delta - Britpop": 0.10427838476732276,
+                "train/Music Delta - Grunge": -0.3478982028894251,
+                "train/Spike Mullings - Mike's Sulking": 0.132198727758988,
+                "train/The Wrong'Uns - Rothko": -0.15231823449320991
+              }
+            }
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.434087589880536,
+              "mean": 7.270640731555254
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.671614949744428,
+              "mean": 7.136799489731854
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.08612632855285529,
+              "mean": -0.13384124182340035,
+              "better": 1,
+              "worse": 9,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.02953803368162511,
+                "train/Chris Durban - Celebrate": -0.1404699170729944,
+                "train/Clara Berry And Wooldog - Stella": -0.9750283994882025,
+                "train/James May - If You Say": -0.08021323760050159,
+                "train/Johnny Lokke - Promises & Lies": 0.617047900782441,
+                "train/Music Delta - Beatles": -0.08471639479070703,
+                "train/Music Delta - Britpop": -0.08753626231500355,
+                "train/Music Delta - Grunge": -0.1427068079206677,
+                "train/Spike Mullings - Mike's Sulking": -0.3486991895248144,
+                "train/The Wrong'Uns - Rothko": -0.06655207662192808
+              }
+            }
+          },
+          "drums": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.242344036254271,
+              "mean": 4.61300347775356
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.9384275806557953,
+              "mean": 4.430862929401007
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.028625548680079715,
+              "mean": -0.1821405483525531,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.35975767467745046,
+                "train/Chris Durban - Celebrate": -0.018463155231495332,
+                "train/Clara Berry And Wooldog - Stella": -0.13486733045536983,
+                "train/James May - If You Say": 0.11861175887710318,
+                "train/Johnny Lokke - Promises & Lies": 0.04246675826643731,
+                "train/Music Delta - Beatles": -0.8114128290272049,
+                "train/Music Delta - Britpop": -0.01136215795193607,
+                "train/Music Delta - Grunge": -0.0387879421286641,
+                "train/Spike Mullings - Mike's Sulking": -0.6746174216084411,
+                "train/The Wrong'Uns - Rothko": 0.06678451041149014
+              }
+            }
+          },
+          "bass": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 2.907595129519783,
+              "mean": 2.640974581826888
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.1496595950797284,
+              "mean": 2.5241730789052896
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.0755281453858303,
+              "mean": -0.11680150292159786,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.233053669466738,
+                "train/Chris Durban - Celebrate": 1.2690458169428083,
+                "train/Clara Berry And Wooldog - Stella": -0.004478678242037404,
+                "train/James May - If You Say": -1.9501272358008455,
+                "train/Johnny Lokke - Promises & Lies": -0.1465776125296232,
+                "train/Music Delta - Beatles": 0.11122022715904922,
+                "train/Music Delta - Britpop": 0.17190632323513633,
+                "train/Music Delta - Grunge": -0.6112152393990815,
+                "train/Spike Mullings - Mike's Sulking": 0.4759795108616849,
+                "train/The Wrong'Uns - Rothko": -0.2507144719763317
+              }
+            }
+          },
+          "other": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.092875532292716,
+              "mean": 2.9230676824357618
+            },
+            "lr1e5_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.08051542137207,
+              "mean": 2.8855870989080943
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.14605166014758186,
+              "mean": -0.03748058352766823,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.2398382014952043,
+                "train/Chris Durban - Celebrate": 0.8042296748104152,
+                "train/Clara Berry And Wooldog - Stella": -0.2655697555066367,
+                "train/James May - If You Say": -0.5545273832509396,
+                "train/Johnny Lokke - Promises & Lies": 0.017825120219924884,
+                "train/Music Delta - Beatles": 0.25784264671476276,
+                "train/Music Delta - Britpop": 0.17989825208221344,
+                "train/Music Delta - Grunge": -0.21001714886002842,
+                "train/Spike Mullings - Mike's Sulking": -0.0820861714351353,
+                "train/The Wrong'Uns - Rothko": -0.28256286855605417
+              }
+            }
+          }
+        }
+      },
+      "frame_coverage": {
+        "official_converted": {
+          "vocals": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "drums": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "bass": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "other": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          }
+        },
+        "lr1e5_step900": {
+          "vocals": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "drums": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "bass": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "other": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          }
+        }
+      },
+      "common_finite_frame_sdr_db": {
+        "vocals": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 7.446344907084608,
+            "mean": 7.135616190334981
+          },
+          "lr1e5_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 7.351950773413941,
+            "mean": 6.847054874922932
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.08674401096676232,
+            "mean": -0.2885613154120494
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "drums": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 5.587254218977341,
+            "mean": 6.068724996077529
+          },
+          "lr1e5_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 5.436092139454852,
+            "mean": 5.953556917626804
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.12438528686459227,
+            "mean": -0.11516807845072588
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "bass": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.645184196057619,
+            "mean": 4.633951643735221
+          },
+          "lr1e5_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.885128555243505,
+            "mean": 4.488944596589398
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.15872138610757958,
+            "mean": -0.14500704714582394
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "other": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.382051771235727,
+            "mean": 4.675249021652222
+          },
+          "lr1e5_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.603653022254599,
+            "mean": 4.5990748397815615
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.08878651377741331,
+            "mean": -0.07617418187066038
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        }
+      }
+    },
+    "lr3e6_step900": {
+      "track_count": 10,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.446344907084608,
+              "mean": 7.135616190334981
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.360566275054019,
+              "mean": 6.968547998501911
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.09486212010730588,
+              "mean": -0.16706819183307015,
+              "better": 2,
+              "worse": 8,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.08381295457283411,
+                "train/Chris Durban - Celebrate": -0.03596855600585336,
+                "train/Clara Berry And Wooldog - Stella": -0.8502119039671836,
+                "train/James May - If You Say": 0.1352172009511179,
+                "train/Johnny Lokke - Promises & Lies": 0.015372940493971754,
+                "train/Music Delta - Beatles": -0.1450806834948617,
+                "train/Music Delta - Britpop": -0.0040094272736084235,
+                "train/Music Delta - Grunge": -0.10591128564177765,
+                "train/Spike Mullings - Mike's Sulking": -0.4385733540201384,
+                "train/The Wrong'Uns - Rothko": -0.15770389479953373
+              }
+            }
+          },
+          "drums": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 5.587254218977341,
+              "mean": 6.068724996077529
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 5.480979746359678,
+              "mean": 5.97706611388269
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.034573922656835565,
+              "mean": -0.09165888219484089,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.16642228411331494,
+                "train/Chris Durban - Celebrate": -0.39599499256725634,
+                "train/Clara Berry And Wooldog - Stella": 0.021027482622867133,
+                "train/James May - If You Say": -0.03035958269627459,
+                "train/Johnny Lokke - Promises & Lies": 0.0022165170859533845,
+                "train/Music Delta - Beatles": -0.2750527066252513,
+                "train/Music Delta - Britpop": 0.17933395219759074,
+                "train/Music Delta - Grunge": -0.03878826261739654,
+                "train/Spike Mullings - Mike's Sulking": -0.3674558167946218,
+                "train/The Wrong'Uns - Rothko": 0.1549068715592954
+              }
+            }
+          },
+          "bass": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.645184196057619,
+              "mean": 4.633951643735221
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.792416030822874,
+              "mean": 4.494677070168259
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.18269981608048447,
+              "mean": -0.1392745735669633,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.02961672951948202,
+                "train/Chris Durban - Celebrate": 0.672548983200481,
+                "train/Clara Berry And Wooldog - Stella": -0.17082622159163918,
+                "train/James May - If You Say": -1.0370988659190195,
+                "train/Johnny Lokke - Promises & Lies": -0.19457341056932975,
+                "train/Music Delta - Beatles": 0.25642627767970705,
+                "train/Music Delta - Britpop": 0.15154300765592055,
+                "train/Music Delta - Grunge": -0.2595015988444509,
+                "train/Spike Mullings - Mike's Sulking": -0.4035618640918497,
+                "train/The Wrong'Uns - Rothko": -0.37808531366997045
+              }
+            }
+          },
+          "other": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.382051771235727,
+              "mean": 4.675249021652222
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.632502250910326,
+              "mean": 4.675976210698033
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.05316378815049849,
+              "mean": 0.0007271890458104613,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.10795692416504821,
+                "train/Chris Durban - Celebrate": 0.4990302317357027,
+                "train/Clara Berry And Wooldog - Stella": -0.3143230849387284,
+                "train/James May - If You Say": -0.2715495866808153,
+                "train/Johnny Lokke - Promises & Lies": -0.06340894228015426,
+                "train/Music Delta - Beatles": 0.513923533908466,
+                "train/Music Delta - Britpop": 0.09243014605590272,
+                "train/Music Delta - Grunge": -0.2849322745971099,
+                "train/Spike Mullings - Mike's Sulking": -0.04291863402084273,
+                "train/The Wrong'Uns - Rothko": -0.01302257455926803
+              }
+            }
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.434087589880536,
+              "mean": 7.270640731555254
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 7.647393187856098,
+              "mean": 7.231921493211739
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.05377630325764704,
+              "mean": -0.03871923834351563,
+              "better": 3,
+              "worse": 7,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": 0.006873156739144903,
+                "train/Chris Durban - Celebrate": -0.058709722839580536,
+                "train/Clara Berry And Wooldog - Stella": -0.44502462821585986,
+                "train/James May - If You Say": 0.06809575200107787,
+                "train/Johnny Lokke - Promises & Lies": 0.5031190326342081,
+                "train/Music Delta - Beatles": -0.048842883675713544,
+                "train/Music Delta - Britpop": -0.028503366842662636,
+                "train/Music Delta - Grunge": -0.09944473794702002,
+                "train/Spike Mullings - Mike's Sulking": -0.19245040180359307,
+                "train/The Wrong'Uns - Rothko": -0.09230458348515747
+              }
+            }
+          },
+          "drums": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.242344036254271,
+              "mean": 4.61300347775356
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 4.150842504750987,
+              "mean": 4.4909728145503784
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.01486864789803631,
+              "mean": -0.12203066320318201,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.19044031211953483,
+                "train/Chris Durban - Celebrate": -0.4019052163285448,
+                "train/Clara Berry And Wooldog - Stella": -0.013139758023885867,
+                "train/James May - If You Say": 0.00408878052910866,
+                "train/Johnny Lokke - Promises & Lies": 0.03616824504361382,
+                "train/Music Delta - Beatles": -0.48010169184602347,
+                "train/Music Delta - Britpop": 0.02462392149219994,
+                "train/Music Delta - Grunge": -0.016597537772186755,
+                "train/Spike Mullings - Mike's Sulking": -0.30521632679999255,
+                "train/The Wrong'Uns - Rothko": 0.12221326379342567
+              }
+            }
+          },
+          "bass": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 2.907595129519783,
+              "mean": 2.640974581826888
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.074976442242689,
+              "mean": 2.4845920896229217
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.06945535311922058,
+              "mean": -0.15638249220396613,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.074031210614244,
+                "train/Chris Durban - Celebrate": 0.4731457605957119,
+                "train/Clara Berry And Wooldog - Stella": -0.06487949562419715,
+                "train/James May - If You Say": -1.3489057407754521,
+                "train/Johnny Lokke - Promises & Lies": -0.09923097040884987,
+                "train/Music Delta - Beatles": 0.12412083577065136,
+                "train/Music Delta - Britpop": 0.09684718909396217,
+                "train/Music Delta - Grunge": -0.7109595426347388,
+                "train/Spike Mullings - Mike's Sulking": 0.17845138770739588,
+                "train/The Wrong'Uns - Rothko": -0.13838313514990075
+              }
+            }
+          },
+          "other": {
+            "official_converted": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.092875532292716,
+              "mean": 2.9230676824357618
+            },
+            "lr3e6_step900": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": 3.2008938546951597,
+              "mean": 2.9458055984981315
+            },
+            "paired_delta": {
+              "total": 10,
+              "finite": 10,
+              "undefined": 0,
+              "positive_infinity": 0,
+              "negative_infinity": 0,
+              "median": -0.05659037560016378,
+              "mean": 0.022737916062369346,
+              "better": 4,
+              "worse": 6,
+              "equal": 0,
+              "per_track": {
+                "train/Auctioneer - Our Future Faces": -0.0313475876506617,
+                "train/Chris Durban - Celebrate": 0.4658761324799292,
+                "train/Clara Berry And Wooldog - Stella": -0.18011428033340043,
+                "train/James May - If You Say": -0.08183316354966585,
+                "train/Johnny Lokke - Promises & Lies": 0.03342996763054451,
+                "train/Music Delta - Beatles": 0.35470692160391737,
+                "train/Music Delta - Britpop": 0.14754332768774958,
+                "train/Music Delta - Grunge": -0.1960146033353689,
+                "train/Spike Mullings - Mike's Sulking": -0.1461972771103206,
+                "train/The Wrong'Uns - Rothko": -0.13867027679902977
+              }
+            }
+          }
+        }
+      },
+      "frame_coverage": {
+        "official_converted": {
+          "vocals": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "drums": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "bass": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "other": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          }
+        },
+        "lr3e6_step900": {
+          "vocals": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "drums": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "bass": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          },
+          "other": {
+            "sdr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "isr": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sir": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            },
+            "sar": {
+              "total": 1817,
+              "finite": 1351,
+              "undefined": 466,
+              "positive_infinity": 0,
+              "negative_infinity": 0
+            }
+          }
+        }
+      },
+      "common_finite_frame_sdr_db": {
+        "vocals": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 7.446344907084608,
+            "mean": 7.135616190334981
+          },
+          "lr3e6_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 7.360566275054019,
+            "mean": 6.968547998501911
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.09486212010730588,
+            "mean": -0.16706819183307015
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "drums": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 5.587254218977341,
+            "mean": 6.068724996077529
+          },
+          "lr3e6_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 5.480979746359678,
+            "mean": 5.97706611388269
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.034573922656835565,
+            "mean": -0.09165888219484089
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "bass": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.645184196057619,
+            "mean": 4.633951643735221
+          },
+          "lr3e6_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.792416030822874,
+            "mean": 4.494677070168259
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.18269981608048447,
+            "mean": -0.1392745735669633
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        },
+        "other": {
+          "official_converted": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.382051771235727,
+            "mean": 4.675249021652222
+          },
+          "lr3e6_step900": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": 4.632502250910326,
+            "mean": 4.675976210698033
+          },
+          "paired_delta": {
+            "total": 10,
+            "finite": 10,
+            "undefined": 0,
+            "positive_infinity": 0,
+            "negative_infinity": 0,
+            "median": -0.05316378815049849,
+            "mean": 0.0007271890458104613
+          },
+          "per_song_coverage": {
+            "train/Auctioneer - Our Future Faces": {
+              "total": 207,
+              "common_finite": 207
+            },
+            "train/Chris Durban - Celebrate": {
+              "total": 301,
+              "common_finite": 204
+            },
+            "train/Clara Berry And Wooldog - Stella": {
+              "total": 195,
+              "common_finite": 195
+            },
+            "train/James May - If You Say": {
+              "total": 258,
+              "common_finite": 155
+            },
+            "train/Johnny Lokke - Promises & Lies": {
+              "total": 285,
+              "common_finite": 196
+            },
+            "train/Music Delta - Beatles": {
+              "total": 36,
+              "common_finite": 35
+            },
+            "train/Music Delta - Britpop": {
+              "total": 36,
+              "common_finite": 36
+            },
+            "train/Music Delta - Grunge": {
+              "total": 41,
+              "common_finite": 39
+            },
+            "train/Spike Mullings - Mike's Sulking": {
+              "total": 256,
+              "common_finite": 131
+            },
+            "train/The Wrong'Uns - Rothko": {
+              "total": 202,
+              "common_finite": 153
+            }
+          }
+        }
+      }
+    }
+  },
+  "budget_projections": [
+    {
+      "remaining_seconds": 2210.906592607498,
+      "projected_seconds": 1951.603210579924,
+      "accepted": true
+    }
+  ],
+  "matched_rng": true,
+  "weights_unchanged": true,
+  "complete": true,
+  "seconds": 2365.582624427974,
+  "listening": [
+    {
+      "id": "train/Auctioneer - Our Future Faces",
+      "samples": 352800,
+      "start_sample": 4403440,
+      "gain": 0.9963965482361961,
+      "files": [
+        "sample-1/lr1e5_step900-bass.wav",
+        "sample-1/lr1e5_step900-drums.wav",
+        "sample-1/lr1e5_step900-other.wav",
+        "sample-1/lr1e5_step900-vocals.wav",
+        "sample-1/lr3e6_step900-bass.wav",
+        "sample-1/lr3e6_step900-drums.wav",
+        "sample-1/lr3e6_step900-other.wav",
+        "sample-1/lr3e6_step900-vocals.wav",
+        "sample-1/official_converted-bass.wav",
+        "sample-1/official_converted-drums.wav",
+        "sample-1/official_converted-other.wav",
+        "sample-1/official_converted-vocals.wav",
+        "sample-1/reference-bass.wav",
+        "sample-1/reference-drums.wav",
+        "sample-1/reference-mixture.wav",
+        "sample-1/reference-other.wav",
+        "sample-1/reference-vocals.wav"
+      ]
+    },
+    {
+      "id": "train/Chris Durban - Celebrate",
+      "samples": 352800,
+      "start_sample": 6473968,
+      "gain": 1.0,
+      "files": [
+        "sample-2/lr1e5_step900-bass.wav",
+        "sample-2/lr1e5_step900-drums.wav",
+        "sample-2/lr1e5_step900-other.wav",
+        "sample-2/lr1e5_step900-vocals.wav",
+        "sample-2/lr3e6_step900-bass.wav",
+        "sample-2/lr3e6_step900-drums.wav",
+        "sample-2/lr3e6_step900-other.wav",
+        "sample-2/lr3e6_step900-vocals.wav",
+        "sample-2/official_converted-bass.wav",
+        "sample-2/official_converted-drums.wav",
+        "sample-2/official_converted-other.wav",
+        "sample-2/official_converted-vocals.wav",
+        "sample-2/reference-bass.wav",
+        "sample-2/reference-drums.wav",
+        "sample-2/reference-mixture.wav",
+        "sample-2/reference-other.wav",
+        "sample-2/reference-vocals.wav"
+      ]
+    }
+  ],
+  "bundle": {
+    "bytes": 102318080,
+    "sha256": "f20f9cf9fca172131b8d00d10e5bc3400b0f25849ecfcc183ea9f994ba7b9a27",
+    "files": {
+      "LISTENING.txt": {
+        "bytes": 492,
+        "sha256": "5832b044e322bf8d30090746ad6d025e10e6c94b50001a96e4be8cc9762cbf2a"
+      },
+      "report.json": {
+        "bytes": 3756983,
+        "sha256": "34cf8a850fe5a9e79588eeb1c3a9ae5d1bd59636f5be3a5631f6c4528efa773e"
+      },
+      "sample-1/lr1e5_step900-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "11ee5f3ae257c080ea9b4876601c700a9eace121f757cb1f6cb307c8895a7d17"
+      },
+      "sample-1/lr1e5_step900-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "1288696bc8fc0aa859eca3f17af9ba5825f21fefb31fe1fcd32685924fc001ea"
+      },
+      "sample-1/lr1e5_step900-other.wav": {
+        "bytes": 2822488,
+        "sha256": "3aaf43b897907a186f94451135f6ba4a7757b45720901a3f9ad51c0053fec0ae"
+      },
+      "sample-1/lr1e5_step900-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "9784651ef6e6b087a4b678fb79751e9cd3c07a34576b55a669c164fcda001b9f"
+      },
+      "sample-1/lr3e6_step900-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "148d79fd02096440eed82f5e4931f3fd13900572d9ad8dec96881a323794449b"
+      },
+      "sample-1/lr3e6_step900-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "14002f6abdf7548335e0b9443df36d0769d97e8f987a286bdca2a33a55b3b1be"
+      },
+      "sample-1/lr3e6_step900-other.wav": {
+        "bytes": 2822488,
+        "sha256": "ac61d29573af06b31c8f27b655b1a4639f62e3e51d5ce113478ffe8f6ade6145"
+      },
+      "sample-1/lr3e6_step900-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "667ebf3be83708cebaecd70f5e5bf9037737ccba386a9b4a15aac813ab585ac7"
+      },
+      "sample-1/official_converted-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "618adda50656e20eb5c52be1f8d414e9cdf1744e4c985f02c3a9dfe59e25c43f"
+      },
+      "sample-1/official_converted-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "b02ddb269d95e83df9921cd9d069ace96dc89a621653502b742929168c1e5e26"
+      },
+      "sample-1/official_converted-other.wav": {
+        "bytes": 2822488,
+        "sha256": "712bf85dd7c860dd2fa65baabe3528ca7e81da5a17c55ffd3b27876336d25a77"
+      },
+      "sample-1/official_converted-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "2da75b40c0786d34f6f890e72771fd25bdbd7807a4acbd9862ad9138e5d26acf"
+      },
+      "sample-1/reference-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "626d5ed9317641cecd7821e23f7ed8072ad04e9788ce39420f867f336a8b6156"
+      },
+      "sample-1/reference-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "7a1ddd46096c99abc9a726488ee406ec0827ce63f29749762443817b27de60e2"
+      },
+      "sample-1/reference-mixture.wav": {
+        "bytes": 2822488,
+        "sha256": "c306c2d4ac0e870ca1b3c415d6ff069d1fe0a0c85ead9b76f0cff2683bd873af"
+      },
+      "sample-1/reference-other.wav": {
+        "bytes": 2822488,
+        "sha256": "181c649093b9e1258b5e8755a5bd22dcb3915f923f0aa690dfb3ae127e4e8d09"
+      },
+      "sample-1/reference-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "7da24b5e55d7808f70d5e8181a4098d357e50e29fe8417e6408c13e5f3541382"
+      },
+      "sample-2/lr1e5_step900-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "0d04e1cb283b4203269fb70169460f8051f831dd7dbeb537b88f04cebcf97068"
+      },
+      "sample-2/lr1e5_step900-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "7b17578abee246c1f79e1c7a8ff70c7a6c6f86d28e36d57afad687b8467086a7"
+      },
+      "sample-2/lr1e5_step900-other.wav": {
+        "bytes": 2822488,
+        "sha256": "abcd02a3f94dd736c9bcee9870def351c15e1bef8493346bbbae526164be2cb3"
+      },
+      "sample-2/lr1e5_step900-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "30a1171fad07296b9e449777376d0c5a1f2dc7338e9339b071e4e745deaae59f"
+      },
+      "sample-2/lr3e6_step900-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "4a4f2d37ca4792746bcbad97c1c2870e9b3d882739bdf3790f5247b9f330c4b8"
+      },
+      "sample-2/lr3e6_step900-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "427c56289a08699ba1810d3ed6e3127bf9bfc9b4da9f78f179f033a44014591a"
+      },
+      "sample-2/lr3e6_step900-other.wav": {
+        "bytes": 2822488,
+        "sha256": "8a34fbbf912140bbbadf838f88ceef72a0173717ac3d47930f75b257050929a1"
+      },
+      "sample-2/lr3e6_step900-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "784a4aefcc6bfbd453ecdb51bcceb7d5cb7e4c05063914a7dfef02eb2ca1f6fd"
+      },
+      "sample-2/official_converted-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "8fff58299fd4a3b2a607940c5455d80124e382ccf7cec8622665ca98329953f5"
+      },
+      "sample-2/official_converted-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "ead1b42172b93add5a56c6c1dc7fa5063f7eba74ece9ec5074f54ea1440362d4"
+      },
+      "sample-2/official_converted-other.wav": {
+        "bytes": 2822488,
+        "sha256": "0be795a002f3666ecc7f01790e0143d98b373e9e986c7ae3f309ff28fd559fe6"
+      },
+      "sample-2/official_converted-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "b8f7e41f93765e91d9e52a2a2db32ea211640143ba751d1eb5f960b9e4f574d0"
+      },
+      "sample-2/reference-bass.wav": {
+        "bytes": 2822488,
+        "sha256": "c045a1d28deeb7928f7edd6a2703ba33b15518bc64d5c9ae72bc73e1e16b854a"
+      },
+      "sample-2/reference-drums.wav": {
+        "bytes": 2822488,
+        "sha256": "aff1b1e5a69a7d95f5b9b688c908da70d8b54f726af595b2ea250a2d3a0eb0ac"
+      },
+      "sample-2/reference-mixture.wav": {
+        "bytes": 2822488,
+        "sha256": "4d77a30d36ddb1a94fb603b36b748eeea00b73f175e3122504ec2a642d633e37"
+      },
+      "sample-2/reference-other.wav": {
+        "bytes": 2822488,
+        "sha256": "f66df6a2690dd090958397cbb5aec7f6f0db1361c886afe50d5f46c79edee0ac"
+      },
+      "sample-2/reference-vocals.wav": {
+        "bytes": 2822488,
+        "sha256": "b610f6381c9d9bbc734fad43362daac0ea2e8bb1a41841b2ef415da2343f739d"
+      },
+      "track-00.json": {
+        "bytes": 321987,
+        "sha256": "2f4c5cd4e65f479814a2c202a4743c1982d3b7aa547001701641cc7e9f659377"
+      },
+      "track-01.json": {
+        "bytes": 401721,
+        "sha256": "a119eb3a1057c8bc56a7c1374f7cd5a22f8e1baec142b51882993fdcb0ff013a"
+      },
+      "track-02.json": {
+        "bytes": 305481,
+        "sha256": "aae93d809b844b1c701c24c76e32f9d4db4f5f3a31dabfab18a58b2faf269913"
+      },
+      "track-03.json": {
+        "bytes": 330876,
+        "sha256": "accde77e9519e4f2419b57864b4e39f458326526ef67589ddd9898f20dd2beb6"
+      },
+      "track-04.json": {
+        "bytes": 381398,
+        "sha256": "25bc6070a61a2198499f7a9ce3ab6692df77588441d12f69a813aafa55780967"
+      },
+      "track-05.json": {
+        "bytes": 58754,
+        "sha256": "15c0692791ab740315315eae18e29d6861556f6be9684355f9b4f8c119f945fd"
+      },
+      "track-06.json": {
+        "bytes": 59196,
+        "sha256": "966d34bd2026ae118a372227c9a9ebbf6a87c4e1229f11c30167eb9e4310e3bf"
+      },
+      "track-07.json": {
+        "bytes": 65543,
+        "sha256": "ce81ea9441b96ad7a7d998bb71ae7c5949a2db497f4fcdf1b98ba90d40000533"
+      },
+      "track-08.json": {
+        "bytes": 310855,
+        "sha256": "711365ef50d982e51420a11df7c0c32e10d2149954021b69618f8a9ee7ecf6d8"
+      },
+      "track-09.json": {
+        "bytes": 279627,
+        "sha256": "3300244dbc119f37c05e40010c780f3c06d426496b10218a84546f46732800e4"
+      }
+    }
+  },
+  "worker_status": "failed",
+  "data_audit": "retained report revalidated with finite nonnegative loss/gradient rule",
+  "listening_export_retrieved": false,
+  "export_bytes_independently_verified": false,
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41290811204",
+  "compute": {
+    "cost_per_hour": 0.69,
+    "controller_elapsed_seconds": 2497.9034221172333,
+    "compute_cost_upper_estimate_usd": 0.47876482257246966,
+    "cleanup_confirmed": true,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice",
+    "budget": {
+      "checked_at_utc": "2026-11-01T08:54:56.594886+00:00",
+      "month_basis": "UTC",
+      "reserve_usd": 1.0,
+      "monthly_budget_usd": 500.0,
+      "balance_sufficient": true,
+      "month_headroom_sufficient": true,
+      "history_scope": "reported account daily charges plus one hour current spend; billing may lag",
+      "gpu_rate_cap_usd_per_hour": 0.69,
+      "lease_seconds": 3600,
+      "scope": "compute rate/deadline plus reserve; storage/request fees are not an all-in hard cap"
+    }
+  },
+  "source_files": {
+    "result.json": {
+      "bytes": 4110676,
+      "sha256": "511f3a5305d0e79d272eeb574971c6e891eac08b3b744b2aac9da113318e157a"
+    },
+    "provision.json": {
+      "bytes": 1150,
+      "sha256": "23e0f0ab4ba44f7ec933e85880958a135b34c9e30b955ab83bf7ee4efb2a7737"
+    }
+  },
+  "arms": {
+    "lr1e5": {
+      "learning_rate": 1e-05,
+      "epochs": [
+        {
+          "epoch": 1,
+          "step": 90,
+          "train_loss_mean": 1.5151459933982956,
+          "validation_loss": 1.2209723949432374,
+          "gradient_norm_median": 12.134837627410889,
+          "gradient_norm_max": 46.09706115722656
+        },
+        {
+          "epoch": 2,
+          "step": 180,
+          "train_loss_mean": 1.3687704757476846,
+          "validation_loss": 1.2180161282420159,
+          "gradient_norm_median": 8.640358448028564,
+          "gradient_norm_max": 45.52167892456055
+        },
+        {
+          "epoch": 3,
+          "step": 270,
+          "train_loss_mean": 1.4137536509997315,
+          "validation_loss": 1.2148547366261482,
+          "gradient_norm_median": 8.35445499420166,
+          "gradient_norm_max": 34.46566390991211
+        },
+        {
+          "epoch": 4,
+          "step": 360,
+          "train_loss_mean": 1.2783034388726162,
+          "validation_loss": 1.2156793996691704,
+          "gradient_norm_median": 8.525043964385986,
+          "gradient_norm_max": 46.35780715942383
+        },
+        {
+          "epoch": 5,
+          "step": 450,
+          "train_loss_mean": 1.4179489814365904,
+          "validation_loss": 1.2171935901045798,
+          "gradient_norm_median": 9.020754337310791,
+          "gradient_norm_max": 38.12302017211914
+        },
+        {
+          "epoch": 6,
+          "step": 540,
+          "train_loss_mean": 1.3250042229321681,
+          "validation_loss": 1.2178190290927886,
+          "gradient_norm_median": 8.712934970855713,
+          "gradient_norm_max": 35.63825988769531
+        },
+        {
+          "epoch": 7,
+          "step": 630,
+          "train_loss_mean": 1.3073768377019506,
+          "validation_loss": 1.2164679698646068,
+          "gradient_norm_median": 9.284048080444336,
+          "gradient_norm_max": 42.14433288574219
+        },
+        {
+          "epoch": 8,
+          "step": 720,
+          "train_loss_mean": 1.2958949882951047,
+          "validation_loss": 1.2174751095473766,
+          "gradient_norm_median": 8.553462505340576,
+          "gradient_norm_max": 43.00304412841797
+        },
+        {
+          "epoch": 9,
+          "step": 810,
+          "train_loss_mean": 1.2904441209199529,
+          "validation_loss": 1.2222082048654557,
+          "gradient_norm_median": 8.305548191070557,
+          "gradient_norm_max": 37.15465545654297
+        },
+        {
+          "epoch": 10,
+          "step": 900,
+          "train_loss_mean": 1.2571893727374521,
+          "validation_loss": 1.2177255570888519,
+          "gradient_norm_median": 8.783819198608398,
+          "gradient_norm_max": 36.42531204223633
+        }
+      ],
+      "phase_seconds_total": 153.64407431299333,
+      "training_peak_allocated_bytes": 1118040064,
+      "milestones": [
+        {
+          "cursor": [
+            90,
+            1,
+            0
+          ],
+          "optimizer_steps": [
+            90
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 1e-05,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 17.32604758895468,
+            "peak_allocated_bytes": 1118040064
+          },
+          "resume_sha256": null,
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr1e5/90",
+            "files": {
+              "last.pt": {
+                "bytes": 471800627,
+                "sha256": "8a1ed5e0c4d497dc467a940217eaf68c7f86745a3d5dd3276510e9ad48d6dda4"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 626,
+                "sha256": "fa83febd769bd56c743148f9f0f2008fd7b8285b4f2e64cbaac83bb40231f02f"
+              },
+              "metrics.jsonl": {
+                "bytes": 11521,
+                "sha256": "c529c648f937dfbf92084d8392b84a5bdcabf100b6211f509e783e7a4541aefd"
+              },
+              "timing.json": {
+                "bytes": 66,
+                "sha256": "c92a83cb229e93e8172f089834840267ae67c56278a7fe3dbf96a2cc2c053739"
+              }
+            },
+            "manifest_sha256": "65b930915443dc43058e111cbcf5e9d94e09ceda6a204b2091c95eb0fd373c4e",
+            "readback_verified": true
+          },
+          "global_restore_equal": true
+        },
+        {
+          "cursor": [
+            450,
+            5,
+            0
+          ],
+          "optimizer_steps": [
+            450
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 1e-05,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 61.493681914987974,
+            "peak_allocated_bytes": 1111384576
+          },
+          "resume_sha256": "8a1ed5e0c4d497dc467a940217eaf68c7f86745a3d5dd3276510e9ad48d6dda4",
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr1e5/450",
+            "files": {
+              "last.pt": {
+                "bytes": 471800691,
+                "sha256": "a111cb56efb93ee2bc955672b5d68a6d62742bfa009f37073970885b2caf055f"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 640,
+                "sha256": "c407220f3f5109264f3fd5f1c0ca2ad5fe841c22214a31935b9328b57cf05d66"
+              },
+              "metrics.jsonl": {
+                "bytes": 57961,
+                "sha256": "09fac4e039732328f634ed8acfe4546495e84faa71e8c797dd2c939411a466b8"
+              },
+              "timing.json": {
+                "bytes": 67,
+                "sha256": "d63d3646308580246ee8784f47b6f8f8fedc7abe19a013b15b2ea90cd5006437"
+              }
+            },
+            "manifest_sha256": "41f1a4e6034d3c69939ff2c28be7906970a215a9c133b1372547cd67ef04d25e",
+            "readback_verified": true
+          },
+          "global_restore_equal": true
+        },
+        {
+          "cursor": [
+            900,
+            10,
+            0
+          ],
+          "optimizer_steps": [
+            900
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 1e-05,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 74.82434480905067,
+            "peak_allocated_bytes": 1111384576
+          },
+          "resume_sha256": "a111cb56efb93ee2bc955672b5d68a6d62742bfa009f37073970885b2caf055f",
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr1e5/900",
+            "files": {
+              "last.pt": {
+                "bytes": 471800691,
+                "sha256": "0daf873c2b8b9e17a4a7a8e38bb555e1a7823292b81c2c3abc746d4fa6063ad6"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 642,
+                "sha256": "528bf7bae7bf6a8ecb00a2b079254c05af5db1d1df3adc8706282e38b4188b43"
+              },
+              "metrics.jsonl": {
+                "bytes": 116055,
+                "sha256": "154297a943ee352d57a73144ca1478b120333e9d9f1c995c95d0bc4bccc25e13"
+              },
+              "timing.json": {
+                "bytes": 66,
+                "sha256": "1c24fdc2fa6ca1685793aefc35aa86de8658af160bdd1f7bab395570c5bb736e"
+              }
+            },
+            "manifest_sha256": "251d50778464a0393918ae55f818b5082e2ebe33488000319c939153ce231ec0",
+            "readback_verified": true
+          }
+        }
+      ],
+      "si_sdr_paired_median_curve": {
+        "vocals": [
+          0.0,
+          -0.03513097457674563,
+          -0.06095374276719734,
+          -0.08612632855285529
+        ],
+        "drums": [
+          0.0,
+          -0.02934338633847683,
+          -0.1012371157985188,
+          -0.028625548680079715
+        ],
+        "bass": [
+          0.0,
+          -0.0227033308086515,
+          -0.008359914496586462,
+          -0.0755281453858303
+        ],
+        "other": [
+          0.0,
+          -0.019387331311433886,
+          -0.09932663262487194,
+          -0.14605166014758186
+        ]
+      }
+    },
+    "lr3e6": {
+      "learning_rate": 3e-06,
+      "epochs": [
+        {
+          "epoch": 1,
+          "step": 90,
+          "train_loss_mean": 1.5665674886769718,
+          "validation_loss": 1.2211679346859454,
+          "gradient_norm_median": 14.527950286865234,
+          "gradient_norm_max": 47.89720916748047
+        },
+        {
+          "epoch": 2,
+          "step": 180,
+          "train_loss_mean": 1.4589724299601383,
+          "validation_loss": 1.2201541110873222,
+          "gradient_norm_median": 12.007677555084229,
+          "gradient_norm_max": 44.927249908447266
+        },
+        {
+          "epoch": 3,
+          "step": 270,
+          "train_loss_mean": 1.5106354573948515,
+          "validation_loss": 1.218737168610096,
+          "gradient_norm_median": 10.190799713134766,
+          "gradient_norm_max": 42.41983413696289
+        },
+        {
+          "epoch": 4,
+          "step": 360,
+          "train_loss_mean": 1.3699892913974407,
+          "validation_loss": 1.2178222589194774,
+          "gradient_norm_median": 9.932782649993896,
+          "gradient_norm_max": 45.921512603759766
+        },
+        {
+          "epoch": 5,
+          "step": 450,
+          "train_loss_mean": 1.5135790871663226,
+          "validation_loss": 1.218359001725912,
+          "gradient_norm_median": 9.897896766662598,
+          "gradient_norm_max": 38.81697082519531
+        },
+        {
+          "epoch": 6,
+          "step": 540,
+          "train_loss_mean": 1.4134137774093283,
+          "validation_loss": 1.2174959734082222,
+          "gradient_norm_median": 8.71631383895874,
+          "gradient_norm_max": 37.117923736572266
+        },
+        {
+          "epoch": 7,
+          "step": 630,
+          "train_loss_mean": 1.3965922557748853,
+          "validation_loss": 1.2156723260879516,
+          "gradient_norm_median": 9.731568813323975,
+          "gradient_norm_max": 42.756202697753906
+        },
+        {
+          "epoch": 8,
+          "step": 720,
+          "train_loss_mean": 1.3746278606355191,
+          "validation_loss": 1.2157916337251664,
+          "gradient_norm_median": 9.422391414642334,
+          "gradient_norm_max": 43.31714630126953
+        },
+        {
+          "epoch": 9,
+          "step": 810,
+          "train_loss_mean": 1.3733317657063404,
+          "validation_loss": 1.2165950909256935,
+          "gradient_norm_median": 8.570455074310303,
+          "gradient_norm_max": 42.11709213256836
+        },
+        {
+          "epoch": 10,
+          "step": 900,
+          "train_loss_mean": 1.337793183196724,
+          "validation_loss": 1.2152140788733958,
+          "gradient_norm_median": 9.893051147460938,
+          "gradient_norm_max": 37.3824577331543
+        }
+      ],
+      "phase_seconds_total": 155.70727724209428,
+      "training_peak_allocated_bytes": 1118040064,
+      "milestones": [
+        {
+          "cursor": [
+            90,
+            1,
+            0
+          ],
+          "optimizer_steps": [
+            90
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 3e-06,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 16.566729494021274,
+            "peak_allocated_bytes": 1118040064
+          },
+          "resume_sha256": null,
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr3e6/90",
+            "files": {
+              "last.pt": {
+                "bytes": 471800627,
+                "sha256": "be154c6c753bc311b4365f91592b4f065c0839b856235b0e4c0aabe40f1727f4"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 626,
+                "sha256": "b291c3d81a4f4a7e7066ea314dc1b79486b8e608e3ecad6070b635d102d8f752"
+              },
+              "metrics.jsonl": {
+                "bytes": 11514,
+                "sha256": "ecda48ae33d276c8e7c50eb7aaac9b7f08250b789a4326ca90b07e8d78f1f0e5"
+              },
+              "timing.json": {
+                "bytes": 67,
+                "sha256": "88f80c83bf040069503e919b57e011def3637d1508bef84c5a2d76ab7dec33e5"
+              }
+            },
+            "manifest_sha256": "fbff51b095d75357703556716f71b415f570d04bca7ab3d34c8b2213c49bc3b0",
+            "readback_verified": true
+          },
+          "global_restore_equal": true
+        },
+        {
+          "cursor": [
+            450,
+            5,
+            0
+          ],
+          "optimizer_steps": [
+            450
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 3e-06,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 62.03786621103063,
+            "peak_allocated_bytes": 1111384576
+          },
+          "resume_sha256": "be154c6c753bc311b4365f91592b4f065c0839b856235b0e4c0aabe40f1727f4",
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr3e6/450",
+            "files": {
+              "last.pt": {
+                "bytes": 471800691,
+                "sha256": "2992ffd1f739f5fe00170623eb8266ae0782fb476a4c776752e74c9e51c9c60e"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 640,
+                "sha256": "7b5b93ff013c6a9ecf63a28095420b8aa3dbb4665afd159fc36629da4113ef09"
+              },
+              "metrics.jsonl": {
+                "bytes": 57987,
+                "sha256": "c1a83371b207f0e21501599c401240d5246d9730da7f0f49bf90c1e6c422b23e"
+              },
+              "timing.json": {
+                "bytes": 66,
+                "sha256": "643e7a7f3d84e835facbcf552125bf0272e900e159676508af5ffbdf0db201a2"
+              }
+            },
+            "manifest_sha256": "ef27ffa0eb12b804538f2fa93db327db1c690c78c4bb31c6a295db73cf903bc6",
+            "readback_verified": true
+          },
+          "global_restore_equal": true
+        },
+        {
+          "cursor": [
+            900,
+            10,
+            0
+          ],
+          "optimizer_steps": [
+            900
+          ],
+          "finite": true,
+          "bn_buffers_unchanged": true,
+          "bn_affine_changed": true,
+          "parameters_changed": true,
+          "bn_fingerprint": "ce61ee1d65a11cceb64c4c14d017c6e4c9e259a3785f391f500d665ec6726d43",
+          "signature": {
+            "train": "7a19355cc0ecd509783965abe83a3cb15020ba8318a2dd040aa492e112e17ca8",
+            "validation": "24563a1e0d273dedf2fe3649a86a4751317d101c7ad219870ce9155d83aa3cc7",
+            "batch_size": 1,
+            "crops_per_track": 1,
+            "validation_crops": 4,
+            "seed": 17,
+            "precision": "fp32",
+            "lr": 3e-06,
+            "grad_clip": 5.0,
+            "deterministic": true,
+            "freeze_bn_stats": true
+          },
+          "timing": {
+            "seconds": 77.10268153704237,
+            "peak_allocated_bytes": 1111384576
+          },
+          "resume_sha256": "2992ffd1f739f5fe00170623eb8266ae0782fb476a4c776752e74c9e51c9c60e",
+          "checkpoint": {
+            "prefix": "convergence-runs/41290811204-1/lr3e6/900",
+            "files": {
+              "last.pt": {
+                "bytes": 471800691,
+                "sha256": "e26ecb93a186482949ba423ba559e313197d95590d06b4c44d233bb20bafc62c"
+              },
+              "config.json": {
+                "bytes": 415,
+                "sha256": "8b8ea71f0c37e29023684b5c0ca74929510ce42b89ec86d298505ed82bce943b"
+              },
+              "arguments.json": {
+                "bytes": 642,
+                "sha256": "e3a92556ce135ae15f443a7d7286749d35e8b1adb7634f28ebb27ceea3420500"
+              },
+              "metrics.jsonl": {
+                "bytes": 116068,
+                "sha256": "3b9554daee15d9e08c2c247d16ac6234f17b29fb717981e9fef9a13ff5fd0c92"
+              },
+              "timing.json": {
+                "bytes": 66,
+                "sha256": "f53aecc8ecdfef193fc7c524b51d1951d7d838a3461b173d5770765a4836165b"
+              }
+            },
+            "manifest_sha256": "1c11c0da8541e106f112943a37ba7606418b8ac1c82d36bb377425b62170e0d1",
+            "readback_verified": true
+          }
+        }
+      ],
+      "si_sdr_paired_median_curve": {
+        "vocals": [
+          0.0,
+          -0.0015991179214449591,
+          -0.021971263365492044,
+          -0.05377630325764704
+        ],
+        "drums": [
+          0.0,
+          -0.008155380752706387,
+          -0.04331865350108427,
+          -0.01486864789803631
+        ],
+        "bass": [
+          0.0,
+          -0.0010850379173850122,
+          -0.018710375735054185,
+          -0.06945535311922058
+        ],
+        "other": [
+          0.0,
+          0.005741234115399951,
+          -0.02576166820148096,
+          -0.05659037560016378
+        ]
+      }
+    }
+  },
+  "per_track": [
+    {
+      "id": "train/Auctioneer - Our Future Faces",
+      "samples": 9159680,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 5.052379944124078,
+            "lr1e5_step900": 4.988438406294097,
+            "lr3e6_step900": 4.968566989551244
+          },
+          "drums": {
+            "official_converted": 3.096744976854181,
+            "lr1e5_step900": 2.869981301877327,
+            "lr3e6_step900": 2.930322692740866
+          },
+          "bass": {
+            "official_converted": 8.649560430250217,
+            "lr1e5_step900": 8.579129728033774,
+            "lr3e6_step900": 8.619943700730735
+          },
+          "other": {
+            "official_converted": 6.898475130576797,
+            "lr1e5_step900": 6.472612040971308,
+            "lr3e6_step900": 6.790518206411749
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 7.738553977881814,
+            "lr1e5_step900": 7.709015944200189,
+            "lr3e6_step900": 7.745427134620959
+          },
+          "drums": {
+            "official_converted": 0.9255293805033806,
+            "lr1e5_step900": 0.5657717058259302,
+            "lr3e6_step900": 0.7350890683838458
+          },
+          "bass": {
+            "official_converted": 8.252161890339504,
+            "lr1e5_step900": 8.019108220872766,
+            "lr3e6_step900": 8.17813067972526
+          },
+          "other": {
+            "official_converted": 5.466042237139232,
+            "lr1e5_step900": 5.226204035644027,
+            "lr3e6_step900": 5.43469464948857
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Chris Durban - Celebrate",
+      "samples": 13300736,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 4.035779603995639,
+            "lr1e5_step900": 3.926233119892095,
+            "lr3e6_step900": 3.9998110479897857
+          },
+          "drums": {
+            "official_converted": 2.615268300744144,
+            "lr1e5_step900": 2.440429553700328,
+            "lr3e6_step900": 2.219273308176888
+          },
+          "bass": {
+            "official_converted": 5.038385526473595,
+            "lr1e5_step900": 6.060931502845142,
+            "lr3e6_step900": 5.710934509674076
+          },
+          "other": {
+            "official_converted": 1.9216937219988328,
+            "lr1e5_step900": 2.5978272595617256,
+            "lr3e6_step900": 2.4207239537345355
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 3.5783946221878846,
+            "lr1e5_step900": 3.4379247051148902,
+            "lr3e6_step900": 3.519684899348304
+          },
+          "drums": {
+            "official_converted": 0.48962246348385496,
+            "lr1e5_step900": 0.47115930825235963,
+            "lr3e6_step900": 0.08771724715531018
+          },
+          "bass": {
+            "official_converted": 3.438101092199975,
+            "lr1e5_step900": 4.707146909142783,
+            "lr3e6_step900": 3.9112468527956867
+          },
+          "other": {
+            "official_converted": -1.684101448920953,
+            "lr1e5_step900": -0.8798717741105377,
+            "lr3e6_step900": -1.2182253164410237
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Clara Berry And Wooldog - Stella",
+      "samples": 8624128,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 7.251044585167271,
+            "lr1e5_step900": 5.365325710880494,
+            "lr3e6_step900": 6.400832681200088
+          },
+          "drums": {
+            "official_converted": 2.093420267128167,
+            "lr1e5_step900": 1.879452681261937,
+            "lr3e6_step900": 2.1144477497510343
+          },
+          "bass": {
+            "official_converted": 9.238824750885511,
+            "lr1e5_step900": 9.075363552791153,
+            "lr3e6_step900": 9.067998529293872
+          },
+          "other": {
+            "official_converted": 3.5537933154871015,
+            "lr1e5_step900": 2.9640944171224786,
+            "lr3e6_step900": 3.239470230548373
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 9.319146647632454,
+            "lr1e5_step900": 8.344118248144252,
+            "lr3e6_step900": 8.874122019416594
+          },
+          "drums": {
+            "official_converted": 0.19300872712889627,
+            "lr1e5_step900": 0.05814139667352645,
+            "lr3e6_step900": 0.1798689691050104
+          },
+          "bass": {
+            "official_converted": 8.545701617852801,
+            "lr1e5_step900": 8.541222939610764,
+            "lr3e6_step900": 8.480822122228604
+          },
+          "other": {
+            "official_converted": 0.2705926677602547,
+            "lr1e5_step900": 0.00502291225361802,
+            "lr3e6_step900": 0.09047838742685427
+          }
+        }
+      }
+    },
+    {
+      "id": "train/James May - If You Say",
+      "samples": 11392000,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 8.227715040064673,
+            "lr1e5_step900": 8.371345603803583,
+            "lr3e6_step900": 8.362932241015791
+          },
+          "drums": {
+            "official_converted": 3.4522420089714827,
+            "lr1e5_step900": 3.378310182286114,
+            "lr3e6_step900": 3.421882426275208
+          },
+          "bass": {
+            "official_converted": 1.3118156891492871,
+            "lr1e5_step900": 0.02009227538744448,
+            "lr3e6_step900": 0.27471682323026775
+          },
+          "other": {
+            "official_converted": 6.885108032087062,
+            "lr1e5_step900": 6.156268045174666,
+            "lr3e6_step900": 6.613558445406246
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 8.567456574352052,
+            "lr1e5_step900": 8.48724333675155,
+            "lr3e6_step900": 8.63555232635313
+          },
+          "drums": {
+            "official_converted": 0.5631655873128729,
+            "lr1e5_step900": 0.6817773461899761,
+            "lr3e6_step900": 0.5672543678419816
+          },
+          "bass": {
+            "official_converted": -0.33454589444283145,
+            "lr1e5_step900": -2.284673130243677,
+            "lr3e6_step900": -1.6834516352182836
+          },
+          "other": {
+            "official_converted": 5.925413364085706,
+            "lr1e5_step900": 5.370885980834767,
+            "lr3e6_step900": 5.84358020053604
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Johnny Lokke - Promises & Lies",
+      "samples": 12604416,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 7.549613920938894,
+            "lr1e5_step900": 7.596749851368537,
+            "lr3e6_step900": 7.564986861432866
+          },
+          "drums": {
+            "official_converted": 10.971113042365165,
+            "lr1e5_step900": 10.996587792495594,
+            "lr3e6_step900": 10.973329559451118
+          },
+          "bass": {
+            "official_converted": 2.9637344895435414,
+            "lr1e5_step900": 2.8097529154227407,
+            "lr3e6_step900": 2.7691610789742116
+          },
+          "other": {
+            "official_converted": 5.276697094623579,
+            "lr1e5_step900": 5.251442301561962,
+            "lr3e6_step900": 5.2132881523434245
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 7.121579876674328,
+            "lr1e5_step900": 7.738627777456769,
+            "lr3e6_step900": 7.624698909308536
+          },
+          "drums": {
+            "official_converted": 10.451892624310686,
+            "lr1e5_step900": 10.494359382577123,
+            "lr3e6_step900": 10.4880608693543
+          },
+          "bass": {
+            "official_converted": 1.1725938810126575,
+            "lr1e5_step900": 1.0260162684830343,
+            "lr3e6_step900": 1.0733629106038076
+          },
+          "other": {
+            "official_converted": 4.668242863474731,
+            "lr1e5_step900": 4.686067983694656,
+            "lr3e6_step900": 4.701672831105276
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Music Delta - Beatles",
+      "samples": 1595392,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 7.629048626014355,
+            "lr1e5_step900": 7.65799287461438,
+            "lr3e6_step900": 7.483967942519493
+          },
+          "drums": {
+            "official_converted": 8.939853941819914,
+            "lr1e5_step900": 8.580669232768388,
+            "lr3e6_step900": 8.664801235194663
+          },
+          "bass": {
+            "official_converted": 5.7055088670140455,
+            "lr1e5_step900": 5.933178445114008,
+            "lr3e6_step900": 5.9619351446937525
+          },
+          "other": {
+            "official_converted": 4.476559913401346,
+            "lr1e5_step900": 5.072080649932298,
+            "lr3e6_step900": 4.990483447309812
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 7.718930350079374,
+            "lr1e5_step900": 7.634213955288667,
+            "lr3e6_step900": 7.67008746640366
+          },
+          "drums": {
+            "official_converted": 7.894214978078066,
+            "lr1e5_step900": 7.0828021490508615,
+            "lr3e6_step900": 7.414113286232043
+          },
+          "bass": {
+            "official_converted": 4.061724268137147,
+            "lr1e5_step900": 4.172944495296196,
+            "lr3e6_step900": 4.185845103907798
+          },
+          "other": {
+            "official_converted": 3.380213556197598,
+            "lr1e5_step900": 3.638056202912361,
+            "lr3e6_step900": 3.7349204778015155
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Music Delta - Britpop",
+      "samples": 1613824,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 7.595292204894664,
+            "lr1e5_step900": 7.556512813564288,
+            "lr3e6_step900": 7.591282777621055
+          },
+          "drums": {
+            "official_converted": 7.1678762419828885,
+            "lr1e5_step900": 7.337527613328271,
+            "lr3e6_step900": 7.347210194180479
+          },
+          "bass": {
+            "official_converted": 6.186090069316073,
+            "lr1e5_step900": 6.422664641074171,
+            "lr3e6_step900": 6.3376330769719935
+          },
+          "other": {
+            "official_converted": 5.982283655243176,
+            "lr1e5_step900": 6.086562040010499,
+            "lr3e6_step900": 6.074713801299079
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 7.149244829681699,
+            "lr1e5_step900": 7.061708567366695,
+            "lr3e6_step900": 7.120741462839036
+          },
+          "drums": {
+            "official_converted": 6.18126145022112,
+            "lr1e5_step900": 6.169899292269184,
+            "lr3e6_step900": 6.20588537171332
+          },
+          "bass": {
+            "official_converted": 5.1211987575149,
+            "lr1e5_step900": 5.293105080750037,
+            "lr3e6_step900": 5.2180459466088625
+          },
+          "other": {
+            "official_converted": 4.498016056877291,
+            "lr1e5_step900": 4.6779143089595046,
+            "lr3e6_step900": 4.645559384565041
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Music Delta - Grunge",
+      "samples": 1837056,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 7.343075893230322,
+            "lr1e5_step900": 7.147388733263594,
+            "lr3e6_step900": 7.237164607588545
+          },
+          "drums": {
+            "official_converted": 11.176222742954673,
+            "lr1e5_step900": 11.180426539640376,
+            "lr3e6_step900": 11.137434480337276
+          },
+          "bass": {
+            "official_converted": 1.1711331700113512,
+            "lr1e5_step900": 0.8902605652634287,
+            "lr3e6_step900": 0.9116315711669003
+          },
+          "other": {
+            "official_converted": 4.067315959707432,
+            "lr1e5_step900": 3.7194177568180073,
+            "lr3e6_step900": 3.7823836851103225
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 6.813561880634536,
+            "lr1e5_step900": 6.670855072713868,
+            "lr3e6_step900": 6.714117142687516
+          },
+          "drums": {
+            "official_converted": 10.946651493988186,
+            "lr1e5_step900": 10.907863551859522,
+            "lr3e6_step900": 10.930053956216
+          },
+          "bass": {
+            "official_converted": -5.021020071092651,
+            "lr1e5_step900": -5.632235310491732,
+            "lr3e6_step900": -5.73197961372739
+          },
+          "other": {
+            "official_converted": 2.1579347332884007,
+            "lr1e5_step900": 1.9479175844283723,
+            "lr3e6_step900": 1.9619201299530318
+          }
+        }
+      }
+    },
+    {
+      "id": "train/Spike Mullings - Mike's Sulking",
+      "samples": 11320320,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 6.238433247927555,
+            "lr1e5_step900": 5.6020971516243,
+            "lr3e6_step900": 5.799859893907416
+          },
+          "drums": {
+            "official_converted": 5.12705883091728,
+            "lr1e5_step900": 4.6756421233054155,
+            "lr3e6_step900": 4.759603014122658
+          },
+          "bass": {
+            "official_converted": 1.8224805790669554,
+            "lr1e5_step900": 1.2609936745891168,
+            "lr3e6_step900": 1.4189187149751057
+          },
+          "other": {
+            "official_converted": 3.403019764326784,
+            "lr1e5_step900": 3.535218492085772,
+            "lr3e6_step900": 3.3601011303059414
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 4.818079842152211,
+            "lr1e5_step900": 4.469380652627397,
+            "lr3e6_step900": 4.625629440348618
+          },
+          "drums": {
+            "official_converted": 3.1368524513518286,
+            "lr1e5_step900": 2.4622350297433875,
+            "lr3e6_step900": 2.831636124551836
+          },
+          "bass": {
+            "official_converted": -1.2032588900922156,
+            "lr1e5_step900": -0.7272793792305308,
+            "lr3e6_step900": -1.0248075023848198
+          },
+          "other": {
+            "official_converted": 1.7427852860675277,
+            "lr1e5_step900": 1.6606991146323924,
+            "lr3e6_step900": 1.596588008957207
+          }
+        }
+      }
+    },
+    {
+      "id": "train/The Wrong'Uns - Rothko",
+      "samples": 8914944,
+      "metrics": {
+        "bsseval_v4_sdr_db": {
+          "vocals": {
+            "official_converted": 10.433778836992362,
+            "lr1e5_step900": 10.25846448392395,
+            "lr3e6_step900": 10.276074942192828
+          },
+          "drums": {
+            "official_converted": 6.047449607037403,
+            "lr1e5_step900": 6.196542155604288,
+            "lr3e6_step900": 6.202356478596698
+          },
+          "bass": {
+            "official_converted": 4.251982865641643,
+            "lr1e5_step900": 3.8370786653730033,
+            "lr3e6_step900": 3.8738975519716723
+          },
+          "other": {
+            "official_converted": 4.287543629070109,
+            "lr1e5_step900": 4.135225394576899,
+            "lr3e6_step900": 4.274521054510841
+          }
+        },
+        "global_stereo_si_sdr_db": {
+          "vocals": {
+            "official_converted": 9.881458714276189,
+            "lr1e5_step900": 9.81490663765426,
+            "lr3e6_step900": 9.789154130791031
+          },
+          "drums": {
+            "official_converted": 5.347835621156713,
+            "lr1e5_step900": 5.414620131568203,
+            "lr3e6_step900": 5.470048884950138
+          },
+          "bass": {
+            "official_converted": 2.3770891668395917,
+            "lr1e5_step900": 2.12637469486326,
+            "lr3e6_step900": 2.238706031689691
+          },
+          "other": {
+            "official_converted": 2.8055375083878333,
+            "lr1e5_step900": 2.522974639831779,
+            "lr3e6_step900": 2.6668672315888036
+          }
+        }
+      }
+    }
+  ],
+  "coverage_summary": {
+    "train_audio_samples": 928198656,
+    "unique_covered_samples": 354219654,
+    "crop_samples_with_repetition": 474624000
+  }
+}

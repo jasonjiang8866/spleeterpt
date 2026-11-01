@@ -55,7 +55,9 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError("Unexpected chunk query")
                 offset, length = int(query["offset"][0]), int(query["length"][0])
                 probe = query.get("probe") == ["1"]
-                if not probe and (RESULT.get("status") != "passed" or not EXPORT_FILE.is_file()):
+                if not probe and (
+                    RESULT.get("status") not in {"passed", "failed"} or not EXPORT_FILE.is_file()
+                ):
                     self.send_error(404)
                     return
                 total = len(PROBE_BYTES) if probe else EXPORT_FILE.stat().st_size

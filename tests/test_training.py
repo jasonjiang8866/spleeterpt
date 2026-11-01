@@ -265,3 +265,23 @@ def test_spectral_loss_is_sum_of_stem_means_with_gradients(tiny_config):
     torch.testing.assert_close(loss, expected)
     loss.backward()
     assert torch.isfinite(model.gain.grad) and model.gain.grad.abs() > 0
+
+
+def test_silent_crop_has_valid_zero_loss_and_gradient(audio_dataset, tmp_path):
+    """Finite zero loss/norm is legitimate; Adam still records the optimizer step."""
+    import numpy as np
+
+    for path in audio_dataset[3][0].glob("*.wav"):
+        info = sf.info(path)
+        sf.write(
+            path, np.zeros((info.frames, 2), dtype="float32"), info.samplerate, subtype="FLOAT"
+        )
+    output = tmp_path / "silent-run"
+    run_training(training_args(audio_dataset, output, "--freeze-bn-stats"))
+    metrics = [json.loads(line) for line in (output / "metrics.jsonl").read_text().splitlines()]
+    zeros = [m for m in metrics if m["kind"] == "train" and m["loss"] == 0.0]
+    assert len(zeros) == 2
+    assert all(m["grad_norm"] == 0.0 and not m["update_skipped"] for m in zeros)
+    checkpoint = read_checkpoint(output / "last.pt")
+    assert checkpoint["step"] == 4
+    assert {int(v["step"]) for v in checkpoint["optimizer"]["state"].values()} == {4}
