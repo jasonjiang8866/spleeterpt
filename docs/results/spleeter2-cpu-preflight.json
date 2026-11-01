@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "kind": "spleeter2-cpu-probe",
+  "torch": "2.8.0+cpu",
+  "official_archive": {
+    "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz",
+    "sha256": "f3a90b39dd2874269e8b05a48a86745df897b848c61f3958efc80a39152bd692",
+    "bytes": 73109797
+  },
+  "converted_sha256": "2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532",
+  "converted_bytes": 78652155,
+  "music_used": false,
+  "gpu_used": false,
+  "test_pool_used": false,
+  "output_samples": 44100,
+  "stems": [
+    "accompaniment",
+    "vocals"
+  ]
+}

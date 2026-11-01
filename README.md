@@ -126,6 +126,11 @@ compute (**$0.33352** including the earlier failed trial), and its Pod was delet
 Raw CPU RSS counters are not a valid isolated memory comparison; see the report.
 [Full results, SI-SDR, raw timing repeats, limitations and A/B package details](docs/separator-benchmark-41277234620.md).
 
+The next [vocal/accompaniment screen](docs/roformer-vocal-protocol.md) pins native
+official Spleeter-2 against Kimberley Jensen's Mel-Band RoFormer checkpoint.
+Real-weight CPU compatibility and original-author parity are checked before a
+bounded GPU trial. This separate two-source task does not reuse four-stem scores.
+
 ## Current progress — 2026-11-01 (SGT)
 
 | Area | Verified status |
