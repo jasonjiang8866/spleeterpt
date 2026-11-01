@@ -117,6 +117,17 @@ Volume. It also prevented that job from reaching the GPU catalog query. The new
 preflight records a missing regional source and still checks Global Volume and
 MIG independently. Do not recreate the regional volume based on this old error.
 
+The new [GET-only inventory](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41271997588)
+completed at **2026-11-01 12:10 SGT**. It found **zero account Pods** and the existing
+Global Volume `cmvwmviz9000007jteci4ajn8` with the expected name. The expected regional
+volume was absent. MIG 1g.24gb catalog price was **$0.69/hour**, with `LOW`
+availability in `EUR-IS-2`, `US-PA-1` and `US-WA-1`. These are catalog observations,
+not a reserved allocation or launch quote. Full
+[resource evidence](results/htdemucs-resource-preflight.json) is retained here;
+mounted object checks, account credit and current-month spending remain unverified.
+No compute or storage was created by this inventory. The resource report lists
+generic launch gates; separate CPU probe evidence below resolves its CPU-only gate.
+
 First paid trial proposal: **one MIG Pod, at most $0.69/hour, 60 minutes from
 creation**, including staging and setup. Compute ceiling at that rate: **$0.69**;
 reserve **$1 total for the trial** to allow container/storage/request overhead,
@@ -126,7 +137,8 @@ does not establish remaining account credit or month-to-date spend.
 
 Reuse existing Global Volume; create no new persistent volume and do not recopy
 the full training set. Report existing regional storage (~$5.60/month historically)
-separately from incremental trial cost. Global usage/request fees remain separately
+separately from incremental trial cost; that regional charge is historical and must
+not be treated as current after the missing-volume observation. Global usage/request fees remain separately
 billable and must be checked. Do not label historical catalog prices as a live quote.
 
 Before launch, implement and test a creation-based deadline, `finally` cleanup,
@@ -150,11 +162,14 @@ The downloaded file is 84,141,911 bytes, SHA-256
 `8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4`.
 The full hash is now enforced by the probe. See
 [local probe evidence](results/htdemucs-cpu-preflight.json).
-The workflow's Python 3.11 job and CUDA probe have not yet run.
+The [workflow's Python 3.11.17 probe](results/htdemucs-ci-probe.json) also passed
+with the same checkpoint SHA-256, parameter count, segment length and finite
+four-stem output. The CUDA probe has not run.
 
 All 50 RunPod offline tests pass, including read-only mutation rejection,
 credential omission, invalid price rejection and continued Global inventory when
-the regional volume is absent. New Python files pass Ruff 0.14.2. A whole-repository
-Ruff check reports three pre-existing findings in `runpod/training.py`,
-`tests/test_bn_ablation.py` and `tests/test_musdb_evaluation.py`; these unrelated
-files were not changed. No new CI pass is claimed before publication.
+the regional volume is absent. New Python files pass Ruff 0.14.2. That older local
+Ruff reports three pre-existing findings in unchanged files; the CI environment
+uses the repository's declared dependency range. The resource and real-model
+probe jobs are successful in run `41271997588`; standard test results remain
+available on the PR checks page.

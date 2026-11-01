@@ -77,6 +77,9 @@ keeps the existing ten-song validation screen separate from a future final test.
 The [Spleeter-4 / HTDemucs preparation](docs/spleeter4-htdemucs-protocol.md)
 specifies the first controlled screen, resource checks, runtime compatibility
 probe and proposed budget. No competitor music-quality result is available yet.
+The 2026-11-01 12:10 SGT read-only inventory found the existing Global Volume,
+zero account Pods and MIG 24GB catalog capacity at $0.69/hour. The original regional
+volume was not found; older regional-storage statements below are historical.
 
 ## Current progress — 2026-11-01 (SGT)
 
