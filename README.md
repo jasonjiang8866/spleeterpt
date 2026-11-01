@@ -81,6 +81,33 @@ convert a matching official 5-stem checkpoint and supply `--checkpoint`, subject
 to the validation limitation above. Changing a filename or output directory does
 not change how many stems a checkpoint produces.
 
+## Long audio and batch jobs (opt-in)
+
+Use `--bounded-memory` to read, separate and write one spectral window at a time,
+with bounded CPU and GPU working memory for a fixed checkpoint. The official
+weights, model windows and acoustic parameters are unchanged:
+
+```bash
+uv run --no-sync spleeterpt separate "long-song-44100.wav" --model 2stems \
+  --bounded-memory --output outputs/long-song --device cpu
+```
+
+Use `--device cuda` after installing the CUDA environment. This path requires
+seekable mono/stereo audio **already at the checkpoint sample rate** (44,100 Hz
+for official presets) and a **new, nonexistent output directory**. It writes stereo
+float WAV stems incrementally and publishes the directory after successful completion.
+It does not perform implicit resampling. The default path remains available and
+unchanged, including its automatic resampling and full-length spectral allocations.
+
+For batch services, load one model and call `spleeterpt.streaming.separate_file`
+sequentially with a unique output directory per job. `separate_iter` is available
+for CPU tensors and sinks that consume output blocks immediately. These are
+file/block interfaces, not a low-latency live audio service.
+
+[Design, API examples, numerical/memory benchmark and limitations](docs/bounded-memory.md).
+CPU validation does **not** constitute GPU measurement or production acceptance;
+5-stem official parity limitations remain unchanged.
+
 ## Model architecture
 
 [![spleeterpt architecture: stereo STFT, independent six-level U-Nets with raw convolution skips, magnitude estimates, ratio masks and audio reconstruction](docs/assets/model-architecture.svg)](docs/assets/model-architecture.svg)
@@ -146,7 +173,9 @@ four-stem RoFormer setup. HTDemucs and one pinned Kim Mel-Band RoFormer now have
 separate local measurements below; the other candidates remain evaluation priorities.
 Our default high-band truncation and mixture-phase masks are limitations for
 full-band, high-fidelity deliverables. Fixed inference windows do not make this
-implementation streaming: the full STFT remains in memory. The measurements below
+default path streaming: the full STFT remains in memory. The optional
+[bounded-memory path](docs/bounded-memory.md) processes spectra and reconstruction
+in blocks. The measurements below predate that path and
 apply to the named pinned configurations on one MIG profile, not all models or devices.
 
 The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
@@ -386,7 +415,9 @@ For 4/5 stems, use the corresponding official `4stems.tar.gz` / `5stems.tar.gz`
 archive and matching `--stems`. Inference accepts audio formats supported by
 libsndfile, duplicates mono to stereo, and resamples to the checkpoint sample rate.
 Output is stereo float WAV at that rate, avoiding silent PCM clipping. Network
-inference uses fixed windows; the full STFT still resides in memory.
+inference uses fixed windows; the full STFT still resides in memory in this default
+path. See [bounded-memory inference](docs/bounded-memory.md) for the opt-in file API
+and its explicit sample-rate requirement.
 
 ## Prepare training data
 
