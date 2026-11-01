@@ -197,3 +197,72 @@ def test_partial_checkpoint_cannot_be_accepted_as_benchmark(modules):
     }
     with pytest.raises(ValueError, match="identity"):
         checker.validate({"status": "passed", "report": report}, "a" * 40, "global1", "pod1", "1-1")
+
+
+def test_vocal_measurement_cannot_mix_four_stem_weights_or_memory_counter(modules):
+    metrics, checker, _ = modules
+    vocal = importlib.import_module("vocal_metrics")
+    kim = importlib.import_module("roformer_kim")
+    for variant in vocal.VARIANTS:
+        report, expected = measurement(metrics, checker)
+        report.update(
+            model=variant,
+            profile="vocal",
+            protocol=vocal.PROTOCOL,
+            protocol_sha256=hashlib.sha256(checker.encoded(vocal.PROTOCOL)).hexdigest(),
+            weight_sha256=vocal.WEIGHTS[variant],
+            rss_source="/proc/self/status VmHWM",
+            roformer_recipe_sha256=kim.recipe_sha256() if variant == "melband_kim" else None,
+        )
+        report["tracks"][0]["files"] = {
+            stem: {"bytes": 100, "sha256": "a" * 64} for stem in vocal.STEMS
+        }
+        checker.validate_measurement(report, variant, expected, vocal=True)
+        with pytest.raises(ValueError):
+            checker.validate_measurement(report, variant, expected)
+        for mutation in (
+            {"rss_source": "getrusage"},
+            {"protocol": metrics.PROTOCOL},
+            {"weight_sha256": checker.weights()[metrics.VARIANTS[0]]},
+            {"roformer_recipe_sha256": "wrong"},
+        ):
+            with pytest.raises(ValueError):
+                checker.validate_measurement({**report, **mutation}, variant, expected, vocal=True)
+
+
+def test_vocal_reference_uses_source_sum_not_aac_mixture_residual(modules, monkeypatch):
+    worker = importlib.import_module("benchmark")
+    values = {"mixture": 20, "vocals": 3, "drums": 1, "bass": 2, "other": 4}
+    monkeypatch.setattr(worker, "digest", lambda path: path.stem)
+    monkeypatch.setattr(
+        worker, "load_audio", lambda path, n: np.full((2, n), values[path.stem], dtype=np.float32)
+    )
+    targets = worker.targets_for_track(
+        "train/test", {"samples": 100, "files": {s: {"sha256": s} for s in values}}, vocal=True
+    )
+    assert set(targets) == {"mixture", "vocals", "accompaniment"}
+    np.testing.assert_array_equal(targets["accompaniment"], 7)
+    assert not np.array_equal(targets["accompaniment"], targets["mixture"] - targets["vocals"])
+
+
+def test_real_two_source_museval_and_separate_summary(modules):
+    vocal = importlib.import_module("vocal_metrics")
+    score = importlib.import_module("musdb_evaluation").score_variants
+    rng = np.random.default_rng(17)
+    targets = {s: rng.normal(0, 0.03, (2, 44100)).astype(np.float32) for s in vocal.STEMS}
+    targets["mixture"] = sum(targets.values())
+    estimates = {s: targets[s] + rng.normal(0, 0.001, targets[s].shape) for s in vocal.STEMS}
+    record = {
+        "id": "one",
+        **score(
+            targets,
+            dict.fromkeys(vocal.VARIANTS, estimates),
+            vocal.STEMS,
+            length_policy="strict",
+            variant_names=vocal.VARIANTS,
+        ),
+    }
+    summary = vocal.summarize([record])
+    assert set(summary["metrics"]["bsseval_v4_sdr_db"]) == set(vocal.STEMS)
+    for metric in summary["metrics"].values():
+        assert all(v["paired_delta"]["median"] == 0 for v in metric.values())

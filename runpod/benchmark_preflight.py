@@ -1,5 +1,6 @@
 """GET-only resource observation; no launch, account changes or credential export."""
 
+import argparse
 import hashlib
 import json
 import math
@@ -33,7 +34,7 @@ class ReadOnly:
         return Runpod.pods(self)
 
 
-def observe(api):
+def observe(api, *, vocal=False):
     api = ReadOnly(api)
     pods = api.pods()
     matches = [v for v in volumes(api) if v.get("name") == REGIONAL_NAME]
@@ -91,14 +92,18 @@ def observe(api):
         "pending": [
             "Mounted snapshot completion marker and all selected audio SHA-256 checks",
             "Official converted Spleeter weight recreation/cache verification",
-            "HTDemucs full checkpoint hash and CPU/runtime compatibility verification",
+            (
+                "Kim Mel-Band RoFormer full checkpoint/source hashes and CPU/runtime compatibility verification"
+                if vocal
+                else "HTDemucs full checkpoint hash and CPU/runtime compatibility verification"
+            ),
             "Account credit and current-month spend (not exposed by this inventory)",
             "Benchmark worker, hard deadline, cleanup and independent result validation",
         ],
     }
 
 
-def data_plan():
+def data_plan(*, vocal=False):
     provenance_path = ROOT / "docs/results/musdb18-training-provenance.json"
     p = json.loads(provenance_path.read_text())
     prior = json.loads((ROOT / "docs/results/persistent-pilot-41189465452.json").read_text())
@@ -119,14 +124,28 @@ def data_plan():
         "expected_audio_files": 50,
         "test_pool_used": False,
         "upstream_training_overlap": "unresolved; project validation is not a shared held-out set",
-        "spleeter_initial_sha256": prior["resume"]["initial_sha256"],
+        "spleeter_initial_sha256": (
+            json.loads((ROOT / "docs/results/spleeter2-cpu-preflight.json").read_text())[
+                "converted_sha256"
+            ]
+            if vocal
+            else prior["resume"]["initial_sha256"]
+        ),
         "evidence_scope": "repository provenance only; not a current mounted-file check",
     }
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--profile", choices=("four-stem", "vocal"), default="four-stem")
+    args = parser.parse_args()
     identity()
-    report = {"resources": observe(Runpod()), "data": data_plan()}
+    vocal = args.profile == "vocal"
+    report = {
+        "profile": args.profile,
+        "resources": observe(Runpod(), vocal=vocal),
+        "data": data_plan(vocal=vocal),
+    }
     out = ROOT / "runpod-results"
     out.mkdir(exist_ok=True)
     (out / "benchmark-preflight.json").write_text(json.dumps(report, indent=2) + "\n")

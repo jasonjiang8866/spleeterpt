@@ -25,6 +25,9 @@ class BenchmarkDeadline(Exception):
 
 def launch(api):
     repo, repo_id = identity()
+    profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
+    if profile not in ("four-stem", "vocal"):
+        raise RuntimeError("Unknown benchmark profile; refusing compute")
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     if (
@@ -58,6 +61,7 @@ def launch(api):
         "global_volume_id": global_volume["id"],
         "budget": budget,
         "task": "benchmark",
+        "benchmark_profile": profile,
     }
 
     def save():
@@ -93,6 +97,7 @@ def launch(api):
             "SPT_COMMIT": sha,
             "SPT_EXPIRY": str(expiry),
             "SPT_TASK": "benchmark",
+            "SPT_BENCHMARK_PROFILE": profile,
             "SPT_GPU_ID": MIG24,
             "PYTHONUNBUFFERED": "1",
             "SPT_GLOBAL_VOLUME_ID": global_volume["id"],
@@ -148,7 +153,9 @@ def launch(api):
                 from benchmark_result import validate
                 from finetune_result import download_export
 
-                validate(result, sha, global_volume["id"], pod_id, experiment)
+                validate(
+                    result, sha, global_volume["id"], pod_id, experiment, vocal=profile == "vocal"
+                )
                 download_export(
                     url.removesuffix("result") + "checkpoint",
                     token,

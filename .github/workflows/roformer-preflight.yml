@@ -1,0 +1,71 @@
+name: RoFormer vocal preflight (no GPU)
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/roformer-preflight]
+    paths:
+      - scripts/roformer_kim.py
+      - scripts/probe_roformer.py
+      - scripts/probe_spleeter2.py
+      - runpod/roformer-requirements.txt
+      - runpod/benchmark_preflight.py
+      - .github/workflows/roformer-preflight.yml
+permissions:
+  contents: read
+jobs:
+  inventory:
+    if: github.repository == 'jasonjiang8866/spleeterpt'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Observe resources and budget; no compute or storage creation
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          python runpod/benchmark_preflight.py --profile vocal
+          python runpod/benchmark_budget.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: roformer-inventory-${{ github.run_id }}
+          path: runpod-results/benchmark-*.json
+          if-no-files-found: error
+          retention-days: 14
+  real-weight-cpu:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+      TF_NUM_INTRAOP_THREADS: '2'
+      TF_NUM_INTEROP_THREADS: '2'
+      TF_CPP_MIN_LOG_LEVEL: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated CPU environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[evaluate]' -r runpod/roformer-requirements.txt
+          python -m pip check
+          PYTHONPATH=runpod python -c 'from benchmark_dependencies import check_scoring_runtime; check_scoring_runtime()'
+      - name: Verify real Kim weights against original-author FP32 inference
+        run: python scripts/probe_roformer.py
+      - name: Recreate and verify native official Spleeter-2 baseline
+        run: python scripts/probe_spleeter2.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: roformer-cpu-probes-${{ github.run_id }}
+          path: runpod-results/*-probe.json
+          if-no-files-found: error
+          retention-days: 14

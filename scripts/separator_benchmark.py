@@ -10,7 +10,7 @@ import resource
 import time
 from pathlib import Path
 
-from benchmark_metrics import PROTOCOL, RATE, REPEATS, STEMS, VARIANTS
+from benchmark_metrics import RATE, REPEATS, STEMS, VARIANTS
 from probe_htdemucs import COMMIT, SHA256
 
 
@@ -49,6 +49,12 @@ def demucs_separate(model, waveform, *, device="cuda"):
 
 
 def run(args):
+    from importlib import import_module
+
+    profile = import_module("vocal_metrics" if args.profile == "vocal" else "benchmark_metrics")
+    protocol, stems = profile.PROTOCOL, profile.STEMS
+    if args.model not in profile.VARIANTS:
+        raise ValueError("Model does not belong to selected benchmark profile")
     start = time.perf_counter()
     import numpy as np
     import soundfile as sf
@@ -73,11 +79,13 @@ def run(args):
         "total_memory_bytes": torch.cuda.get_device_properties(0).total_memory,
     }
     spec = json.loads(args.manifest.read_text())
+    if spec.get("profile", "four-stem") != args.profile:
+        raise ValueError("Manifest/profile mismatch")
     weight_sha = digest(args.weights)
     if weight_sha != spec["weight_sha256"][args.model]:
         raise ValueError("Weight checksum mismatch before load")
     tick = time.perf_counter()
-    if args.model == "official_converted":
+    if args.model in ("official_converted", "official_2stems"):
         from spleeterpt.audio import separate
         from spleeterpt.checkpoint import load_model
         from spleeterpt.config import ModelConfig
@@ -85,9 +93,19 @@ def run(args):
         imported += time.perf_counter() - tick
         tick = time.perf_counter()
         model = load_model(args.weights, "cuda")
-        if model.config != ModelConfig.preset(4):
+        if model.config != ModelConfig.preset(2 if args.profile == "vocal" else 4):
             raise ValueError("Unexpected Spleeter configuration")
         infer = separate
+    elif args.model == "melband_kim":
+        from roformer_kim import load_model as load_roformer
+        from roformer_kim import separate as separate_roformer
+
+        imported += time.perf_counter() - tick
+        tick = time.perf_counter()
+        model = load_roformer(args.weights.parent, device="cuda")
+        from functools import partial
+
+        infer = partial(separate_roformer, device="cuda")
     else:
         from demucs.states import load_model
 
@@ -130,7 +148,7 @@ def run(args):
 
     def checked_infer(waveform):
         outputs = infer(model, waveform)
-        if set(outputs) != set(STEMS) or any(
+        if set(outputs) != set(stems) or any(
             a.shape != waveform.shape or not torch.isfinite(a).all() for a in outputs.values()
         ):
             raise ValueError("Output shape/stem/finiteness mismatch")
@@ -186,7 +204,7 @@ def run(args):
             )
             del waveform, outputs
             if repeat:
-                for stem in STEMS:
+                for stem in stems:
                     (output_dir / f"{stem}-repeat.wav").unlink()
         tracks.append(
             {
@@ -198,7 +216,7 @@ def run(args):
                         "sha256": digest(output_dir / f"{s}.wav"),
                         "bytes": (output_dir / f"{s}.wav").stat().st_size,
                     }
-                    for s in STEMS
+                    for s in stems
                 },
             }
         )
@@ -211,9 +229,9 @@ def run(args):
         "model": args.model,
         "demucs_source_commit": COMMIT if args.model == "htdemucs" else None,
         "smoke": args.smoke,
-        "protocol": PROTOCOL,
+        "protocol": protocol,
         "protocol_sha256": hashlib.sha256(
-            json.dumps(PROTOCOL, sort_keys=True, separators=(",", ":")).encode()
+            json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest(),
         "torch": torch.__version__,
         "cuda": torch.version.cuda,
@@ -227,6 +245,15 @@ def run(args):
         "process_peak_rss_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024,
         "seconds": time.perf_counter() - start,
     }
+    if args.profile == "vocal":
+        from roformer_kim import peak_rss_bytes, recipe_sha256
+
+        report.update(
+            profile="vocal",
+            rss_source="/proc/self/status VmHWM",
+            process_peak_rss_bytes=peak_rss_bytes(),
+            roformer_recipe_sha256=recipe_sha256() if args.model == "melband_kim" else None,
+        )
     (args.output / "measurements.json").write_text(
         json.dumps(report, indent=2, allow_nan=False) + "\n"
     )
@@ -234,7 +261,8 @@ def run(args):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=VARIANTS, required=True)
+    p.add_argument("--model", choices=(*VARIANTS, "official_2stems", "melband_kim"), required=True)
+    p.add_argument("--profile", choices=("four-stem", "vocal"), default="four-stem")
     p.add_argument("--weights", type=Path, required=True)
     p.add_argument("--manifest", type=Path, required=True)
     p.add_argument("--data", type=Path, required=True)

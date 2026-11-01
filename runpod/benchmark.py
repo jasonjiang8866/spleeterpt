@@ -19,7 +19,7 @@ from global_inputs import PREFIX, checked_path, copy_file, copy_inputs, encoded,
 from quality import ROOT, command, digest, download
 
 sys.path.insert(0, str(ROOT / "scripts"))
-from benchmark_metrics import PROTOCOL, RATE, STEMS, VARIANTS, summarize, validate_baseline
+from benchmark_metrics import RATE, VARIANTS, validate_baseline
 from finetune_evaluation import validate_records, validation_inventory
 from musdb_evaluation import atomic_json, score_variants
 from probe_htdemucs import SHA256 as DEMUCS_SHA
@@ -88,6 +88,48 @@ def weights(folder):
     return dict(zip(VARIANTS, (initial, demucs)))
 
 
+def vocal_weights(folder):
+    from roformer_kim import prepare
+    from vocal_metrics import WEIGHTS
+
+    folder.mkdir()
+    archive = download("2stems.tar.gz", folder)
+    with tarfile.open(archive) as tar:
+        tar.extractall(folder / "weights", filter="data")
+    initial = folder / "initial.pt"
+    command(
+        sys.executable,
+        "-m",
+        "spleeterpt.cli",
+        "convert",
+        "--checkpoint",
+        folder / "weights/model",
+        "--stems",
+        "2",
+        "--output",
+        initial,
+    )
+    if digest(initial) != WEIGHTS["official_2stems"]:
+        raise ValueError("Recreated two-stem baseline checksum mismatch")
+    return {"official_2stems": initial, "melband_kim": prepare(folder / "roformer")}
+
+
+def targets_for_track(track_id, track, *, vocal=False):
+    targets = {}
+    for stem in ("mixture", "vocals", "drums", "bass", "other"):
+        path = Path("/data/musdb18/train-pool") / track_id.removeprefix("train/") / f"{stem}.wav"
+        if digest(path) != track["files"][stem]["sha256"]:
+            raise ValueError("Target changed after staging")
+        targets[stem] = load_audio(path, track["samples"])
+    if vocal:
+        return {
+            "mixture": targets["mixture"],
+            "vocals": targets["vocals"],
+            "accompaniment": targets["drums"] + targets["bass"] + targets["other"],
+        }
+    return targets
+
+
 def load_audio(path, samples):
     import numpy as np
     import soundfile as sf
@@ -124,7 +166,11 @@ def listening(out, index, track_id, samples, targets, variants, labels):
     }
 
 
-def run():
+def run(*, vocal=False):
+    from benchmark_result import profile
+
+    p = profile(vocal)
+    protocol, stems, variant_names = p.PROTOCOL, p.STEMS, p.VARIANTS
     from threadpoolctl import threadpool_limits
 
     started = time.monotonic()
@@ -140,7 +186,7 @@ def run():
         "experiment": experiment,
         "storage": storage,
         "provenance_json": provenance,
-        "protocol": PROTOCOL,
+        "protocol": protocol,
         "phase": "staged",
         "smoke_measurements": {},
         "measurements": {},
@@ -160,8 +206,9 @@ def run():
     )
     work = Path("/workspace/benchmark")
     work.mkdir()
-    checkpoints = weights(work / "assets")
+    checkpoints = vocal_weights(work / "assets") if vocal else weights(work / "assets")
     spec = {
+        "profile": "vocal" if vocal else "four-stem",
         "tracks": [
             {
                 "id": t,
@@ -178,11 +225,13 @@ def run():
     checkpoint("weights-verified")
     measurements, smoke_measurements = {}, {}
     for smoke in (True, False):
-        for variant in VARIANTS:
+        for variant in variant_names:
             output = work / (("smoke-" if smoke else "") + variant)
             command(
                 sys.executable,
                 "scripts/separator_benchmark.py",
+                "--profile",
+                "vocal" if vocal else "four-stem",
                 "--model",
                 variant,
                 "--weights",
@@ -198,7 +247,7 @@ def run():
             measured = json.loads((output / "measurements.json").read_text())
             from benchmark_result import validate_measurement
 
-            validate_measurement(measured, variant, expected, smoke=smoke)
+            validate_measurement(measured, variant, expected, smoke=smoke, vocal=vocal)
             if smoke:
                 smoke_measurements[variant] = measured
                 partial["smoke_measurements"][variant] = measured
@@ -210,24 +259,18 @@ def run():
             # Measure real full-song BSSEval too, before committing to the ten-song pass.
             first_id = min(expected)
             first = expected[first_id]
-            targets = {
-                s: load_audio(
-                    Path("/data/musdb18/train-pool") / first_id.removeprefix("train/") / f"{s}.wav",
-                    first["samples"],
-                )
-                for s in ("mixture", *STEMS)
-            }
+            targets = targets_for_track(first_id, first, vocal=vocal)
             variants = {
                 v: {
                     s: load_audio(work / ("smoke-" + v) / "track-00" / f"{s}.wav", first["samples"])
-                    for s in STEMS
+                    for s in stems
                 }
-                for v in VARIANTS
+                for v in variant_names
             }
             tick = time.monotonic()
             with threadpool_limits(limits=2):
                 score_variants(
-                    targets, variants, STEMS, length_policy="strict", variant_names=VARIANTS
+                    targets, variants, stems, length_policy="strict", variant_names=variant_names
                 )
             scoring_seconds = time.monotonic() - tick
             ratio = sum(t["samples"] for t in expected.values()) / first["samples"]
@@ -252,32 +295,23 @@ def run():
                     "One-song projection exceeds remaining lease; no full pass started"
                 )
             del targets, variants
-            for variant in VARIANTS:
+            for variant in variant_names:
                 shutil.rmtree(work / ("smoke-" + variant))
     # Both model processes have exited. Scoring cannot consume GPU model memory.
     out = work / "export"
     out.mkdir()
     records, clips = [], []
-    shuffled = list(VARIANTS)
+    shuffled = list(variant_names)
     random.SystemRandom().shuffle(shuffled)
     labels = dict(zip(("A", "B"), shuffled))
     scoring_started = time.monotonic()
     with threadpool_limits(limits=2):
         for index, (track_id, track) in enumerate(sorted(expected.items())):
-            targets = {}
-            for stem in ("mixture", *STEMS):
-                path = (
-                    Path("/data/musdb18/train-pool")
-                    / track_id.removeprefix("train/")
-                    / f"{stem}.wav"
-                )
-                if digest(path) != track["files"][stem]["sha256"]:
-                    raise ValueError("Target changed after staging")
-                targets[stem] = load_audio(path, track["samples"])
+            targets = targets_for_track(track_id, track, vocal=vocal)
             variants = {}
-            for variant in VARIANTS:
+            for variant in variant_names:
                 variants[variant] = {}
-                for stem in STEMS:
+                for stem in stems:
                     path = work / variant / f"track-{index:02d}" / f"{stem}.wav"
                     if (
                         digest(path)
@@ -291,7 +325,7 @@ def run():
                 "decoded_samples": track["samples"],
                 "segment_start_sample": 0,
                 **score_variants(
-                    targets, variants, STEMS, length_policy="strict", variant_names=VARIANTS
+                    targets, variants, stems, length_policy="strict", variant_names=variant_names
                 ),
             }
             records.append(record)
@@ -304,11 +338,13 @@ def run():
                 )
             del targets, variants
             print(f"Progress: evaluated validation songs {index + 1}/10", flush=True)
-    validate_records(records, expected, variants=VARIANTS)
-    summary = summarize(records)
-    validate_baseline(
-        summary, json.loads((ROOT / "docs/results/step90-validation-41196010747.json").read_text())
-    )
+    validate_records(records, expected, variants=variant_names, stems=stems)
+    summary = p.summarize(records)
+    if not vocal:
+        validate_baseline(
+            summary,
+            json.loads((ROOT / "docs/results/step90-validation-41196010747.json").read_text()),
+        )
     (out / "LISTENING.txt").write_text(
         "MUSDB18 AAC research excerpts; original source-specific licenses apply.\n"
         "https://sigsep.github.io/datasets/musdb.html ; https://zenodo.org/records/1117372\n"
@@ -318,13 +354,13 @@ def run():
     )
     atomic_json(out / "ANSWERS.json", labels)
     report = {
-        "kind": "spleeter4-htdemucs",
+        "kind": "spleeter2-melband-kim" if vocal else "spleeter4-htdemucs",
         "commit": os.environ["SPT_COMMIT"],
         "pod_id": pod_id,
         "experiment": experiment,
         "storage": storage,
-        "protocol": PROTOCOL,
-        "protocol_sha256": hashlib.sha256(encoded(PROTOCOL)).hexdigest(),
+        "protocol": protocol,
+        "protocol_sha256": hashlib.sha256(encoded(protocol)).hexdigest(),
         "provenance_json": provenance,
         "weight_sha256": spec["weight_sha256"],
         "measurements": measurements,
@@ -398,6 +434,7 @@ def run():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--profile", choices=("four-stem", "vocal"), default="four-stem")
     args = parser.parse_args()
-    result = run()
+    result = run(vocal=args.profile == "vocal")
     atomic_json(args.output, result)

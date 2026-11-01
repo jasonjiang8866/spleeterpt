@@ -36,23 +36,23 @@ PROTOCOL = {
 }
 
 
-def summarize(records):
-    summary = summarize_pair(records, variants=VARIANTS)
+def summarize(records, *, variants=VARIANTS, stems=STEMS):
+    summary = summarize_pair(records, variants=variants, stems=stems)
     # Always provide common finite-frame SDR, even when individual coverage is equal.
     common = {}
-    for stem in STEMS:
-        song_values = {v: [] for v in VARIANTS}
+    for stem in stems:
+        song_values = {v: [] for v in variants}
         counts = {}
         deltas = []
         for record in records:
             a, b = [
                 [decode_number(x) for x in record["scores"][v][stem]["bsseval_v4"]["sdr"]]
-                for v in VARIANTS
+                for v in variants
             ]
             pairs = [(x, y) for x, y in zip(a, b) if math.isfinite(x) and math.isfinite(y)]
             counts[record["id"]] = {"total": len(a), "common_finite": len(pairs)}
             medians = [stats.median(p[i] for p in pairs) if pairs else None for i in (0, 1)]
-            for v, median in zip(VARIANTS, medians):
+            for v, median in zip(variants, medians):
                 song_values[v].append(median)
             deltas.append(medians[1] - medians[0] if pairs else None)
         common[stem] = {
