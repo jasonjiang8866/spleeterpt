@@ -1,12 +1,51 @@
 # spleeterpt
 
 A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter),
-with official weight conversion, audio separation, and a single-GPU training entry
-point for RunPod. This is an independent project, not an official Deezer release.
+with official weight conversion, **bounded-memory long-audio inference**, and a
+single-GPU training entry point for RunPod. This is an independent project, not an
+official Deezer release.
 
+[Long-audio inference](#long-audio-inference-with-bounded-memory) ·
 [Beginner's stem guide](#what-is-a-stem-and-which-model-should-i-choose) ·
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
 [When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
+
+## Long-audio inference with bounded memory
+
+**Separate longer recordings without CPU/GPU working memory growing with audio
+duration.** The opt-in `--bounded-memory` path reads audio, processes spectral
+windows, reconstructs overlapping samples and writes stems incrementally. For a
+fixed checkpoint and window configuration, working memory stays bounded while
+output files grow on disk. This makes long recordings and sequential batch jobs
+practical without holding full-track spectrograms or stem waveforms in memory.
+
+This is an added capability over **Deezer Spleeter's standard file pipeline**,
+which [loads the requested audio, separates it and then saves the complete stem arrays](https://github.com/deezer/spleeter/blob/master/spleeter/separator.py).
+The official converted weights, model windows and acoustic parameters stay the same;
+no retraining is needed.
+
+**Measured on an RTX PRO 6000 24GB MIG: about 96.7% lower peak allocated CUDA
+memory for 10-minute synthetic audio**, compared with this port's original path:
+
+| Official checkpoint | Original path | Bounded-memory path |
+|---|---:|---:|
+| 2-stem | 7,367 MiB | **244 MiB** |
+| 4-stem | 13,921 MiB | **462 MiB** |
+
+The bounded peaks were unchanged between 1-minute and 10-minute inputs. Across
+the measured official 2/4-stem GPU comparisons, including real-music prefixes,
+the maximum absolute waveform difference was **5.22e-7**. These are comparisons
+against this port's original inference path, not a TensorFlow/upstream memory
+benchmark or a claim of better separation quality.
+
+Add `--bounded-memory` to `spleeterpt separate` to enable it. The file interface
+requires seekable mono/stereo audio at the checkpoint sample rate (44.1 kHz for
+official presets) and a new output directory. It is intended for offline file
+processing; production acceptance and low-latency live audio are outside this
+validation scope.
+
+[Usage and batch API](#long-audio-and-batch-jobs-opt-in) ·
+[Benchmark evidence, numerical tolerances and limitations](docs/bounded-memory.md)
 
 ## What is a stem, and which model should I choose?
 
