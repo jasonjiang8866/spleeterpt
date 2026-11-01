@@ -1,10 +1,11 @@
 # Spleeter-4 versus HTDemucs: preparation and predeclared screen
 
 Prepared 2026-11-01 (Asia/Singapore), from `fd7d8a844a28cca53f04ec94ee4f9f8123812d29`.
-This document defines the controlled experiment. **No competitor music-quality
-result is available.** The first paid GPU smoke reached both models, then stopped
-at a missing scoring dependency; see the run record below. RoFormer evaluation remains a
-separate task. Official converted Spleeter weights remain the baseline.
+This document preserves the predeclared controlled experiment. The corrected
+[ten-song comparison completed successfully](separator-benchmark-41277234620.md)
+in run 41277234620. The first paid GPU smoke stopped at a missing scoring
+dependency; its historical record is below. RoFormer evaluation remains a separate
+task. Official converted Spleeter weights remain the port's compatibility baseline.
 
 ## Inputs and provenance
 
@@ -24,7 +25,7 @@ unless genuine HQ files are independently acquired and verified.
 
 | Input | Existing evidence | Required before inference |
 |---|---|---|
-| Regional source | `j3aqjpw393`, EU-RO-1, 80 GB STANDARD | Observe identity; no migration or deletion |
+| Historical regional source | `j3aqjpw393`, EU-RO-1, 80 GB STANDARD; user confirmed deletion on 2026-11-01 | Not required for this benchmark; do not recreate |
 | Global Volume | Named `spt-1436489970-step90-inputs-v1` | Resolve unique current ID with GET; reuse it |
 | Validation snapshot | `/global/step90-validation-v1`; prior 58-file export includes historical pilot checkpoints | Verify completion marker, pinned provenance and all 50 selected audio hashes; stage only needed inputs to local POSIX disk |
 | Full training snapshot | `/global/musdb18-training-v1`, 503 files / 40,342,607,284 bytes in prior report | Do not restage full training pool for this experiment |
@@ -36,6 +37,10 @@ repository does **not** establish that the converted official file is cached on
 Global Volume. Do not infer cache existence from retained fine-tuned weights.
 Repository evidence and a live API volume listing do not prove current object
 integrity: mounted read-back checks are a separate launch gate.
+
+The user subsequently confirmed that the historical regional volume was deleted.
+The first GPU trial verified the required validation objects directly from Global
+Volume, so this comparison has no remaining dependency on that regional volume.
 
 ## Model and environment recipe
 
@@ -155,8 +160,23 @@ the workflow also runs a read-only GraphQL account query. Neither can create
 compute or storage. The inventory deliberately reports
 `ready_for_paid_run=false`: API inventory, mounted-byte verification, credit,
 CPU/GPU compatibility and a complete benchmark worker are distinct checks.
-The worker and controller are implemented. The first paid trial is recorded below;
-the ten-song quality/speed comparison remains incomplete.
+The worker and controller are implemented. Both the failed first trial and the
+successful corrected trial are recorded below. The original readiness observations
+above are historical; the corrected trial passed live budget and mounted-input gates.
+
+## Completed corrected trial
+
+[Run 41277234620](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41277234620)
+used merged fix `04353111e774afc75a43b1ec2d4a550ecdc9fa70` and completed all ten
+full-song comparisons with three inference repeats. Both metrics favor HTDemucs
+on every song/stem; Spleeter is faster and HTDemucs uses less allocated CUDA memory.
+The official baseline reproduces within 0.000001348 dB. The 50 test songs remain unused.
+
+Creation-to-cleanup took 1601.31 seconds at $0.69/hour, approximately $0.30692 in
+compute. Both controller and follow-up cleanup succeeded; the created Pod is gone.
+Checksummed metrics and A/B clips are retained in Global Volume at
+`/global/benchmarks/41277234620-1/`. No regional volume was required or recreated.
+[Full report and measurement limitations](separator-benchmark-41277234620.md).
 
 ## First GPU trial: scoring dependency failure
 

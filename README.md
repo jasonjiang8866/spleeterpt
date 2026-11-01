@@ -23,8 +23,10 @@ complex mixture STFT before Hann overlap-add reconstruction.
 
 Research reviewed **2026-11-01 (SGT)**. This is a practical selection of public
 model families and widely integrated alternatives, not a market-share ranking.
-**Competitors have not been benchmarked in this repository.** Architecture,
-checkpoint, training data and inference settings all affect the result.
+**The first same-device Spleeter-4 / HTDemucs screen is now complete**;
+[measured results](docs/separator-benchmark-41277234620.md) are separate from
+this research table. Architecture, checkpoint, training data and inference
+settings all affect the result.
 
 | Model family | Core architecture | Typical released targets | Choose it for | Main qualification |
 |---|---|---|---|---|
@@ -66,11 +68,12 @@ challengers; this project does not claim the best current separation quality.
 
 For final vocal extraction, audition a pinned **Mel-Band / BS-RoFormer** checkpoint;
 for a four-stem comparison, start with **HTDemucs**, then **SCNet** and a suitable
-four-stem RoFormer setup. These are evaluation priorities, not measured winners.
+four-stem RoFormer setup. HTDemucs now has local measurements below; the other
+families remain evaluation priorities.
 Our default high-band truncation and mixture-phase masks are limitations for
 full-band, high-fidelity deliverables. Fixed inference windows do not make this
-implementation streaming: the full STFT remains in memory. No same-device claim
-of fastest inference, lowest VRAM or lowest cost has been established.
+implementation streaming: the full STFT remains in memory. The measurements below
+apply to these two pinned configurations on one MIG workload, not all models or devices.
 
 The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
 keeps the existing ten-song validation screen separate from a future final test.
@@ -78,16 +81,50 @@ The [Spleeter-4 / HTDemucs preparation](docs/spleeter4-htdemucs-protocol.md)
 specifies the first controlled screen, resource checks, runtime compatibility
 probe and budget. The [bounded benchmark workflow](.github/workflows/runpod-benchmark.yml)
 runs isolated models with three full-song repeats, paired CPU scoring and compute
-cleanup. It requires an explicit dispatch on `main`; no competitor music-quality
-result is available yet.
+cleanup. It requires an explicit dispatch on `main`.
 The [first GPU trial](docs/spleeter4-htdemucs-protocol.md#first-gpu-trial-scoring-dependency-failure)
 verified the 50 validation WAVs and both first-song GPU inference paths, then stopped
 because scoring needed missing `ffmpeg/ffprobe`. Compute was deleted (about $0.0266
 estimated); the correction checks scoring dependencies early and retains partial
-measurements. The ten-song comparison has not completed.
+measurements. The corrected ten-song comparison subsequently passed.
 The 2026-11-01 12:10 SGT read-only inventory found the existing Global Volume,
 zero account Pods and MIG 24GB catalog capacity at $0.69/hour. The original regional
-volume was not found; older regional-storage statements below are historical.
+volume was not found, and the user later confirmed its deletion. This benchmark
+uses Global Volume; older regional-storage statements below are historical.
+
+### Measured Spleeter-4 / HTDemucs comparison
+
+[Run 41277234620](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41277234620)
+completed all ten full validation songs (30.37 minutes), with three FP32 inference
+repeats per song on PRO 6000 Blackwell MIG 1g.24gb. **HTDemucs scores higher on
+every song and stem under both BSSEval SDR and global stereo SI-SDR.** This is
+MUSDB18 **AAC**, from the project's training-pool split; upstream pretrained
+training overlap is unresolved. It is not an unbiased held-out HQ leaderboard.
+All 50 test songs remain unused.
+
+| BSSEval-v4 SDR (dB) | Spleeter official | HTDemucs | Median paired Δ |
+|---|---:|---:|---:|
+| vocals | 7.446 | 9.267 | +2.352 |
+| drums | 5.587 | 10.140 | +4.395 |
+| bass | 4.645 | 10.594 | +5.152 |
+| other | 4.382 | 7.921 | +3.319 |
+
+Paired Δ is the median of within-song changes, not subtraction of aggregate medians.
+
+| Same-workload measurement | Spleeter official | HTDemucs |
+|---|---:|---:|
+| Inference seconds, sum of song medians | 10.532 | 47.701 |
+| Local WAV end-to-end seconds | 17.626 | 54.417 |
+| Peak allocated CUDA memory (GiB) | 6.926 | 0.560 |
+| End-to-end compute USD / audio hour | 0.00667 | 0.02060 |
+
+Spleeter is faster here; HTDemucs improves measured quality and uses less GPU
+memory with its 7.8-second split inference. Timing excludes setup/loading/warmup
+and scoring; modeled cost uses the actual $0.69/hour quote and excludes storage
+and request charges. The successful experiment cost approximately **$0.30692** in
+compute (**$0.33352** including the earlier failed trial), and its Pod was deleted.
+Raw CPU RSS counters are not a valid isolated memory comparison; see the report.
+[Full results, SI-SDR, raw timing repeats, limitations and A/B package details](docs/separator-benchmark-41277234620.md).
 
 ## Current progress — 2026-11-01 (SGT)
 
@@ -101,8 +138,9 @@ volume was not found; older regional-storage statements below are historical.
 | Full training data | Official MUSDB18 AAC archive verified; 100 full songs (~6.35 h), project-specific 90/10 train/validation split; all 50 test songs untouched |
 | Persistent training pilot | Passed: 80 GB persistent volume, all 500 audio hashes verified, step 10 → replacement Pod → step 90 / epoch 1, all ten validation songs; checkpoint generation every ten steps |
 | Quality / convergence | Matched normal/frozen-BN 90-step trial complete on MIG with Global Volume: freezing avoids collapse but does not beat official weights consistently. Convergence and the full test benchmark remain unverified |
+| Four-stem comparison | Ten-song AAC screen complete: HTDemucs improves both metrics on every song/stem; Spleeter has 4.53× faster inference, while HTDemucs uses less allocated GPU memory. Test pool untouched |
 
-**Latest quality result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
+**Latest training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
 
 **Earlier ordinary-BN result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
 

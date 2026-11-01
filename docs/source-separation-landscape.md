@@ -12,6 +12,14 @@ weights as its compatibility baseline, compare HTDemucs first for four stems,
 and add a pinned vocal RoFormer in a separate vocal/accompaniment track. SCNet is
 a useful subsequent efficiency candidate. These are our evaluation priorities.
 
+**Local measurement update:** the subsequent
+[Spleeter-4 / HTDemucs screen](separator-benchmark-41277234620.md) completed ten
+full AAC-derived validation songs on PRO 6000 MIG 24GB. HTDemucs improved both
+metrics on all songs/stems; this Spleeter port was 4.53× faster in inference,
+while HTDemucs used less allocated GPU memory. Training overlap is unresolved,
+so these local numbers are kept separate from the published HQ results below.
+The untouched 50-song test set and separate RoFormer vocal evaluation remain pending.
+
 ## Architecture map
 
 [![Architecture comparison of seven music source-separation families](assets/separator-architectures.svg)](assets/separator-architectures.svg)
