@@ -140,6 +140,7 @@ def paired_metrics(reference, estimate):
         "max_abs_error": maximum,
         "rms_error": math.sqrt(error2 / count),
         "reference_peak": reference_max,
+        "reference_rms": math.sqrt(sums[2] / count),
         "legacy_reference_si_sdr_db": score,
         "si_sdr_status": "finite"
         if score is not None
@@ -147,6 +148,22 @@ def paired_metrics(reference, estimate):
         if xx == 0
         else "exact_or_degenerate_projection",
     }
+
+
+def acceptance(metrics, args):
+    """Absolute limits for near-silent outputs, relative agreement otherwise."""
+    if metrics["max_abs_error"] > args.max_abs_error:
+        return "failed_absolute_error"
+    if metrics["max_abs_error"] == 0:
+        return "exact"
+    if (
+        metrics["reference_rms"] <= 1e-5
+        and metrics["rms_error"] <= 1e-8
+        and metrics["max_abs_error"] <= 1e-7
+    ):
+        return "near_silent_absolute"
+    score = metrics["legacy_reference_si_sdr_db"]
+    return "relative_si_sdr" if score is not None and score >= args.min_si_sdr else "failed_si_sdr"
 
 
 def make_input(path, config, seconds, input_path):
@@ -217,7 +234,13 @@ def main():
         "threads": args.threads,
         "warmup_windows": args.warmup,
         "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
-        "thresholds": {"max_abs_error": args.max_abs_error, "min_si_sdr_db": args.min_si_sdr},
+        "thresholds": {
+            "max_abs_error": args.max_abs_error,
+            "min_si_sdr_db": args.min_si_sdr,
+            "near_silent_reference_rms": 1e-5,
+            "near_silent_rms_error": 1e-8,
+            "near_silent_max_abs_error": 1e-7,
+        },
         "cases": [],
     }
     success = True
@@ -254,16 +277,10 @@ def main():
                 )
                 for name in config.instruments
             }
+            for metrics in case["stems"].values():
+                metrics["acceptance"] = acceptance(metrics, args)
             case["numerical_pass"] = all(
-                m["max_abs_error"] <= args.max_abs_error
-                and (
-                    m["max_abs_error"] == 0
-                    or (
-                        m["legacy_reference_si_sdr_db"] is not None
-                        and m["legacy_reference_si_sdr_db"] >= args.min_si_sdr
-                    )
-                )
-                for m in case["stems"].values()
+                not m["acceptance"].startswith("failed") for m in case["stems"].values()
             )
             success &= case["numerical_pass"]
             report["cases"].append(case)

@@ -34,6 +34,11 @@ def fixture():
         for kind in ("synthetic", "real"):
             bench = copy.deepcopy(base)
             bench.update(source_commit="a" * 40, requested_device="cuda", input_sha256="b" * 64)
+            bench["thresholds"].update(
+                near_silent_reference_rms=1e-5,
+                near_silent_rms_error=1e-8,
+                near_silent_max_abs_error=1e-7,
+            )
             if kind == "real":
                 bench["cases"] = bench["cases"][:3]
             else:
@@ -41,6 +46,7 @@ def fixture():
             for case in bench["cases"]:
                 for m in case["stems"].values():
                     m["samples_per_channel"] = int(case["seconds"] * 44100)
+                    m["reference_rms"] = 0.1
                 for m in case["measurements"]:
                     peak = 1000 if m["mode"] == "bounded" else case["seconds"] * 40
                     m.update(
@@ -61,6 +67,27 @@ class Tests(unittest.TestCase):
 
     def test_complete_fixture(self):
         self.check(fixture())
+
+    def test_near_silent_requires_small_absolute_errors(self):
+        result = fixture()
+        metric = result["report"]["benchmarks"]["4stems-real"]["cases"][1]["stems"]["bass"]
+        metric.update(
+            reference_rms=3e-6,
+            rms_error=6.5e-11,
+            max_abs_error=2.5e-9,
+            legacy_reference_si_sdr_db=94,
+        )
+        self.check(result)
+        for changed in (
+            {"rms_error": 2e-8},
+            {"max_abs_error": 2e-7},
+            {"reference_rms": 0.1},
+            {"reference_rms": float("nan")},
+        ):
+            bad = copy.deepcopy(result)
+            bad["report"]["benchmarks"]["4stems-real"]["cases"][1]["stems"]["bass"].update(changed)
+            with self.assertRaises(ValueError):
+                self.check(bad)
 
     def test_bad_evidence_rejected_even_with_pass_flag(self):
         for mutation in (

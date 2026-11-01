@@ -81,6 +81,21 @@ def run(output):
             raise RuntimeError("CUDA 2/4/5-stem regression did not pass")
         for stems in (2, 4):
             checkpoint = download_model(f"{stems}stems", work / "weights")
+            if stems == 4:
+                command(
+                    sys.executable,
+                    "scripts/diagnose_bounded.py",
+                    "--checkpoint",
+                    checkpoint,
+                    "--input",
+                    real,
+                    "--device",
+                    "cuda",
+                    "--output",
+                    export / "diagnostic.json",
+                )
+                report["diagnostic"] = json.loads((export / "diagnostic.json").read_text())
+                save()
             for kind, durations in (("synthetic", [1, 12, 60, 600]), ("real", [1, 12, 60])):
                 key = f"{stems}stems-{kind}"
                 destination = export / f"{key}.json"

@@ -141,7 +141,11 @@ reference**. It quantifies implementation agreement, not separation quality
 against isolated sources or MUSDB SDR. Silence/constant-reference cases are
 marked undefined; exact matches are accepted without fabricating an infinite score.
 Defaults require maximum absolute waveform error <= 2e-6 and SI-SDR >= 100 dB
-(or an exact match), suitable for these normalized FP32 fixtures. JSON includes
+(or an exact match), suitable for these normalized FP32 fixtures. For near-silent
+reference stems (RMS <= 1e-5, -100 dBFS), the alternative is **both** RMS error
+<= 1e-8 (-160 dBFS) **and** peak error <= 1e-7 (-140 dBFS). Every stem records
+its reference RMS and the acceptance rule used; non-silent stems retain the
+100 dB requirement. JSON includes
 checkpoint/input hashes, configuration, versions and per-stem metrics.
 
 ### Measured CPU results (2026-11-01)
@@ -187,6 +191,16 @@ requires bounded allocated memory <= 1.10x + 32 MiB and at 600 seconds less than
 half the legacy allocation. Partial evidence is retained if acceptance fails.
 Shared-MIG timings do not control for other tenants. A single experiment is not
 a throughput/concurrency or reliability qualification.
+
+The [first GPU experiment](results/bounded-mig-initial.json) was retained as a
+**failed strict-gate run**, not relabeled as passing. All durations completed,
+but the real 12-second bass stem scored 94.23 dB against a universal 100 dB gate,
+despite peak error 2.41e-9 and RMS error 6.45e-11. This prompted the explicit
+near-silence rule above and a second run with a 12-second FFT diagnostic.
+`scripts/diagnose_bounded.py` compares normal block FFTs with cached full-song
+STFT slices to isolate FFT-batch differences from synthesis grouping. This short
+diagnostic intentionally holds a full spectrum and is excluded from timing and
+memory measurement processes. Its cache is never used by production inference.
 
 Production acceptance remains separate: test official weights and representative recordings
 on target GPUs, memory across longer durations and repeated jobs, numerical

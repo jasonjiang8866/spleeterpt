@@ -53,7 +53,14 @@ def validate(result, sha, volume, pod, experiment):
             or bench["requested_device"] != "cuda"
             or bench["numerical_pass"] is not True
             or bench["config"]["instruments"] != list(stems)
-            or bench["thresholds"] != {"max_abs_error": 2e-6, "min_si_sdr_db": 100.0}
+            or bench["thresholds"]
+            != {
+                "max_abs_error": 2e-6,
+                "min_si_sdr_db": 100.0,
+                "near_silent_reference_rms": 1e-5,
+                "near_silent_rms_error": 1e-8,
+                "near_silent_max_abs_error": 1e-7,
+            }
         ):
             raise ValueError("Checkpoint/protocol mismatch")
         for name, value in {
@@ -79,12 +86,21 @@ def validate(result, sha, volume, pod, experiment):
                 raise ValueError("Missing stem metrics")
             for m in case["stems"].values():
                 score, error = m["legacy_reference_si_sdr_db"], m["max_abs_error"]
+                quiet = (
+                    number(m["reference_rms"])
+                    and m["reference_rms"] <= 1e-5
+                    and number(m["rms_error"])
+                    and m["rms_error"] <= 1e-8
+                    and number(error)
+                    and error <= 1e-7
+                )
                 if (
                     m["samples_per_channel"] != round(case["seconds"] * 44100)
                     or not number(error)
                     or error > 2e-6
                     or not number(m["rms_error"])
-                    or (error != 0 and (not number(score) or score < 100))
+                    or not number(m["reference_rms"])
+                    or (error != 0 and not quiet and (not number(score) or score < 100))
                 ):
                     raise ValueError("Numerical comparison failed")
             if [m["mode"] for m in case["measurements"]] != ["legacy", "bounded"]:

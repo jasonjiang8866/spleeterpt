@@ -1,0 +1,1342 @@
+{
+  "status": "failed",
+  "error": "RuntimeError",
+  "report": {
+    "kind": "bounded-memory-v1",
+    "commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+    "pod_id": "4werua6i2qjwr8",
+    "experiment": "41308214212-1",
+    "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+    "gpu_runtime": {
+      "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "device_count": 1,
+      "capability": [
+        12,
+        0
+      ],
+      "total_memory_bytes": 25367150592
+    },
+    "benchmarks": {
+      "2stems-synthetic": {
+        "source_commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+        "checkpoint_sha256": "2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532",
+        "config": {
+          "instruments": [
+            "vocals",
+            "accompaniment"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "leaky_relu",
+          "decoder_activation": "relu",
+          "mask_activation": "sigmoid",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "synthetic_tones_chirp_envelope",
+        "input_sha256": null,
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "abba6c389fda4f3c18b8721a80eeff00c904a68d19923db5ca230b78b6e23e99",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.1257239889819175,
+                "process_peak_rss_mib": 1117.7890625,
+                "pre_inference_peak_rss_mib": 1109.7890625,
+                "cuda_peak_allocated_mib": 179.9560546875,
+                "cuda_peak_reserved_mib": 224.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.05513863998930901,
+                "process_peak_rss_mib": 1135.29296875,
+                "pre_inference_peak_rss_mib": 1077.25390625,
+                "cuda_peak_allocated_mib": 176.3544921875,
+                "cuda_peak_reserved_mib": 224.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.0012626142706722021,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "accompaniment": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.1995507925748825,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "b705ce242e84786efb1be3a0bfac3902b9e01ea2b802b6a145e3344c4a301b04",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.09567309403792024,
+                "process_peak_rss_mib": 1101.20703125,
+                "pre_inference_peak_rss_mib": 1078.65625,
+                "cuda_peak_allocated_mib": 241.591796875,
+                "cuda_peak_reserved_mib": 330.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.11179916397668421,
+                "process_peak_rss_mib": 1144.38671875,
+                "pre_inference_peak_rss_mib": 1074.37109375,
+                "cuda_peak_allocated_mib": 243.45703125,
+                "cuda_peak_reserved_mib": 324.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.9967515640928468e-08,
+                "rms_error": 4.501143424654285e-10,
+                "reference_peak": 0.04101797938346863,
+                "legacy_reference_si_sdr_db": 146.79484795648793,
+                "si_sdr_status": "finite"
+              },
+              "accompaniment": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 8.940696716308594e-08,
+                "rms_error": 2.1676688252226488e-09,
+                "reference_peak": 0.19983403384685516,
+                "legacy_reference_si_sdr_db": 150.3643885773438,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "81246a2646801864fdd3a3ca60b832d94fcc48764e4a0a58d10b1337d1ffe29d",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.3157179760746658,
+                "process_peak_rss_mib": 1172.80859375,
+                "pre_inference_peak_rss_mib": 1076.12890625,
+                "cuda_peak_allocated_mib": 823.9345703125,
+                "cuda_peak_reserved_mib": 1118.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.32417375093791634,
+                "process_peak_rss_mib": 1166.26171875,
+                "pre_inference_peak_rss_mib": 1076.8203125,
+                "cuda_peak_allocated_mib": 243.50390625,
+                "cuda_peak_reserved_mib": 324.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.553815565102923e-08,
+                "rms_error": 2.835391658597182e-10,
+                "reference_peak": 0.04101797938346863,
+                "legacy_reference_si_sdr_db": 143.8267483490576,
+                "si_sdr_status": "finite"
+              },
+              "accompaniment": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 7.548665648792969e-10,
+                "reference_peak": 0.1999984234571457,
+                "legacy_reference_si_sdr_db": 159.67243890475848,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 600.0,
+            "input_sha256": "7994efbd5a837c8f1f7d57ed9a899a5490dad235ae488689fd3c2b9acccf903c",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 2.615850929985754,
+                "process_peak_rss_mib": 1887.546875,
+                "pre_inference_peak_rss_mib": 1074.77734375,
+                "cuda_peak_allocated_mib": 7367.140625,
+                "cuda_peak_reserved_mib": 9526.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 2.3907397909788415,
+                "process_peak_rss_mib": 1169.03125,
+                "pre_inference_peak_rss_mib": 1079.01953125,
+                "cuda_peak_allocated_mib": 243.50390625,
+                "cuda_peak_reserved_mib": 324.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 5.820766091346741e-11,
+                "rms_error": 3.5830918575080416e-14,
+                "reference_peak": 0.04101797938346863,
+                "legacy_reference_si_sdr_db": 212.06383818583245,
+                "si_sdr_status": "finite"
+              },
+              "accompaniment": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 2.4612562842998016e-10,
+                "reference_peak": 0.1999984234571457,
+                "legacy_reference_si_sdr_db": 169.31635504097795,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "2stems-real": {
+        "source_commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+        "checkpoint_sha256": "2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532",
+        "config": {
+          "instruments": [
+            "vocals",
+            "accompaniment"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "leaky_relu",
+          "decoder_activation": "relu",
+          "mask_activation": "sigmoid",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "9e357f93e251325dec91726fcb15a051bc8e3e9f44efaab71a3062c36d907c54",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.039375012973323464,
+                "process_peak_rss_mib": 1082.65234375,
+                "pre_inference_peak_rss_mib": 1080.65234375,
+                "cuda_peak_allocated_mib": 179.9560546875,
+                "cuda_peak_reserved_mib": 224.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.0745991449803114,
+                "process_peak_rss_mib": 1132.46875,
+                "pre_inference_peak_rss_mib": 1074.4609375,
+                "cuda_peak_allocated_mib": 176.3544921875,
+                "cuda_peak_reserved_mib": 224.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.06354838609695435,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "accompaniment": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.24605444073677063,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "dd312117eae9cf24bdcc7a1e5de8b27b7795a042a544b3833c649bf51328fec5",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.09542227699421346,
+                "process_peak_rss_mib": 1099.515625,
+                "pre_inference_peak_rss_mib": 1077.65625,
+                "cuda_peak_allocated_mib": 241.591796875,
+                "cuda_peak_reserved_mib": 330.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.11005230096634477,
+                "process_peak_rss_mib": 1147.0625,
+                "pre_inference_peak_rss_mib": 1077.05859375,
+                "cuda_peak_allocated_mib": 243.45703125,
+                "cuda_peak_reserved_mib": 324.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 2.9802322387695312e-08,
+                "rms_error": 6.771248913401375e-10,
+                "reference_peak": 0.3012165427207947,
+                "legacy_reference_si_sdr_db": 157.5785026767469,
+                "si_sdr_status": "finite"
+              },
+              "accompaniment": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 8.971758551152158e-10,
+                "reference_peak": 0.351876825094223,
+                "legacy_reference_si_sdr_db": 155.96663438789017,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "51e346c1fc8168469fcbf3d9ec2041b185bea0c2a16ecf6f83e66d6d3433df5b",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.32848993106745183,
+                "process_peak_rss_mib": 1167.4296875,
+                "pre_inference_peak_rss_mib": 1076.05078125,
+                "cuda_peak_allocated_mib": 823.9345703125,
+                "cuda_peak_reserved_mib": 1118.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.2942767470376566,
+                "process_peak_rss_mib": 1160.703125,
+                "pre_inference_peak_rss_mib": 1077.76171875,
+                "cuda_peak_allocated_mib": 243.50390625,
+                "cuda_peak_reserved_mib": 324.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 4.917383193969727e-07,
+                "rms_error": 7.884463996859983e-09,
+                "reference_peak": 0.6113782525062561,
+                "legacy_reference_si_sdr_db": 136.7708706827366,
+                "si_sdr_status": "finite"
+              },
+              "accompaniment": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 5.21540641784668e-07,
+                "rms_error": 7.910122414645243e-09,
+                "reference_peak": 0.7567772269248962,
+                "legacy_reference_si_sdr_db": 141.60388757908427,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "4stems-synthetic": {
+        "source_commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+        "checkpoint_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+        "config": {
+          "instruments": [
+            "vocals",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "sigmoid",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "synthetic_tones_chirp_envelope",
+        "input_sha256": null,
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "b1bfd6e77ed923adceabc72eec44e4db68cee8fc03cffe7fc027b87fda58dfd5",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.07310872804373503,
+                "process_peak_rss_mib": 1052.3359375,
+                "pre_inference_peak_rss_mib": 1050.3359375,
+                "cuda_peak_allocated_mib": 264.5771484375,
+                "cuda_peak_reserved_mib": 304.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.09721503895707428,
+                "process_peak_rss_mib": 1107.6015625,
+                "pre_inference_peak_rss_mib": 1051.6015625,
+                "cuda_peak_allocated_mib": 258.4765625,
+                "cuda_peak_reserved_mib": 304.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.008248444646596909,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "drums": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.005562000907957554,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "bass": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.0011095567606389523,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "other": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.1995525062084198,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "83c2a19ab2ba1e5f598fb6e9329df09e72f34a56015fa07910637add14688f18",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.18701067904476076,
+                "process_peak_rss_mib": 1081.69921875,
+                "pre_inference_peak_rss_mib": 1050.21875,
+                "cuda_peak_allocated_mib": 463.73681640625,
+                "cuda_peak_reserved_mib": 600.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.18685694795567542,
+                "process_peak_rss_mib": 1127.79296875,
+                "pre_inference_peak_rss_mib": 1051.79296875,
+                "cuda_peak_allocated_mib": 462.1328125,
+                "cuda_peak_reserved_mib": 572.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.0971831443384872e-08,
+                "rms_error": 2.5140034100423334e-10,
+                "reference_peak": 0.0010294001549482346,
+                "legacy_reference_si_sdr_db": 100.66810856441623,
+                "si_sdr_status": "finite"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.0960589769126727e-08,
+                "rms_error": 2.46350746425687e-10,
+                "reference_peak": 0.001737286220304668,
+                "legacy_reference_si_sdr_db": 105.1010549529947,
+                "si_sdr_status": "finite"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.0937915906339413e-08,
+                "rms_error": 2.4664745130624194e-10,
+                "reference_peak": 0.025277461856603622,
+                "legacy_reference_si_sdr_db": 121.29259599787156,
+                "si_sdr_status": "finite"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 5.960464477539063e-08,
+                "rms_error": 1.2671185226425754e-09,
+                "reference_peak": 0.1999136060476303,
+                "legacy_reference_si_sdr_db": 155.32717508396075,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "d7621d2654feb785721fe782e28311343aaef7ddaa725f892371c745b5010c10",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.5883166380226612,
+                "process_peak_rss_mib": 1186.98046875,
+                "pre_inference_peak_rss_mib": 1050.3203125,
+                "cuda_peak_allocated_mib": 1562.9384765625,
+                "cuda_peak_reserved_mib": 1846.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.5398460789583623,
+                "process_peak_rss_mib": 1149.6171875,
+                "pre_inference_peak_rss_mib": 1050.28515625,
+                "cuda_peak_allocated_mib": 462.25,
+                "cuda_peak_reserved_mib": 572.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.407369023188949e-09,
+                "rms_error": 1.596820162374313e-10,
+                "reference_peak": 0.003776987548917532,
+                "legacy_reference_si_sdr_db": 116.555950269802,
+                "si_sdr_status": "finite"
+              },
+              "drums": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.268045803561108e-09,
+                "rms_error": 1.5872368867761639e-10,
+                "reference_peak": 0.001737286220304668,
+                "legacy_reference_si_sdr_db": 101.93512664334064,
+                "si_sdr_status": "finite"
+              },
+              "bass": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.27457280472288e-09,
+                "rms_error": 1.6013041648603326e-10,
+                "reference_peak": 0.025277461856603622,
+                "legacy_reference_si_sdr_db": 118.05694672646979,
+                "si_sdr_status": "finite"
+              },
+              "other": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 6.618884142273893e-10,
+                "reference_peak": 0.19998684525489807,
+                "legacy_reference_si_sdr_db": 160.87523897022592,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 600.0,
+            "input_sha256": "57e3d893945f19bc374600e0d3e03a0f849ea5bf1fae6426286a559916c4f459",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 4.787068031961098,
+                "process_peak_rss_mib": 2263.4375,
+                "pre_inference_peak_rss_mib": 1049.42578125,
+                "cuda_peak_allocated_mib": 13920.76025390625,
+                "cuda_peak_reserved_mib": 16070.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 4.3304589970503,
+                "process_peak_rss_mib": 1153.8125,
+                "pre_inference_peak_rss_mib": 1048.4140625,
+                "cuda_peak_allocated_mib": 462.25,
+                "cuda_peak_reserved_mib": 572.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 4.656612873077393e-10,
+                "rms_error": 7.723607973985144e-13,
+                "reference_peak": 0.027992207556962967,
+                "legacy_reference_si_sdr_db": 180.89612941595337,
+                "si_sdr_status": "finite"
+              },
+              "drums": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 3.725290298461914e-09,
+                "rms_error": 5.178776578874317e-12,
+                "reference_peak": 0.08010725677013397,
+                "legacy_reference_si_sdr_db": 185.25494534054894,
+                "si_sdr_status": "finite"
+              },
+              "bass": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 7.275957614183426e-12,
+                "rms_error": 1.5017443648386565e-14,
+                "reference_peak": 0.025277461856603622,
+                "legacy_reference_si_sdr_db": 192.27884011157755,
+                "si_sdr_status": "finite"
+              },
+              "other": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 2.4238807898875883e-10,
+                "reference_peak": 0.20002424716949463,
+                "legacy_reference_si_sdr_db": 169.28202218001888,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "4stems-real": {
+        "source_commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+        "checkpoint_sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+        "config": {
+          "instruments": [
+            "vocals",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "sigmoid",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "1bd2080f7376c8f6d9a2a4962c5812a936359667a23b5619f97a992f624d1309",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.07440505409613252,
+                "process_peak_rss_mib": 1055.62109375,
+                "pre_inference_peak_rss_mib": 1051.58984375,
+                "cuda_peak_allocated_mib": 264.5771484375,
+                "cuda_peak_reserved_mib": 304.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.08848080597817898,
+                "process_peak_rss_mib": 1105.59765625,
+                "pre_inference_peak_rss_mib": 1049.59765625,
+                "cuda_peak_allocated_mib": 258.4765625,
+                "cuda_peak_reserved_mib": 304.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.06541825830936432,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "drums": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.1516384780406952,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "bass": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.00011103151337010786,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              },
+              "other": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.17453794181346893,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "3a99b52761b4f28777b14c511c2150ef016e743f6f051c0f512769015f7721d6",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.22052559396252036,
+                "process_peak_rss_mib": 1078.11328125,
+                "pre_inference_peak_rss_mib": 1049.50390625,
+                "cuda_peak_allocated_mib": 463.73681640625,
+                "cuda_peak_reserved_mib": 600.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.21482722996734083,
+                "process_peak_rss_mib": 1122.84765625,
+                "pre_inference_peak_rss_mib": 1044.84375,
+                "cuda_peak_allocated_mib": 462.1328125,
+                "cuda_peak_reserved_mib": 572.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.1548399925231934e-07,
+                "rms_error": 3.1908794962017954e-09,
+                "reference_peak": 0.33742469549179077,
+                "legacy_reference_si_sdr_db": 144.2633562690758,
+                "si_sdr_status": "finite"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 8.847564458847046e-09,
+                "rms_error": 2.51059201191404e-10,
+                "reference_peak": 0.07468658685684204,
+                "legacy_reference_si_sdr_db": 138.1030674987078,
+                "si_sdr_status": "finite"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 2.408341970294714e-09,
+                "rms_error": 6.447686352872956e-11,
+                "reference_peak": 0.000157186746946536,
+                "legacy_reference_si_sdr_db": 94.22811081738503,
+                "si_sdr_status": "finite"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.1175870895385742e-07,
+                "rms_error": 3.1798796960172787e-09,
+                "reference_peak": 0.27879831194877625,
+                "legacy_reference_si_sdr_db": 144.87833219777878,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": false
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "cd7133fbe03d21cbe82e2913a8b5fd21c5f07594cea7df1e08b5eacc11a0b4c3",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.6029256710316986,
+                "process_peak_rss_mib": 1179.44921875,
+                "pre_inference_peak_rss_mib": 1046.53125,
+                "cuda_peak_allocated_mib": 1562.9384765625,
+                "cuda_peak_reserved_mib": 1846.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.5967866339487955,
+                "process_peak_rss_mib": 1144.4453125,
+                "pre_inference_peak_rss_mib": 1047.859375,
+                "cuda_peak_allocated_mib": 462.25,
+                "cuda_peak_reserved_mib": 572.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.6391277313232422e-07,
+                "rms_error": 3.7130543557024713e-09,
+                "reference_peak": 0.6325956583023071,
+                "legacy_reference_si_sdr_db": 143.49708101965297,
+                "si_sdr_status": "finite"
+              },
+              "drums": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 2.384185791015625e-07,
+                "rms_error": 2.7094608578185795e-09,
+                "reference_peak": 0.5066699385643005,
+                "legacy_reference_si_sdr_db": 139.63610125897281,
+                "si_sdr_status": "finite"
+              },
+              "bass": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.4901161193847656e-07,
+                "rms_error": 3.161659219718112e-09,
+                "reference_peak": 0.3317514955997467,
+                "legacy_reference_si_sdr_db": 146.6286191245049,
+                "si_sdr_status": "finite"
+              },
+              "other": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.6391277313232422e-07,
+                "rms_error": 4.3404560911534706e-09,
+                "reference_peak": 0.4188123643398285,
+                "legacy_reference_si_sdr_db": 141.56632073275063,
+                "si_sdr_status": "finite"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": false
+      }
+    },
+    "complete": false,
+    "real_input": {
+      "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+      "path": "musdb18/train-pool/Auctioneer - Our Future Faces/mixture.wav",
+      "bytes": 73277554,
+      "sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+      "test_pool_used": false
+    },
+    "cuda_tests": {
+      "returncode": 0,
+      "output": "...                                                                      [100%]\n3 passed, 127 deselected in 2.69s\n"
+    },
+    "bundle": {
+      "bytes": 112640,
+      "sha256": "41c71ab7dd3c4d7d751809b04d877f4d8285ab9b2c0807531786b348aacc3a19",
+      "files": {
+        "2stems-real.json": {
+          "bytes": 8656,
+          "sha256": "6ff348fd584d0c714f2b9645071dcdc4fd83e5cef1a37dd211d0efc91d40beaf"
+        },
+        "2stems-synthetic.json": {
+          "bytes": 11161,
+          "sha256": "eb51d0b308f0e2962a5ac2f6d957036ae22e28c41be72ca0587e4195df5bf536"
+        },
+        "4stems-real.json": {
+          "bytes": 10474,
+          "sha256": "d435eb395bda14b4f5c878f30e6ec74559c9e27a2a3425ef7a873b9fe8a2815c"
+        },
+        "4stems-synthetic.json": {
+          "bytes": 13585,
+          "sha256": "18dd10a5b24c30ffd176936cf7b61d85ae41d43cf143c37bb5c624cf66aad248"
+        },
+        "cuda-tests.txt": {
+          "bytes": 114,
+          "sha256": "b4143aefb18f47fdf9d3594e0061aca281d60cbed38c5ab530bd4f2044442cc5"
+        },
+        "report.json": {
+          "bytes": 49980,
+          "sha256": "cc7cfc64c00831952ac3705d27303fdf92423d050a7b960ff862a8e57b2042f6"
+        }
+      }
+    }
+  },
+  "provision": {
+    "commit": "bcfc94a2873a37d7ab7a0d311247b029bd44bc7a",
+    "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+    "pod_name": "spt-1436489970-41308214212-1-1793540904",
+    "expires_at": 1793540904,
+    "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+    "budget": {
+      "checked_at_utc": "2026-11-01T12:48:24.368387+00:00",
+      "month_basis": "UTC",
+      "reserve_usd": 1.0,
+      "monthly_budget_usd": 500.0,
+      "balance_sufficient": true,
+      "month_headroom_sufficient": true,
+      "history_scope": "reported account daily charges plus one hour current spend; billing may lag",
+      "gpu_rate_cap_usd_per_hour": 0.69,
+      "lease_seconds": 3600,
+      "scope": "compute rate/deadline plus reserve; storage/request fees are not an all-in hard cap"
+    },
+    "task": "benchmark",
+    "benchmark_profile": "bounded",
+    "pod_id": "4werua6i2qjwr8",
+    "cost_per_hour": 0.69,
+    "cleanup_confirmed": true,
+    "controller_elapsed_seconds": 138.94231510162354,
+    "compute_cost_upper_estimate_usd": 0.026630610394477842,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice"
+  }
+}
