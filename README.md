@@ -4,6 +4,9 @@ A trainable PyTorch port of [Deezer Spleeter](https://github.com/deezer/spleeter
 with official weight conversion, audio separation, and a single-GPU training entry
 point for RunPod. This is an independent project, not an official Deezer release.
 
+[Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
+[When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
+
 ## Model architecture
 
 [![spleeterpt architecture: stereo STFT, independent six-level U-Nets with raw convolution skips, magnitude estimates, ratio masks and audio reconstruction](docs/assets/model-architecture.svg)](docs/assets/model-architecture.svg)
@@ -15,6 +18,62 @@ complex mixture STFT before Hann overlap-add reconstruction.
 
 [Architecture details and compatibility](#architecture-and-compatibility) ·
 [Diagram source and regeneration](docs/architecture.md)
+
+## Spleeter and its alternatives
+
+Research reviewed **2026-11-01 (SGT)**. This is a practical selection of public
+model families and widely integrated alternatives, not a market-share ranking.
+**Competitors have not been benchmarked in this repository.** Architecture,
+checkpoint, training data and inference settings all affect the result.
+
+| Model family | Core architecture | Typical released targets | Choose it for | Main qualification |
+|---|---|---|---|---|
+| **Spleeter / spleeterpt** | Per-stem magnitude U-Nets | 2 / 4 / 5 stems | Existing Spleeter workflows, reproducible baseline, MIR preprocessing | Default modeled band ends near 11 kHz; mixture-phase reconstruction |
+| **[Open-Unmix](https://github.com/sigsep/open-unmix-pytorch)** | Per-stem dense layers + 3-layer BiLSTM + Wiener filtering | 4 stems | Transparent recurrent reference; filtering research | `umx`, `umxhq`, `umxl` differ; default `umxl` weights are non-commercial |
+| **[HTDemucs v4](https://github.com/facebookresearch/demucs)** | Waveform + spectrogram U-Nets with cross-domain Transformer | 4 stems; experimental 6-stem release | First practical four-stem challenger for remixing / editing | `htdemucs_ft` costs more passes; original repo archived, author fork has limited maintenance |
+| **[MDX23C / TFC-TDF v3](https://github.com/kuielab/sdx23)** | Complex-spectral U-Net; 2D convolutions + frequency-wise dense blocks | Checkpoint-dependent: vocal or multi-stem | CNN alternative; UVR / MSST workflows | Model names cover different weights and ensembles; TDF is not a Transformer |
+| **[BS-RoFormer](https://arxiv.org/abs/2309.02612)** | Non-overlapping bands; time / band RoPE attention; complex masks | Single-target or multi-stem, depending on weights | Quality-oriented separation; band-modeling research | Public community implementations are not the paper's exact training run |
+| **[Mel-Band RoFormer](https://arxiv.org/abs/2310.01809)** | Overlapping mel bands + RoPE attention; overlapping masks averaged | Often vocals / instrumental; other targets need suitable weights | Vocal extraction / karaoke candidate | Vocal strength does not imply best bass or best four-stem average |
+| **[SCNet](https://github.com/starrytong/SCNet)** | Unequal band compression + dual-path RNN + sparse decoder | Official four-stem release; other variants exist | Candidate for a quality / compute tradeoff | Paper CPU savings do not establish speed on our MIG GPU; base and large differ |
+
+### Architecture comparison
+
+[![Seven source-separation architectures: Spleeter and Open-Unmix magnitude models, dual-domain HTDemucs, complex-spectral MDX23C, band-based RoFormers, and sparse-compression SCNet](docs/assets/separator-architectures.svg)](docs/assets/separator-architectures.svg)
+
+Original, simplified diagrams redrawn from papers and implementation code.
+Arrows show inference data flow, not relative quality or model size. The Spleeter
+row describes **this port's synthesis path**; upstream also offers Wiener filtering.
+[Detailed comparison, paper results, source links and figure regeneration](docs/source-separation-landscape.md).
+
+**Tools are a separate layer:** [UVR](https://github.com/Anjok07/ultimatevocalremovergui)
+is a desktop application that hosts model families; [MSST](https://github.com/ZFTurbo/Music-Source-Separation-Training)
+is a training/inference toolkit; [MVSep](https://mvsep.com/en/algorithms) is a hosted
+service with model and ensemble choices. None is one architecture. Their exact
+model selections and settings must be recorded for a meaningful comparison.
+
+### Where Spleeter and this port fit
+
+Spleeter's strongest case here is a **known, inspectable baseline** that can be
+integrated into an existing workflow. Newer architectures are important quality
+challengers; this project does not claim the best current separation quality.
+
+| Need | Spleeter / spleeterpt advantage | Boundary |
+|---|---|---|
+| Maintain an existing Spleeter pipeline | Official weight conversion and checked 2/4-stem TF/PT waveform parity | Five-stem strict FP32 parity still has small discrepancies |
+| Batch MIR preprocessing, rough stems, practice tracks | Ready 2/4/5-stem presets; local CLI and independent stem networks | Listen for bleed and artifacts; benchmark throughput on the actual workload |
+| Study training, normalization or recovery | Inspectable CNN; checked resume/recovery; controlled BN experiments | The 90-step fine-tune has not improved on official weights |
+| Keep inference in a PyTorch stack | TensorFlow needed only for checkpoint conversion | Local inference and trainability are also available in several alternatives |
+
+For final vocal extraction, audition a pinned **Mel-Band / BS-RoFormer** checkpoint;
+for a four-stem comparison, start with **HTDemucs**, then **SCNet** and a suitable
+four-stem RoFormer setup. These are evaluation priorities, not measured winners.
+Our default high-band truncation and mixture-phase masks are limitations for
+full-band, high-fidelity deliverables. Fixed inference windows do not make this
+implementation streaming: the full STFT remains in memory. No same-device claim
+of fastest inference, lowest VRAM or lowest cost has been established.
+
+The [comparison protocol](docs/source-separation-landscape.md#next-comparison-in-this-repository)
+keeps the existing ten-song validation screen separate from a future final test.
 
 ## Current progress — 2026-11-01 (SGT)
 

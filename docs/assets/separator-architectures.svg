@@ -1,0 +1,1280 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1440pt" height="1872pt" viewBox="0 0 1440 1872" xmlns="http://www.w3.org/2000/svg" version="1.1" role="img" aria-labelledby="comparison-title comparison-desc"><title id="comparison-title">Seven music source-separation architectures</title><desc id="comparison-desc">Spleeter uses per-stem magnitude U-Nets and mixture-phase ratio masks in this port. Open-Unmix uses per-target BiLSTMs and multichannel Wiener filtering. HTDemucs joins spectral and waveform paths with a cross-domain Transformer and sums decoded waveforms. MDX23C uses channel-wise subbands and a TFC-TDF U-Net to estimate complex spectra. BS-RoFormer predicts complex masks from disjoint bands with time and band attention. Mel-Band RoFormer uses overlapping bands and averages overlapping masks. SCNet combines unequal band compression, dual-path recurrent processing and a sparse decoder. These are simplified inference paths, not a quality ranking. Sources are in the companion guide.</desc>
+ <title>Music source-separation architecture comparison</title>
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Music source-separation architecture comparison</dc:title>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 1872
+L 1440 1872
+L 1440 0
+L 0 0
+z
+" style="fill: #f4f7fb"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 52 190
+L 1388 190
+Q 1400 190 1400 202
+L 1400 388
+Q 1400 400 1388 400
+L 52 400
+Q 40 400 40 388
+L 40 202
+Q 40 190 52 190
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 70 208
+L 100 208
+Q 108 208 108 216
+L 108 238
+Q 108 246 100 246
+L 70 246
+Q 62 246 62 238
+L 62 216
+Q 62 208 70 208
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 80 262
+L 334 262
+Q 346 262 346 274
+L 346 340
+Q 346 352 334 352
+L 80 352
+Q 68 352 68 340
+L 68 274
+Q 68 262 80 262
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 422 262
+L 676 262
+Q 688 262 688 274
+L 688 340
+Q 688 352 676 352
+L 422 352
+Q 410 352 410 340
+L 410 274
+Q 410 262 422 262
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 764 262
+L 1018 262
+Q 1030 262 1030 274
+L 1030 340
+Q 1030 352 1018 352
+L 764 352
+Q 752 352 752 340
+L 752 274
+Q 752 262 764 262
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 1106 262
+L 1360 262
+Q 1372 262 1372 274
+L 1372 340
+Q 1372 352 1360 352
+L 1106 352
+Q 1094 352 1094 340
+L 1094 274
+Q 1094 262 1106 262
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 351.998657 307
+Q 377.498113 307 400.761501 307
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 303.8
+L 400.761501 307
+L 394.361501 310.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 693.998657 307
+Q 719.498113 307 742.761501 307
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 303.8
+L 742.761501 307
+L 736.361501 310.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 1035.998657 307
+Q 1061.498113 307 1084.761501 307
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 303.8
+L 1084.761501 307
+L 1078.361501 310.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 52 418
+L 1388 418
+Q 1400 418 1400 430
+L 1400 616
+Q 1400 628 1388 628
+L 52 628
+Q 40 628 40 616
+L 40 430
+Q 40 418 52 418
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 70 436
+L 100 436
+Q 108 436 108 444
+L 108 466
+Q 108 474 100 474
+L 70 474
+Q 62 474 62 466
+L 62 444
+Q 62 436 70 436
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 80 490
+L 334 490
+Q 346 490 346 502
+L 346 568
+Q 346 580 334 580
+L 80 580
+Q 68 580 68 568
+L 68 502
+Q 68 490 80 490
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 422 490
+L 676 490
+Q 688 490 688 502
+L 688 568
+Q 688 580 676 580
+L 422 580
+Q 410 580 410 568
+L 410 502
+Q 410 490 422 490
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 764 490
+L 1018 490
+Q 1030 490 1030 502
+L 1030 568
+Q 1030 580 1018 580
+L 764 580
+Q 752 580 752 568
+L 752 502
+Q 752 490 764 490
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 1106 490
+L 1360 490
+Q 1372 490 1372 502
+L 1372 568
+Q 1372 580 1360 580
+L 1106 580
+Q 1094 580 1094 568
+L 1094 502
+Q 1094 490 1106 490
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 351.998657 535
+Q 377.498113 535 400.761501 535
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 531.8
+L 400.761501 535
+L 394.361501 538.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 693.998657 535
+Q 719.498113 535 742.761501 535
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 531.8
+L 742.761501 535
+L 736.361501 538.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 1035.998657 535
+Q 1061.498113 535 1084.761501 535
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 531.8
+L 1084.761501 535
+L 1078.361501 538.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 52 646
+L 1388 646
+Q 1400 646 1400 658
+L 1400 904
+Q 1400 916 1388 916
+L 52 916
+Q 40 916 40 904
+L 40 658
+Q 40 646 52 646
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 70 664
+L 100 664
+Q 108 664 108 672
+L 108 694
+Q 108 702 100 702
+L 70 702
+Q 62 702 62 694
+L 62 672
+Q 62 664 70 664
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 80 718
+L 334 718
+Q 346 718 346 730
+L 346 774
+Q 346 786 334 786
+L 80 786
+Q 68 786 68 774
+L 68 730
+Q 68 718 80 718
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 80 802
+L 334 802
+Q 346 802 346 814
+L 346 858
+Q 346 870 334 870
+L 80 870
+Q 68 870 68 858
+L 68 814
+Q 68 802 80 802
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 422 718
+L 676 718
+Q 688 718 688 730
+L 688 858
+Q 688 870 676 870
+L 422 870
+Q 410 870 410 858
+L 410 730
+Q 410 718 422 718
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fff7ef; stroke: #e9ceae; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 764 718
+L 1018 718
+Q 1030 718 1030 730
+L 1030 774
+Q 1030 786 1018 786
+L 764 786
+Q 752 786 752 774
+L 752 730
+Q 752 718 764 718
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 764 802
+L 1018 802
+Q 1030 802 1030 814
+L 1030 858
+Q 1030 870 1018 870
+L 764 870
+Q 752 870 752 858
+L 752 814
+Q 752 802 764 802
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 1106 718
+L 1360 718
+Q 1372 718 1372 730
+L 1372 858
+Q 1372 870 1360 870
+L 1106 870
+Q 1094 870 1094 858
+L 1094 730
+Q 1094 718 1106 718
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fff7ef; stroke: #e9ceae; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 351.998657 752
+Q 377.498113 752 400.761501 752
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 748.8
+L 400.761501 752
+L 394.361501 755.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 693.998657 752
+Q 719.498113 752 742.761501 752
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 748.8
+L 742.761501 752
+L 736.361501 755.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_30">
+    <path d="M 1035.998657 752
+Q 1061.498113 752 1084.761501 752
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 748.8
+L 1084.761501 752
+L 1078.361501 755.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_31">
+    <path d="M 351.998657 836
+Q 377.498113 836 400.761501 836
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 832.8
+L 400.761501 836
+L 394.361501 839.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_32">
+    <path d="M 693.998657 836
+Q 719.498113 836 742.761501 836
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 832.8
+L 742.761501 836
+L 736.361501 839.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_33">
+    <path d="M 1035.998657 836
+Q 1061.498113 836 1084.761501 836
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 832.8
+L 1084.761501 836
+L 1078.361501 839.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #af6424; stroke: #af6424; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_34">
+    <path d="M 52 934
+L 1388 934
+Q 1400 934 1400 946
+L 1400 1132
+Q 1400 1144 1388 1144
+L 52 1144
+Q 40 1144 40 1132
+L 40 946
+Q 40 934 52 934
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_35">
+    <path d="M 70 952
+L 100 952
+Q 108 952 108 960
+L 108 982
+Q 108 990 100 990
+L 70 990
+Q 62 990 62 982
+L 62 960
+Q 62 952 70 952
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_36">
+    <path d="M 80 1006
+L 334 1006
+Q 346 1006 346 1018
+L 346 1084
+Q 346 1096 334 1096
+L 80 1096
+Q 68 1096 68 1084
+L 68 1018
+Q 68 1006 80 1006
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_37">
+    <path d="M 422 1006
+L 676 1006
+Q 688 1006 688 1018
+L 688 1084
+Q 688 1096 676 1096
+L 422 1096
+Q 410 1096 410 1084
+L 410 1018
+Q 410 1006 422 1006
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_38">
+    <path d="M 764 1006
+L 1018 1006
+Q 1030 1006 1030 1018
+L 1030 1084
+Q 1030 1096 1018 1096
+L 764 1096
+Q 752 1096 752 1084
+L 752 1018
+Q 752 1006 764 1006
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_39">
+    <path d="M 1106 1006
+L 1360 1006
+Q 1372 1006 1372 1018
+L 1372 1084
+Q 1372 1096 1360 1096
+L 1106 1096
+Q 1094 1096 1094 1084
+L 1094 1018
+Q 1094 1006 1106 1006
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_40">
+    <path d="M 351.998657 1051
+Q 377.498113 1051 400.761501 1051
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 1047.8
+L 400.761501 1051
+L 394.361501 1054.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_41">
+    <path d="M 693.998657 1051
+Q 719.498113 1051 742.761501 1051
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 1047.8
+L 742.761501 1051
+L 736.361501 1054.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_42">
+    <path d="M 1035.998657 1051
+Q 1061.498113 1051 1084.761501 1051
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 1047.8
+L 1084.761501 1051
+L 1078.361501 1054.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #3368c6; stroke: #3368c6; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_43">
+    <path d="M 52 1162
+L 1388 1162
+Q 1400 1162 1400 1174
+L 1400 1360
+Q 1400 1372 1388 1372
+L 52 1372
+Q 40 1372 40 1360
+L 40 1174
+Q 40 1162 52 1162
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_44">
+    <path d="M 70 1180
+L 100 1180
+Q 108 1180 108 1188
+L 108 1210
+Q 108 1218 100 1218
+L 70 1218
+Q 62 1218 62 1210
+L 62 1188
+Q 62 1180 70 1180
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_45">
+    <path d="M 80 1234
+L 334 1234
+Q 346 1234 346 1246
+L 346 1312
+Q 346 1324 334 1324
+L 80 1324
+Q 68 1324 68 1312
+L 68 1246
+Q 68 1234 80 1234
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_46">
+    <path d="M 422 1234
+L 676 1234
+Q 688 1234 688 1246
+L 688 1312
+Q 688 1324 676 1324
+L 422 1324
+Q 410 1324 410 1312
+L 410 1246
+Q 410 1234 422 1234
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_47">
+    <path d="M 764 1234
+L 1018 1234
+Q 1030 1234 1030 1246
+L 1030 1312
+Q 1030 1324 1018 1324
+L 764 1324
+Q 752 1324 752 1312
+L 752 1246
+Q 752 1234 764 1234
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_48">
+    <path d="M 1106 1234
+L 1360 1234
+Q 1372 1234 1372 1246
+L 1372 1312
+Q 1372 1324 1360 1324
+L 1106 1324
+Q 1094 1324 1094 1312
+L 1094 1246
+Q 1094 1234 1106 1234
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_49">
+    <path d="M 351.998657 1279
+Q 377.498113 1279 400.761501 1279
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 1275.8
+L 400.761501 1279
+L 394.361501 1282.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_50">
+    <path d="M 693.998657 1279
+Q 719.498113 1279 742.761501 1279
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 1275.8
+L 742.761501 1279
+L 736.361501 1282.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_51">
+    <path d="M 1035.998657 1279
+Q 1061.498113 1279 1084.761501 1279
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 1275.8
+L 1084.761501 1279
+L 1078.361501 1282.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_52">
+    <path d="M 52 1390
+L 1388 1390
+Q 1400 1390 1400 1402
+L 1400 1588
+Q 1400 1600 1388 1600
+L 52 1600
+Q 40 1600 40 1588
+L 40 1402
+Q 40 1390 52 1390
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_53">
+    <path d="M 70 1408
+L 100 1408
+Q 108 1408 108 1416
+L 108 1438
+Q 108 1446 100 1446
+L 70 1446
+Q 62 1446 62 1438
+L 62 1416
+Q 62 1408 70 1408
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_54">
+    <path d="M 80 1462
+L 334 1462
+Q 346 1462 346 1474
+L 346 1540
+Q 346 1552 334 1552
+L 80 1552
+Q 68 1552 68 1540
+L 68 1474
+Q 68 1462 80 1462
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_55">
+    <path d="M 422 1462
+L 676 1462
+Q 688 1462 688 1474
+L 688 1540
+Q 688 1552 676 1552
+L 422 1552
+Q 410 1552 410 1540
+L 410 1474
+Q 410 1462 422 1462
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_56">
+    <path d="M 764 1462
+L 1018 1462
+Q 1030 1462 1030 1474
+L 1030 1540
+Q 1030 1552 1018 1552
+L 764 1552
+Q 752 1552 752 1540
+L 752 1474
+Q 752 1462 764 1462
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_57">
+    <path d="M 1106 1462
+L 1360 1462
+Q 1372 1462 1372 1474
+L 1372 1540
+Q 1372 1552 1360 1552
+L 1106 1552
+Q 1094 1552 1094 1540
+L 1094 1474
+Q 1094 1462 1106 1462
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_58">
+    <path d="M 351.998657 1507
+Q 377.498113 1507 400.761501 1507
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 1503.8
+L 400.761501 1507
+L 394.361501 1510.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_59">
+    <path d="M 693.998657 1507
+Q 719.498113 1507 742.761501 1507
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 1503.8
+L 742.761501 1507
+L 736.361501 1510.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_60">
+    <path d="M 1035.998657 1507
+Q 1061.498113 1507 1084.761501 1507
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 1503.8
+L 1084.761501 1507
+L 1078.361501 1510.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #7652b3; stroke: #7652b3; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_61">
+    <path d="M 52 1618
+L 1388 1618
+Q 1400 1618 1400 1630
+L 1400 1816
+Q 1400 1828 1388 1828
+L 52 1828
+Q 40 1828 40 1816
+L 40 1630
+Q 40 1618 52 1618
+z
+" clip-path="url(#p88134e2a93)" style="fill: #ffffff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_62">
+    <path d="M 70 1636
+L 100 1636
+Q 108 1636 108 1644
+L 108 1666
+Q 108 1674 100 1674
+L 70 1674
+Q 62 1674 62 1666
+L 62 1644
+Q 62 1636 70 1636
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_63">
+    <path d="M 80 1690
+L 334 1690
+Q 346 1690 346 1702
+L 346 1768
+Q 346 1780 334 1780
+L 80 1780
+Q 68 1780 68 1768
+L 68 1702
+Q 68 1690 80 1690
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_64">
+    <path d="M 422 1690
+L 676 1690
+Q 688 1690 688 1702
+L 688 1768
+Q 688 1780 676 1780
+L 422 1780
+Q 410 1780 410 1768
+L 410 1702
+Q 410 1690 422 1690
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_65">
+    <path d="M 764 1690
+L 1018 1690
+Q 1030 1690 1030 1702
+L 1030 1768
+Q 1030 1780 1018 1780
+L 764 1780
+Q 752 1780 752 1768
+L 752 1702
+Q 752 1690 764 1690
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_66">
+    <path d="M 1106 1690
+L 1360 1690
+Q 1372 1690 1372 1702
+L 1372 1768
+Q 1372 1780 1360 1780
+L 1106 1780
+Q 1094 1780 1094 1768
+L 1094 1702
+Q 1094 1690 1106 1690
+z
+" clip-path="url(#p88134e2a93)" style="fill: #fafcff; stroke: #d9e2ed; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_67">
+    <path d="M 351.998657 1735
+Q 377.498113 1735 400.761501 1735
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 394.361501 1731.8
+L 400.761501 1735
+L 394.361501 1738.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_68">
+    <path d="M 693.998657 1735
+Q 719.498113 1735 742.761501 1735
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 736.361501 1731.8
+L 742.761501 1735
+L 736.361501 1738.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_69">
+    <path d="M 1035.998657 1735
+Q 1061.498113 1735 1084.761501 1735
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+    <path d="M 1078.361501 1731.8
+L 1084.761501 1735
+L 1078.361501 1738.2
+z
+" clip-path="url(#p88134e2a93)" style="fill: #147d80; stroke: #147d80; stroke-width: 2; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 85 262
+L 126 262
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 427 262
+L 468 262
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 769 262
+L 810 262
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 1111 262
+L 1152 262
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 85 490
+L 126 490
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 427 490
+L 468 490
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 769 490
+L 810 490
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 1111 490
+L 1152 490
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_9">
+    <path d="M 85 718
+L 126 718
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 85 802
+L 126 802
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_11">
+    <path d="M 769 718
+L 810 718
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_12">
+    <path d="M 769 802
+L 810 802
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #af6424; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_13">
+    <path d="M 85 1006
+L 126 1006
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_14">
+    <path d="M 427 1006
+L 468 1006
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_15">
+    <path d="M 769 1006
+L 810 1006
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_16">
+    <path d="M 1111 1006
+L 1152 1006
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #3368c6; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_17">
+    <path d="M 85 1234
+L 126 1234
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_18">
+    <path d="M 427 1234
+L 468 1234
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 769 1234
+L 810 1234
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_20">
+    <path d="M 1111 1234
+L 1152 1234
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_21">
+    <path d="M 85 1462
+L 126 1462
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_22">
+    <path d="M 427 1462
+L 468 1462
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_23">
+    <path d="M 769 1462
+L 810 1462
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_24">
+    <path d="M 1111 1462
+L 1152 1462
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #7652b3; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_25">
+    <path d="M 85 1690
+L 126 1690
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_26">
+    <path d="M 427 1690
+L 468 1690
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_27">
+    <path d="M 769 1690
+L 810 1690
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_28">
+    <path d="M 1111 1690
+L 1152 1690
+" clip-path="url(#p88134e2a93)" style="fill: none; stroke: #147d80; stroke-width: 3.5; stroke-linecap: square"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 17px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #3368c6" x="56" y="44.690938" transform="rotate(-0 56 44.690938)">SPLEETERPT / SOURCE-SEPARATION LANDSCAPE</text>
+   </g>
+   <g id="text_2">
+    <text style="font-weight: 700; font-size: 36px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="56" y="95.793125" transform="rotate(-0 56 95.793125)">Seven architectures. Different ways to separate.</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 22px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="56" y="132.070625" transform="rotate(-0 56 132.070625)">Read left → right: representation, modeling and reconstruction</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="56" y="162.966875" transform="rotate(-0 56 162.966875)">Conceptual inference paths · not a ranking · sources [R1–R12] in the companion guide</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="231.966875" transform="rotate(-0 85 231.966875)">01</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="235.174375" transform="rotate(-0 124 235.174375)">Spleeter / this port</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #3368c6" x="1372" y="232.966875" transform="rotate(-0 1372 232.966875)">MAGNITUDE CNN</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="382.966875" transform="rotate(-0 68 382.966875)">Per-stem encoder–decoder skips · mixture phase retained · upstream Wiener option omitted here [R1 / local code]</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="297.712656" transform="rotate(-0 207 297.712656)">Magnitude STFT</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="331.755938" transform="rotate(-0 207 331.755938)">Stereo mixture |X|</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="297.794688" transform="rotate(-0 549 297.794688)">Independent U-Nets</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="331.966875" transform="rotate(-0 549 331.966875)">Six levels · one per stem</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="297.794688" transform="rotate(-0 891 297.794688)">Ratio masks</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="331.966875" transform="rotate(-0 891 331.966875)">From predicted magnitudes</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="297.794688" transform="rotate(-0 1233 297.794688)">Mask × mixture X</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="331.966875" transform="rotate(-0 1233 331.966875)">iSTFT / overlap-add → stems</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="459.966875" transform="rotate(-0 85 459.966875)">02</text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="463.174375" transform="rotate(-0 124 463.174375)">Open-Unmix</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #147d80" x="1372" y="460.966875" transform="rotate(-0 1372 460.966875)">MAGNITUDE RNN</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="610.966875" transform="rotate(-0 68 610.966875)">Recurrent time context with both past and future frames · source estimates are jointly filtered [R2]</text>
+   </g>
+   <g id="text_21">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="525.712656" transform="rotate(-0 207 525.712656)">Magnitude STFT</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="559.966875" transform="rotate(-0 207 559.966875)">Dense frequency projection</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="525.712656" transform="rotate(-0 549 525.712656)">3-layer BiLSTM</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="559.966875" transform="rotate(-0 549 559.966875)">One network per target</text>
+   </g>
+   <g id="text_25">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="525.712656" transform="rotate(-0 891 525.712656)">Magnitude estimates</text>
+   </g>
+   <g id="text_26">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="559.966875" transform="rotate(-0 891 559.966875)">Multichannel Wiener filter</text>
+   </g>
+   <g id="text_27">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="525.794688" transform="rotate(-0 1233 525.794688)">Complex estimates</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="559.966875" transform="rotate(-0 1233 559.966875)">iSTFT → stems</text>
+   </g>
+   <g id="text_29">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="687.966875" transform="rotate(-0 85 687.966875)">03</text>
+   </g>
+   <g id="text_30">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="691.174375" transform="rotate(-0 124 691.174375)">HTDemucs v4</text>
+   </g>
+   <g id="text_31">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #af6424" x="1372" y="688.966875" transform="rotate(-0 1372 688.966875)">HYBRID CNN + ATTENTION</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="898.966875" transform="rotate(-0 68 898.966875)">Two routes from the same mixture · each encoder has decoder skips (condensed) · spectral and temporal outputs sum [R3–R4]</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="742.794688" transform="rotate(-0 207 742.794688)">STFT encoder</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="776.966875" transform="rotate(-0 207 776.966875)">Complex channels</text>
+   </g>
+   <g id="text_35">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="826.794688" transform="rotate(-0 207 826.794688)">Waveform encoder</text>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="860.966875" transform="rotate(-0 207 860.966875)">Time-domain features</text>
+   </g>
+   <g id="text_37">
+    <text style="font-weight: 700; font-size: 23px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #af6424" x="549" y="757.346562" transform="rotate(-0 549 757.346562)">Cross-domain</text>
+   </g>
+   <g id="text_38">
+    <text style="font-weight: 700; font-size: 23px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #af6424" x="549" y="787.346562" transform="rotate(-0 549 787.346562)">Transformer</text>
+   </g>
+   <g id="text_39">
+    <text style="font-size: 19px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="825.242812" transform="rotate(-0 549 825.242812)">Self-attention +</text>
+   </g>
+   <g id="text_40">
+    <text style="font-size: 19px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="851.242813" transform="rotate(-0 549 851.242813)">cross-attention</text>
+   </g>
+   <g id="text_41">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="742.794688" transform="rotate(-0 891 742.794688)">Spectral decoder</text>
+   </g>
+   <g id="text_42">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="776.966875" transform="rotate(-0 891 776.966875)">Complex spectrum → iSTFT</text>
+   </g>
+   <g id="text_43">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="826.794688" transform="rotate(-0 891 826.794688)">Waveform decoder</text>
+   </g>
+   <g id="text_44">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="860.966875" transform="rotate(-0 891 860.966875)">Waveform estimates</text>
+   </g>
+   <g id="text_45">
+    <text style="font-weight: 700; font-size: 43px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #af6424" x="1233" y="774.865313" transform="rotate(-0 1233 774.865313)">+</text>
+   </g>
+   <g id="text_46">
+    <text style="font-weight: 700; font-size: 22px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="817.070625" transform="rotate(-0 1233 817.070625)">Sum waveforms</text>
+   </g>
+   <g id="text_47">
+    <text style="font-size: 19px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="848.242813" transform="rotate(-0 1233 848.242813)">→ output stems</text>
+   </g>
+   <g id="text_48">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="975.966875" transform="rotate(-0 85 975.966875)">04</text>
+   </g>
+   <g id="text_49">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="979.174375" transform="rotate(-0 124 979.174375)">MDX23C / TFC-TDF v3</text>
+   </g>
+   <g id="text_50">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #3368c6" x="1372" y="976.966875" transform="rotate(-0 1372 976.966875)">COMPLEX-SPECTRAL CNN</text>
+   </g>
+   <g id="text_51">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="1126.966875" transform="rotate(-0 68 1126.966875)">Residual conv/dense blocks + U-Net skips · direct complex output · TDF is a fully connected block, not attention [R5]</text>
+   </g>
+   <g id="text_52">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="1041.794688" transform="rotate(-0 207 1041.794688)">Complex STFT</text>
+   </g>
+   <g id="text_53">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="1075.966875" transform="rotate(-0 207 1075.966875)">Channel-wise subbands</text>
+   </g>
+   <g id="text_54">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="1041.794688" transform="rotate(-0 549 1041.794688)">TFC-TDF U-Net</text>
+   </g>
+   <g id="text_55">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="1075.966875" transform="rotate(-0 549 1075.966875)">2D conv + frequency MLP</text>
+   </g>
+   <g id="text_56">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="1041.794688" transform="rotate(-0 891 1041.794688)">Complex output head</text>
+   </g>
+   <g id="text_57">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="1075.966875" transform="rotate(-0 891 1075.966875)">Unpack subband channels</text>
+   </g>
+   <g id="text_58">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="1041.794688" transform="rotate(-0 1233 1041.794688)">Complex spectra</text>
+   </g>
+   <g id="text_59">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="1075.966875" transform="rotate(-0 1233 1075.966875)">iSTFT → stems</text>
+   </g>
+   <g id="text_60">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="1203.966875" transform="rotate(-0 85 1203.966875)">05</text>
+   </g>
+   <g id="text_61">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="1207.174375" transform="rotate(-0 124 1207.174375)">BS-RoFormer</text>
+   </g>
+   <g id="text_62">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #7652b3" x="1372" y="1204.966875" transform="rotate(-0 1372 1204.966875)">BAND ATTENTION</text>
+   </g>
+   <g id="text_63">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="1354.966875" transform="rotate(-0 68 1354.966875)">Non-overlapping bands · long-range time and cross-band interactions · target count depends on the checkpoint [R6 / R8]</text>
+   </g>
+   <g id="text_64">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="1269.794688" transform="rotate(-0 207 1269.794688)">Complex STFT</text>
+   </g>
+   <g id="text_65">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="1303.966875" transform="rotate(-0 207 1303.966875)">Disjoint band projection</text>
+   </g>
+   <g id="text_66">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="1269.794688" transform="rotate(-0 549 1269.794688)">RoPE attention</text>
+   </g>
+   <g id="text_67">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="1303.966875" transform="rotate(-0 549 1303.966875)">Alternate time / band axes</text>
+   </g>
+   <g id="text_68">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="1269.794688" transform="rotate(-0 891 1269.794688)">Complex band masks</text>
+   </g>
+   <g id="text_69">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="1303.966875" transform="rotate(-0 891 1303.966875)">Concatenate frequency bins</text>
+   </g>
+   <g id="text_70">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="1269.794688" transform="rotate(-0 1233 1269.794688)">Mask × mixture X</text>
+   </g>
+   <g id="text_71">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="1303.966875" transform="rotate(-0 1233 1303.966875)">iSTFT → target audio</text>
+   </g>
+   <g id="text_72">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="1431.966875" transform="rotate(-0 85 1431.966875)">06</text>
+   </g>
+   <g id="text_73">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="1435.174375" transform="rotate(-0 124 1435.174375)">Mel-Band RoFormer</text>
+   </g>
+   <g id="text_74">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #7652b3" x="1372" y="1432.966875" transform="rotate(-0 1372 1432.966875)">OVERLAPPING BAND ATTENTION</text>
+   </g>
+   <g id="text_75">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="1582.966875" transform="rotate(-0 68 1582.966875)">Mel spacing defines bin membership · real / imaginary features retained · not a mel-spectrogram vocoder [R7–R8]</text>
+   </g>
+   <g id="text_76">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="1497.794688" transform="rotate(-0 207 1497.794688)">Complex STFT</text>
+   </g>
+   <g id="text_77">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="1531.966875" transform="rotate(-0 207 1531.966875)">Overlapping mel-band groups</text>
+   </g>
+   <g id="text_78">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="1497.794688" transform="rotate(-0 549 1497.794688)">RoPE attention</text>
+   </g>
+   <g id="text_79">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="1531.966875" transform="rotate(-0 549 1531.966875)">Alternate time / band axes</text>
+   </g>
+   <g id="text_80">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="1497.794688" transform="rotate(-0 891 1497.794688)">Complex band masks</text>
+   </g>
+   <g id="text_81">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="1531.966875" transform="rotate(-0 891 1531.966875)">Average overlapping bins</text>
+   </g>
+   <g id="text_82">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="1497.794688" transform="rotate(-0 1233 1497.794688)">Mask × mixture X</text>
+   </g>
+   <g id="text_83">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="1531.966875" transform="rotate(-0 1233 1531.966875)">iSTFT → target audio</text>
+   </g>
+   <g id="text_84">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #ffffff" x="85" y="1659.966875" transform="rotate(-0 85 1659.966875)">07</text>
+   </g>
+   <g id="text_85">
+    <text style="font-weight: 700; font-size: 26px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #17263c" x="124" y="1663.174375" transform="rotate(-0 124 1663.174375)">SCNet</text>
+   </g>
+   <g id="text_86">
+    <text style="font-weight: 700; font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: end; fill: #147d80" x="1372" y="1660.966875" transform="rotate(-0 1372 1660.966875)">SPARSE COMPRESSION + RNN</text>
+   </g>
+   <g id="text_87">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="68" y="1810.966875" transform="rotate(-0 68 1810.966875)">Higher bands are compressed more strongly · lower-band detail receives more computation [R10 / R12]</text>
+   </g>
+   <g id="text_88">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="207" y="1725.794688" transform="rotate(-0 207 1725.794688)">Complex STFT</text>
+   </g>
+   <g id="text_89">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="207" y="1759.966875" transform="rotate(-0 207 1759.966875)">Unequal band compression</text>
+   </g>
+   <g id="text_90">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="549" y="1725.794688" transform="rotate(-0 549 1725.794688)">Dual-path RNN</text>
+   </g>
+   <g id="text_91">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="549" y="1759.966875" transform="rotate(-0 549 1759.966875)">Feature FFT / iFFT exchange</text>
+   </g>
+   <g id="text_92">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="891" y="1725.712656" transform="rotate(-0 891 1725.712656)">Sparse upsampling</text>
+   </g>
+   <g id="text_93">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="891" y="1759.966875" transform="rotate(-0 891 1759.966875)">Encoder skip fusion</text>
+   </g>
+   <g id="text_94">
+    <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #17263c" x="1233" y="1725.794688" transform="rotate(-0 1233 1725.794688)">Complex spectra</text>
+   </g>
+   <g id="text_95">
+    <text style="font-size: 18px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: middle; fill: #52647a" x="1233" y="1759.966875" transform="rotate(-0 1233 1759.966875)">iSTFT → stems</text>
+   </g>
+   <g id="text_96">
+    <text style="font-size: 17px; font-family: 'DejaVu Sans', Arial, sans-serif; text-anchor: start; fill: #52647a" x="56" y="1857.690938" transform="rotate(-0 56 1857.690938)">Original redrawing · block counts / sizes vary by configuration · reviewed 2026-11-01</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p88134e2a93">
+   <rect x="0" y="0" width="1440" height="1872"/>
+  </clipPath>
+ </defs>
+</svg>
