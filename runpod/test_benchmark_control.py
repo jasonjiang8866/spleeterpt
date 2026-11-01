@@ -149,6 +149,23 @@ class Tests(unittest.TestCase):
             self.assertEqual(api.calls[-1][:2], ("/pods/abc", "DELETE"))
             self.assertTrue(result["cleanup_confirmed"])
 
+    def test_convergence_profile_pins_snapshot_and_cleanup(self):
+        api = Fake()
+        result = self.run_controller(api, env={"SPT_BENCHMARK_PROFILE": "convergence"})
+        self.assertEqual(result["benchmark_profile"], "convergence")
+        self.assertTrue(result["cleanup_confirmed"])
+        self.assertEqual(sum(method == "POST" for _, method, _ in api.calls), 1)
+        payload = api.calls[0][2]
+        self.assertEqual(payload["disk"], 80)
+        self.assertEqual(
+            payload["env"]["SPT_SNAPSHOT_SHA256"],
+            "172c50e5310b22ceab3d4813a4ba1146c682db682c8aebc4c03ad235de376964",
+        )
+        self.assertEqual(
+            payload["mounts"], {"global": [{"volumeId": "global1", "path": "/global"}]}
+        )
+        self.assertEqual(api.items, [])
+
     def test_vocal_profile_retains_single_launch_and_cleanup(self):
         api = Fake()
         result = self.run_controller(api, env={"SPT_BENCHMARK_PROFILE": "vocal"})

@@ -1,0 +1,29 @@
+name: Longer-training preflight (no GPU)
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/convergence-pilot]
+permissions:
+  contents: read
+jobs:
+  inventory:
+    if: github.repository == 'jasonjiang8866/spleeterpt'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Observe resources and budget without creating compute or storage
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/convergence_preflight.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: convergence-preflight-${{ github.run_id }}
+          path: runpod-results/convergence-preflight.json
+          if-no-files-found: error
+          retention-days: 14

@@ -26,7 +26,7 @@ class BenchmarkDeadline(Exception):
 def launch(api):
     repo, repo_id = identity()
     profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
-    if profile not in ("four-stem", "vocal"):
+    if profile not in ("four-stem", "vocal", "convergence"):
         raise RuntimeError("Unknown benchmark profile; refusing compute")
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
@@ -79,7 +79,7 @@ def launch(api):
             "minVcpuCountPerGpu": 4,
             "minCudaVersion": "12.8",
         },
-        "disk": 40,
+        "disk": 80 if profile == "convergence" else 40,
         "mounts": {"global": [{"volumeId": global_volume["id"], "path": "/global"}]},
         "dataCenterIds": regions,
         "ports": ["8888/http"],
@@ -106,6 +106,11 @@ def launch(api):
             "SPT_EXPERIMENT": experiment,
         },
     }
+
+    if profile == "convergence":
+        payload["env"]["SPT_SNAPSHOT_SHA256"] = (
+            "172c50e5310b22ceab3d4813a4ba1146c682db682c8aebc4c03ad235de376964"
+        )
 
     def deadline(*_):
         raise BenchmarkDeadline("Benchmark deadline/cancellation; releasing compute")
@@ -153,16 +158,27 @@ def launch(api):
                 from benchmark_result import validate
                 from finetune_result import download_export
 
-                validate(
-                    result, sha, global_volume["id"], pod_id, experiment, vocal=profile == "vocal"
-                )
+                if profile == "convergence":
+                    from convergence_result import validate as validate_convergence
+
+                    validate_convergence(result, sha, global_volume["id"], pod_id, experiment)
+                else:
+                    validate(
+                        result,
+                        sha,
+                        global_volume["id"],
+                        pod_id,
+                        experiment,
+                        vocal=profile == "vocal",
+                    )
                 download_export(
                     url.removesuffix("result") + "checkpoint",
                     token,
                     result["report"],
                     output / "listening-and-metrics.tar",
                 )
-                meta["timing_summary"] = timing_summary(result["report"]["measurements"], rate)
+                if profile != "convergence":
+                    meta["timing_summary"] = timing_summary(result["report"]["measurements"], rate)
                 save()
                 print("PASS: independent benchmark validation and export checks", flush=True)
                 return

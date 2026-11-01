@@ -165,6 +165,11 @@ songs remain untouched. [Full results, protocol, CPU memory and listening packag
 | Four-stem comparison | Ten-song AAC screen complete: HTDemucs improves both metrics on every song/stem; Spleeter has 4.53× faster inference, while HTDemucs uses less allocated GPU memory. Test pool untouched |
 | Vocal comparison | Separate native two-source screen complete: Kim Mel-Band RoFormer improves both metrics on every song/source; paired vocal SDR +5.030 dB. Spleeter-2 has 55.67× faster FP32 inference and lower allocated GPU memory |
 
+The next [bounded longer-training screen](docs/convergence-pilot-protocol.md) compares two
+frozen-BN learning rates through 900 steps, with full-song quality curves and durable
+Global Volume checkpoints. This is official-initialized fine-tuning; convergence
+and improved weights still require measurement.
+
 **Latest training result:** The [matched frozen-BN pilot](docs/frozen-bn-41230412543.md) completed both 90-step arms and all ten full validation songs on PRO 6000 MIG 24GB. Freezing BN statistics avoids the ordinary-training collapse, but all four median paired changes versus official weights remain slightly negative: SDR −0.079/−0.074/−0.082/−0.096 dB and SI-SDR −0.035/−0.029/−0.023/−0.019 dB (vocals/drums/bass/other). Keep official converted weights as the inference baseline. [Aggregate results](docs/results/frozen-bn-41230412543.json).
 
 **Earlier ordinary-BN result:** The step-90 fine-tune regresses substantially: all four stems score lower than official initialization on all ten validation songs, under both BSSEval-v4 SDR and global stereo SI-SDR. Do not promote this checkpoint as a quality improvement.
@@ -193,16 +198,17 @@ Evidence: [real GPU training](https://github.com/jasonjiang8866/spleeterpt/actio
 [full-data provenance](docs/results/musdb18-training-provenance.json), and
 [persistent-pilot evidence](docs/results/persistent-pilot-41189465452.json).
 Recovery artifacts expire on **2026-11-14**; both test Pods were deleted.
-Decoded data is now checksum-verified on RunPod volume `j3aqjpw393` (EU-RO-1),
-mounted at `/data/musdb18`. The retained 80 GB STANDARD volume costs approximately
-**$5.60/month** even when no Pod runs. See the [persistent pilot run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452). No pretrained weights or
+That pilot used regional volume `j3aqjpw393` (EU-RO-1), mounted at
+`/data/musdb18`; **the user has since deleted it**. Its historical 80 GB storage
+price was approximately $5.60/month. Current experiments use the verified training
+snapshot on the existing Global Volume. See the [persistent pilot run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41189465452). No pretrained weights or
 training audio are bundled in this repository.
 
 The persistent pilot used **one crop per song**, not every sample of the full
 recordings. It retained the original ten metrics exactly, then completed 90 total
 training updates and ten-song validation (spectral loss **6.99237**, not SDR and
-not evidence of improvement). `last.pt` and `best.pt` are retained under
-`/data/experiments/41189465452-1/backups`; only reports are in the new Actions
+not evidence of improvement). `last.pt` and `best.pt` were retained under
+`/data/experiments/41189465452-1/backups` on that now-deleted regional volume; only reports are in the new Actions
 artifacts. All three compute Pods were deleted. Logged GPU compute is estimated
 at **$0.47** for preparation, interrupted training and continuation, excluding
 storage/Actions charges. The original run exposed a tuple/list acceptance bug
