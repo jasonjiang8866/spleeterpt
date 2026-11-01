@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "release": "weights-v1.0.0",
+  "models": {
+    "2stems": {
+      "filename": "2stems.pt",
+      "bytes": 78652155,
+      "sha256": "2032ba2a17765f80e02051ecd0b7a5dd1552a077221275615227c2652f873532",
+      "url": "https://github.com/jasonjiang8866/spleeterpt/releases/download/weights-v1.0.0/2stems.pt",
+      "upstream_archive": {
+        "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/2stems.tar.gz",
+        "sha256": "f3a90b39dd2874269e8b05a48a86745df897b848c61f3958efc80a39152bd692",
+        "bytes": 73109797
+      },
+      "license": "MIT",
+      "stems": 2
+    },
+    "4stems": {
+      "filename": "4stems.pt",
+      "bytes": 157301495,
+      "sha256": "b95de4f9460593db5600840d143e0de0fd06685cbe089050ecfc652f73e804d3",
+      "url": "https://github.com/jasonjiang8866/spleeterpt/releases/download/weights-v1.0.0/4stems.pt",
+      "upstream_archive": {
+        "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/4stems.tar.gz",
+        "sha256": "3adb4a50ad4eb18c7c4d65fcf4cf2367a07d48408a5eb7d03cd20067429dfaa8",
+        "bytes": 146308147
+      },
+      "license": "MIT",
+      "stems": 4
+    }
+  }
+}

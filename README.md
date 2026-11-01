@@ -7,6 +7,27 @@ point for RunPod. This is an independent project, not an official Deezer release
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
 [When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
 
+## Ready-to-use official weights
+
+The [weights-v1.0.0 Release](https://github.com/jasonjiang8866/spleeterpt/releases/tag/weights-v1.0.0)
+provides Deezer's official **2-stem and 4-stem** pretrained weights converted to
+this PyTorch port. No fine-tuning is needed and inference does not require TensorFlow.
+Install this repository in an environment with the appropriate CPU/CUDA PyTorch:
+
+```bash
+python -m pip install .
+spleeterpt separate song.wav --model 4stems --output outputs/song --device cpu
+# For CUDA-enabled PyTorch, use --device cuda. For vocals/accompaniment: --model 2stems.
+```
+
+The first invocation downloads the pinned release and verifies size/SHA-256;
+later invocations verify and reuse the cache. Prefetch with
+`spleeterpt download --stems 4`, or set `--cache-dir /your/cache` on either command.
+Existing `--checkpoint /path/to/model.pt` usage remains supported for offline or
+custom weights. These are independent conversions, not a Deezer-endorsed release.
+[Model card, license basis, checksums and validation](docs/pretrained-release.md).
+Weight binaries live in Releases, not the Git history. Five-stem release is deferred.
+
 ## Model architecture
 
 [![spleeterpt architecture: stereo STFT, independent six-level U-Nets with raw convolution skips, magnitude estimates, ratio masks and audio reconstruction](docs/assets/model-architecture.svg)](docs/assets/model-architecture.svg)
