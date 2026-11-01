@@ -133,6 +133,7 @@ def launch(api):
         print(f"Created {pod_id}: ${rate}/hour, one MIG, 60-minute lease", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last = None
+        last_phase = None
         while time.time() < expiry - 120:
             try:
                 result = request(url, token=token)
@@ -160,6 +161,14 @@ def launch(api):
                 return
             from worker import PROGRESS
 
+            phase = result.get("phase")
+            if (
+                isinstance(phase, str)
+                and phase != last_phase
+                and re.fullmatch(r"benchmark: command \d+/\d+", phase)
+            ):
+                print("Worker: " + phase, flush=True)
+                last_phase = phase
             progress = result.get("progress")
             if isinstance(progress, str) and progress != last and PROGRESS.fullmatch(progress):
                 print(progress, flush=True)

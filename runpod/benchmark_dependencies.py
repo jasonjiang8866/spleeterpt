@@ -2,13 +2,27 @@
 
 import importlib.metadata
 import json
+import shutil
 
 from packaging.requirements import Requirement
 
 COMMIT = "e976d93ecc3865e5757426930257e200846a520a"
 
 
+def check_scoring_runtime():
+    # museval imports musdb -> stempeg, which needs these even for decoded WAVs.
+    # Check before staging or model inference, not at the first scoring call.
+    for tool in ("ffmpeg", "ffprobe"):
+        if not shutil.which(tool):
+            raise RuntimeError("Missing scoring system dependency: " + tool)
+    importlib.import_module("museval")
+    if importlib.metadata.version("museval") != "0.4.1":
+        raise ValueError("Pinned scoring package missing")
+    print("PASS: ffmpeg/ffprobe available and museval imports successfully", flush=True)
+
+
 def check():
+    check_scoring_runtime()
     source = json.loads(importlib.metadata.distribution("demucs").read_text("direct_url.json"))
     if source.get("vcs_info", {}).get("commit_id") != COMMIT:
         raise ValueError("Unpinned Demucs source")

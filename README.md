@@ -80,6 +80,11 @@ probe and budget. The [bounded benchmark workflow](.github/workflows/runpod-benc
 runs isolated models with three full-song repeats, paired CPU scoring and compute
 cleanup. It requires an explicit dispatch on `main`; no competitor music-quality
 result is available yet.
+The [first GPU trial](docs/spleeter4-htdemucs-protocol.md#first-gpu-trial-scoring-dependency-failure)
+verified the 50 validation WAVs and both first-song GPU inference paths, then stopped
+because scoring needed missing `ffmpeg/ffprobe`. Compute was deleted (about $0.0266
+estimated); the correction checks scoring dependencies early and retains partial
+measurements. The ten-song comparison has not completed.
 The 2026-11-01 12:10 SGT read-only inventory found the existing Global Volume,
 zero account Pods and MIG 24GB catalog capacity at $0.69/hour. The original regional
 volume was not found; older regional-storage statements below are historical.

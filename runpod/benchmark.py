@@ -133,6 +133,27 @@ def run():
     if not re.fullmatch(r"[a-zA-Z0-9]+", pod_id) or not re.fullmatch(r"\d+-\d+", experiment):
         raise ValueError("Invalid run identity")
     provenance, storage = stage()
+    partial = {
+        "kind": "benchmark-partial",
+        "commit": os.environ["SPT_COMMIT"],
+        "pod_id": pod_id,
+        "experiment": experiment,
+        "storage": storage,
+        "provenance_json": provenance,
+        "protocol": PROTOCOL,
+        "phase": "staged",
+        "smoke_measurements": {},
+        "measurements": {},
+        "records": [],
+    }
+
+    def checkpoint(phase):
+        partial["phase"] = phase
+        # The worker serves this even if a later subprocess/scoring step fails.
+        # A partial report can never satisfy benchmark_result.validate().
+        atomic_json(Path("/workspace/report.json"), partial)
+
+    checkpoint("staged")
     pinned = json.loads((ROOT / "docs/results/musdb18-training-provenance.json").read_text())
     expected = validation_inventory(
         provenance, evidence()["resume"]["dataset"]["provenance_sha256"], pinned
@@ -153,6 +174,8 @@ def run():
         "weight_sha256": {v: digest(p) for v, p in checkpoints.items()},
     }
     atomic_json(work / "manifest.json", spec)
+    partial["weight_sha256"] = spec["weight_sha256"]
+    checkpoint("weights-verified")
     measurements, smoke_measurements = {}, {}
     for smoke in (True, False):
         for variant in VARIANTS:
@@ -178,8 +201,11 @@ def run():
             validate_measurement(measured, variant, expected, smoke=smoke)
             if smoke:
                 smoke_measurements[variant] = measured
+                partial["smoke_measurements"][variant] = measured
             else:
                 measurements[variant] = measured
+                partial["measurements"][variant] = measured
+            checkpoint(("smoke-" if smoke else "inference-") + variant)
         if smoke:
             # Measure real full-song BSSEval too, before committing to the ten-song pass.
             first_id = min(expected)
@@ -219,7 +245,8 @@ def run():
                 "projected_remaining_seconds_with_50pct_margin": projected,
                 "available_worker_seconds": int(os.environ["SPT_EXPIRY"]) - time.time() - 180,
             }
-            atomic_json(Path("/workspace/report.json"), smoke_report)
+            partial["smoke"] = smoke_report
+            checkpoint("smoke-scored")
             if projected > smoke_report["available_worker_seconds"]:
                 raise ValueError(
                     "One-song projection exceeds remaining lease; no full pass started"
@@ -268,6 +295,8 @@ def run():
                 ),
             }
             records.append(record)
+            partial["records"] = records
+            checkpoint("scored-song-" + str(index + 1))
             atomic_json(out / f"track-{index:02d}.json", record)
             if index < 2:
                 clips.append(

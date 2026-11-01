@@ -1,0 +1,56 @@
+{
+  "kind": "separator-benchmark-blocked",
+  "run_url": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41274789840",
+  "artifact_id": 13070761438,
+  "source_commit": "a3c658a350cc04c3ae23b3f15ab527fe947206a3",
+  "provision": {
+    "commit": "a3c658a350cc04c3ae23b3f15ab527fe947206a3",
+    "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+    "pod_name": "spt-1436489970-41274789840-1-1793512410",
+    "expires_at": 1793512410,
+    "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+    "budget": {
+      "checked_at_utc": "2026-11-01T04:53:29.543327+00:00",
+      "month_basis": "UTC",
+      "reserve_usd": 1.0,
+      "monthly_budget_usd": 500.0,
+      "balance_sufficient": true,
+      "month_headroom_sufficient": true,
+      "history_scope": "reported account daily charges plus one hour current spend; billing may lag",
+      "gpu_rate_cap_usd_per_hour": 0.69,
+      "lease_seconds": 3600,
+      "scope": "compute rate/deadline plus reserve; storage/request fees are not an all-in hard cap"
+    },
+    "task": "benchmark",
+    "pod_id": "utthebqm32dsmd",
+    "cost_per_hour": 0.69,
+    "cleanup_confirmed": true,
+    "controller_elapsed_seconds": 138.77943515777588,
+    "compute_cost_upper_estimate_usd": 0.02659939173857371,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice"
+  },
+  "worker_status": "failed",
+  "completed_before_failure": [
+    "51-file validation-only staging (50 AAC-derived WAVs plus pinned provenance)",
+    "Official Spleeter conversion and both checkpoint hash gates",
+    "Spleeter-4 first full song GPU smoke and measurement validator",
+    "HTDemucs first full song GPU smoke and measurement validator"
+  ],
+  "failure": {
+    "phase": "first-song CPU scoring import",
+    "exception": "RuntimeError",
+    "message": "ffmpeg or ffprobe could not be found",
+    "dependency_chain": [
+      "museval",
+      "musdb",
+      "stempeg"
+    ],
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/source/runpod/benchmark.py\", line 373, in <module>\n    result = run()\n             ^^^^^\n  File \"/workspace/source/runpod/benchmark.py\", line 203, in run\n    score_variants(\n  File \"/workspace/source/scripts/musdb_evaluation.py\", line 183, in score_variants\n    import museval\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/museval/__init__.py\", line 7, in <module>\n    import musdb\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/musdb/__init__.py\", line 1, in <module>\n    from .audio_classes import MultiTrack, Source, Target\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/musdb/audio_classes.py\", line 3, in <module>\n    import stempeg\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/stempeg/__init__.py\", line 16, in <module>\n    from .read import read_stems\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/stempeg/read.py\", line 7, in <module>\n    from stempeg.write import FilesWriter\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/stempeg/write.py\", line 23, in <module>\n    from .cmds import FFMPEG_PATH, mp4box_exists, get_aac_codec, find_cmd\n  File \"/workspace/eval-venv/lib/python3.11/site-packages/stempeg/cmds.py\", line 43, in <module>\n    raise RuntimeError(\nRuntimeError: ffmpeg or ffprobe could not be found! Please install them before using stempeg. See: https://github.com/faroit/stempeg\n"
+  },
+  "quality_results_available": false,
+  "full_ten_song_pass_started": false,
+  "test_pool_used": false,
+  "raw_smoke_measurements_retained": false,
+  "measurement_limit": "Progress logs establish completion; numeric smoke reports were on ephemeral Pod disk and were not exported before scoring failed.",
+  "automatic_paid_retry": false
+}

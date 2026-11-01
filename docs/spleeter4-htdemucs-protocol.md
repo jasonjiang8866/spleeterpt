@@ -1,8 +1,9 @@
 # Spleeter-4 versus HTDemucs: preparation and predeclared screen
 
 Prepared 2026-11-01 (Asia/Singapore), from `fd7d8a844a28cca53f04ec94ee4f9f8123812d29`.
-This document defines the next experiment. **No competitor music-quality result
-or paid GPU run is claimed.** RoFormer vocal/accompaniment evaluation remains a
+This document defines the controlled experiment. **No competitor music-quality
+result is available.** The first paid GPU smoke reached both models, then stopped
+at a missing scoring dependency; see the run record below. RoFormer evaluation remains a
 separate task. Official converted Spleeter weights remain the baseline.
 
 ## Inputs and provenance
@@ -154,7 +155,39 @@ the workflow also runs a read-only GraphQL account query. Neither can create
 compute or storage. The inventory deliberately reports
 `ready_for_paid_run=false`: API inventory, mounted-byte verification, credit,
 CPU/GPU compatibility and a complete benchmark worker are distinct checks.
-The worker and controller are implemented; a paid result is not yet available.
+The worker and controller are implemented. The first paid trial is recorded below;
+the ten-song quality/speed comparison remains incomplete.
+
+## First GPU trial: scoring dependency failure
+
+[Run 41274789840](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41274789840)
+used merged commit `a3c658a350cc04c3ae23b3f15ab527fe947206a3` on 2026-11-01,
+04:53–04:55 UTC. The returned MIG quote was $0.69/hour. Account reserve and
+monthly headroom checks passed, all 51 staged files passed hash checks, official
+Spleeter weights were recreated, and both first-song GPU smoke processes passed
+their measurement validators. Thus this reached real Blackwell inference, beyond
+the earlier synthetic CPU compatibility probe.
+
+The first CPU scoring call failed while importing `museval -> musdb -> stempeg`:
+`ffmpeg/ffprobe` were absent from the container. Decoded WAV scoring still imports
+that dependency chain. No ten-song inference pass or quality scores were produced.
+Raw smoke timing files were not exported before the failure and disappeared with
+the Pod, so the progress log cannot support quantitative speed or memory claims.
+
+The controller deleted the created Pod and confirmed it absent; the workflow's
+second cleanup found zero matching Pods. Controller elapsed time was 138.779 seconds,
+giving a compute-only upper estimate of **$0.02660** at the returned quote, excluding
+Global storage/request fees and not representing an invoice. No automatic paid
+retry was launched. [Machine-readable evidence](results/separator-benchmark-41274789840.json)
+retains identity, budget checks, cleanup confirmation and the error trace.
+The [Actions screenshot](results/benchmark-41274789840.jpg) shows both cleanup steps.
+
+The correction installs `ffmpeg` before Python environment setup and checks both
+binaries plus a real `museval` import before staging or inference. It also checkpoints
+each completed model's measurements and each scored song into the worker's failure
+report, so later failures retain completed evidence. The controller now prints
+installation phase changes. A subsequent paid dispatch remains a separate action;
+do not use GitHub's rerun button on the old commit, which still has the defect.
 
 ## Implemented launch path
 
