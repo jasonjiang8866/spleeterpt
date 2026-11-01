@@ -6,6 +6,7 @@ on:
     paths:
       - runpod/benchmark_preflight.py
       - runpod/benchmark_budget.py
+      - runpod/benchmark_dependencies.py
       - scripts/probe_htdemucs.py
       - .github/workflows/benchmark-preflight.yml
 permissions:
@@ -49,7 +50,13 @@ jobs:
           python -m pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cpu
           python -m pip install dora-search==0.1.12 einops==0.8.1 julius==0.2.7 lameenc==1.8.1 openunmix==1.3.0 pyyaml==6.0.2 tqdm==4.67.1
           python -m pip install --no-deps 'demucs @ git+https://github.com/facebookresearch/demucs.git@e976d93ecc3865e5757426930257e200846a520a'
-      - name: Verify official weight bytes and real-model CPU compatibility
+      - name: Verify scoring system dependencies before any GPU trial
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python -m pip install museval==0.4.1
+          PYTHONPATH=runpod python -c 'from benchmark_dependencies import check_scoring_runtime; check_scoring_runtime()'
+      - name: Verify official weight bytes and real-model CPU inference
         run: python scripts/probe_htdemucs.py
       - uses: actions/upload-artifact@v4
         with:

@@ -237,6 +237,11 @@ def run():
         elif task == "benchmark":
             python = "/workspace/eval-venv/bin/python"
             commands = [
+                [
+                    "bash",
+                    "-lc",
+                    "command -v ffmpeg && command -v ffprobe || (apt-get update && apt-get install -y --no-install-recommends ffmpeg)",
+                ],
                 ["python", "-m", "venv", "/workspace/eval-venv"],
                 [
                     python,

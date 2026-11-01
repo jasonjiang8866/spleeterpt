@@ -168,3 +168,32 @@ def test_actual_museval_pair_with_benchmark_variants(modules):
     assert all(
         x["paired_delta"]["median"] == 0 for x in summary["metrics"]["bsseval_v4_sdr_db"].values()
     )
+
+
+@pytest.mark.parametrize("missing", ["ffmpeg", "ffprobe"])
+def test_missing_scoring_binary_rejected_before_import(modules, monkeypatch, missing):
+    deps = importlib.import_module("benchmark_dependencies")
+    monkeypatch.setattr(
+        deps.shutil, "which", lambda name: None if name == missing else "/bin/" + name
+    )
+    imports = []
+    monkeypatch.setattr(deps.importlib, "import_module", lambda name: imports.append(name))
+    with pytest.raises(RuntimeError, match=missing):
+        deps.check_scoring_runtime()
+    assert imports == []
+
+
+def test_scoring_runtime_real_import(modules):
+    deps = importlib.import_module("benchmark_dependencies")
+    deps.check_scoring_runtime()
+
+
+def test_partial_checkpoint_cannot_be_accepted_as_benchmark(modules):
+    metrics, checker, _ = modules
+    report = {
+        "kind": "benchmark-partial",
+        "protocol_sha256": hashlib.sha256(checker.encoded(metrics.PROTOCOL)).hexdigest(),
+        "phase": "smoke-htdemucs",
+    }
+    with pytest.raises(ValueError, match="identity"):
+        checker.validate({"status": "passed", "report": report}, "a" * 40, "global1", "pod1", "1-1")
