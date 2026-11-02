@@ -1,5 +1,8 @@
 name: RunPod official five-stem inference measurement
 on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/runpod-five-stem.yml]
   workflow_dispatch:
     inputs:
       confirm_paid_benchmark:
@@ -14,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   benchmark:
-    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && inputs.confirm_paid_benchmark
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/main' && (inputs.confirm_paid_benchmark || (github.event_name == 'push' && github.event.head_commit.message == 'Run approved five-stem MIG validation (2026-11-02, USD 2 cap)' && github.run_attempt == 1))
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     steps:
@@ -26,11 +29,15 @@ jobs:
           python-version: '3.12'
       - name: CPU-only lifecycle regressions before renting GPU
         run: python -m unittest discover -s runpod -p 'test_*.py' -v
+      - name: Fresh read-only resource inventory
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/five_stem_preflight.py
       - name: Check budget, launch one MIG, measure, validate and retrieve results
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: five-stem
-          SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark }}
+          SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark || (github.event_name == 'push' && github.event.head_commit.message == 'Run approved five-stem MIG validation (2026-11-02, USD 2 cap)' && github.run_attempt == 1) }}
         run: python runpod/benchmark_control.py
       - name: Delete compute only
         if: always()
