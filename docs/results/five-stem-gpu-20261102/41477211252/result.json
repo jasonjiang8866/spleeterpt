@@ -1,0 +1,2594 @@
+{
+  "status": "failed",
+  "error": "RuntimeError",
+  "report": {
+    "kind": "five-stem-bounded-v1",
+    "commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+    "pod_id": "7t36utg4valgc5",
+    "experiment": "41477211252-1",
+    "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+    "gpu_runtime": {
+      "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "device_count": 1,
+      "capability": [
+        12,
+        0
+      ],
+      "total_memory_bytes": 25367150592
+    },
+    "benchmarks": {
+      "5stems-synthetic": {
+        "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+        "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+        "config": {
+          "instruments": [
+            "vocals",
+            "piano",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "softmax",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "synthetic_tones_chirp_envelope",
+        "input_sha256": null,
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0,
+          "near_silent_reference_rms": 1e-05,
+          "near_silent_rms_error": 1e-08,
+          "near_silent_max_abs_error": 1e-07
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "174c8098b44cb5741055db453e6e346c503c62813b051a96f224811fb70538e8",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.11785918707028031,
+                "process_peak_rss_mib": 1068.65234375,
+                "pre_inference_peak_rss_mib": 1066.65234375,
+                "cuda_peak_allocated_mib": 307.326171875,
+                "cuda_peak_reserved_mib": 390.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.1062171880621463,
+                "process_peak_rss_mib": 1122.578125,
+                "pre_inference_peak_rss_mib": 1066.5390625,
+                "cuda_peak_allocated_mib": 300.04638671875,
+                "cuda_peak_reserved_mib": 390.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.19223551452159882,
+                "reference_rms": 0.05753067815518026,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "piano": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.0039224158972501755,
+                "reference_rms": 0.00026061656982796273,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "drums": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.004256426822394133,
+                "reference_rms": 0.00017840128399774488,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "bass": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.020074300467967987,
+                "reference_rms": 0.0007633581062443592,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "other": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.10897959768772125,
+                "reference_rms": 0.04902098129903968,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "308970685bf21f8d1723408478c2d758c21bd777395f0ae28da525002ec08fd4",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.24416402610950172,
+                "process_peak_rss_mib": 1098.19140625,
+                "pre_inference_peak_rss_mib": 1066.6640625,
+                "cuda_peak_allocated_mib": 575.8154296875,
+                "cuda_peak_reserved_mib": 800.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.2103783111087978,
+                "process_peak_rss_mib": 1146.484375,
+                "pre_inference_peak_rss_mib": 1066.47265625,
+                "cuda_peak_allocated_mib": 571.658203125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.5762786865234375e-07,
+                "rms_error": 1.3271337383248195e-08,
+                "reference_peak": 0.14307758212089539,
+                "reference_rms": 0.005503841922182413,
+                "legacy_reference_si_sdr_db": 112.45547575899155,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 8.156803232850507e-09,
+                "rms_error": 1.8733889910753928e-10,
+                "reference_peak": 0.00057954341173172,
+                "reference_rms": 5.823746540577882e-05,
+                "legacy_reference_si_sdr_db": 109.85153067942278,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.5390257835388184e-08,
+                "rms_error": 7.679081284782942e-10,
+                "reference_peak": 0.02235463634133339,
+                "reference_rms": 0.00028333718894514034,
+                "legacy_reference_si_sdr_db": 111.45945424064502,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.0710209608078003e-08,
+                "rms_error": 2.604643944937952e-10,
+                "reference_peak": 0.020438717678189278,
+                "reference_rms": 0.00023793106009897225,
+                "legacy_reference_si_sdr_db": 119.24003886249052,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.650784492492676e-07,
+                "rms_error": 1.3311468956585235e-08,
+                "reference_peak": 0.1999019831418991,
+                "reference_rms": 0.07359156918859087,
+                "legacy_reference_si_sdr_db": 134.85224982002325,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "9b5ea29051344d11e70efb3f5e3036bf11dfa8078b6fcdc01e7aebbfc2aee2b7",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.6595954820513725,
+                "process_peak_rss_mib": 1203.4921875,
+                "pre_inference_peak_rss_mib": 1052.6640625,
+                "cuda_peak_allocated_mib": 1930.517578125,
+                "cuda_peak_reserved_mib": 2260.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.6866554729640484,
+                "process_peak_rss_mib": 1162.74609375,
+                "pre_inference_peak_rss_mib": 1057.54296875,
+                "cuda_peak_allocated_mib": 571.798828125,
+                "cuda_peak_reserved_mib": 718.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.618172973394394e-08,
+                "rms_error": 1.9397427283834462e-10,
+                "reference_peak": 0.015359933488070965,
+                "reference_rms": 0.00044122220930937865,
+                "legacy_reference_si_sdr_db": 127.13989737657259,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 6.456730261561461e-09,
+                "rms_error": 1.2401415315659341e-10,
+                "reference_peak": 0.0037520285695791245,
+                "reference_rms": 9.258488332779929e-05,
+                "legacy_reference_si_sdr_db": 117.46138014103227,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 7.683411240577698e-09,
+                "rms_error": 1.431838883154902e-10,
+                "reference_peak": 0.13506658375263214,
+                "reference_rms": 0.006254133900907789,
+                "legacy_reference_si_sdr_db": 152.80546047189367,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.521601557731628e-08,
+                "rms_error": 5.022952974067481e-10,
+                "reference_peak": 0.09957706928253174,
+                "reference_rms": 0.005543910944756058,
+                "legacy_reference_si_sdr_db": 140.85720164748747,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.0058283805847168e-07,
+                "rms_error": 8.350162873982682e-10,
+                "reference_peak": 0.20001471042633057,
+                "reference_rms": 0.07244702880639783,
+                "legacy_reference_si_sdr_db": 158.76701211123944,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 600.0,
+            "input_sha256": "2ecb130ee148726e21d24bee5373efe8f877edb961c4f8fab24b9b09be66dd72",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 6.017757723107934,
+                "process_peak_rss_mib": 2472.07421875,
+                "pre_inference_peak_rss_mib": 1057.7265625,
+                "cuda_peak_allocated_mib": 17197.94580078125,
+                "cuda_peak_reserved_mib": 19388.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 5.21327365282923,
+                "process_peak_rss_mib": 1177.34375,
+                "pre_inference_peak_rss_mib": 1060.62109375,
+                "cuda_peak_allocated_mib": 571.798828125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 9.313225746154785e-10,
+                "rms_error": 1.043785478301685e-12,
+                "reference_peak": 0.07431922107934952,
+                "reference_rms": 0.0036691997061153174,
+                "legacy_reference_si_sdr_db": 190.91920208021267,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 4.656612873077393e-10,
+                "rms_error": 5.327754302631698e-13,
+                "reference_peak": 0.06231538951396942,
+                "reference_rms": 0.0010043197034399118,
+                "legacy_reference_si_sdr_db": 185.5065562376114,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 7.450580596923828e-09,
+                "rms_error": 8.792882920376347e-12,
+                "reference_peak": 0.13506658375263214,
+                "reference_rms": 0.0060017013156284825,
+                "legacy_reference_si_sdr_db": 176.6828653875865,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 1.862645149230957e-09,
+                "rms_error": 1.7770561934112075e-12,
+                "reference_peak": 0.09957706928253174,
+                "reference_rms": 0.0017568776422354783,
+                "legacy_reference_si_sdr_db": 179.9008072221904,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 26460000,
+                "max_abs_error": 4.470348358154297e-08,
+                "rms_error": 2.434783817529576e-10,
+                "reference_peak": 0.20026621222496033,
+                "reference_rms": 0.07136300376824926,
+                "legacy_reference_si_sdr_db": 169.34025439599276,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "5stems-real": {
+        "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+        "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+        "config": {
+          "instruments": [
+            "vocals",
+            "piano",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "softmax",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0,
+          "near_silent_reference_rms": 1e-05,
+          "near_silent_rms_error": 1e-08,
+          "near_silent_max_abs_error": 1e-07
+        },
+        "cases": [
+          {
+            "seconds": 1.0,
+            "input_sha256": "f2f4be17b52ad1e8d6e49edd0c968a04273738a28de6451c6702cc5583957475",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.07726009003818035,
+                "process_peak_rss_mib": 1062.62109375,
+                "pre_inference_peak_rss_mib": 1060.62109375,
+                "cuda_peak_allocated_mib": 307.326171875,
+                "cuda_peak_reserved_mib": 390.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.10237442492507398,
+                "process_peak_rss_mib": 1115.45703125,
+                "pre_inference_peak_rss_mib": 1059.421875,
+                "cuda_peak_allocated_mib": 300.04638671875,
+                "cuda_peak_reserved_mib": 390.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.07774895429611206,
+                "reference_rms": 0.006252925614695965,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "piano": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 5.3349976951722056e-05,
+                "reference_rms": 4.423336533118024e-06,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "drums": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.04897339642047882,
+                "reference_rms": 0.003658043506472448,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "bass": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.14821068942546844,
+                "reference_rms": 0.05891792609733381,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              },
+              "other": {
+                "samples_per_channel": 44100,
+                "max_abs_error": 0.0,
+                "rms_error": 0.0,
+                "reference_peak": 0.13984116911888123,
+                "reference_rms": 0.02109127330443284,
+                "legacy_reference_si_sdr_db": null,
+                "si_sdr_status": "exact_or_degenerate_projection",
+                "acceptance": "exact"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 12.0,
+            "input_sha256": "734cc6e192a3f1dbf158e8a9dd626e7141e5eb64c0f868a590cc966d5fcf0b9d",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.2651038528420031,
+                "process_peak_rss_mib": 1092.26953125,
+                "pre_inference_peak_rss_mib": 1061.0078125,
+                "cuda_peak_allocated_mib": 575.8154296875,
+                "cuda_peak_reserved_mib": 800.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.3131002699956298,
+                "process_peak_rss_mib": 1139.48828125,
+                "pre_inference_peak_rss_mib": 1059.4765625,
+                "cuda_peak_allocated_mib": 571.658203125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.91155481338501e-08,
+                "rms_error": 1.0107793850514593e-09,
+                "reference_peak": 0.3120838403701782,
+                "reference_rms": 0.05144382073052695,
+                "legacy_reference_si_sdr_db": 154.1336093363206,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 2.35741026699543e-09,
+                "rms_error": 8.666136301814482e-11,
+                "reference_peak": 0.00034692796180024743,
+                "reference_rms": 1.256605262238781e-05,
+                "legacy_reference_si_sdr_db": 114.40181743483448,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 6.984919309616089e-09,
+                "rms_error": 1.343447536473048e-10,
+                "reference_peak": 0.06132608652114868,
+                "reference_rms": 0.0017202185798495654,
+                "legacy_reference_si_sdr_db": 142.14851630777426,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 5.960464477539063e-08,
+                "rms_error": 1.8307647389544303e-09,
+                "reference_peak": 0.11052655428647995,
+                "reference_rms": 0.005415998504238634,
+                "legacy_reference_si_sdr_db": 129.42119072690673,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 4.284083843231201e-08,
+                "rms_error": 1.6112576135277801e-09,
+                "reference_peak": 0.3087524175643921,
+                "reference_rms": 0.05629195443448623,
+                "legacy_reference_si_sdr_db": 150.86588624493635,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          },
+          {
+            "seconds": 60.0,
+            "input_sha256": "27e169f4c6af964ef8b6d7be5c11c2318eccb7cf8531dd8dfce3f9abfa471ed1",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.650807173922658,
+                "process_peak_rss_mib": 1214.61328125,
+                "pre_inference_peak_rss_mib": 1060.28515625,
+                "cuda_peak_allocated_mib": 1930.517578125,
+                "cuda_peak_reserved_mib": 2260.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.6629972229711711,
+                "process_peak_rss_mib": 1162.62890625,
+                "pre_inference_peak_rss_mib": 1058.12890625,
+                "cuda_peak_allocated_mib": 571.798828125,
+                "cuda_peak_reserved_mib": 718.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.568167686462402e-07,
+                "rms_error": 1.648333481893334e-08,
+                "reference_peak": 0.5934584140777588,
+                "reference_rms": 0.05547901513417774,
+                "legacy_reference_si_sdr_db": 130.5419436590442,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 8.87666828930378e-10,
+                "rms_error": 1.0915668918751776e-11,
+                "reference_peak": 0.00032074988121166825,
+                "reference_rms": 5.234244252165709e-06,
+                "legacy_reference_si_sdr_db": 113.71683794073705,
+                "si_sdr_status": "finite",
+                "acceptance": "near_silent_absolute"
+              },
+              "drums": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 3.2335519790649414e-06,
+                "rms_error": 4.529313851208745e-08,
+                "reference_peak": 0.5529701709747314,
+                "reference_rms": 0.027092068759112457,
+                "legacy_reference_si_sdr_db": 115.53925590088687,
+                "si_sdr_status": "finite",
+                "acceptance": "failed_absolute_error"
+              },
+              "bass": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 1.7583370208740234e-06,
+                "rms_error": 3.554824055377557e-08,
+                "reference_peak": 0.3727594316005707,
+                "reference_rms": 0.0680740372886146,
+                "legacy_reference_si_sdr_db": 125.64833738779527,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 2646000,
+                "max_abs_error": 2.909451723098755e-06,
+                "rms_error": 4.358777661068864e-08,
+                "reference_peak": 0.45033353567123413,
+                "reference_rms": 0.05409928770786006,
+                "legacy_reference_si_sdr_db": 121.87678207859562,
+                "si_sdr_status": "finite",
+                "acceptance": "failed_absolute_error"
+              }
+            },
+            "numerical_pass": false
+          }
+        ],
+        "numerical_pass": false
+      },
+      "5stems-piano-0": {
+        "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+        "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+        "config": {
+          "instruments": [
+            "vocals",
+            "piano",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "softmax",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "d1bdac09b029f35e7e4cd614db8d9ca5d95f2a30e726be0f5777085f27050519",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0,
+          "near_silent_reference_rms": 1e-05,
+          "near_silent_rms_error": 1e-08,
+          "near_silent_max_abs_error": 1e-07
+        },
+        "cases": [
+          {
+            "seconds": 12.0,
+            "input_sha256": "77f43c61d96b7e8548cc9f42a36a738469394e9a35b0f7ead9c9800c5156cd02",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.47327870316803455,
+                "process_peak_rss_mib": 1089.3359375,
+                "pre_inference_peak_rss_mib": 1058.375,
+                "cuda_peak_allocated_mib": 575.8154296875,
+                "cuda_peak_reserved_mib": 800.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.3939921478740871,
+                "process_peak_rss_mib": 1143.72265625,
+                "pre_inference_peak_rss_mib": 1063.67578125,
+                "cuda_peak_allocated_mib": 571.658203125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 2.7008354663848877e-08,
+                "rms_error": 8.296156474899184e-10,
+                "reference_peak": 0.01407841220498085,
+                "reference_rms": 0.00037002279917919604,
+                "legacy_reference_si_sdr_db": 113.2539840630158,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 7.450580596923828e-09,
+                "rms_error": 7.039310741908305e-11,
+                "reference_peak": 0.9174022078514099,
+                "reference_rms": 0.10780763210008636,
+                "legacy_reference_si_sdr_db": 183.70238940001204,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 8.940696716308594e-08,
+                "rms_error": 2.687007964371488e-09,
+                "reference_peak": 0.048479460179805756,
+                "reference_rms": 0.0014393080708868483,
+                "legacy_reference_si_sdr_db": 117.1227865339931,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 2.561137080192566e-08,
+                "rms_error": 8.780422791842931e-10,
+                "reference_peak": 0.008722146973013878,
+                "reference_rms": 0.0003249446195112711,
+                "legacy_reference_si_sdr_db": 112.47754903995924,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 8.754432201385498e-08,
+                "rms_error": 2.8651400842248012e-09,
+                "reference_peak": 0.3040778636932373,
+                "reference_rms": 0.011829083350251419,
+                "legacy_reference_si_sdr_db": 132.3335490614592,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "5stems-piano-15": {
+        "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+        "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+        "config": {
+          "instruments": [
+            "vocals",
+            "piano",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "softmax",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "a6ecc1202ced5f657161201d09063598adcf90f9592bf37428633c2f3447d0dd",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0,
+          "near_silent_reference_rms": 1e-05,
+          "near_silent_rms_error": 1e-08,
+          "near_silent_max_abs_error": 1e-07
+        },
+        "cases": [
+          {
+            "seconds": 12.0,
+            "input_sha256": "3da774b6892b93d366d39e2003654e0c247018cd60604d2d6b060e4cd5060296",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.27955645183101296,
+                "process_peak_rss_mib": 1094.1875,
+                "pre_inference_peak_rss_mib": 1060.71875,
+                "cuda_peak_allocated_mib": 575.8154296875,
+                "cuda_peak_reserved_mib": 800.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.24042072100564837,
+                "process_peak_rss_mib": 1135.98046875,
+                "pre_inference_peak_rss_mib": 1055.94140625,
+                "cuda_peak_allocated_mib": 571.658203125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.30385160446167e-06,
+                "rms_error": 3.8116280534452874e-08,
+                "reference_peak": 0.15252190828323364,
+                "reference_rms": 0.005084607136790447,
+                "legacy_reference_si_sdr_db": 102.61955897850187,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 9.639188647270203e-07,
+                "rms_error": 3.0965346589805814e-08,
+                "reference_peak": 0.8866734504699707,
+                "reference_rms": 0.10398055326651563,
+                "legacy_reference_si_sdr_db": 130.5230794371329,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.9371509552001953e-07,
+                "rms_error": 6.23121666119908e-09,
+                "reference_peak": 0.281314492225647,
+                "reference_rms": 0.014576250688460893,
+                "legacy_reference_si_sdr_db": 127.39450747966495,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 5.289912223815918e-07,
+                "rms_error": 1.537586851069639e-08,
+                "reference_peak": 0.20021837949752808,
+                "reference_rms": 0.03277263097230146,
+                "legacy_reference_si_sdr_db": 126.57360450979532,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 1.296401023864746e-06,
+                "rms_error": 4.253835118114702e-08,
+                "reference_peak": 0.38921186327934265,
+                "reference_rms": 0.01620805065941859,
+                "legacy_reference_si_sdr_db": 111.97409954359357,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      },
+      "5stems-piano-30": {
+        "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+        "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+        "config": {
+          "instruments": [
+            "vocals",
+            "piano",
+            "drums",
+            "bass",
+            "other"
+          ],
+          "filters": [
+            16,
+            32,
+            64,
+            128,
+            256,
+            512
+          ],
+          "sample_rate": 44100,
+          "n_fft": 4096,
+          "hop_length": 1024,
+          "segment_frames": 512,
+          "frequency_bins": 1024,
+          "encoder_activation": "elu",
+          "decoder_activation": "elu",
+          "mask_activation": "softmax",
+          "mask_extension": "zeros",
+          "separation_exponent": 2.0
+        },
+        "input_kind": "real_audio_prefix",
+        "input_sha256": "47a6f4a519b57c036775e3a5bd6d3f25b22e30f966a2c9440e24f5e9858039f5",
+        "requested_device": "cuda",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "threads": 2,
+        "warmup_windows": 1,
+        "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+        "thresholds": {
+          "max_abs_error": 2e-06,
+          "min_si_sdr_db": 100.0,
+          "near_silent_reference_rms": 1e-05,
+          "near_silent_rms_error": 1e-08,
+          "near_silent_max_abs_error": 1e-07
+        },
+        "cases": [
+          {
+            "seconds": 12.0,
+            "input_sha256": "47b45db022329ecffa50c274e6372b7b7c9b03cd3c3f365e5f02b62f653abbd1",
+            "measurements": [
+              {
+                "mode": "legacy",
+                "seconds_including_io": 0.18780411314219236,
+                "process_peak_rss_mib": 1094.140625,
+                "pre_inference_peak_rss_mib": 1061.5234375,
+                "cuda_peak_allocated_mib": 575.8154296875,
+                "cuda_peak_reserved_mib": 800.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              },
+              {
+                "mode": "bounded",
+                "seconds_including_io": 0.34319217898882926,
+                "process_peak_rss_mib": 1144.29296875,
+                "pre_inference_peak_rss_mib": 1064.27734375,
+                "cuda_peak_allocated_mib": 571.658203125,
+                "cuda_peak_reserved_mib": 716.0,
+                "device": "cuda:0",
+                "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                "torch": "2.8.0+cu128",
+                "cuda_runtime": "12.8",
+                "gpu_runtime": {
+                  "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+                  "device_count": 1,
+                  "capability": [
+                    12,
+                    0
+                  ],
+                  "total_memory_bytes": 25367150592
+                }
+              }
+            ],
+            "stems": {
+              "vocals": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.4924596548080444e-08,
+                "rms_error": 9.501756538265317e-10,
+                "reference_peak": 0.0076842824928462505,
+                "reference_rms": 0.00023861448497943308,
+                "legacy_reference_si_sdr_db": 109.53729359471197,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "piano": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 7.450580596923828e-09,
+                "rms_error": 1.3241587165636324e-10,
+                "reference_peak": 0.8379031419754028,
+                "reference_rms": 0.13164070281126583,
+                "legacy_reference_si_sdr_db": 179.94899986284182,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "drums": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.91155481338501e-08,
+                "rms_error": 1.0012081607549044e-09,
+                "reference_peak": 0.01741190254688263,
+                "reference_rms": 0.00045108391338336923,
+                "legacy_reference_si_sdr_db": 115.07205170357395,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "bass": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 3.259629011154175e-08,
+                "rms_error": 1.0332069882728316e-09,
+                "reference_peak": 0.0046129911206662655,
+                "reference_rms": 0.00021748395085682064,
+                "legacy_reference_si_sdr_db": 107.99658325309647,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              },
+              "other": {
+                "samples_per_channel": 529200,
+                "max_abs_error": 5.4016709327697754e-08,
+                "rms_error": 1.4419840652828768e-09,
+                "reference_peak": 0.0604582354426384,
+                "reference_rms": 0.003042675036365407,
+                "legacy_reference_si_sdr_db": 126.52442881950626,
+                "si_sdr_status": "finite",
+                "acceptance": "relative_si_sdr"
+              }
+            },
+            "numerical_pass": true
+          }
+        ],
+        "numerical_pass": true
+      }
+    },
+    "complete": true,
+    "numerical_rejections": [
+      "5stems-real"
+    ],
+    "real_input": {
+      "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+      "path": "musdb18/train-pool/Auctioneer - Our Future Faces/mixture.wav",
+      "bytes": 73277554,
+      "sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+      "test_pool_used": false
+    },
+    "cuda_tests": {
+      "returncode": 0,
+      "output": "...                                                                      [100%]\n3 passed, 127 deselected in 3.94s\n"
+    },
+    "conversion": {
+      "source": {
+        "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/5stems.tar.gz",
+        "bytes": 182803368,
+        "sha256": "25a1e87eb5f75cc72a4d2d5467a0a50ac75f05611f877c278793742513cc7218",
+        "hash_basis": "locally measured archive from upstream release; upstream API has no SHA-256 digest",
+        "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+        "audio_sha256": "4b431d535d235bd81b62f816f08c3f1afb6679d2706d84b3b75903b7df909507",
+        "instruments": [
+          "vocals",
+          "piano",
+          "drums",
+          "bass",
+          "other"
+        ],
+        "release_eligible": false,
+        "converted_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7"
+      },
+      "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+      "source_tensor_files": {
+        "model.index": "b20377789eb084cb5ac78d141a1d480dfdbf8c796ecc554a9b8e4376cd3cee20",
+        "model.data-00000-of-00001": "aace47a9eacc62e6fda823cee92ba45375b48e65b7c69713b91a7fa9d87ae920"
+      },
+      "config": {
+        "instruments": [
+          "vocals",
+          "piano",
+          "drums",
+          "bass",
+          "other"
+        ],
+        "filters": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512
+        ],
+        "sample_rate": 44100,
+        "n_fft": 4096,
+        "hop_length": 1024,
+        "segment_frames": 512,
+        "frequency_bins": 1024,
+        "encoder_activation": "elu",
+        "decoder_activation": "elu",
+        "mask_activation": "softmax",
+        "mask_extension": "zeros",
+        "separation_exponent": 2.0
+      },
+      "conversion_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+      "working_tree_modified": false,
+      "release_eligible": false
+    },
+    "edges": {
+      "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+      "working_tree_modified": false,
+      "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+      "config": {
+        "instruments": [
+          "vocals",
+          "piano",
+          "drums",
+          "bass",
+          "other"
+        ],
+        "filters": [
+          16,
+          32,
+          64,
+          128,
+          256,
+          512
+        ],
+        "sample_rate": 44100,
+        "n_fft": 4096,
+        "hop_length": 1024,
+        "segment_frames": 512,
+        "frequency_bins": 1024,
+        "encoder_activation": "elu",
+        "decoder_activation": "elu",
+        "mask_activation": "softmax",
+        "mask_extension": "zeros",
+        "separation_exponent": 2.0
+      },
+      "environment": {
+        "torch": "2.8.0+cu128",
+        "numpy": "2.0.2",
+        "python": "3.11.11",
+        "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+        "device": "cuda",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb"
+      },
+      "scope": "legacy-reference agreement; deterministic synthetic edges, no music quality evidence; timing excludes loading, includes file I/O; no isolated memory measurement",
+      "thresholds": {
+        "max_abs_error": 2e-06,
+        "min_si_sdr_db": 100,
+        "near_silent_reference_rms": 1e-05,
+        "near_silent_rms_error": 1e-08,
+        "near_silent_max_abs_error": 1e-07
+      },
+      "cases": {
+        "boundary_1": {
+          "samples": 1,
+          "channels": 2,
+          "input_sha256": "2bb9654f56ba349e2f027dd692c4b396fc6a30deb1079caff8209dcce63343b5",
+          "pcm_sha256": "a48d297a34fb9fd5ecaf739d8bcf82b37f463b9a01052a0915418ea3cfceff69",
+          "legacy_seconds": 0.5374001108575612,
+          "bounded_seconds": 0.09510896122083068,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 1,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.09955742955207825,
+              "reference_rms": 0.08799848510245863,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 1,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 6.466807462857105e-06,
+              "reference_rms": 5.659795692870408e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 1,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00011267447553109378,
+              "reference_rms": 9.615082780850739e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 1,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00013498991029337049,
+              "reference_rms": 0.00012206124473835664,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 1,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00013960606884211302,
+              "reference_rms": 0.00012300364755132658,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_1023": {
+          "samples": 1023,
+          "channels": 2,
+          "input_sha256": "285933e2b05f8aaf921ab8f43a80ef648487f413740fb0009b54ecb8c5e0f28e",
+          "pcm_sha256": "5638ff3bdaddd3a13c5c727f9720df933816d0cd9c77c12261de492cef9f722b",
+          "legacy_seconds": 0.068276755977422,
+          "bounded_seconds": 0.06746565015055239,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 1023,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.03350533917546272,
+              "reference_rms": 0.008735422737195,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 1023,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.010839378461241722,
+              "reference_rms": 0.0028574107706352226,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 1023,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.010348223149776459,
+              "reference_rms": 0.0025781008679017624,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 1023,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.006065735127776861,
+              "reference_rms": 0.0017458232858487352,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 1023,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.04713192209601402,
+              "reference_rms": 0.010561961481798597,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_1024": {
+          "samples": 1024,
+          "channels": 2,
+          "input_sha256": "bf72a921d3b7d2f802996823cf8834e6d545cdfe2cd313d39eb91270a0168448",
+          "pcm_sha256": "4dec6c2d4d913ffbb1627a9bfbddac8e9d5edb7629e40e3d658dfa23ba95ebdf",
+          "legacy_seconds": 0.06634477898478508,
+          "bounded_seconds": 0.07342225685715675,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 1024,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.03339758887887001,
+              "reference_rms": 0.007365984056947506,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 1024,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.014261710457503796,
+              "reference_rms": 0.002715510975843497,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 1024,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.012493821792304516,
+              "reference_rms": 0.0030520359348695457,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 1024,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.006704733707010746,
+              "reference_rms": 0.001920924145986958,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 1024,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.04889471456408501,
+              "reference_rms": 0.010265844477756506,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_1025": {
+          "samples": 1025,
+          "channels": 2,
+          "input_sha256": "0c02f0ebd719fb10507c566aed800d3ab3fb38ab6fa1f78aa05a2accb15919a6",
+          "pcm_sha256": "9bf573796496b3968c62edc73dcc67a9e20f9995bebfefd46acd6636568b6483",
+          "legacy_seconds": 0.14627313381060958,
+          "bounded_seconds": 0.06837100395932794,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 1025,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.041766874492168427,
+              "reference_rms": 0.008523475335896221,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 1025,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.013709473423659801,
+              "reference_rms": 0.0030346605739540763,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 1025,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.010522356256842613,
+              "reference_rms": 0.0023722440394277466,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 1025,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.005598373711109161,
+              "reference_rms": 0.0019490252696016278,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 1025,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0552472285926342,
+              "reference_rms": 0.010946168428646633,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_4095": {
+          "samples": 4095,
+          "channels": 2,
+          "input_sha256": "3c94361cc20c7c3b3b1b3b859647e9d12c1ff30924996171f0445ab8c44d34f2",
+          "pcm_sha256": "41a309fadc8738755db90cb62bb1a179f08fa9f8e0b554a91afb2b809553facf",
+          "legacy_seconds": 0.32058345107361674,
+          "bounded_seconds": 0.2161210118792951,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 4095,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.12451612949371338,
+              "reference_rms": 0.02059667761898299,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 4095,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00010589395242277533,
+              "reference_rms": 3.011830877906003e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 4095,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.009288938716053963,
+              "reference_rms": 0.0026250665387154617,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 4095,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0008634495898149908,
+              "reference_rms": 0.00029367194543750776,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 4095,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.008252803236246109,
+              "reference_rms": 0.002558481599110866,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_4096": {
+          "samples": 4096,
+          "channels": 2,
+          "input_sha256": "083ba8756994e7ae5003cb9cbbc7c3021470f363d10f4b820acb2c689112c775",
+          "pcm_sha256": "004a9876d9d3c90412a25fe6b00207b7f3809595acd28bf848e8284bd24cea7d",
+          "legacy_seconds": 0.06885405606590211,
+          "bounded_seconds": 0.06814067787490785,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 4096,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.10821656882762909,
+              "reference_rms": 0.021020701528081824,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 4096,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.000410114269470796,
+              "reference_rms": 8.595159274723362e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 4096,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.007586856838315725,
+              "reference_rms": 0.0025574160171666234,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 4096,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0005159564316272736,
+              "reference_rms": 0.00015000499703437877,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 4096,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.005195861682295799,
+              "reference_rms": 0.0015594405563005094,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_4097": {
+          "samples": 4097,
+          "channels": 2,
+          "input_sha256": "5abd1dc6a227dc9edff9bfd496835ae34c831c187f426d9d066f82e91ae4ed2b",
+          "pcm_sha256": "43826f002e7c02a209ced611e860ee466b2990f3c344bd573dc0babadec2d280",
+          "legacy_seconds": 0.26254869694821537,
+          "bounded_seconds": 0.06900201295502484,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.1021253764629364,
+              "reference_rms": 0.020719692551164706,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00019238323147874326,
+              "reference_rms": 5.973828341451565e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.011013022623956203,
+              "reference_rms": 0.003620610919107275,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0006274632178246975,
+              "reference_rms": 0.00022213925103027293,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.004607550799846649,
+              "reference_rms": 0.0015377651996302377,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_520191": {
+          "samples": 520191,
+          "channels": 2,
+          "input_sha256": "50c62952bd0de65beec9d199de0ed005ac14e0422e9258ed4b3328a792e7aebd",
+          "pcm_sha256": "6415258e89e0fb45f4d5a730ca0d1ba00f289ca7d680f22d684327f2e68726bf",
+          "legacy_seconds": 0.33594942395575345,
+          "bounded_seconds": 0.11623416398651898,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 520191,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0009287999710068107,
+              "reference_rms": 0.0001372359258781393,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 520191,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00011691047984641045,
+              "reference_rms": 9.233161346927067e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 520191,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.03149624168872833,
+              "reference_rms": 0.0015919830436686856,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 520191,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0006003667367622256,
+              "reference_rms": 3.1562388696142994e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 520191,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.10348322242498398,
+              "reference_rms": 0.02053845466971511,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_520192": {
+          "samples": 520192,
+          "channels": 2,
+          "input_sha256": "44bbb267a9dca56a16c7c544215f627df1f91b9a07e8a4e8724e9d0e24d91218",
+          "pcm_sha256": "6af4c005b442a41430c7fb44eccf7647b9afa133705e75dedc6b8e50f74afd67",
+          "legacy_seconds": 0.10996008315123618,
+          "bounded_seconds": 0.1143876570276916,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 520192,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.000906232453417033,
+              "reference_rms": 0.000152425822894406,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 520192,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 8.441766112810001e-05,
+              "reference_rms": 6.461423183184224e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 520192,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.027706660330295563,
+              "reference_rms": 0.0015667297533766742,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 520192,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0005429317243397236,
+              "reference_rms": 2.534403681420014e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 520192,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.11065372079610825,
+              "reference_rms": 0.02063144710346047,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_520193": {
+          "samples": 520193,
+          "channels": 2,
+          "input_sha256": "8069441d4cc6ba15ac2115188adbfcae6adf1f3953c29bf61b0923bb5eae3c22",
+          "pcm_sha256": "4a2e2ff87a040072bd687d388cf55beb619f1975bce5a78bfe2b48b18f1227c2",
+          "legacy_seconds": 0.1724067609757185,
+          "bounded_seconds": 0.18359516700729728,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 520193,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0007277207914739847,
+              "reference_rms": 0.00014401656668142047,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 520193,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 7.402220217045397e-05,
+              "reference_rms": 5.637670816557015e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 520193,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.028914181515574455,
+              "reference_rms": 0.0012464177605638412,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 520193,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 8.802196680335328e-05,
+              "reference_rms": 1.024869543398834e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 520193,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.1003044992685318,
+              "reference_rms": 0.020713257336089114,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "boundary_524287": {
+          "samples": 524287,
+          "channels": 2,
+          "input_sha256": "e0f041f33ea6fd1f0848ee36c2b0f738119b98637c611683912cb213e68a40d1",
+          "pcm_sha256": "bd3387e5c4fc34dd95395c179c94abe21bac623158874acf83b66d052546e71a",
+          "legacy_seconds": 0.1738004561048001,
+          "bounded_seconds": 0.16673555900342762,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 524287,
+              "max_abs_error": 5.587935447692871e-08,
+              "rms_error": 8.359244559759232e-10,
+              "reference_peak": 0.07209883630275726,
+              "reference_rms": 0.0009882084585113942,
+              "legacy_reference_si_sdr_db": 121.46140850041247,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "piano": {
+              "samples_per_channel": 524287,
+              "max_abs_error": 2.468004822731018e-08,
+              "rms_error": 4.03735149514793e-10,
+              "reference_peak": 0.007565046660602093,
+              "reference_rms": 0.00013955658654452377,
+              "legacy_reference_si_sdr_db": 111.43708282525907,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "drums": {
+              "samples_per_channel": 524287,
+              "max_abs_error": 2.0489096641540527e-08,
+              "rms_error": 4.127492108933374e-10,
+              "reference_peak": 0.02404499612748623,
+              "reference_rms": 0.0013496571340240202,
+              "legacy_reference_si_sdr_db": 130.32330834778824,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "bass": {
+              "samples_per_channel": 524287,
+              "max_abs_error": 2.2118911147117615e-08,
+              "rms_error": 4.702611353986434e-10,
+              "reference_peak": 0.005458291620016098,
+              "reference_rms": 0.00011828445992575046,
+              "legacy_reference_si_sdr_db": 109.63338142486558,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "other": {
+              "samples_per_channel": 524287,
+              "max_abs_error": 4.237517714500427e-08,
+              "rms_error": 7.793232262361904e-10,
+              "reference_peak": 0.11027923226356506,
+              "reference_rms": 0.020608552317960393,
+              "legacy_reference_si_sdr_db": 148.44702226461274,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            }
+          },
+          "passed": true
+        },
+        "boundary_524288": {
+          "samples": 524288,
+          "channels": 2,
+          "input_sha256": "8b7a098b1a29ac80f41ba2f829a00fa9afe26f238f5792889d300e2b0ea99d68",
+          "pcm_sha256": "46217e220c2bf66fa40deae613f1e3e6de87d30bb8d3e0134f30ae3c78ab6d07",
+          "legacy_seconds": 0.16610348992981017,
+          "bounded_seconds": 0.1786529910750687,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 524288,
+              "max_abs_error": 4.190951585769653e-08,
+              "rms_error": 7.629722048356369e-10,
+              "reference_peak": 0.06123281642794609,
+              "reference_rms": 0.0009722274532133869,
+              "legacy_reference_si_sdr_db": 122.18350746868452,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "piano": {
+              "samples_per_channel": 524288,
+              "max_abs_error": 2.7677742764353752e-08,
+              "rms_error": 4.146870167374486e-10,
+              "reference_peak": 0.01163167878985405,
+              "reference_rms": 0.00019091781412914905,
+              "legacy_reference_si_sdr_db": 113.29417789873803,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "drums": {
+              "samples_per_channel": 524288,
+              "max_abs_error": 1.4901161193847656e-08,
+              "rms_error": 2.7166414563531594e-10,
+              "reference_peak": 0.02747216448187828,
+              "reference_rms": 0.00154579989088514,
+              "legacy_reference_si_sdr_db": 135.10998744283842,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "bass": {
+              "samples_per_channel": 524288,
+              "max_abs_error": 1.6763806343078613e-08,
+              "rms_error": 3.837288091786016e-10,
+              "reference_peak": 0.004963545128703117,
+              "reference_rms": 0.00010456865705966451,
+              "legacy_reference_si_sdr_db": 111.79725067743718,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "other": {
+              "samples_per_channel": 524288,
+              "max_abs_error": 2.9802322387695312e-08,
+              "rms_error": 5.222113107650467e-10,
+              "reference_peak": 0.09863501042127609,
+              "reference_rms": 0.020537779229417106,
+              "legacy_reference_si_sdr_db": 151.89416666888312,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            }
+          },
+          "passed": true
+        },
+        "boundary_524289": {
+          "samples": 524289,
+          "channels": 2,
+          "input_sha256": "d9cd3fde314332583a433e432c0bb0525be2716ec1dc18568a89c04d98b3bee6",
+          "pcm_sha256": "8b3d6c5e2d33a466b3788428ea9f9d1b77f22ebcb518b108a7617a48dbcf9828",
+          "legacy_seconds": 0.17387253511697054,
+          "bounded_seconds": 0.253777788951993,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 524289,
+              "max_abs_error": 4.0978193283081055e-08,
+              "rms_error": 6.513383433233444e-10,
+              "reference_peak": 0.06719565391540527,
+              "reference_rms": 0.0010468132059840685,
+              "legacy_reference_si_sdr_db": 124.74740329110554,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "piano": {
+              "samples_per_channel": 524289,
+              "max_abs_error": 2.444721758365631e-08,
+              "rms_error": 4.1966135977660937e-10,
+              "reference_peak": 0.006524726282805204,
+              "reference_rms": 0.00012080576811273708,
+              "legacy_reference_si_sdr_db": 109.29934135601742,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "drums": {
+              "samples_per_channel": 524289,
+              "max_abs_error": 3.026798367500305e-08,
+              "rms_error": 6.801375688774133e-10,
+              "reference_peak": 0.022560937330126762,
+              "reference_rms": 0.0015028383233451799,
+              "legacy_reference_si_sdr_db": 126.91454494834855,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "bass": {
+              "samples_per_channel": 524289,
+              "max_abs_error": 2.0023435354232788e-08,
+              "rms_error": 3.351225025536634e-10,
+              "reference_peak": 0.007031443994492292,
+              "reference_rms": 0.00014764996416294956,
+              "legacy_reference_si_sdr_db": 112.95553768352768,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            },
+            "other": {
+              "samples_per_channel": 524289,
+              "max_abs_error": 3.5390257835388184e-08,
+              "rms_error": 6.458957113228895e-10,
+              "reference_peak": 0.10022705048322678,
+              "reference_rms": 0.0206156038348274,
+              "legacy_reference_si_sdr_db": 150.08099172049822,
+              "si_sdr_status": "finite",
+              "acceptance": "relative_si_sdr"
+            }
+          },
+          "passed": true
+        },
+        "silence": {
+          "samples": 4097,
+          "channels": 2,
+          "input_sha256": "66881abecb684f50e8888b786a7644fb50a3011aaf50de2076fe48852d33075f",
+          "pcm_sha256": "38e36ce733732bc809b676abff13354262519b6c341b82a2c875b48ca5a60941",
+          "legacy_seconds": 0.19183603394776583,
+          "bounded_seconds": 0.07932410412468016,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0,
+              "reference_rms": 0.0,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "undefined_silence_or_constant",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0,
+              "reference_rms": 0.0,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "undefined_silence_or_constant",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0,
+              "reference_rms": 0.0,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "undefined_silence_or_constant",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0,
+              "reference_rms": 0.0,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "undefined_silence_or_constant",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.0,
+              "reference_rms": 0.0,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "undefined_silence_or_constant",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        },
+        "mono": {
+          "samples": 4097,
+          "channels": 1,
+          "input_sha256": "7af4fc86cfb6e747e4510cadb4c36f153002a848932801f63755eee7d00cff7a",
+          "pcm_sha256": "6a3363b2e3ece06d4321a79ee448d0bb46236ccabfbd37008074d1bf37a91232",
+          "legacy_seconds": 0.0686215900350362,
+          "bounded_seconds": 0.06784310401417315,
+          "stems": {
+            "vocals": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.07137501984834671,
+              "reference_rms": 0.020946593179422386,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "piano": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 1.090718615159858e-05,
+              "reference_rms": 2.5788616905305888e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "drums": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00023423440870828927,
+              "reference_rms": 9.153317485170118e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "bass": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 3.564980215742253e-05,
+              "reference_rms": 9.457277104551595e-06,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            },
+            "other": {
+              "samples_per_channel": 4097,
+              "max_abs_error": 0.0,
+              "rms_error": 0.0,
+              "reference_peak": 0.00012626618263311684,
+              "reference_rms": 3.690098838061065e-05,
+              "legacy_reference_si_sdr_db": null,
+              "si_sdr_status": "exact_or_degenerate_projection",
+              "acceptance": "exact"
+            }
+          },
+          "passed": true
+        }
+      },
+      "passed": true
+    },
+    "diagnostic": {
+      "duration_seconds": 60,
+      "device": "cuda",
+      "purpose": "normal vs cached full-STFT blocks; cached path isolates synthesis grouping",
+      "stft_block_max_complex_errors": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.1456798751605675e-05
+      ],
+      "normal_bounded": {
+        "vocals": {
+          "max_abs_error": 8.568167686462402e-07,
+          "rms_error": 1.648333481893334e-08,
+          "reference_rms": 0.05547901513417774,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "piano": {
+          "max_abs_error": 8.87666828930378e-10,
+          "rms_error": 1.0915668918751776e-11,
+          "reference_rms": 5.234244252165709e-06,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "drums": {
+          "max_abs_error": 3.2335519790649414e-06,
+          "rms_error": 4.529313851208745e-08,
+          "reference_rms": 0.02709206875911246,
+          "samples_above_2e_6": 608,
+          "samples_above_1e_6": 2805,
+          "scalar_samples": 5292000
+        },
+        "bass": {
+          "max_abs_error": 1.7583370208740234e-06,
+          "rms_error": 3.554824055377557e-08,
+          "reference_rms": 0.0680740372886146,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 1284,
+          "scalar_samples": 5292000
+        },
+        "other": {
+          "max_abs_error": 2.909451723098755e-06,
+          "rms_error": 4.358777661068864e-08,
+          "reference_rms": 0.054099287707860065,
+          "samples_above_2e_6": 167,
+          "samples_above_1e_6": 2197,
+          "scalar_samples": 5292000
+        }
+      },
+      "cached_full_stft_bounded": {
+        "vocals": {
+          "max_abs_error": 4.470348358154297e-08,
+          "rms_error": 1.0992963774073109e-10,
+          "reference_rms": 0.05547901513417774,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "piano": {
+          "max_abs_error": 2.9103830456733704e-11,
+          "rms_error": 1.1658407084831487e-13,
+          "reference_rms": 5.234244252165709e-06,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "drums": {
+          "max_abs_error": 7.450580596923828e-09,
+          "rms_error": 3.1763002317431713e-11,
+          "reference_rms": 0.02709206875911246,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "bass": {
+          "max_abs_error": 2.9802322387695312e-08,
+          "rms_error": 1.8859554140626408e-10,
+          "reference_rms": 0.0680740372886146,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        },
+        "other": {
+          "max_abs_error": 1.4901161193847656e-08,
+          "rms_error": 1.3111291063626912e-10,
+          "reference_rms": 0.054099287707860065,
+          "samples_above_2e_6": 0,
+          "samples_above_1e_6": 0,
+          "scalar_samples": 5292000
+        }
+      },
+      "fp64_fft_control": {
+        "scope": "FP64 FFT using the same FP32 Hann coefficients, cast to complex64 before unchanged FP32 network; diagnostic only",
+        "stft_block_max_complex_errors": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "bounded_vs_full": {
+          "vocals": {
+            "max_abs_error": 1.4901161193847656e-08,
+            "rms_error": 1.070115881576431e-10,
+            "reference_rms": 0.05547902193889853,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          },
+          "piano": {
+            "max_abs_error": 2.9103830456733704e-11,
+            "rms_error": 1.1532547855385855e-13,
+            "reference_rms": 5.234262015966121e-06,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          },
+          "drums": {
+            "max_abs_error": 7.450580596923828e-09,
+            "rms_error": 3.218987792246489e-11,
+            "reference_rms": 0.02709208741179257,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          },
+          "bass": {
+            "max_abs_error": 2.9802322387695312e-08,
+            "rms_error": 1.8692170807304433e-10,
+            "reference_rms": 0.06807404287656134,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          },
+          "other": {
+            "max_abs_error": 1.4901161193847656e-08,
+            "rms_error": 1.3232141249608994e-10,
+            "reference_rms": 0.054099284780814376,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          }
+        },
+        "full_vs_original_fp32": {
+          "vocals": {
+            "max_abs_error": 1.866370439529419e-06,
+            "rms_error": 1.3208586201030695e-07,
+            "reference_rms": 0.05547901513417774,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 5611,
+            "scalar_samples": 5292000
+          },
+          "piano": {
+            "max_abs_error": 1.8917489796876907e-09,
+            "rms_error": 4.572202108198965e-11,
+            "reference_rms": 5.234244252165709e-06,
+            "samples_above_2e_6": 0,
+            "samples_above_1e_6": 0,
+            "scalar_samples": 5292000
+          },
+          "drums": {
+            "max_abs_error": 4.082918167114258e-06,
+            "rms_error": 2.0506651546975328e-07,
+            "reference_rms": 0.02709206875911246,
+            "samples_above_2e_6": 3251,
+            "samples_above_1e_6": 42422,
+            "scalar_samples": 5292000
+          },
+          "bass": {
+            "max_abs_error": 5.826354026794434e-06,
+            "rms_error": 2.44653945768813e-07,
+            "reference_rms": 0.0680740372886146,
+            "samples_above_2e_6": 7736,
+            "samples_above_1e_6": 56219,
+            "scalar_samples": 5292000
+          },
+          "other": {
+            "max_abs_error": 5.9604644775390625e-06,
+            "rms_error": 2.0459787720852256e-07,
+            "reference_rms": 0.054099287707860065,
+            "samples_above_2e_6": 4319,
+            "samples_above_1e_6": 27926,
+            "scalar_samples": 5292000
+          }
+        }
+      }
+    },
+    "piano_source": {
+      "url": "https://raw.githubusercontent.com/librosa/data/38f4b06556fa0ff1acda5e677d8ba05d1bc0fff0/audio/442789__lena-orsa__happy-music-pistachio-ice-cream-ragtime.hq.ogg",
+      "sha256": "1cc83b775e640a8dd409da9e29f5b5e0124bc5ec9bb4fda975919d31d1d893b8",
+      "bytes": 922404,
+      "starts_seconds": [
+        0,
+        15,
+        30
+      ],
+      "duration_seconds": 12,
+      "independent_recordings": 1,
+      "attribution": "The Piano Lady (Lena Orsa), Pistachio Ice Cream Ragtime",
+      "license_note": "Research evaluation only; upstream txt says CC-BY-NC-3.0, toml CC-BY-NC-4.0. Do not redistribute audio or stems."
+    },
+    "piano_inputs": {
+      "5stems-piano-0": {
+        "sha256": "d1bdac09b029f35e7e4cd614db8d9ca5d95f2a30e726be0f5777085f27050519",
+        "start_seconds": 0,
+        "samples": 529200
+      },
+      "5stems-piano-15": {
+        "sha256": "a6ecc1202ced5f657161201d09063598adcf90f9592bf37428633c2f3447d0dd",
+        "start_seconds": 15,
+        "samples": 529200
+      },
+      "5stems-piano-30": {
+        "sha256": "47a6f4a519b57c036775e3a5bd6d3f25b22e30f966a2c9440e24f5e9858039f5",
+        "start_seconds": 30,
+        "samples": 529200
+      }
+    },
+    "bundle": {
+      "bytes": 204800,
+      "sha256": "a6b99ca3a60e3da91add6161aecbe50ed6d9699555220cd2335250b67c2e3b21",
+      "files": {
+        "5stems-piano-0.json": {
+          "bytes": 5174,
+          "sha256": "26dba643cafe81c359e5c6282f2d33574a262171cff0a5ab98b33802d41e01e0"
+        },
+        "5stems-piano-15.json": {
+          "bytes": 5166,
+          "sha256": "1d279c987226f0564b20df8ae7d70cb40dd67ade522f0a273032c71438cdc2cb"
+        },
+        "5stems-piano-30.json": {
+          "bytes": 5188,
+          "sha256": "8ae145dc4d351d0cdc5f343366689775f0ad50ea29c9fdf19af90f27e4c842b6"
+        },
+        "5stems-real.json": {
+          "bytes": 12871,
+          "sha256": "3ae5ce067a570995e85d8d9e2b940341c2a4ac3882225b05cb6091db6ea68e60"
+        },
+        "5stems-synthetic.json": {
+          "bytes": 16762,
+          "sha256": "670fe1167343501072dc4d556f694dbd716a7ac5983e6a529ef13a849f846de8"
+        },
+        "cuda-tests.txt": {
+          "bytes": 114,
+          "sha256": "3d00c903021046880d7bfb7d2969837789d6842eccdb962535058159b80d10c3"
+        },
+        "diagnostic.json": {
+          "bytes": 5839,
+          "sha256": "9f5fc014b319dff62e8cc02d1e622f56858907bc81fc8188699fbe3acd6a8a56"
+        },
+        "edges.json": {
+          "bytes": 35168,
+          "sha256": "b2c4d75f5aafdea5a9490e0eea00f9a692f3826ec62fcf12823a990fc9ab8a04"
+        },
+        "report.json": {
+          "bytes": 97681,
+          "sha256": "2e02f2cc57dfc173d34c550c643ea613a6a7b06aec72fa2b241f64d6d01dd529"
+        }
+      }
+    }
+  },
+  "log_tail": "Collecting uv==0.13.4\n  Downloading uv-0.13.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)\nDownloading uv-0.13.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 17.2/17.2 MB 55.2 MB/s eta 0:00:00\nInstalling collected packages: uv\nSuccessfully installed uv-0.13.4\nWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n\n[notice] A new release of pip is available: 25.0.1 -> 26.2.2\n[notice] To update, run: python -m pip install --upgrade pip\nUsing CPython 3.11.11 interpreter at: /usr/bin/python\nCreating virtual environment at: /workspace/eval-venv\nActivate with: source /workspace/eval-venv/bin/activate\nUsing Python 3.11.11 environment at: /workspace/eval-venv\nResolved 26 packages in 1.87s\nDownloading setuptools (1.2MiB)\nDownloading sympy (6.0MiB)\nDownloading torch (848.0MiB)\nDownloading triton (148.3MiB)\nDownloading torchaudio (3.8MiB)\n Downloaded setuptools\nDownloading nvidia-cusolver-cu12 (255.1MiB)\nDownloading networkx (2.0MiB)\nDownloading nvidia-cublas-cu12 (566.8MiB)\nDownloading nvidia-nvjitlink-cu12 (37.4MiB)\n Downloaded torchaudio\n Downloaded networkx\nDownloading nvidia-cufile-cu12 (1.1MiB)\nDownloading nvidia-cuda-nvrtc-cu12 (84.0MiB)\nDownloading nvidia-cusparselt-cu12 (273.9MiB)\nDownloading nvidia-curand-cu12 (60.7MiB)\nDownloading nvidia-cufft-cu12 (184.2MiB)\nDownloading nvidia-cuda-cupti-cu12 (9.8MiB)\nDownloading nvidia-cusparse-cu12 (274.9MiB)\nDownloading nvidia-nccl-cu12 (307.4MiB)\nDownloading nvidia-cudnn-cu12 (674.0MiB)\n Downloaded sympy\n Downloaded nvidia-cufile-cu12\n Downloaded nvidia-cuda-cupti-cu12\n Downloaded triton\n Downloaded nvidia-nvjitlink-cu12\n Downloaded nvidia-curand-cu12\n Downloaded nvidia-cuda-nvrtc-cu12\n Downloaded torch\n Downloaded nvidia-cusolver-cu12\n Downloaded nvidia-cufft-cu12\n Downloaded nvidia-cusparselt-cu12\n Downloaded nvidia-cusparse-cu12\n Downloaded nvidia-nccl-cu12\n Downloaded nvidia-cublas-cu12\n Downloaded nvidia-cudnn-cu12\nPrepared 26 packages in 1m 25s\nInstalled 26 packages in 1.50s\n + filelock==4.2.4\n + fsspec==2026.9.0\n + jinja2==3.1.6\n + markupsafe==3.0.3\n + mpmath==1.3.0\n + networkx==3.6.1\n + nvidia-cublas-cu12==12.8.4.1\n + nvidia-cuda-cupti-cu12==12.8.90\n + nvidia-cuda-nvrtc-cu12==12.8.93\n + nvidia-cuda-runtime-cu12==12.8.90\n + nvidia-cudnn-cu12==9.10.2.21\n + nvidia-cufft-cu12==11.3.3.83\n + nvidia-cufile-cu12==1.13.1.3\n + nvidia-curand-cu12==10.3.9.90\n + nvidia-cusolver-cu12==11.7.3.90\n + nvidia-cusparse-cu12==12.5.8.93\n + nvidia-cusparselt-cu12==0.7.1\n + nvidia-nccl-cu12==2.27.3\n + nvidia-nvjitlink-cu12==12.8.93\n + nvidia-nvtx-cu12==12.8.90\n + setuptools==78.1.0\n + sympy==1.14.0\n + torch==2.8.0+cu128\n + torchaudio==2.8.0+cu128\n + triton==3.4.0\n + typing-extensions==4.16.0\nUsing Python 3.11.11 environment at: /workspace/eval-venv\nResolved 68 packages in 981ms\n   Building spleeterpt @ file:///workspace/source\nDownloading keras (2.3MiB)\nDownloading h5py (4.8MiB)\nDownloading pygments (1.2MiB)\nDownloading tensorflow-cpu (219.6MiB)\nDownloading libclang (23.4MiB)\nDownloading soundfile (1.3MiB)\nDownloading scipy (35.9MiB)\nDownloading grpcio (7.0MiB)\nDownloading numpy (18.6MiB)\nDownloading tensorflow-io-gcs-filesystem (4.9MiB)\nDownloading tensorboard-data-server (6.3MiB)\nDownloading tensorboard (5.2MiB)\n Downloaded pygments\n Downloaded soundfile\n Downloaded keras\n Downloaded tensorflow-io-gcs-filesystem\n Downloaded h5py\n Downloaded tensorboard\n      Built spleeterpt @ file:///workspace/source\n Downloaded tensorboard-data-server\n Downloaded grpcio\n Downloaded numpy\n Downloaded libclang\n Downloaded scipy\n Downloaded tensorflow-cpu\nPrepared 43 packages in 9.04s\nInstalled 43 packages in 2.21s\n + absl-py==2.5.1\n + astunparse==1.6.3\n + certifi==2026.10.23\n + cffi==2.1.1\n + charset-normalizer==3.5.2\n + flatbuffers==25.12.19\n + gast==0.7.0\n + google-pasta==0.2.0\n + grpcio==1.85.1\n + h5py==3.16.0\n + idna==3.20\n + iniconfig==2.3.1\n + keras==3.15.1\n + libclang==18.1.1\n + markdown==3.11.2\n + markdown-it-py==4.2.0\n + mdurl==0.1.2\n + ml-dtypes==0.6.0\n + namex==0.1.0\n + numpy==2.0.2\n + opt-einsum==3.4.0\n + optree==0.20.0\n + packaging==26.3\n + pluggy==1.7.0\n + protobuf==5.29.6\n + pycparser==3.12\n + pygments==2.21.0\n + pytest==9.2.0\n + requests==2.34.2\n + rich==15.0.0\n + scipy==1.15.3\n + six==1.17.0\n + soundfile==0.14.0\n + spleeterpt==0.1.0 (from file:///workspace/source)\n + tensorboard==2.18.0\n + tensorboard-data-server==0.7.2\n + tensorflow-cpu==2.18.1\n + tensorflow-io-gcs-filesystem==0.37.1\n + termcolor==3.3.0\n + urllib3==2.8.0\n + werkzeug==3.1.9\n + wheel==0.48.0\n + wrapt==2.5.2\nUsing Python 3.11.11 environment at: /workspace/eval-venv\nChecked 69 packages in 36ms\nAll installed packages are compatible\nRunning: /workspace/eval-venv/bin/python scripts/prepare_five_stem.py --work /workspace/bounded/weights\nConverted 350 tensors to /workspace/bounded/weights/5stems.pt\nRunning: /workspace/eval-venv/bin/python scripts/verify_bounded_checkpoint.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --output /workspace/bounded/export/edges.json\nboundary_1: passed=True\nboundary_1023: passed=True\nboundary_1024: passed=True\nboundary_1025: passed=True\nboundary_4095: passed=True\nboundary_4096: passed=True\nboundary_4097: passed=True\nboundary_520191: passed=True\nboundary_520192: passed=True\nboundary_520193: passed=True\nboundary_524287: passed=True\nboundary_524288: passed=True\nboundary_524289: passed=True\nsilence: passed=True\nmono: passed=True\nRunning: /workspace/eval-venv/bin/python scripts/benchmark_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --durations 1 12 60 600 --output /workspace/bounded/export/5stems-synthetic.json\n1s: numerical_pass=True\n12s: numerical_pass=True\n60s: numerical_pass=True\n600s: numerical_pass=True\nRunning: /workspace/eval-venv/bin/python scripts/benchmark_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --durations 1 12 60 --output /workspace/bounded/export/5stems-real.json --input /workspace/bounded/real.wav\n1s: numerical_pass=True\n12s: numerical_pass=True\n60s: numerical_pass=False\nnumerical acceptance threshold failed; see report\nRecorded numerical rejection; collecting remaining evidence\nRunning: /workspace/eval-venv/bin/python scripts/diagnose_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --input /workspace/bounded/real.wav --device cuda --seconds 60 --fp64-control --output /workspace/bounded/export/diagnostic.json\nRunning: /workspace/eval-venv/bin/python scripts/benchmark_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --durations 12 --input /workspace/bounded/piano-0.wav --output /workspace/bounded/export/5stems-piano-0.json\n12s: numerical_pass=True\nRunning: /workspace/eval-venv/bin/python scripts/benchmark_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --durations 12 --input /workspace/bounded/piano-15.wav --output /workspace/bounded/export/5stems-piano-15.json\n12s: numerical_pass=True\nRunning: /workspace/eval-venv/bin/python scripts/benchmark_bounded.py --checkpoint /workspace/bounded/weights/5stems.pt --device cuda --durations 12 --input /workspace/bounded/piano-30.wav --output /workspace/bounded/export/5stems-piano-30.json\n12s: numerical_pass=True\nTraceback (most recent call last):\n  File \"/workspace/source/runpod/bounded.py\", line 258, in <module>\n    run(\n  File \"/workspace/source/runpod/bounded.py\", line 251, in run\n    raise RuntimeError(\"Numerical acceptance failed; full evidence retained\")\nRuntimeError: Numerical acceptance failed; full evidence retained\n"
+}
