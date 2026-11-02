@@ -17,7 +17,9 @@ def number(x, *, positive=False):
     )
 
 
-def validate(result, sha, volume, pod, experiment, *, five_stem=False):
+def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_gpu=MIG24):
+    if not five_stem and expected_gpu != MIG24:
+        raise ValueError("Only five-stem permits a fallback GPU")
     report = result.get("report", {})
     if (
         result.get("status") != "passed"
@@ -29,7 +31,7 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False):
         or report.get("experiment") != experiment
     ):
         raise ValueError("Incomplete or mismatched bounded benchmark identity")
-    validate_runtime(report["gpu_runtime"], MIG24)
+    validate_runtime(report["gpu_runtime"], expected_gpu)
     if (
         report["cuda_tests"]["returncode"] != 0
         or "3 passed" not in report["cuda_tests"]["output"]
@@ -146,7 +148,7 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False):
                     or m["device"] != "cuda:0"
                 ):
                     raise ValueError("Not the pinned CUDA runtime")
-                validate_runtime(m["gpu_runtime"], MIG24)
+                validate_runtime(m["gpu_runtime"], expected_gpu)
                 for metric in (
                     "seconds_including_io",
                     "process_peak_rss_mib",

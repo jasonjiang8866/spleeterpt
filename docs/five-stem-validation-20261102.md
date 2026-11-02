@@ -3,7 +3,7 @@
 **Recommendation: do not publish ready-to-use five-stem weights yet.** The official
 checkpoint converts reproducibly and the tested bounded path agrees closely with
 the legacy path, but the unchanged TF/PyTorch strict waveform gate still fails
-6/25 outputs. GPU results are pending explicit budget approval. No runtime model,
+6/25 outputs. The project received a $2 budget approval; GPU measurements are blocked by capacity. No runtime model,
 audio reconstruction, published catalog, release, or acceptance tolerance changed.
 
 ## Repository and provenance
@@ -158,7 +158,7 @@ No CUDA memory claim follows from these results.
   checkpoint. The new manual heavyweight workflow has not been dispatched in this
   turn; equivalent local measurements are linked below.
 
-## RunPod plan awaiting approval
+## RunPod plan and approved attempt
 
 [Read-only inventory 41462343827](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41462343827)
 at 22:29 Singapore time observed no Pods, no old regional volume, and the existing
@@ -188,8 +188,57 @@ The $0.69 rate and 60-minute compute lease are enforced; provider storage/reques
 billing is not an exact all-in hard cap. No new persistent volume is created;
 existing standing storage charges are outside this incremental experiment.
 If resource/pricing checks cannot support this envelope, do not launch.
-Approval from other repositories does not apply. This workflow is not dispatched,
-and requires review/merge to main plus this project's explicit budget approval.
+This was the pre-approval estimate. The user subsequently approved **$2 for this
+project**, and PR #41 was merged at `c5fc637ca3525976fac296e497c81b340e8714a4`.
+
+### Approved attempt: stopped before provisioning
+
+[Run 41469349316](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41469349316)
+used source `dce92135c8aa613e7e0952e2f88b9aea81dfa457`. At 15:13 UTC, fresh
+inventory showed zero account Pods, no regional volume, and the existing Global
+Volume. The controller stopped at catalog placement before image resolution and
+before the only Pod POST. Cleanup found zero managed Pods. No compute was created;
+incremental compute charge is **$0**, inferred from this lifecycle, not an invoice
+reconciliation. No new storage was created. Existing storage charges continue.
+The temporary one-run push trigger was restored to manual-only at
+`8e01cad47caf9b2e617eaee014245a3d0337cf30`.
+
+A subsequent [read-only inventory 41471619388](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41471619388)
+at 15:26 UTC confirmed `availability=NONE` for MIG ($0.69/h), RTX 4090 ($0.89/h),
+RTX 3090 ($0.50/h), RTX 5090 ($1.19/h) and RTX A6000 ($0.59/h), under Secure Cloud,
+one GPU, CUDA >=12.8 filters. Account Pod count remained zero. This is a snapshot
+under those filters, not a claim about all RunPod inventory. The official
+[GPU catalog schema](https://github.com/runpod/docs/blob/main/api-reference-v2/openapi.json)
+permits omitted `dataCenters` when unavailable; the explicit `NONE` distinguishes
+that case from an incomplete response. Unknown responses must stop, not enable a
+fallback.
+
+Review also found that the old placement regex rejected three-letter region
+prefixes such as the previously observed `EUR-IS-2`. The follow-up accepts both
+two- and three-letter prefixes, with a regression test. This defect did not cause
+the present explicit `NONE` inventory; it could have rejected earlier capacity.
+
+The follow-up controller permits an **explicitly enabled RTX 4090 24GB fallback**
+only for five-stem and only after confirmed MIG capacity absence. Its rate cap is
+$1/h, lease 60 minutes: estimated compute $0.45–$0.89 at the observed quote, with
+the remainder of the approved $2 reserved for overhead. It rejects a different
+actual GPU/rate, validates the actual GPU throughout metrics and recovery, and
+keeps MIG mandatory for other profiles. It does not automatically provision any
+of the other queried types. Read-only inventory and paid execution are manual.
+
+Validation of this follow-up: **78 offline RunPod tests passed**, plus Ruff.
+These include absent/unknown availability, disabled fallback, unrelated profiles,
+price/transport failure, and mismatched device reports. They are not GPU evidence.
+The raw [launch preflight](results/five-stem-20261102/gpu-launch-preflight.json)
+retains its historical static `pending` checklist verbatim; its approval item is
+superseded by the user approval above. The [capacity snapshot](results/five-stem-20261102/gpu-capacity.json)
+records exact source/filter/time. Their hashes are in
+[gpu-attempt-manifest.json](results/five-stem-20261102/gpu-attempt-manifest.json).
+
+No GPU waveform, memory, timing or result-recovery measurements were produced by
+this attempt. CPU evidence and all strict failures remain unchanged. A successful
+future bounded-memory GPU run alone would still not close the cross-framework
+strict-parity or mixed-piano-corpus blockers.
 
 ## Release decision and remaining blockers
 

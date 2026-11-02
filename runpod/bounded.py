@@ -28,7 +28,7 @@ def run(output, *, five_stem=False):
         "capability": list(torch.cuda.get_device_capability()),
         "total_memory_bytes": torch.cuda.get_device_properties().total_memory,
     }
-    validate_runtime(runtime, MIG24)
+    validate_runtime(runtime, runtime["requested_gpu"] if five_stem else MIG24)
     work = Path("/workspace/bounded")
     work.mkdir()
     export = work / "export"

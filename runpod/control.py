@@ -74,7 +74,7 @@ def capacity_preflight(api, gpu_id=MIG24):
         d["id"]
         for d in gpu.get("dataCenters", [])
         if isinstance(d.get("id"), str)
-        and re.fullmatch(r"[A-Z]{2}-[A-Z0-9]+-[0-9]+", d["id"])
+        and re.fullmatch(r"[A-Z]{2,3}-[A-Z0-9]+-[0-9]+", d["id"])
         and d.get("availability") in {"HIGH", "MEDIUM", "LOW"}
     )
     print("READ-ONLY: available catalog regions=" + (",".join(regions[:50]) or "NONE"), flush=True)

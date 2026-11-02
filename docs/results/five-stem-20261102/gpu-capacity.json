@@ -1,0 +1,56 @@
+{
+  "observed_at_utc": "2026-11-02T15:26:45.425653+00:00",
+  "read_only": true,
+  "account_pod_count": 0,
+  "quotes": [
+    {
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "price": 0.69,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "price": 0.89,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "price": 0.5,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "price": 1.19,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA RTX A6000",
+      "price": 0.59,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    }
+  ],
+  "source_sha": "d79647e5867a0a5ea55d15ff6a1f622e95079c36",
+  "workflow_run": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41471619388",
+  "filters": {
+    "cloud": "SECURE",
+    "product": "POD",
+    "count": 1,
+    "minCudaVersion": "12.8"
+  },
+  "scope": "Read-only observation; no Pod creation. Catalog price is not a billed charge."
+}

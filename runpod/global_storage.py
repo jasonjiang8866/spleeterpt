@@ -62,23 +62,29 @@ def cpu_placement(api, region):
     return {"id": cpu_id, "vcpuCount": 2}
 
 
-def mig_regions(api, gpu_id):
+class NoGpuCapacity(RuntimeError):
+    """A successful catalog read explicitly reported no capacity."""
+
+
+def mig_regions(api, gpu_id, *, rate_cap=0.69):
     gpu = api.call(
         "/catalog/gpus/"
         + urllib.parse.quote(gpu_id, safe="")
         + "?include=AVAILABILITY&product=POD&cloud=SECURE&count=1&minCudaVersion=12.8"
     )
     rate = gpu.get("price", {}).get("secure")
-    if not isinstance(rate, (int, float)) or not math.isfinite(rate) or not 0 < rate <= 0.69:
-        raise RuntimeError("MIG catalog price missing or above $0.69/hour")
+    if not isinstance(rate, (int, float)) or not math.isfinite(rate) or not 0 < rate <= rate_cap:
+        raise RuntimeError("GPU catalog price missing or above approved rate cap")
     regions = sorted(
         d["id"]
         for d in gpu.get("dataCenters", [])
         if d.get("availability") in {"HIGH", "MEDIUM", "LOW"}
         and isinstance(d.get("id"), str)
-        and re.fullmatch(r"[A-Z]{2}-[A-Z0-9]+-[0-9]+", d["id"])
+        and re.fullmatch(r"[A-Z]{2,3}-[A-Z0-9]+-[0-9]+", d["id"])
     )
     if not regions:
-        raise RuntimeError("No available MIG region; no Pod created")
-    print("Global-volume MIG placement: " + ",".join(regions), flush=True)
+        if gpu.get("availability") == "NONE":
+            raise NoGpuCapacity("No available GPU region; no Pod created")
+        raise RuntimeError("GPU availability response incomplete; refusing placement")
+    print("Global-volume placement for " + gpu_id + ": " + ",".join(regions), flush=True)
     return regions

@@ -1,0 +1,25 @@
+name: Five-stem preferred and fallback capacity (read-only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read current catalog only
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/five_stem_capacity.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: five-stem-capacity-${{ github.run_id }}
+          path: runpod-results/five-stem-capacity.json
+          if-no-files-found: error
