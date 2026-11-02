@@ -80,7 +80,7 @@ def mig_regions(api, gpu_id, *, rate_cap=0.69):
         for d in gpu.get("dataCenters", [])
         if d.get("availability") in {"HIGH", "MEDIUM", "LOW"}
         and isinstance(d.get("id"), str)
-        and re.fullmatch(r"[A-Z]{2}-[A-Z0-9]+-[0-9]+", d["id"])
+        and re.fullmatch(r"[A-Z]{2,3}-[A-Z0-9]+-[0-9]+", d["id"])
     )
     if not regions:
         if gpu.get("availability") == "NONE":

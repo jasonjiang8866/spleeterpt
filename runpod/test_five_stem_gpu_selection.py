@@ -8,6 +8,20 @@ from gpu_profile import ADA, MIG24
 
 
 class Tests(unittest.TestCase):
+    def test_catalog_european_region_is_not_discarded(self):
+        api = Mock()
+        api.call.return_value = {
+            "price": {"secure": 0.69},
+            "availability": "LOW",
+            "dataCenters": [
+                {"id": "EUR-IS-2", "availability": "LOW"},
+                {"id": "US-PA-1", "availability": "MEDIUM"},
+                {"id": "EU-RO-1", "availability": "NONE"},
+                {"id": "EUR-IS-2\ninvalid", "availability": "LOW"},
+            ],
+        }
+        self.assertEqual(mig_regions(api, MIG24), ["EUR-IS-2", "US-PA-1"])
+
     def test_only_explicit_none_is_a_capacity_failure(self):
         api = Mock()
         api.call.return_value = {"price": {"secure": 0.69}, "availability": "NONE"}

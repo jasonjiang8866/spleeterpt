@@ -213,6 +213,11 @@ permits omitted `dataCenters` when unavailable; the explicit `NONE` distinguishe
 that case from an incomplete response. Unknown responses must stop, not enable a
 fallback.
 
+Review also found that the old placement regex rejected three-letter region
+prefixes such as the previously observed `EUR-IS-2`. The follow-up accepts both
+two- and three-letter prefixes, with a regression test. This defect did not cause
+the present explicit `NONE` inventory; it could have rejected earlier capacity.
+
 The follow-up controller permits an **explicitly enabled RTX 4090 24GB fallback**
 only for five-stem and only after confirmed MIG capacity absence. Its rate cap is
 $1/h, lease 60 minutes: estimated compute $0.45–$0.89 at the observed quote, with
@@ -221,7 +226,7 @@ actual GPU/rate, validates the actual GPU throughout metrics and recovery, and
 keeps MIG mandatory for other profiles. It does not automatically provision any
 of the other queried types. Read-only inventory and paid execution are manual.
 
-Validation of this follow-up: **77 offline RunPod tests passed**, plus Ruff.
+Validation of this follow-up: **78 offline RunPod tests passed**, plus Ruff.
 These include absent/unknown availability, disabled fallback, unrelated profiles,
 price/transport failure, and mismatched device reports. They are not GPU evidence.
 The raw [launch preflight](results/five-stem-20261102/gpu-launch-preflight.json)

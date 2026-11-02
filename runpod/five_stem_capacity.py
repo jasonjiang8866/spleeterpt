@@ -42,7 +42,7 @@ def main():
                     d["id"]
                     for d in item.get("dataCenters", [])
                     if isinstance(d.get("id"), str)
-                    and re.fullmatch(r"[A-Z]{2}-[A-Z0-9]+-[0-9]+", d["id"])
+                    and re.fullmatch(r"[A-Z]{2,3}-[A-Z0-9]+-[0-9]+", d["id"])
                     and d.get("availability") in {"HIGH", "MEDIUM", "LOW"}
                 ),
             }
