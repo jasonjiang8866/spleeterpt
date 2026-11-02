@@ -1,0 +1,70 @@
+name: Official five-stem CPU validation (strict gate)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      TF_ENABLE_ONEDNN_OPTS: '0'
+      TF_CPP_MIN_LOG_LEVEL: '2'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+      TF_NUM_INTRAOP_THREADS: '2'
+      TF_NUM_INTEROP_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.4'
+          enable-cache: true
+      - run: uv sync --locked --group dev --group release
+      - name: Pinned references and checkpoint
+        run: |
+          git clone https://github.com/deezer/spleeter.git /tmp/upstream
+          git -C /tmp/upstream checkout c8854001ac8acad34a9bc2bd15f28475541828b1
+          git clone https://github.com/librosa/data.git /tmp/librosa-data
+          git -C /tmp/librosa-data checkout 38f4b06556fa0ff1acda5e677d8ba05d1bc0fff0
+          mkdir -p /tmp/evidence
+          uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
+          cp /tmp/weights/provenance.json /tmp/evidence/
+      - name: Full-size official graph comparison
+        id: graph
+        continue-on-error: true
+        run: uv run --no-sync python scripts/verify_official_checkpoint.py --tf-checkpoint /tmp/weights/5stems/model --checkpoint /tmp/weights/5stems.pt > /tmp/evidence/graph.log 2>&1
+      - name: Preserve strict waveform verdict (known unresolved failures)
+        id: strict
+        continue-on-error: true
+        run: uv run --no-sync python scripts/verify_audio_parity.py /tmp/upstream/audio_example.mp3 --upstream-root /tmp/upstream --tf-checkpoint /tmp/weights/5stems/model --checkpoint /tmp/weights/5stems.pt --include-edges --output /tmp/evidence/strict.json > /tmp/evidence/strict.log 2>&1
+      - name: Independent precision and stage controls
+        run: uv run --no-sync python scripts/diagnose_numerics.py /tmp/upstream/audio_example.mp3 --upstream-root /tmp/upstream --tf-checkpoint /tmp/weights/5stems/model --checkpoint /tmp/weights/5stems.pt --output /tmp/evidence/numerics.json > /tmp/evidence/numerics.log 2>&1
+      - name: Piano excerpts
+        id: piano
+        continue-on-error: true
+        run: uv run --no-sync python scripts/verify_piano_clips.py --data-root /tmp/librosa-data --upstream-root /tmp/upstream --tf-checkpoint /tmp/weights/5stems/model --checkpoint /tmp/weights/5stems.pt --output /tmp/evidence/piano.json > /tmp/evidence/piano.log 2>&1
+      - name: Official-checkpoint bounded file boundaries
+        run: uv run --no-sync python scripts/verify_bounded_checkpoint.py --checkpoint /tmp/weights/5stems.pt --output /tmp/evidence/bounded-edges.json
+      - name: Isolated process memory and time
+        run: uv run --no-sync python scripts/benchmark_bounded.py --checkpoint /tmp/weights/5stems.pt --durations 1 12 60 --output /tmp/evidence/bounded-memory.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: five-stem-cpu-${{ github.run_id }}
+          path: /tmp/evidence/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Do not turn collected evidence into acceptance
+        if: always()
+        env:
+          GRAPH: ${{ steps.graph.outcome }}
+          STRICT: ${{ steps.strict.outcome }}
+          PIANO: ${{ steps.piano.outcome }}
+        run: |
+          test "$GRAPH" = success
+          test "$STRICT" = success
+          test "$PIANO" = success
