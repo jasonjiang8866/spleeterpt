@@ -1,0 +1,14 @@
+{
+  "url": "https://raw.githubusercontent.com/librosa/data/38f4b06556fa0ff1acda5e677d8ba05d1bc0fff0/audio/442789__lena-orsa__happy-music-pistachio-ice-cream-ragtime.hq.ogg",
+  "sha256": "1cc83b775e640a8dd409da9e29f5b5e0124bc5ec9bb4fda975919d31d1d893b8",
+  "bytes": 922404,
+  "starts_seconds": [
+    0,
+    15,
+    30
+  ],
+  "duration_seconds": 12,
+  "independent_recordings": 1,
+  "attribution": "The Piano Lady (Lena Orsa), Pistachio Ice Cream Ragtime",
+  "license_note": "Research evaluation only; upstream txt says CC-BY-NC-3.0, toml CC-BY-NC-4.0. Do not redistribute audio or stems."
+}

@@ -1,0 +1,54 @@
+{
+  "source": {
+    "url": "https://github.com/deezer/spleeter/releases/download/v1.4.0/5stems.tar.gz",
+    "bytes": 182803368,
+    "sha256": "25a1e87eb5f75cc72a4d2d5467a0a50ac75f05611f877c278793742513cc7218",
+    "hash_basis": "locally measured archive from upstream release; upstream API has no SHA-256 digest",
+    "upstream_commit": "c8854001ac8acad34a9bc2bd15f28475541828b1",
+    "audio_sha256": "4b431d535d235bd81b62f816f08c3f1afb6679d2706d84b3b75903b7df909507",
+    "instruments": [
+      "vocals",
+      "piano",
+      "drums",
+      "bass",
+      "other"
+    ],
+    "release_eligible": false,
+    "converted_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7"
+  },
+  "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+  "source_tensor_files": {
+    "model.index": "b20377789eb084cb5ac78d141a1d480dfdbf8c796ecc554a9b8e4376cd3cee20",
+    "model.data-00000-of-00001": "aace47a9eacc62e6fda823cee92ba45375b48e65b7c69713b91a7fa9d87ae920"
+  },
+  "config": {
+    "instruments": [
+      "vocals",
+      "piano",
+      "drums",
+      "bass",
+      "other"
+    ],
+    "filters": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "sample_rate": 44100,
+    "n_fft": 4096,
+    "hop_length": 1024,
+    "segment_frames": 512,
+    "frequency_bins": 1024,
+    "encoder_activation": "elu",
+    "decoder_activation": "elu",
+    "mask_activation": "softmax",
+    "mask_extension": "zeros",
+    "separation_exponent": 2.0
+  },
+  "conversion_commit": "6126306fa1e11054f23e89b08dd0116d468b461e",
+  "working_tree_modified": true,
+  "release_eligible": false
+}

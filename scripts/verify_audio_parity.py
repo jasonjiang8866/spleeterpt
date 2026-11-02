@@ -8,37 +8,22 @@ import argparse
 import hashlib
 import importlib
 import json
+import os
+import platform
 import subprocess
 import sys
+import time
 import types
 from pathlib import Path
 
 import numpy as np
 import tensorflow as tf
 import torch
+from parity_metrics import agreement
 
 from spleeterpt.audio import read_audio, separate
 from spleeterpt.checkpoint import load_model
-
-
-def agreement(reference, candidate):
-    """No gain fitting or time alignment; report length mismatch separately."""
-    length = min(reference.shape[-1], candidate.shape[-1])
-    ref = np.asarray(reference[..., :length], dtype=np.float64)
-    got = np.asarray(candidate[..., :length], dtype=np.float64)
-    error = got - ref
-    signal_power = float(np.mean(ref**2))
-    error_power = float(np.mean(error**2))
-    return {
-        "reference_samples": reference.shape[-1],
-        "candidate_samples": candidate.shape[-1],
-        "max_absolute_error": float(np.max(np.abs(error))),
-        "rmse": float(np.sqrt(error_power)),
-        "relative_l2_error": float(np.sqrt(error_power / signal_power)) if signal_power else None,
-        "reference_snr_db": float(10 * np.log10(signal_power / error_power))
-        if signal_power and error_power
-        else None,
-    }
+from spleeterpt.pretrained import digest
 
 
 class OfficialGraph:
@@ -137,16 +122,50 @@ def main():
         "environment": {"torch": torch.__version__, "tensorflow": tf.__version__, "device": "cpu"},
         "cases": {},
     }
+    report["source_commit"] = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], text=True
+    ).strip()
+    report["working_tree_modified"] = bool(
+        subprocess.check_output(["git", "status", "--porcelain"], text=True)
+    )
+    report["checkpoint_sha256"] = digest(args.checkpoint)
+    report["tf_checkpoint_files"] = {
+        suffix: digest(Path(str(args.tf_checkpoint) + suffix))
+        for suffix in (".meta", ".index", ".data-00000-of-00001")
+    }
+    report["config"] = config.to_dict()
+    report["environment"].update(
+        {
+            "numpy": np.__version__,
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "cpu": platform.processor(),
+            "tf_onednn": os.environ.get("TF_ENABLE_ONEDNN_OPTS", "default"),
+            "torch_mkldnn": torch.backends.mkldnn.enabled,
+            "threads": torch.get_num_threads(),
+        }
+    )
+    report["thresholds"] = {"atol": 1e-5, "rtol": 1e-4, "changed": False}
+    report["case_provenance"] = {}
     passed = True
     try:
         for label, waveform in audio_cases(audio, config, args.include_edges).items():
+            started = time.perf_counter()
             expected = oracle.separate(waveform)
+            tf_seconds = time.perf_counter() - started
+            started = time.perf_counter()
             actual = separate(model, waveform)
+            report["case_provenance"][label] = {
+                "decoded_pcm_sha256": hashlib.sha256(waveform.numpy().tobytes()).hexdigest(),
+                "samples": waveform.shape[-1],
+                "tf_seconds": tf_seconds,
+                "torch_seconds": time.perf_counter() - started,
+            }
             result = {}
             for name in config.instruments:
                 ref, got = expected[name], actual[name].numpy()
                 metrics = agreement(ref, got)
-                valid = ref.shape == got.shape and np.allclose(got, ref, atol=1e-5, rtol=1e-4)
+                valid = metrics["allclose_atol_1e-5_rtol_1e-4"]
                 metrics["allclose_atol_1e-5_rtol_1e-4"] = bool(valid)
                 passed &= valid
                 result[name] = metrics

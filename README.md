@@ -72,8 +72,18 @@ to control; they do not automatically mean cleaner vocals or better sound.
 | **4-stem** | `vocals.wav` (人声), `drums.wav` (鼓与打击乐), `bass.wav` (贝斯), `other.wav` (remaining instruments / 其他乐器) | You want to study a drum/bass part or adjust vocals, drums and bass independently | Ready to use: `--model 4stems` |
 | **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Advanced only: code supports it, but no ready-to-use release; strict numerical validation is not yet fully passing |
 
+**Five-stem validation update (2026-11-02):** the official checkpoint passes the
+new CPU file-boundary checks and three solo-piano excerpts, but still fails 6/25
+strict TF/PyTorch demo waveform checks. See the [reproducible report and release
+blockers](docs/five-stem-validation-20261102.md). The ordinary download catalog
+continues to recommend 2/4 stems; `--model 5stems` is not yet released.
+
 In the 4-stem model, `other.wav` groups instruments such as guitar, piano, strings
-and synthesizers together. It is not a separate file for each instrument, and
+and synthesizers together. Five-stem uses a separately trained preset that adds
+`piano.wav` and aims to leave non-piano instruments in `other.wav`; it is useful
+for piano practice or transcription research, but does not guarantee clean piano
+isolation or that `piano + other` matches the four-stem model's `other`. Bleed and
+misallocation remain possible. It is not a separate file for each instrument, and
 there is no guitar-only option. Likewise, `vocals.wav` groups voices together;
 it does not provide one file per singer or guarantee separate lead/backing vocals.
 For karaoke, **start with 2-stem and use `accompaniment.wav`**. For drum practice,
@@ -207,7 +217,7 @@ challengers; this project does not claim the best current separation quality.
 | Need | Spleeter / spleeterpt advantage | Boundary |
 |---|---|---|
 | Maintain an existing Spleeter pipeline | Official weight conversion and checked 2/4-stem TF/PT waveform parity | Five-stem strict FP32 parity still has small discrepancies |
-| Batch MIR preprocessing, rough stems, practice tracks | Ready 2/4/5-stem presets; local CLI and independent stem networks | Listen for bleed and artifacts; benchmark throughput on the actual workload |
+| Batch MIR preprocessing, rough stems, practice tracks | Released 2/4-stem weights; research 5-stem checkpoint support; local CLI | Listen for bleed and artifacts; benchmark throughput on the actual workload |
 | Study training, normalization or recovery | Inspectable CNN; checked resume/recovery; controlled BN experiments | The 90-step fine-tune has not improved on official weights |
 | Keep inference in a PyTorch stack | TensorFlow needed only for checkpoint conversion | Local inference and trainability are also available in several alternatives |
 

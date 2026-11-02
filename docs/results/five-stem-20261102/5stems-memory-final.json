@@ -1,0 +1,388 @@
+{
+  "source_commit": "6126306fa1e11054f23e89b08dd0116d468b461e",
+  "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+  "config": {
+    "instruments": [
+      "vocals",
+      "piano",
+      "drums",
+      "bass",
+      "other"
+    ],
+    "filters": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "sample_rate": 44100,
+    "n_fft": 4096,
+    "hop_length": 1024,
+    "segment_frames": 512,
+    "frequency_bins": 1024,
+    "encoder_activation": "elu",
+    "decoder_activation": "elu",
+    "mask_activation": "softmax",
+    "mask_extension": "zeros",
+    "separation_exponent": 2.0
+  },
+  "input_kind": "synthetic_tones_chirp_envelope",
+  "input_sha256": null,
+  "requested_device": "cpu",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "threads": 2,
+  "warmup_windows": 1,
+  "scope": "isolated process RSS; file-to-file time; SI-SDR reference is legacy output, not ground truth",
+  "thresholds": {
+    "max_abs_error": 2e-06,
+    "min_si_sdr_db": 100.0,
+    "near_silent_reference_rms": 1e-05,
+    "near_silent_rms_error": 1e-08,
+    "near_silent_max_abs_error": 1e-07
+  },
+  "cases": [
+    {
+      "seconds": 1.0,
+      "input_sha256": "56a84a3b1caa4e91f2411dd8b53ac23e6a9e4c03d8020f21c06cb574fdeb2fff",
+      "measurements": [
+        {
+          "mode": "legacy",
+          "seconds_including_io": 0.9920256370023708,
+          "process_peak_rss_mib": 699.171875,
+          "pre_inference_peak_rss_mib": 699.171875,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        },
+        {
+          "mode": "bounded",
+          "seconds_including_io": 1.0735463240052923,
+          "process_peak_rss_mib": 707.91015625,
+          "pre_inference_peak_rss_mib": 707.91015625,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        }
+      ],
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 44100,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.1922357678413391,
+          "reference_rms": 0.057530866726863805,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 44100,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.003922399133443832,
+          "reference_rms": 0.00026061560852709017,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 44100,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.004256452899426222,
+          "reference_rms": 0.00017840244098311168,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 44100,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.02007426507771015,
+          "reference_rms": 0.0007633571699074838,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 44100,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.10897847265005112,
+          "reference_rms": 0.049020864578787245,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "numerical_pass": true
+    },
+    {
+      "seconds": 12.0,
+      "input_sha256": "afcbe428409bae7482000618cffe4e120ff42ba1075946eaed80cd236a77699a",
+      "measurements": [
+        {
+          "mode": "legacy",
+          "seconds_including_io": 2.696794385999965,
+          "process_peak_rss_mib": 899.36328125,
+          "pre_inference_peak_rss_mib": 692.98828125,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        },
+        {
+          "mode": "bounded",
+          "seconds_including_io": 2.575728905998403,
+          "process_peak_rss_mib": 906.546875,
+          "pre_inference_peak_rss_mib": 713.26953125,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        }
+      ],
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 529200,
+          "max_abs_error": 1.4901161193847656e-08,
+          "rms_error": 6.471887412762908e-11,
+          "reference_peak": 0.14307928085327148,
+          "reference_rms": 0.005503878051057069,
+          "legacy_reference_si_sdr_db": 158.59279276333,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 529200,
+          "max_abs_error": 1.4551915228366852e-11,
+          "rms_error": 6.963544885886433e-14,
+          "reference_peak": 0.0005795446923002601,
+          "reference_rms": 5.823765783651246e-05,
+          "legacy_reference_si_sdr_db": 178.44748817677845,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 529200,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 1.635699461214739e-12,
+          "reference_peak": 0.022354938089847565,
+          "reference_rms": 0.0002833396750160645,
+          "legacy_reference_si_sdr_db": 164.77181748652768,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 529200,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 1.164830855464068e-12,
+          "reference_peak": 0.020438728854060173,
+          "reference_rms": 0.00023793103102223348,
+          "legacy_reference_si_sdr_db": 166.2035753012466,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 529200,
+          "max_abs_error": 2.9802322387695312e-08,
+          "rms_error": 2.7825764557631357e-10,
+          "reference_peak": 0.1999020278453827,
+          "reference_rms": 0.0735915777886602,
+          "legacy_reference_si_sdr_db": 168.44765421821737,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "numerical_pass": true
+    },
+    {
+      "seconds": 60.0,
+      "input_sha256": "92099b9e36e8050259648b3709ea2c43b76636e75dcb6fab4a9e2d25a55efcc2",
+      "measurements": [
+        {
+          "mode": "legacy",
+          "seconds_including_io": 7.906552734995785,
+          "process_peak_rss_mib": 2049.9140625,
+          "pre_inference_peak_rss_mib": 712.71875,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        },
+        {
+          "mode": "bounded",
+          "seconds_including_io": 7.69612660400162,
+          "process_peak_rss_mib": 941.75390625,
+          "pre_inference_peak_rss_mib": 686.4453125,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        }
+      ],
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 2646000,
+          "max_abs_error": 4.656612873077393e-10,
+          "rms_error": 1.8839433717924118e-12,
+          "reference_peak": 0.015359966084361076,
+          "reference_rms": 0.0004412247432097498,
+          "legacy_reference_si_sdr_db": 167.39190919611866,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 2646000,
+          "max_abs_error": 1.1641532182693481e-10,
+          "rms_error": 3.168698662520418e-13,
+          "reference_peak": 0.003752179443836212,
+          "reference_rms": 9.258576922174043e-05,
+          "legacy_reference_si_sdr_db": 169.313270450629,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 2646000,
+          "max_abs_error": 3.725290298461914e-09,
+          "rms_error": 7.194605590745727e-12,
+          "reference_peak": 0.13506656885147095,
+          "reference_rms": 0.0062541370822375,
+          "legacy_reference_si_sdr_db": 178.78320892365562,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 2646000,
+          "max_abs_error": 1.862645149230957e-09,
+          "rms_error": 4.595835774347673e-12,
+          "reference_peak": 0.09957720339298248,
+          "reference_rms": 0.005543904361162757,
+          "legacy_reference_si_sdr_db": 181.62902463511853,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 2646000,
+          "max_abs_error": 2.9802322387695312e-08,
+          "rms_error": 2.559841747394769e-10,
+          "reference_peak": 0.20001477003097534,
+          "reference_rms": 0.07244704347111627,
+          "legacy_reference_si_sdr_db": 169.03615169675282,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "numerical_pass": true
+    },
+    {
+      "seconds": 180.0,
+      "input_sha256": "bde0765a517830009fe5cd4aecd39cd12a129234e0c00a7d4642618ffe4ad4ec",
+      "measurements": [
+        {
+          "mode": "legacy",
+          "seconds_including_io": 25.349654428006033,
+          "process_peak_rss_mib": 4928.25,
+          "pre_inference_peak_rss_mib": 700.74609375,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        },
+        {
+          "mode": "bounded",
+          "seconds_including_io": 22.30366375700396,
+          "process_peak_rss_mib": 995.1484375,
+          "pre_inference_peak_rss_mib": 713.8671875,
+          "cuda_peak_allocated_mib": null,
+          "cuda_peak_reserved_mib": null,
+          "device": "cpu",
+          "device_name": "x86_64",
+          "torch": "2.8.0+cpu",
+          "cuda_runtime": null,
+          "gpu_runtime": null
+        }
+      ],
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 7938000,
+          "max_abs_error": 4.656612873077393e-10,
+          "rms_error": 1.5059399713956886e-12,
+          "reference_peak": 0.06389220803976059,
+          "reference_rms": 0.0024207589796156163,
+          "legacy_reference_si_sdr_db": 184.12287850112935,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 7938000,
+          "max_abs_error": 1.1641532182693481e-10,
+          "rms_error": 1.9891353868788402e-13,
+          "reference_peak": 0.035552896559238434,
+          "reference_rms": 0.0005588876254494896,
+          "legacy_reference_si_sdr_db": 188.97320326910372,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 7938000,
+          "max_abs_error": 3.725290298461914e-09,
+          "rms_error": 4.221014666449228e-12,
+          "reference_peak": 0.13506656885147095,
+          "reference_rms": 0.004281034070685677,
+          "legacy_reference_si_sdr_db": 180.1226367993917,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 7938000,
+          "max_abs_error": 1.862645149230957e-09,
+          "rms_error": 2.7395017654558096e-12,
+          "reference_peak": 0.09957720339298248,
+          "reference_rms": 0.0032021854478200894,
+          "legacy_reference_si_sdr_db": 181.3554979713009,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 7938000,
+          "max_abs_error": 2.9802322387695312e-08,
+          "rms_error": 2.4983485685013954e-10,
+          "reference_peak": 0.20001477003097534,
+          "reference_rms": 0.07276043501374467,
+          "legacy_reference_si_sdr_db": 169.2848475290485,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "numerical_pass": true
+    }
+  ],
+  "numerical_pass": true
+}
