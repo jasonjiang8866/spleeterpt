@@ -375,7 +375,7 @@ def run():
                     ["python", "-m", "uv", "pip", "check", "--python", python],
                     [python, "runpod/convergence.py", "--output", str(report)],
                 ]
-            elif profile == "bounded":
+            elif profile in {"bounded", "five-stem"}:
                 commands = commands[1:3] + [
                     [
                         "python",
@@ -396,6 +396,8 @@ def run():
                     ["python", "-m", "uv", "pip", "check", "--python", python],
                     [python, "runpod/bounded.py", "--output", str(report)],
                 ]
+                if profile == "five-stem":
+                    commands[2][commands[2].index(".")] = ".[convert]"
             elif profile != "four-stem":
                 raise ValueError("Unknown benchmark profile")
             env.update(

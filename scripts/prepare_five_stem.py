@@ -24,23 +24,26 @@ def main():
     )
     unpack_checkpoint(archive, root / "5stems")
     target = root / "5stems.pt"
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "spleeterpt.cli",
-            "convert",
-            "--checkpoint",
-            str(root / "5stems/model"),
-            "--stems",
-            "5",
-            "--output",
-            str(target),
-        ],
-        check=True,
-    )
+    if not target.exists():
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "spleeterpt.cli",
+                "convert",
+                "--checkpoint",
+                str(root / "5stems/model"),
+                "--stems",
+                "5",
+                "--output",
+                str(target),
+            ],
+            check=True,
+        )
+    if digest(target) != source["converted_sha256"]:
+        raise ValueError("Converted checkpoint differs from pinned CPU baseline")
     payload = read_checkpoint(target)
-    if payload["config"]["instruments"] != source["instruments"]:
+    if list(payload["config"]["instruments"]) != source["instruments"]:
         raise ValueError("Unexpected official stem order")
     (root / "provenance.json").write_text(
         json.dumps(
@@ -52,6 +55,9 @@ def main():
                 "conversion_commit": subprocess.check_output(
                     ["git", "rev-parse", "HEAD"], text=True
                 ).strip(),
+                "working_tree_modified": bool(
+                    subprocess.check_output(["git", "status", "--porcelain"], text=True)
+                ),
                 "release_eligible": False,
             },
             indent=2,

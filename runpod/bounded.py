@@ -14,7 +14,7 @@ from gpu_profile import MIG24, validate_runtime
 from quality import ROOT, command, digest
 
 
-def run(output):
+def run(output, *, five_stem=False):
     import torch
 
     from spleeterpt.pretrained import download_model
@@ -34,7 +34,7 @@ def run(output):
     export = work / "export"
     export.mkdir()
     report = {
-        "kind": "bounded-memory-v1",
+        "kind": "five-stem-bounded-v1" if five_stem else "bounded-memory-v1",
         "commit": os.environ["SPT_COMMIT"],
         "pod_id": os.environ["RUNPOD_POD_ID"],
         "experiment": os.environ["SPT_EXPERIMENT"],
@@ -79,8 +79,27 @@ def run(output):
         report["cuda_tests"] = {"returncode": tests.returncode, "output": tests.stdout[-4000:]}
         if tests.returncode or "3 passed" not in tests.stdout:
             raise RuntimeError("CUDA 2/4/5-stem regression did not pass")
-        for stems in (2, 4):
-            checkpoint = download_model(f"{stems}stems", work / "weights")
+        if five_stem:
+            command(sys.executable, "scripts/prepare_five_stem.py", "--work", work / "weights")
+            report["conversion"] = json.loads((work / "weights/provenance.json").read_text())
+            command(
+                sys.executable,
+                "scripts/verify_bounded_checkpoint.py",
+                "--checkpoint",
+                work / "weights/5stems.pt",
+                "--device",
+                "cuda",
+                "--output",
+                export / "edges.json",
+            )
+            report["edges"] = json.loads((export / "edges.json").read_text())
+            save()
+        for stems in (5,) if five_stem else (2, 4):
+            checkpoint = (
+                work / "weights/5stems.pt"
+                if five_stem
+                else download_model(f"{stems}stems", work / "weights")
+            )
             if stems == 4:
                 command(
                     sys.executable,
@@ -117,6 +136,51 @@ def run(output):
                     if destination.exists():
                         report["benchmarks"][key] = json.loads(destination.read_text())
                         save()
+        if five_stem:
+            import soundfile as sf
+
+            from spleeterpt.audio import read_audio
+            from spleeterpt.pretrained import verified_download
+
+            piano = json.loads((ROOT / "scripts/piano_source.json").read_text())
+            original = verified_download(
+                piano["url"], work / "piano.ogg", sha256=piano["sha256"], size=piano["bytes"]
+            )
+            audio = read_audio(original, 44100)
+            report["piano_source"] = piano
+            report["piano_inputs"] = {}
+            for start in piano["starts_seconds"]:
+                clip = work / f"piano-{start}.wav"
+                waveform = audio[:, start * 44100 : (start + 12) * 44100]
+                if waveform.shape != (2, 12 * 44100):
+                    raise ValueError("Incomplete piano clip")
+                sf.write(clip, waveform.numpy().T, 44100, subtype="FLOAT")
+                key = f"5stems-piano-{start}"
+                report["piano_inputs"][key] = {
+                    "sha256": digest(clip),
+                    "start_seconds": start,
+                    "samples": 12 * 44100,
+                }
+                destination = export / f"{key}.json"
+                try:
+                    command(
+                        sys.executable,
+                        "scripts/benchmark_bounded.py",
+                        "--checkpoint",
+                        checkpoint,
+                        "--device",
+                        "cuda",
+                        "--durations",
+                        12,
+                        "--input",
+                        clip,
+                        "--output",
+                        destination,
+                    )
+                finally:
+                    if destination.exists():
+                        report["benchmarks"][key] = json.loads(destination.read_text())
+                    save()
         report["complete"] = True
     finally:
         (export / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
@@ -141,4 +205,6 @@ def run(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
-    run(parser.parse_args().output)
+    run(
+        parser.parse_args().output, five_stem=os.environ.get("SPT_BENCHMARK_PROFILE") == "five-stem"
+    )

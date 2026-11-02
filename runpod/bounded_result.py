@@ -17,12 +17,12 @@ def number(x, *, positive=False):
     )
 
 
-def validate(result, sha, volume, pod, experiment):
+def validate(result, sha, volume, pod, experiment, *, five_stem=False):
     report = result.get("report", {})
     if (
         result.get("status") != "passed"
         or report.get("complete") is not True
-        or report.get("kind") != "bounded-memory-v1"
+        or report.get("kind") != ("five-stem-bounded-v1" if five_stem else "bounded-memory-v1")
         or report.get("commit") != sha
         or report.get("global_volume_id") != volume
         or report.get("pod_id") != pod
@@ -37,14 +37,34 @@ def validate(result, sha, volume, pod, experiment):
     ):
         raise ValueError("CUDA tests or real input provenance incomplete")
     released = json.loads((ROOT / "src/spleeterpt/pretrained.json").read_text())["models"]
-    expected_keys = {f"{k}stems-{kind}" for k in (2, 4) for kind in ("synthetic", "real")}
+    if five_stem:
+        pinned = json.loads((ROOT / "scripts/five_stem_source.json").read_text())
+        released = {"5stems": {"sha256": pinned["converted_sha256"]}}
+        if (
+            report["conversion"]["source"] != pinned
+            or report["conversion"]["checkpoint_sha256"] != pinned["converted_sha256"]
+        ):
+            raise ValueError("Official five-stem provenance mismatch")
+        validate_edges(report["edges"], sha, pinned["converted_sha256"])
+    expected_keys = {
+        f"{k}stems-{kind}"
+        for k in ((5,) if five_stem else (2, 4))
+        for kind in ("synthetic", "real")
+    }
+    if five_stem:
+        piano = json.loads((ROOT / "scripts/piano_source.json").read_text())
+        if report["piano_source"] != piano:
+            raise ValueError("Unpinned piano source")
+        expected_keys.update(f"5stems-piano-{start}" for start in (0, 15, 30))
     if set(report["benchmarks"]) != expected_keys:
         raise ValueError("Missing checkpoint/input combinations")
     for key, bench in report["benchmarks"].items():
-        model, kind = key.split("-")
+        model, kind = key.split("-", 1)
         stems = (
             ("vocals", "accompaniment")
             if model == "2stems"
+            else ("vocals", "piano", "drums", "bass", "other")
+            if model == "5stems"
             else ("vocals", "drums", "bass", "other")
         )
         if (
@@ -76,7 +96,21 @@ def validate(result, sha, volume, pod, experiment):
                 raise ValueError("Acoustic configuration changed")
         if kind == "real" and bench["input_sha256"] != report["real_input"]["sha256"]:
             raise ValueError("Real audio checksum mismatch")
-        durations = [1, 12, 60, 600] if kind == "synthetic" else [1, 12, 60]
+        if kind.startswith("piano-"):
+            item = report["piano_inputs"][key]
+            if (
+                item["start_seconds"] != int(kind.split("-")[1])
+                or item["samples"] != 12 * 44100
+                or bench["input_sha256"] != item["sha256"]
+            ):
+                raise ValueError("Piano clip input mismatch")
+        durations = (
+            [12]
+            if kind.startswith("piano-")
+            else [1, 12, 60, 600]
+            if kind == "synthetic"
+            else [1, 12, 60]
+        )
         if [c["seconds"] for c in bench["cases"]] != durations:
             raise ValueError("Missing requested durations")
         for case in bench["cases"]:
@@ -130,3 +164,55 @@ def validate(result, sha, volume, pod, experiment):
             legacy = long["measurements"][0]["cuda_peak_allocated_mib"]
             if b600 > b60 * 1.10 + 32 or b600 >= legacy * 0.5:
                 raise ValueError("Bounded GPU memory improvement not demonstrated")
+
+
+def validate_edges(report, sha, checkpoint_sha):
+    """Recompute edge verdicts; a claimed pass or missing boundary is insufficient."""
+    lengths = {1}
+    for edge in (1024, 4096, 520192, 524288):
+        lengths.update((edge - 1, edge, edge + 1))
+    expected = {f"boundary_{n}": (n, 2) for n in lengths}
+    expected.update(silence=(4097, 2), mono=(4097, 1))
+    if (
+        report["source_commit"] != sha
+        or report["checkpoint_sha256"] != checkpoint_sha
+        or report["environment"]["device"] != "cuda"
+        or report["passed"] is not True
+        or set(report["cases"]) != set(expected)
+    ):
+        raise ValueError("Incomplete five-stem CUDA edge evidence")
+    for name, (length, channels) in expected.items():
+        case = report["cases"][name]
+        if (
+            case["samples"] != length
+            or case["channels"] != channels
+            or set(case["stems"]) != {"vocals", "piano", "drums", "bass", "other"}
+        ):
+            raise ValueError("Wrong edge shape/stem set")
+        for m in case["stems"].values():
+            error, rms, ref, score = (
+                m[k]
+                for k in (
+                    "max_abs_error",
+                    "rms_error",
+                    "reference_rms",
+                    "legacy_reference_si_sdr_db",
+                )
+            )
+            quiet = (
+                number(ref)
+                and ref <= 1e-5
+                and number(rms)
+                and rms <= 1e-8
+                and number(error)
+                and error <= 1e-7
+            )
+            if (
+                m["samples_per_channel"] != length
+                or not number(error)
+                or error > 2e-6
+                or not number(rms)
+                or not number(ref)
+                or (error != 0 and not quiet and (not number(score) or score < 100))
+            ):
+                raise ValueError("Five-stem edge numerical failure")

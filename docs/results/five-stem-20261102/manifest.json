@@ -1,0 +1,90 @@
+{
+  "measurement_source_commit": "6126306fa1e11054f23e89b08dd0116d468b461e",
+  "measurement_script_sha256": {
+    "scripts/verify_audio_parity.py": "c3df1d0c26a98aab1c0f91836effcbe72da7d23acfa54bb7955dafa953a769c0",
+    "scripts/parity_metrics.py": "b6958ee07a3caf770d595b2e17f6edee6285170e23897aa68aaba048d099e982",
+    "scripts/diagnose_numerics.py": "9aa3d786a66a2a946f1737e5d97ced48761a344d7a2a778302e2a001f88acb65",
+    "scripts/verify_bounded_checkpoint.py": "9549e63d8b8a2d4590c3e5a56843976f3247c780a136999e52cb61fb3dfabce5",
+    "scripts/verify_piano_clips.py": "70b96fea126758df7cab8f5e522a9fbb09afa360c0bea877c9ed017ef593032e",
+    "scripts/benchmark_bounded.py": "bf2384e0d3e4162d9a00fd209fb3d268883577f4440947a850abf7ca79f818d5",
+    "scripts/verify_official_checkpoint.py": "93331f870185480927ab3cbae16e44fa7908d487e73268146c3d8da03978a838"
+  },
+  "source_state_notes": {
+    "5stems-original-strict.json": "Unmodified verify_audio_parity.py from ac49d6b42e13f3e86120ba7acc726b60736501bb; initial failure retained unchanged.",
+    "5stems-strict-final.json": "Clean 6126306 source; report records exact source SHA and clean state.",
+    "5stems-piano-final.json": "Clean 6126306 source; report records exact source SHA and clean state.",
+    "5stems-memory-final.json": "Benchmark code from 6126306 unchanged; sequential isolated workers, single run per duration/path on shared host. Later RunPod-only edits occurred while workers ran.",
+    "5stems-numerics-current.json": "Unmodified diagnostic from main, identical at 6126306; executed while new reporting harness files were in the working tree. Historical raw report schema does not embed source SHA.",
+    "5stems-bounded-edges.json": "Executed from dirty b33e70f baseline; verify_bounded_checkpoint.py byte-identical to the committed 6126306 harness.",
+    "2stems-regression.json": "Enriched harness byte-identical to 6126306, dirty b33e70f baseline recorded.",
+    "4stems-regression.json": "Enriched harness byte-identical to 6126306, dirty b33e70f baseline recorded.",
+    "weight-provenance.json": "Fresh repeat conversion and cache reuse verified; later helper integrity/metadata changes recorded as dirty, not claimed to be clean source."
+  },
+  "environment": {
+    "python": "3.12.14",
+    "cpu": "AMD EPYC 9V74",
+    "packages": {
+      "torch": "2.8.0+cpu",
+      "tensorflow-cpu": "2.18.1",
+      "numpy": "2.0.2",
+      "scipy": "1.15.3",
+      "soundfile": "0.14.0",
+      "pytest": "9.2.0"
+    },
+    "tf_onednn": "0",
+    "operator_threads": 2,
+    "cuda_measured": false
+  },
+  "uv_lock_sha256": "37a07b4221df3055b3b3b83cb392313cb5ef7cf1c8ab10a410bf2f33808bb94d",
+  "files": {
+    "2stems-regression.json": {
+      "bytes": 12544,
+      "sha256": "97a246b671e05f85915234396edc225474824dfd86ac3ee9922f8b50fb2c2890"
+    },
+    "4stems-regression.json": {
+      "bytes": 21914,
+      "sha256": "24915245160c4626a7b29fba93d4218475a1150442bc0c02d7984e0cc15375fa"
+    },
+    "5stems-bounded-edges.json": {
+      "bytes": 35070,
+      "sha256": "f92a13aabe9dcaac5dcd5f9d8518bc0b6c86cfd9ba8c7f470c3f9dab0b7cf7da"
+    },
+    "5stems-graph.log": {
+      "bytes": 746,
+      "sha256": "3cc945b801c29d3bd45d45fc046f32afa84aead4fcfe328fa534ba7f8ee12623"
+    },
+    "5stems-memory-final.json": {
+      "bytes": 13512,
+      "sha256": "bfeb1071081fccb2264a31b0ff588f15742f8edeb8d65a9bfb91eed3685748c7"
+    },
+    "5stems-numerics-current.json": {
+      "bytes": 131355,
+      "sha256": "050d31e4c3b8a3bf6f7d8bb3aceaf9b6efb5da75ed5f7841e216cac9483da712"
+    },
+    "5stems-original-strict.json": {
+      "bytes": 8836,
+      "sha256": "c382a5e0a9057b6a7907251842387ecdce5a48467c1260d141ecc0de1ff07ebf"
+    },
+    "5stems-piano-final.json": {
+      "bytes": 24703,
+      "sha256": "d19e4791a624f09721c26b792149e7f3be7b01e4a32b26b806d996a159b501eb"
+    },
+    "5stems-strict-final.json": {
+      "bytes": 26717,
+      "sha256": "c34d590b9609a01a0bfe0b52547a36c56fa323c5700e51a139eb5ae0654ca80e"
+    },
+    "weight-provenance.json": {
+      "bytes": 1631,
+      "sha256": "45f7ae4c73a7d1339cedb4a5142de05ee08b60007a4bdc2ec76c608f5173b85d"
+    }
+  },
+  "tests": {
+    "pytest_passed": 259,
+    "pytest_skipped_cuda": 3,
+    "runpod_offline_passed": 72,
+    "strict_waveform_failed_outputs": 6,
+    "strict_waveform_total_outputs": 25
+  },
+  "release_approved": false,
+  "paid_compute_started": false
+}

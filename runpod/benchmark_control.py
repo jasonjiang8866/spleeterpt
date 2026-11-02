@@ -26,7 +26,7 @@ class BenchmarkDeadline(Exception):
 def launch(api):
     repo, repo_id = identity()
     profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
-    if profile not in ("four-stem", "vocal", "convergence", "bounded"):
+    if profile not in ("four-stem", "vocal", "convergence", "bounded", "five-stem"):
         raise RuntimeError("Unknown benchmark profile; refusing compute")
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
@@ -165,10 +165,17 @@ def launch(api):
                         result["report"],
                         output / "listening-and-metrics.tar",
                     )
-                if profile == "bounded":
+                if profile in {"bounded", "five-stem"}:
                     from bounded_result import validate as validate_bounded
 
-                    validate_bounded(result, sha, global_volume["id"], pod_id, experiment)
+                    validate_bounded(
+                        result,
+                        sha,
+                        global_volume["id"],
+                        pod_id,
+                        experiment,
+                        five_stem=profile == "five-stem",
+                    )
                 elif profile == "convergence":
                     from convergence_result import validate as validate_convergence
 
@@ -184,7 +191,7 @@ def launch(api):
                         experiment,
                         vocal=profile == "vocal",
                     )
-                if profile not in {"convergence", "bounded"}:
+                if profile not in {"convergence", "bounded", "five-stem"}:
                     from benchmark_metrics import timing_summary
 
                     meta["timing_summary"] = timing_summary(result["report"]["measurements"], rate)

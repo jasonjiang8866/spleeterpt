@@ -43,6 +43,7 @@ class WorkerDependencyTests(unittest.TestCase):
             ("benchmark", "vocal"),
             ("benchmark", "convergence"),
             ("benchmark", "bounded"),
+            ("benchmark", "five-stem"),
         ]:
             with self.subTest(task=task, profile=profile):
                 commands = self.commands(task, profile)
@@ -62,6 +63,12 @@ class WorkerDependencyTests(unittest.TestCase):
                         command for command in installs if any("demucs @" in arg for arg in command)
                     )
                     self.assertIn("--no-deps", demucs)
+
+    def test_five_stem_installs_converter_without_demucs(self):
+        commands = self.commands("benchmark", "five-stem")
+        self.assertTrue(any(".[convert]" in c for c in commands))
+        self.assertFalse(any("demucs" in arg for c in commands for arg in c))
+        self.assertIn("runpod/bounded.py", commands[-1])
 
     def test_smoke_preserves_image_environment(self):
         commands = self.commands("smoke")

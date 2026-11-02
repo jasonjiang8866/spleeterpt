@@ -1,0 +1,38 @@
+{
+  "profile": "five-stem-validation",
+  "resources": {
+    "observed_at_utc": "2026-11-02T14:29:04.351402+00:00",
+    "source_commit": "b33e70f0381feb2d054981b87694bb36528736be",
+    "read_only": true,
+    "account_pod_count": 0,
+    "project_pods": [],
+    "regional_volume": null,
+    "regional_volume_found": false,
+    "global_volume": {
+      "id": "cmvwmviz9000007jteci4ajn8",
+      "name": "spt-1436489970-step90-inputs-v1"
+    },
+    "gpu": {
+      "id": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "catalog_usd_per_hour": 0.69,
+      "within_proposed_rate_cap": true,
+      "available_regions": [
+        {
+          "id": "EUR-IS-2",
+          "availability": "LOW"
+        }
+      ],
+      "availability_is_advisory": true
+    },
+    "ready_for_paid_run": false,
+    "pending": [
+      "Explicit project-specific paid-run budget approval",
+      "Official five-stem CPU diagnosis and frozen acceptance protocol",
+      "Mounted input/checkpoint hashes and image runtime verification",
+      "GPU worker, deadline, independent result validation and recovery check"
+    ]
+  },
+  "configured_image": "runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04",
+  "image_status": "configured tag only; not a fresh pull or digest verification",
+  "paid_compute_started": false
+}
