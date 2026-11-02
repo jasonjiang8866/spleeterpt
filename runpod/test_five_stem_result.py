@@ -5,6 +5,7 @@ import json
 import unittest
 
 from bounded_result import validate
+from gpu_profile import ADA
 from quality import ROOT
 from test_bounded_result import fixture as four_fixture
 
@@ -63,6 +64,18 @@ class Tests(unittest.TestCase):
 
     def test_complete(self):
         self.check(fixture())
+
+    def test_fallback_gpu_must_match_selected_device(self):
+        result = fixture()
+        runtimes = [result["report"]["gpu_runtime"]]
+        for bench in result["report"]["benchmarks"].values():
+            for case in bench["cases"]:
+                runtimes.extend(m["gpu_runtime"] for m in case["measurements"])
+        for runtime in runtimes:
+            runtime.update(requested_gpu=ADA, name=ADA, capability=[8, 9])
+        validate(result, "a" * 40, "global1", "pod1", "1-1", five_stem=True, expected_gpu=ADA)
+        with self.assertRaises(ValueError):
+            self.check(result)
 
     def test_reject_claimed_pass_with_missing_or_wrong_evidence(self):
         for mutate in (

@@ -1,0 +1,7 @@
+{
+  "scope": "New GPU lifecycle evidence only; original CPU manifest unchanged",
+  "files": {
+    "gpu-launch-preflight.json": "808fda07544c8ddcc79a64b2acd6127f40e53bd6368f13c8ee6d0b30c9430e8c",
+    "gpu-capacity.json": "a80f23400d2f73e8356e6f06c5149544b86571b509e472c9d99569b8ea2fce26"
+  }
+}

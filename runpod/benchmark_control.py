@@ -12,8 +12,8 @@ from pathlib import Path
 
 from benchmark_budget import LEASE_SECONDS, RATE_CAP, check
 from control import Runpod, cleanup, identity, owned, request, resolve_image
-from global_storage import NAME, ensure_global, mig_regions
-from gpu_profile import MIG24
+from global_storage import NAME, NoGpuCapacity, ensure_global, mig_regions
+from gpu_profile import ADA, MIG24
 from quality import ROOT
 
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -21,6 +21,16 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 class BenchmarkDeadline(Exception):
     """Must not be swallowed by retryable transport-error handling."""
+
+
+def select_gpu(api, profile):
+    """Prefer MIG; allow only the explicitly enabled 24GB fallback on five-stem."""
+    try:
+        return MIG24, RATE_CAP, mig_regions(api, MIG24)
+    except NoGpuCapacity:
+        if profile != "five-stem" or os.environ.get("SPT_ALLOW_4090_FALLBACK") != "true":
+            raise
+        return ADA, 1.0, mig_regions(api, ADA, rate_cap=1.0)
 
 
 def launch(api):
@@ -42,8 +52,9 @@ def launch(api):
     if any(owned(p, repo, repo_id) for p in api.pods()):
         raise RuntimeError("A managed Pod already exists; refusing another paid launch")
     global_volume = ensure_global(api, create=False)
-    regions = mig_regions(api, MIG24)
+    gpu_id, rate_cap, regions = select_gpu(api, profile)
     budget = check(api)
+    budget["gpu_rate_cap_usd_per_hour"] = rate_cap
     image = resolve_image()
     output = Path("runpod-results")
     output.mkdir(exist_ok=True)
@@ -62,6 +73,8 @@ def launch(api):
         "budget": budget,
         "task": "benchmark",
         "benchmark_profile": profile,
+        "gpu_id": gpu_id,
+        "gpu_rate_cap_usd_per_hour": rate_cap,
     }
 
     def save():
@@ -73,7 +86,7 @@ def launch(api):
         "image": image,
         "cloud": "SECURE",
         "gpu": {
-            "id": MIG24,
+            "id": gpu_id,
             "count": 1,
             "minRamPerGpu": 16,
             "minVcpuCountPerGpu": 4,
@@ -98,7 +111,7 @@ def launch(api):
             "SPT_EXPIRY": str(expiry),
             "SPT_TASK": "benchmark",
             "SPT_BENCHMARK_PROFILE": profile,
-            "SPT_GPU_ID": MIG24,
+            "SPT_GPU_ID": gpu_id,
             "PYTHONUNBUFFERED": "1",
             "SPT_GLOBAL_VOLUME_ID": global_volume["id"],
             "SPT_GLOBAL_VOLUME_NAME": NAME,
@@ -133,14 +146,14 @@ def launch(api):
         rate = float(value) if not isinstance(value, bool) else math.nan
         if (
             not math.isfinite(rate)
-            or not 0 < rate <= RATE_CAP
-            or detail.get("gpu", {}).get("id") != MIG24
+            or not 0 < rate <= rate_cap
+            or detail.get("gpu", {}).get("id") != gpu_id
         ):
             rate = None
             raise RuntimeError("Actual GPU identity/rate not approved; releasing immediately")
         meta["cost_per_hour"] = rate
         save()
-        print(f"Created {pod_id}: ${rate}/hour, one MIG, 60-minute lease", flush=True)
+        print(f"Created {pod_id}: ${rate}/hour, {gpu_id}, 60-minute lease", flush=True)
         url = f"https://{pod_id}-8888.proxy.runpod.net/result"
         last = None
         last_phase = None
@@ -175,6 +188,7 @@ def launch(api):
                         pod_id,
                         experiment,
                         five_stem=profile == "five-stem",
+                        expected_gpu=gpu_id,
                     )
                 elif profile == "convergence":
                     from convergence_result import validate as validate_convergence

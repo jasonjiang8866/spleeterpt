@@ -1,9 +1,6 @@
 name: Five-stem preferred and fallback capacity (read-only)
 on:
   workflow_dispatch:
-  push:
-    branches: [codex/five-stem-gpu-fallback]
-    paths: [runpod/five_stem_capacity.py, .github/workflows/five-stem-capacity.yml]
 permissions:
   contents: read
 jobs:

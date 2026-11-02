@@ -7,6 +7,11 @@ on:
         type: boolean
         required: true
         default: false
+      allow_4090_fallback:
+        description: 'If MIG has no capacity, allow one RTX 4090 24GB at <=$1/hour; 60-minute lease, $2 project budget required'
+        type: boolean
+        required: true
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -30,6 +35,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: five-stem
+          SPT_ALLOW_4090_FALLBACK: ${{ inputs.allow_4090_fallback }}
           SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark }}
         run: python runpod/benchmark_control.py
       - name: Delete compute only

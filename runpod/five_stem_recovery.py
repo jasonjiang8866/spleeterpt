@@ -21,6 +21,7 @@ def verify(root):
         meta["pod_id"],
         report["experiment"],
         five_stem=True,
+        expected_gpu=meta["gpu_id"],
     )
     validate_export(root / "listening-and-metrics.tar", report)
     recovered = {

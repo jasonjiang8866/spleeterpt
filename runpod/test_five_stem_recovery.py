@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from five_stem_recovery import verify
+from gpu_profile import MIG24
 from test_five_stem_result import fixture
 
 
@@ -32,6 +33,7 @@ def prepare(root):
                 "commit": "a" * 40,
                 "global_volume_id": "global1",
                 "pod_id": "pod1",
+                "gpu_id": MIG24,
             }
         )
     )
