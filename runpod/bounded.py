@@ -14,6 +14,28 @@ from gpu_profile import MIG24, validate_runtime
 from quality import ROOT, command, digest
 
 
+def measured_command(destination, *args, collect_rejection=False):
+    """Continue only for a complete numerical rejection, never a crashed worker."""
+    try:
+        command(*args)
+        return True
+    except subprocess.CalledProcessError as error:
+        if not collect_rejection or error.returncode != 1 or not destination.is_file():
+            raise
+        report = json.loads(destination.read_text())
+        start = args.index("--durations") + 1
+        end = next(i for i in range(start, len(args)) if str(args[i]).startswith("--"))
+        durations = [float(x) for x in args[start:end]]
+        if (
+            report.get("numerical_pass") is not False
+            or [c.get("seconds") for c in report.get("cases", [])] != durations
+            or not all("stems" in c and "measurements" in c for c in report["cases"])
+        ):
+            raise
+        print("Recorded numerical rejection; collecting remaining evidence", flush=True)
+        return False
+
+
 def run(output, *, five_stem=False):
     import torch
 
@@ -42,6 +64,7 @@ def run(output, *, five_stem=False):
         "gpu_runtime": runtime,
         "benchmarks": {},
         "complete": False,
+        "numerical_rejections": [],
     }
 
     def save():
@@ -119,7 +142,8 @@ def run(output, *, five_stem=False):
                 key = f"{stems}stems-{kind}"
                 destination = export / f"{key}.json"
                 try:
-                    command(
+                    passed = measured_command(
+                        destination,
                         sys.executable,
                         "scripts/benchmark_bounded.py",
                         "--checkpoint",
@@ -131,12 +155,32 @@ def run(output, *, five_stem=False):
                         "--output",
                         destination,
                         *(["--input", real] if kind == "real" else []),
+                        collect_rejection=five_stem,
                     )
+                    if not passed:
+                        report["numerical_rejections"].append(key)
                 finally:
                     if destination.exists():
                         report["benchmarks"][key] = json.loads(destination.read_text())
                         save()
         if five_stem:
+            command(
+                sys.executable,
+                "scripts/diagnose_bounded.py",
+                "--checkpoint",
+                checkpoint,
+                "--input",
+                real,
+                "--device",
+                "cuda",
+                "--seconds",
+                60,
+                "--fp64-control",
+                "--output",
+                export / "diagnostic.json",
+            )
+            report["diagnostic"] = json.loads((export / "diagnostic.json").read_text())
+            save()
             import soundfile as sf
 
             from spleeterpt.audio import read_audio
@@ -163,7 +207,8 @@ def run(output, *, five_stem=False):
                 }
                 destination = export / f"{key}.json"
                 try:
-                    command(
+                    passed = measured_command(
+                        destination,
                         sys.executable,
                         "scripts/benchmark_bounded.py",
                         "--checkpoint",
@@ -176,7 +221,10 @@ def run(output, *, five_stem=False):
                         clip,
                         "--output",
                         destination,
+                        collect_rejection=True,
                     )
+                    if not passed:
+                        report["numerical_rejections"].append(key)
                 finally:
                     if destination.exists():
                         report["benchmarks"][key] = json.loads(destination.read_text())
@@ -199,6 +247,8 @@ def run(output, *, five_stem=False):
             "files": files,
         }
         save()
+    if report["numerical_rejections"]:
+        raise RuntimeError("Numerical acceptance failed; full evidence retained")
     return report
 
 

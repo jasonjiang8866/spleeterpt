@@ -1,0 +1,29 @@
+{
+  "commit": "3b8dfaf68995588bccb6af414b3f25882a2c17b7",
+  "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+  "pod_name": "spt-1436489970-41473954513-1-1793637662",
+  "expires_at": 1793637662,
+  "global_volume_id": "cmvwmviz9000007jteci4ajn8",
+  "budget": {
+    "checked_at_utc": "2026-11-02T15:41:02.252081+00:00",
+    "month_basis": "UTC",
+    "reserve_usd": 1.0,
+    "monthly_budget_usd": 500.0,
+    "balance_sufficient": true,
+    "month_headroom_sufficient": true,
+    "history_scope": "reported account daily charges plus one hour current spend; billing may lag",
+    "gpu_rate_cap_usd_per_hour": 0.69,
+    "lease_seconds": 3600,
+    "scope": "compute rate/deadline plus reserve; storage/request fees are not an all-in hard cap"
+  },
+  "task": "benchmark",
+  "benchmark_profile": "five-stem",
+  "gpu_id": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+  "gpu_rate_cap_usd_per_hour": 0.69,
+  "pod_id": "apxdccsmw2xak2",
+  "cost_per_hour": 0.69,
+  "cleanup_confirmed": true,
+  "controller_elapsed_seconds": 239.47884726524353,
+  "compute_cost_upper_estimate_usd": 0.04590011239250501,
+  "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice"
+}

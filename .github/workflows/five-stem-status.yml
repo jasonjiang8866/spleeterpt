@@ -1,9 +1,6 @@
 name: Five-stem worker status (read-only)
 on:
   workflow_dispatch:
-  push:
-    branches: [codex/five-stem-gpu-results]
-    paths: [runpod/five_stem_status.py, .github/workflows/five-stem-status.yml]
 permissions:
   contents: read
 jobs:

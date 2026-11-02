@@ -49,6 +49,25 @@ class Tests(unittest.TestCase):
                 json.loads((root / "recovery.json").read_text())["all_members_verified"]
             )
 
+    def test_rejected_metrics_can_be_recovered_but_not_accepted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            prepare(root)
+            result = json.loads((root / "result.json").read_text())
+            result["status"] = "failed"
+            (root / "result.json").write_text(json.dumps(result))
+            with self.assertRaises(ValueError):
+                verify(root)
+            verify(root, allow_rejected=True)
+            recovery = json.loads((root / "recovery.json").read_text())
+            self.assertTrue(recovery["all_members_verified"])
+            self.assertFalse(recovery["gpu_acceptance_revalidated"])
+            self.assertEqual(recovery["acceptance_status"], "rejected")
+            result["report"]["commit"] = "b" * 40
+            (root / "result.json").write_text(json.dumps(result))
+            with self.assertRaises(ValueError):
+                verify(root, allow_rejected=True)
+
     def test_rejects_missing_cleanup_or_corruption(self):
         for corrupt in (False, True):
             with tempfile.TemporaryDirectory() as temp:
