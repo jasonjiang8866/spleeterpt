@@ -1,0 +1,56 @@
+{
+  "observed_at_utc": "2026-11-02T15:41:00.744226+00:00",
+  "read_only": true,
+  "account_pod_count": 0,
+  "quotes": [
+    {
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+      "price": 0.69,
+      "availability": "LOW",
+      "catalog_region_count": 2,
+      "availability_labels": [
+        "LOW"
+      ],
+      "available_regions": [
+        "EUR-IS-2",
+        "US-PA-1"
+      ]
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "price": 0.89,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "price": 0.5,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    },
+    {
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "price": 1.19,
+      "availability": "LOW",
+      "catalog_region_count": 1,
+      "availability_labels": [
+        "LOW"
+      ],
+      "available_regions": [
+        "EUR-NO-1"
+      ]
+    },
+    {
+      "gpu": "NVIDIA RTX A6000",
+      "price": 0.59,
+      "availability": "NONE",
+      "catalog_region_count": 0,
+      "availability_labels": [],
+      "available_regions": []
+    }
+  ]
+}

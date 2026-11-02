@@ -1,0 +1,11 @@
+{
+  "workflow_run": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41473954513",
+  "source_commit": "3b8dfaf68995588bccb6af414b3f25882a2c17b7",
+  "artifact_zip_sha256": "b57ce2f53640c661340e949076518699afaba1c525ad8741fc9db14f4085f92a",
+  "files": {
+    "five-stem-capacity.json": "b87c109218debcac3b5c960f715a381df80b911b188201969ec4c176e54a41c9",
+    "provision.json": "9efa22db4b7a2f740fc3a73c5c8df190a31ed3bc41bfb93327117c6b20c3421e",
+    "recovery.json": "08e1e3f7b5c57278c5ef216cfc9dc61a7ecfc812f4bb3dabdf308a1f9336ccfc",
+    "result.json": "1e5b139557484a4ec68900db5de3b3a69ff714e50dc4950ab54ce0c220e2128b"
+  }
+}

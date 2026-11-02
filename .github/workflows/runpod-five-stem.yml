@@ -43,8 +43,9 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
         run: python runpod/control.py cleanup
-      - name: Reopen and revalidate downloaded results after verified compute deletion
-        run: python runpod/five_stem_recovery.py
+      - name: Recover downloaded evidence after verified compute deletion
+        if: always() && hashFiles('runpod-results/listening-and-metrics.tar') != ''
+        run: python runpod/five_stem_recovery.py --allow-rejected
       - uses: actions/upload-artifact@v4
         if: always()
         with:
