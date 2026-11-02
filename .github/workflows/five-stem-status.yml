@@ -1,0 +1,29 @@
+name: Five-stem worker status (read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/five-stem-gpu-results]
+    paths: [runpod/five_stem_status.py, .github/workflows/five-stem-status.yml]
+permissions:
+  contents: read
+jobs:
+  status:
+    if: github.repository == 'jasonjiang8866/spleeterpt'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read allowlisted worker status
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python runpod/five_stem_status.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: five-stem-status-${{ github.run_id }}
+          path: runpod-results/five-stem-status.json
+          if-no-files-found: error
