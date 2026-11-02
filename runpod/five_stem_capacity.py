@@ -31,6 +31,7 @@ def main():
             {
                 "gpu": gpu,
                 "price": item.get("price", {}).get("secure"),
+                "availability": item.get("availability") if item.get("availability") in {"HIGH", "MEDIUM", "LOW", "NONE"} else "UNKNOWN",
                 "catalog_region_count": len(item.get("dataCenters", [])),
                 "availability_labels": sorted(
                     {str(d.get("availability"))[:40] for d in item.get("dataCenters", [])}
