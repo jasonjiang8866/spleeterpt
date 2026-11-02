@@ -15,7 +15,13 @@ def main():
     identity()
     api = ReadOnly(Runpod())
     quotes = []
-    for gpu in (MIG24, ADA):
+    for gpu in (
+        MIG24,
+        ADA,
+        "NVIDIA GeForce RTX 3090",
+        "NVIDIA GeForce RTX 5090",
+        "NVIDIA RTX A6000",
+    ):
         item = api.call(
             "/catalog/gpus/"
             + urllib.parse.quote(gpu, safe="")
@@ -25,6 +31,10 @@ def main():
             {
                 "gpu": gpu,
                 "price": item.get("price", {}).get("secure"),
+                "catalog_region_count": len(item.get("dataCenters", [])),
+                "availability_labels": sorted(
+                    {str(d.get("availability"))[:40] for d in item.get("dataCenters", [])}
+                ),
                 "available_regions": sorted(
                     d["id"]
                     for d in item.get("dataCenters", [])
