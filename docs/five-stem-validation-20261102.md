@@ -3,7 +3,8 @@
 **Recommendation: do not publish ready-to-use five-stem weights yet.** The official
 checkpoint converts reproducibly and the tested bounded path agrees closely with
 the legacy path, but the unchanged TF/PyTorch strict waveform gate still fails
-6/25 outputs. The project received a $2 budget approval; GPU measurements are blocked by capacity. No runtime model,
+6/25 outputs. The approved $2 GPU work has now produced real MIG measurements and
+a separate bounded-vs-legacy failure; see the [GPU follow-up](five-stem-gpu-20261102.md). No runtime model,
 audio reconstruction, published catalog, release, or acceptance tolerance changed.
 
 ## Repository and provenance
@@ -247,8 +248,10 @@ strict-parity or mixed-piano-corpus blockers.
    selected mixed-piano corpus and CPU/GPU error distributions. Predeclare absolute
    and relative limits, retain all original failures, and label the tier honestly.
    This PR does not introduce a replacement threshold.
-2. Real MIG measurement, long CUDA memory behavior and actual post-cleanup recovery
-   remain unexecuted. The prepared workflow is not evidence of completion.
+2. Real MIG measurement and post-cleanup archive recovery are now recorded in the
+   [GPU report](five-stem-gpu-20261102.md). The 60-second real-music comparison
+   rejects drums/other against the existing bounded-vs-legacy absolute gate.
+   Successful memory measurements and archive recovery do not close this blocker.
 3. Piano evidence covers one solo recording and no isolated targets. It cannot
    establish five-stem separation quality or general piano/other discrimination.
 4. Weight redistribution basis is unchanged: the authors' [JOSS paper, page 3](https://joss.theoj.org/papers/10.21105/joss.02154.pdf)

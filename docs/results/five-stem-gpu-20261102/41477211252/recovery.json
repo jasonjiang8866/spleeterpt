@@ -1,0 +1,11 @@
+{
+  "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+  "compute_deleted": true,
+  "bundle_sha256": "a6b99ca3a60e3da91add6161aecbe50ed6d9699555220cd2335250b67c2e3b21",
+  "recovery": "fresh process after verified Pod disappearance",
+  "execution_location": "GitHub Actions",
+  "verifier_sha256": "639684188f269a49132d8eb3a9fcf7bb78e2416f7a6e019104d6b084fed8e9da",
+  "all_members_verified": true,
+  "gpu_acceptance_revalidated": false,
+  "acceptance_status": "rejected"
+}

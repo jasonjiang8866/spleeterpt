@@ -1,0 +1,192 @@
+{
+  "duration_seconds": 60,
+  "device": "cuda",
+  "purpose": "normal vs cached full-STFT blocks; cached path isolates synthesis grouping",
+  "stft_block_max_complex_errors": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    3.1456798751605675e-05
+  ],
+  "normal_bounded": {
+    "vocals": {
+      "max_abs_error": 8.568167686462402e-07,
+      "rms_error": 1.648333481893334e-08,
+      "reference_rms": 0.05547901513417774,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "piano": {
+      "max_abs_error": 8.87666828930378e-10,
+      "rms_error": 1.0915668918751776e-11,
+      "reference_rms": 5.234244252165709e-06,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "drums": {
+      "max_abs_error": 3.2335519790649414e-06,
+      "rms_error": 4.529313851208745e-08,
+      "reference_rms": 0.02709206875911246,
+      "samples_above_2e_6": 608,
+      "samples_above_1e_6": 2805,
+      "scalar_samples": 5292000
+    },
+    "bass": {
+      "max_abs_error": 1.7583370208740234e-06,
+      "rms_error": 3.554824055377557e-08,
+      "reference_rms": 0.0680740372886146,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 1284,
+      "scalar_samples": 5292000
+    },
+    "other": {
+      "max_abs_error": 2.909451723098755e-06,
+      "rms_error": 4.358777661068864e-08,
+      "reference_rms": 0.054099287707860065,
+      "samples_above_2e_6": 167,
+      "samples_above_1e_6": 2197,
+      "scalar_samples": 5292000
+    }
+  },
+  "cached_full_stft_bounded": {
+    "vocals": {
+      "max_abs_error": 4.470348358154297e-08,
+      "rms_error": 1.0992963774073109e-10,
+      "reference_rms": 0.05547901513417774,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "piano": {
+      "max_abs_error": 2.9103830456733704e-11,
+      "rms_error": 1.1658407084831487e-13,
+      "reference_rms": 5.234244252165709e-06,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "drums": {
+      "max_abs_error": 7.450580596923828e-09,
+      "rms_error": 3.1763002317431713e-11,
+      "reference_rms": 0.02709206875911246,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "bass": {
+      "max_abs_error": 2.9802322387695312e-08,
+      "rms_error": 1.8859554140626408e-10,
+      "reference_rms": 0.0680740372886146,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    },
+    "other": {
+      "max_abs_error": 1.4901161193847656e-08,
+      "rms_error": 1.3111291063626912e-10,
+      "reference_rms": 0.054099287707860065,
+      "samples_above_2e_6": 0,
+      "samples_above_1e_6": 0,
+      "scalar_samples": 5292000
+    }
+  },
+  "fp64_fft_control": {
+    "scope": "FP64 FFT using the same FP32 Hann coefficients, cast to complex64 before unchanged FP32 network; diagnostic only",
+    "stft_block_max_complex_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounded_vs_full": {
+      "vocals": {
+        "max_abs_error": 1.4901161193847656e-08,
+        "rms_error": 1.070115881576431e-10,
+        "reference_rms": 0.05547902193889853,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      },
+      "piano": {
+        "max_abs_error": 2.9103830456733704e-11,
+        "rms_error": 1.1532547855385855e-13,
+        "reference_rms": 5.234262015966121e-06,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      },
+      "drums": {
+        "max_abs_error": 7.450580596923828e-09,
+        "rms_error": 3.218987792246489e-11,
+        "reference_rms": 0.02709208741179257,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      },
+      "bass": {
+        "max_abs_error": 2.9802322387695312e-08,
+        "rms_error": 1.8692170807304433e-10,
+        "reference_rms": 0.06807404287656134,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      },
+      "other": {
+        "max_abs_error": 1.4901161193847656e-08,
+        "rms_error": 1.3232141249608994e-10,
+        "reference_rms": 0.054099284780814376,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      }
+    },
+    "full_vs_original_fp32": {
+      "vocals": {
+        "max_abs_error": 1.866370439529419e-06,
+        "rms_error": 1.3208586201030695e-07,
+        "reference_rms": 0.05547901513417774,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 5611,
+        "scalar_samples": 5292000
+      },
+      "piano": {
+        "max_abs_error": 1.8917489796876907e-09,
+        "rms_error": 4.572202108198965e-11,
+        "reference_rms": 5.234244252165709e-06,
+        "samples_above_2e_6": 0,
+        "samples_above_1e_6": 0,
+        "scalar_samples": 5292000
+      },
+      "drums": {
+        "max_abs_error": 4.082918167114258e-06,
+        "rms_error": 2.0506651546975328e-07,
+        "reference_rms": 0.02709206875911246,
+        "samples_above_2e_6": 3251,
+        "samples_above_1e_6": 42422,
+        "scalar_samples": 5292000
+      },
+      "bass": {
+        "max_abs_error": 5.826354026794434e-06,
+        "rms_error": 2.44653945768813e-07,
+        "reference_rms": 0.0680740372886146,
+        "samples_above_2e_6": 7736,
+        "samples_above_1e_6": 56219,
+        "scalar_samples": 5292000
+      },
+      "other": {
+        "max_abs_error": 5.9604644775390625e-06,
+        "rms_error": 2.0459787720852256e-07,
+        "reference_rms": 0.054099287707860065,
+        "samples_above_2e_6": 4319,
+        "samples_above_1e_6": 27926,
+        "scalar_samples": 5292000
+      }
+    }
+  }
+}

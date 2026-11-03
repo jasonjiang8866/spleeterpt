@@ -1,0 +1,13 @@
+{
+  "workflow_run": "https://github.com/jasonjiang8866/spleeterpt/actions/runs/41477211252",
+  "source_commit": "51bcbcca23fe198c0b456e8a94a9bc4f7bb868a2",
+  "artifact_zip_sha256": "1c935edd3dc1588209a881c00143830b2d038a1a95ddc3a488be51e9673ac2f1",
+  "files": {
+    "artifact.zip": "1c935edd3dc1588209a881c00143830b2d038a1a95ddc3a488be51e9673ac2f1",
+    "diagnostic.json": "9f5fc014b319dff62e8cc02d1e622f56858907bc81fc8188699fbe3acd6a8a56",
+    "independent-cleanup-status.json": "952e04ce44ec77965a3cc0b10c8c0104f681e20b29740be2325d7e55cf0f1910",
+    "provision.json": "8dab958b289e96fb208766678667b4343eda0e63da77cd051ae2897a6014a208",
+    "recovery.json": "95945101bc64883d7d4bc3b0dc434b046290f7b55be971bde4e50a4199dd753d",
+    "result.json": "00b90965b4a121d0f099b69842f831e0ae59a760d24e42c80e9b999298380f1d"
+  }
+}
