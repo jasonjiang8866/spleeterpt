@@ -1,5 +1,9 @@
 # RunPod training
 
+**Continuing in a new conversation?** Start with the [agent handoff](agent-handoff.md)
+for workflow selection, dispatch options, existing Secrets, Global Volume checks
+and compute cleanup. No API key needs to be copied into chat.
+
 For GitHub Actions provisioning, see [Actions setup](actions.md). That workflow
 uses the repository Secret `RUNPOD_API_KEY` and rents a GPU only on explicit manual
 dispatch. The commands below are for an already configured GPU Pod. Full-size synthetic CUDA training/resume and the five-clip music-quality pilot
