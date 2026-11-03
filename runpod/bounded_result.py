@@ -17,12 +17,27 @@ def number(x, *, positive=False):
     )
 
 
-def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_gpu=MIG24):
+def validate(
+    result,
+    sha,
+    volume,
+    pod,
+    experiment,
+    *,
+    five_stem=False,
+    expected_gpu=MIG24,
+    expected_fft_policy="native",
+):
+    if expected_fft_policy not in {"native", "pad-long-tail"}:
+        raise ValueError("Unknown FFT policy")
+    if expected_fft_policy != "native" and not five_stem:
+        raise ValueError("FFT candidate is five-stem research only")
     if not five_stem and expected_gpu != MIG24:
         raise ValueError("Only five-stem permits a fallback GPU")
     report = result.get("report", {})
     if (
         result.get("status") != "passed"
+        or report.get("fft_batch_policy", "native") != expected_fft_policy
         or report.get("complete") is not True
         or report.get("kind") != ("five-stem-bounded-v1" if five_stem else "bounded-memory-v1")
         or report.get("commit") != sha
@@ -47,7 +62,7 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_
             or report["conversion"]["checkpoint_sha256"] != pinned["converted_sha256"]
         ):
             raise ValueError("Official five-stem provenance mismatch")
-        validate_edges(report["edges"], sha, pinned["converted_sha256"])
+        validate_edges(report["edges"], sha, pinned["converted_sha256"], expected_fft_policy)
     expected_keys = {
         f"{k}stems-{kind}"
         for k in ((5,) if five_stem else (2, 4))
@@ -70,7 +85,8 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_
             else ("vocals", "drums", "bass", "other")
         )
         if (
-            bench["checkpoint_sha256"] != released[model]["sha256"]
+            bench.get("fft_batch_policy", "native") != expected_fft_policy
+            or bench["checkpoint_sha256"] != released[model]["sha256"]
             or bench["source_commit"] != sha
             or bench["requested_device"] != "cuda"
             or bench["numerical_pass"] is not True
@@ -143,7 +159,9 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_
                 raise ValueError("Missing isolated measurements")
             for m in case["measurements"]:
                 if (
-                    m["torch"] != "2.8.0+cu128"
+                    m.get("fft_batch_policy", "native")
+                    != (expected_fft_policy if m["mode"] == "bounded" else "native")
+                    or m["torch"] != "2.8.0+cu128"
                     or m["cuda_runtime"] != "12.8"
                     or m["device"] != "cuda:0"
                 ):
@@ -168,7 +186,7 @@ def validate(result, sha, volume, pod, experiment, *, five_stem=False, expected_
                 raise ValueError("Bounded GPU memory improvement not demonstrated")
 
 
-def validate_edges(report, sha, checkpoint_sha):
+def validate_edges(report, sha, checkpoint_sha, expected_fft_policy="native"):
     """Recompute edge verdicts; a claimed pass or missing boundary is insufficient."""
     lengths = {1}
     for edge in (1024, 4096, 520192, 524288):
@@ -176,7 +194,8 @@ def validate_edges(report, sha, checkpoint_sha):
     expected = {f"boundary_{n}": (n, 2) for n in lengths}
     expected.update(silence=(4097, 2), mono=(4097, 1))
     if (
-        report["source_commit"] != sha
+        report.get("fft_batch_policy", "native") != expected_fft_policy
+        or report["source_commit"] != sha
         or report["checkpoint_sha256"] != checkpoint_sha
         or report["environment"]["device"] != "cuda"
         or report["passed"] is not True

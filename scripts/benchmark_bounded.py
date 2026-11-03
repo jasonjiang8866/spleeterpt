@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 import torch
+from fft_batch_policy import fft_batch_policy
 
 from spleeterpt.audio import read_audio, separate
 from spleeterpt.checkpoint import load_model, read_checkpoint
@@ -75,11 +76,13 @@ def worker(args):
                 format="RF64" if stem.shape[-1] * 8 >= 2**32 - 4096 else "WAV",
             )
     else:
-        separate_file(model, args.input, args.output)
+        with fft_batch_policy(args.fft_batch_policy, model.config, sf.info(args.input).frames):
+            separate_file(model, args.input, args.output)
     if cuda:
         torch.cuda.synchronize()
     result = {
         "mode": args.worker,
+        "fft_batch_policy": args.fft_batch_policy if args.worker == "bounded" else "native",
         "seconds_including_io": time.perf_counter() - started,
         "process_peak_rss_mib": peak_rss_mib(),
         "pre_inference_peak_rss_mib": before,
@@ -210,6 +213,12 @@ def main():
     parser.add_argument(
         "--input", help="optional real audio; otherwise deterministic stereo synthesis"
     )
+    parser.add_argument(
+        "--fft-batch-policy",
+        choices=["native", "pad-long-tail"],
+        default="native",
+        help="experimental bounded frontend only; full-file reference is unchanged",
+    )
     parser.add_argument("--threads", type=int, default=2)
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--output", required=True, help="JSON report (worker: stem directory)")
@@ -226,6 +235,7 @@ def main():
             ["git", "rev-parse", "HEAD"], text=True, cwd=Path(__file__).resolve().parents[1]
         ).strip(),
         "checkpoint_sha256": sha256(args.checkpoint),
+        "fft_batch_policy": args.fft_batch_policy,
         "config": config.to_dict(),
         "input_kind": "real_audio_prefix" if args.input else "synthetic_tones_chirp_envelope",
         "input_sha256": sha256(args.input) if args.input else None,
@@ -268,6 +278,8 @@ def main():
                     str(args.threads),
                     "--warmup",
                     str(args.warmup),
+                    "--fft-batch-policy",
+                    args.fft_batch_policy,
                 ]
                 completed = subprocess.run(command, check=False, capture_output=True, text=True)
                 if completed.returncode:

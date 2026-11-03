@@ -18,6 +18,7 @@ import numpy as np
 import soundfile as sf
 import torch
 from benchmark_bounded import acceptance, paired_metrics
+from fft_batch_policy import fft_batch_policy
 
 from spleeterpt.audio import read_audio, separate
 from spleeterpt.checkpoint import load_model
@@ -48,6 +49,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+    parser.add_argument("--fft-batch-policy", choices=["native", "pad-long-tail"], default="native")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     torch.set_num_threads(2)
@@ -63,6 +65,7 @@ def main():
         ),
         "checkpoint_sha256": digest(args.checkpoint),
         "config": model.config.to_dict(),
+        "fft_batch_policy": args.fft_batch_policy,
         "environment": {
             "torch": torch.__version__,
             "numpy": np.__version__,
@@ -97,7 +100,8 @@ def main():
             legacy_seconds = time.perf_counter() - started
             del legacy
             started = time.perf_counter()
-            separate_file(model, source, root / "bounded")
+            with fft_batch_policy(args.fft_batch_policy, model.config, len(audio)):
+                separate_file(model, source, root / "bounded")
             bounded_seconds = time.perf_counter() - started
             metrics = {
                 stem: paired_metrics(root / f"{stem}.wav", root / "bounded" / f"{stem}.wav")
