@@ -1,0 +1,967 @@
+{
+  "source_commit": "ed3e4789d940703a057760ed28d89374c99dcfeb",
+  "working_tree_modified": true,
+  "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+  "config": {
+    "instruments": [
+      "vocals",
+      "piano",
+      "drums",
+      "bass",
+      "other"
+    ],
+    "filters": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "sample_rate": 44100,
+    "n_fft": 4096,
+    "hop_length": 1024,
+    "segment_frames": 512,
+    "frequency_bins": 1024,
+    "encoder_activation": "elu",
+    "decoder_activation": "elu",
+    "mask_activation": "softmax",
+    "mask_extension": "zeros",
+    "separation_exponent": 2.0
+  },
+  "fft_batch_policy": "pad-long-tail",
+  "environment": {
+    "torch": "2.8.0+cpu",
+    "numpy": "2.0.2",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+    "device": "cpu",
+    "gpu": null
+  },
+  "scope": "legacy-reference agreement; deterministic synthetic edges, no music quality evidence; timing excludes loading, includes file I/O; no isolated memory measurement",
+  "thresholds": {
+    "max_abs_error": 2e-06,
+    "min_si_sdr_db": 100,
+    "near_silent_reference_rms": 1e-05,
+    "near_silent_rms_error": 1e-08,
+    "near_silent_max_abs_error": 1e-07
+  },
+  "cases": {
+    "boundary_1": {
+      "samples": 1,
+      "channels": 2,
+      "input_sha256": "b3401c207c9adc755948057eb502effce8cee531df99bb2338e5bcb6ab2fd01b",
+      "pcm_sha256": "a48d297a34fb9fd5ecaf739d8bcf82b37f463b9a01052a0915418ea3cfceff69",
+      "legacy_seconds": 0.9194596339984855,
+      "bounded_seconds": 0.7434178369985602,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 1,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.09955744445323944,
+          "reference_rms": 0.08799849353170229,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 1,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 6.46677926852135e-06,
+          "reference_rms": 5.65977143777691e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 1,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00011267381341895089,
+          "reference_rms": 9.61502094495069e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 1,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00013498865882866085,
+          "reference_rms": 0.0001220601422747887,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 1,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00013960537035018206,
+          "reference_rms": 0.0001230030117552526,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_1023": {
+      "samples": 1023,
+      "channels": 2,
+      "input_sha256": "c2c9a4c7e164dfcbdee6f814b495437dd34a996c126c0633e3830ace3c16be18",
+      "pcm_sha256": "5638ff3bdaddd3a13c5c727f9720df933816d0cd9c77c12261de492cef9f722b",
+      "legacy_seconds": 0.8014674049991299,
+      "bounded_seconds": 0.8196025379984349,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 1023,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.03350548446178436,
+          "reference_rms": 0.008735443320940006,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 1023,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.010839219205081463,
+          "reference_rms": 0.002857385032651993,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 1023,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.010348265990614891,
+          "reference_rms": 0.002578104930887243,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 1023,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.006065701600164175,
+          "reference_rms": 0.001745816907895048,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 1023,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.047131896018981934,
+          "reference_rms": 0.010561950623503282,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_1024": {
+      "samples": 1024,
+      "channels": 2,
+      "input_sha256": "afa62126a4da4aa228146b2e05974976caaf561f9855f4be4b92e7be0060ddfe",
+      "pcm_sha256": "4dec6c2d4d913ffbb1627a9bfbddac8e9d5edb7629e40e3d658dfa23ba95ebdf",
+      "legacy_seconds": 0.648323794001044,
+      "bounded_seconds": 0.6696927359989786,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 1024,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.033397674560546875,
+          "reference_rms": 0.007366001211150524,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 1024,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.01426160242408514,
+          "reference_rms": 0.002715491913884688,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 1024,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.01249389722943306,
+          "reference_rms": 0.0030520517722817725,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 1024,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.006704706698656082,
+          "reference_rms": 0.0019209150389427872,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 1024,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.04889468848705292,
+          "reference_rms": 0.010265832085618086,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_1025": {
+      "samples": 1025,
+      "channels": 2,
+      "input_sha256": "049525280e6f7efad00e8e1e0c90e2378113c2b69b222c254229ecf04f01dacb",
+      "pcm_sha256": "9bf573796496b3968c62edc73dcc67a9e20f9995bebfefd46acd6636568b6483",
+      "legacy_seconds": 0.8041381760012882,
+      "bounded_seconds": 0.8432777769994573,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 1025,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.041767045855522156,
+          "reference_rms": 0.008523508443016883,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 1025,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.013709371909499168,
+          "reference_rms": 0.0030346415318938703,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 1025,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.010522400960326195,
+          "reference_rms": 0.0023722622601960197,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 1025,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.005598339252173901,
+          "reference_rms": 0.0019490056358168059,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 1025,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.05524706095457077,
+          "reference_rms": 0.010946143270743964,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_4095": {
+      "samples": 4095,
+      "channels": 2,
+      "input_sha256": "52fd2887ddbd1b1ab527769129833edd06d3137af18644bc19701746fa111382",
+      "pcm_sha256": "41a309fadc8738755db90cb62bb1a179f08fa9f8e0b554a91afb2b809553facf",
+      "legacy_seconds": 0.7527928669987887,
+      "bounded_seconds": 0.8011728720011888,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 4095,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.12451626360416412,
+          "reference_rms": 0.020596678886206716,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 4095,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00010589709563646466,
+          "reference_rms": 3.0119013021379877e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 4095,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.009289106354117393,
+          "reference_rms": 0.002625121766602043,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 4095,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0008634479600004852,
+          "reference_rms": 0.0002936694071293833,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 4095,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.008252700790762901,
+          "reference_rms": 0.0025584564892782114,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_4096": {
+      "samples": 4096,
+      "channels": 2,
+      "input_sha256": "7c8dabf3449e3f6884e184a31ab73584b86034d056c500b2e836cd8aea7387c1",
+      "pcm_sha256": "004a9876d9d3c90412a25fe6b00207b7f3809595acd28bf848e8284bd24cea7d",
+      "legacy_seconds": 0.7392735080029524,
+      "bounded_seconds": 0.7338444289998733,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 4096,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.10821651667356491,
+          "reference_rms": 0.02102069522238987,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 4096,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0004101271042600274,
+          "reference_rms": 8.595421753836378e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 4096,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.007587175816297531,
+          "reference_rms": 0.0025574948789654304,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 4096,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0005159532884135842,
+          "reference_rms": 0.00015000452931663498,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 4096,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.005195825360715389,
+          "reference_rms": 0.0015594350742526547,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_4097": {
+      "samples": 4097,
+      "channels": 2,
+      "input_sha256": "243570eacbeb8807ceaa476c24393afb92a8233deeef6a199dc903015c33f241",
+      "pcm_sha256": "43826f002e7c02a209ced611e860ee466b2990f3c344bd573dc0babadec2d280",
+      "legacy_seconds": 0.7029779320000671,
+      "bounded_seconds": 0.6135051979981654,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.10212533921003342,
+          "reference_rms": 0.020719692612445727,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00019238362438045442,
+          "reference_rms": 5.973868549140376e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.011013160459697247,
+          "reference_rms": 0.0036206564054002267,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0006274565821513534,
+          "reference_rms": 0.00022213499477745754,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.004607570823282003,
+          "reference_rms": 0.001537755936781989,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_520191": {
+      "samples": 520191,
+      "channels": 2,
+      "input_sha256": "a3e347738a26bc799c8de7f3ba097f392fbd699eece89ab3c2e95ac9408d4fe0",
+      "pcm_sha256": "6415258e89e0fb45f4d5a730ca0d1ba00f289ca7d680f22d684327f2e68726bf",
+      "legacy_seconds": 1.314339648000896,
+      "bounded_seconds": 1.449964520001231,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 520191,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0009288018918596208,
+          "reference_rms": 0.00013723607371223613,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 520191,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00011691146937664598,
+          "reference_rms": 9.23320654145508e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 520191,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.03149625286459923,
+          "reference_rms": 0.0015919837577961207,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 520191,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.000600357772782445,
+          "reference_rms": 3.156198459650433e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 520191,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.10348321497440338,
+          "reference_rms": 0.020538457983249506,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_520192": {
+      "samples": 520192,
+      "channels": 2,
+      "input_sha256": "97ea7dba5ffeb224327d3a9523558a815b22b595fdfeaf94288928e32ed52591",
+      "pcm_sha256": "6af4c005b442a41430c7fb44eccf7647b9afa133705e75dedc6b8e50f74afd67",
+      "legacy_seconds": 1.1106451460000244,
+      "bounded_seconds": 1.31517833199905,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 520192,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0009062375756911933,
+          "reference_rms": 0.00015242570189686182,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 520192,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 8.44175519887358e-05,
+          "reference_rms": 6.461432237151574e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 520192,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.02770664170384407,
+          "reference_rms": 0.001566731549170367,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 520192,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0005429241573438048,
+          "reference_rms": 2.534373279567559e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 520192,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.11065377295017242,
+          "reference_rms": 0.020631450398148354,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_520193": {
+      "samples": 520193,
+      "channels": 2,
+      "input_sha256": "e0972ebf7d5b0058f96b796a4f01c86d090d3cade05cc7e5b106449d056c5ad7",
+      "pcm_sha256": "4a2e2ff87a040072bd687d388cf55beb619f1975bce5a78bfe2b48b18f1227c2",
+      "legacy_seconds": 2.1030448349993094,
+      "bounded_seconds": 1.9217101450012706,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 520193,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0007277247495949268,
+          "reference_rms": 0.00014401674386193853,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 520193,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 7.402213668683544e-05,
+          "reference_rms": 5.637668404499818e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 520193,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.028914161026477814,
+          "reference_rms": 0.0012464186405800285,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 520193,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 8.801786316325888e-05,
+          "reference_rms": 1.0248644203757356e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 520193,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.1003044843673706,
+          "reference_rms": 0.020713260683086564,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "boundary_524287": {
+      "samples": 524287,
+      "channels": 2,
+      "input_sha256": "a026efbe6413413801ffea5717190952282549bc54c1e2912829c37c46417e3e",
+      "pcm_sha256": "bd3387e5c4fc34dd95395c179c94abe21bac623158874acf83b66d052546e71a",
+      "legacy_seconds": 2.0039033979992382,
+      "bounded_seconds": 2.106138443999953,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 524287,
+          "max_abs_error": 3.725290298461914e-09,
+          "rms_error": 1.842376433644745e-11,
+          "reference_peak": 0.0720987319946289,
+          "reference_rms": 0.000988207154001957,
+          "legacy_reference_si_sdr_db": 154.59440096401838,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 524287,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 1.0316886620059707e-12,
+          "reference_peak": 0.007564997300505638,
+          "reference_rms": 0.0001395561678700664,
+          "legacy_reference_si_sdr_db": 162.6241375669966,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 524287,
+          "max_abs_error": 9.313225746154785e-10,
+          "rms_error": 6.598205259736117e-12,
+          "reference_peak": 0.024045005440711975,
+          "reference_rms": 0.0013496584128550033,
+          "legacy_reference_si_sdr_db": 166.2159755183866,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 524287,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 2.1037768735542534e-12,
+          "reference_peak": 0.005458279978483915,
+          "reference_rms": 0.0001182840849844308,
+          "legacy_reference_si_sdr_db": 154.9986340860292,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 524287,
+          "max_abs_error": 7.450580596923828e-09,
+          "rms_error": 5.03542679546603e-11,
+          "reference_peak": 0.11027924716472626,
+          "reference_rms": 0.020608555890323624,
+          "legacy_reference_si_sdr_db": 172.24023023116257,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "passed": true
+    },
+    "boundary_524288": {
+      "samples": 524288,
+      "channels": 2,
+      "input_sha256": "855a76dfb6b57667fb15cb22d91163aaeadeff1392ad8c09b6a66d2ab4406c44",
+      "pcm_sha256": "46217e220c2bf66fa40deae613f1e3e6de87d30bb8d3e0134f30ae3c78ab6d07",
+      "legacy_seconds": 2.046913095997297,
+      "bounded_seconds": 1.9797241500018572,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 524288,
+          "max_abs_error": 3.725290298461914e-09,
+          "rms_error": 1.8455748930740473e-11,
+          "reference_peak": 0.06123265251517296,
+          "reference_rms": 0.0009722252343525941,
+          "legacy_reference_si_sdr_db": 154.43286016266046,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 524288,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 1.1580065601401014e-12,
+          "reference_peak": 0.011631633155047894,
+          "reference_rms": 0.0001909175440259613,
+          "legacy_reference_si_sdr_db": 164.34303613509235,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 524288,
+          "max_abs_error": 9.313225746154785e-10,
+          "rms_error": 7.058335908407489e-12,
+          "reference_peak": 0.027472158893942833,
+          "reference_rms": 0.001545801431083962,
+          "legacy_reference_si_sdr_db": 166.80904180600237,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 524288,
+          "max_abs_error": 4.656612873077393e-10,
+          "rms_error": 2.4978682704208937e-12,
+          "reference_peak": 0.004963551182299852,
+          "reference_rms": 0.00010456864231550016,
+          "legacy_reference_si_sdr_db": 152.43766681533464,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 524288,
+          "max_abs_error": 1.1175870895385742e-08,
+          "rms_error": 5.2433773754481925e-11,
+          "reference_peak": 0.09863504022359848,
+          "reference_rms": 0.020537782540280516,
+          "legacy_reference_si_sdr_db": 171.85884822277617,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "passed": true
+    },
+    "boundary_524289": {
+      "samples": 524289,
+      "channels": 2,
+      "input_sha256": "ce9f0294e44223c8deaf1eb56b7c37227ab3096eb4a558647877dad73a3c9c02",
+      "pcm_sha256": "8b3d6c5e2d33a466b3788428ea9f9d1b77f22ebcb518b108a7617a48dbcf9828",
+      "legacy_seconds": 1.971527360001346,
+      "bounded_seconds": 2.25048358499771,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 524289,
+          "max_abs_error": 3.725290298461914e-09,
+          "rms_error": 2.1297263998578404e-11,
+          "reference_peak": 0.06719554215669632,
+          "reference_rms": 0.0010468106045873392,
+          "legacy_reference_si_sdr_db": 153.8309064502626,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "piano": {
+          "samples_per_channel": 524289,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 9.241270788403717e-13,
+          "reference_peak": 0.006524732336401939,
+          "reference_rms": 0.00012080605305422332,
+          "legacy_reference_si_sdr_db": 162.32722027147904,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "drums": {
+          "samples_per_channel": 524289,
+          "max_abs_error": 9.313225746154785e-10,
+          "rms_error": 6.5448512009531615e-12,
+          "reference_peak": 0.022560965269804,
+          "reference_rms": 0.0015028387722656284,
+          "legacy_reference_si_sdr_db": 167.22029695347888,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "bass": {
+          "samples_per_channel": 524289,
+          "max_abs_error": 2.3283064365386963e-10,
+          "rms_error": 2.1328502605024157e-12,
+          "reference_peak": 0.007031438406556845,
+          "reference_rms": 0.00014764985143595497,
+          "legacy_reference_si_sdr_db": 156.80558572652512,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        },
+        "other": {
+          "samples_per_channel": 524289,
+          "max_abs_error": 7.450580596923828e-09,
+          "rms_error": 5.527838824352724e-11,
+          "reference_peak": 0.10022705048322678,
+          "reference_rms": 0.020615607584671958,
+          "legacy_reference_si_sdr_db": 171.43283013420884,
+          "si_sdr_status": "finite",
+          "acceptance": "relative_si_sdr"
+        }
+      },
+      "passed": true
+    },
+    "silence": {
+      "samples": 4097,
+      "channels": 2,
+      "input_sha256": "4fec24ae7c3d800feaacba5bcf9bcf79908568d6fc8cfa7abec79936af73b624",
+      "pcm_sha256": "38e36ce733732bc809b676abff13354262519b6c341b82a2c875b48ca5a60941",
+      "legacy_seconds": 0.8524592899993877,
+      "bounded_seconds": 0.8567042850008875,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0,
+          "reference_rms": 0.0,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "undefined_silence_or_constant",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0,
+          "reference_rms": 0.0,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "undefined_silence_or_constant",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0,
+          "reference_rms": 0.0,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "undefined_silence_or_constant",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0,
+          "reference_rms": 0.0,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "undefined_silence_or_constant",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0,
+          "reference_rms": 0.0,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "undefined_silence_or_constant",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    },
+    "mono": {
+      "samples": 4097,
+      "channels": 1,
+      "input_sha256": "2429e89ffc180672c3aa6be713f701bad844c53c77cf05acbc5c3709140f7109",
+      "pcm_sha256": "6a3363b2e3ece06d4321a79ee448d0bb46236ccabfbd37008074d1bf37a91232",
+      "legacy_seconds": 0.8924136130008264,
+      "bounded_seconds": 1.4646939339982055,
+      "stems": {
+        "vocals": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.07137502729892731,
+          "reference_rms": 0.020946596856732773,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "piano": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 1.0907286196015775e-05,
+          "reference_rms": 2.578862448866109e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "drums": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.0002342357620364055,
+          "reference_rms": 9.153363110695992e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "bass": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 3.56498894689139e-05,
+          "reference_rms": 9.457279367236641e-06,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        },
+        "other": {
+          "samples_per_channel": 4097,
+          "max_abs_error": 0.0,
+          "rms_error": 0.0,
+          "reference_peak": 0.00012626504758372903,
+          "reference_rms": 3.6900632001144265e-05,
+          "legacy_reference_si_sdr_db": null,
+          "si_sdr_status": "exact_or_degenerate_projection",
+          "acceptance": "exact"
+        }
+      },
+      "passed": true
+    }
+  },
+  "passed": true
+}
