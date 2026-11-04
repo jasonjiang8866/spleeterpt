@@ -65,6 +65,40 @@ class Tests(unittest.TestCase):
     def test_complete(self):
         self.check(fixture())
 
+    def test_candidate_cannot_masquerade_as_native(self):
+        result = fixture()
+        report = result["report"]
+        report["fft_batch_policy"] = "pad-long-tail"
+        report["edges"]["fft_batch_policy"] = "pad-long-tail"
+        for bench in report["benchmarks"].values():
+            bench["fft_batch_policy"] = "pad-long-tail"
+            for case in bench["cases"]:
+                case["measurements"][1]["fft_batch_policy"] = "pad-long-tail"
+        with self.assertRaises(ValueError):
+            self.check(result)
+        validate(
+            result,
+            "a" * 40,
+            "global1",
+            "pod1",
+            "1-1",
+            five_stem=True,
+            expected_fft_policy="pad-long-tail",
+        )
+        report["benchmarks"]["5stems-real"]["cases"][0]["measurements"][0]["fft_batch_policy"] = (
+            "pad-long-tail"
+        )
+        with self.assertRaises(ValueError):
+            validate(
+                result,
+                "a" * 40,
+                "global1",
+                "pod1",
+                "1-1",
+                five_stem=True,
+                expected_fft_policy="pad-long-tail",
+            )
+
     def test_fallback_gpu_must_match_selected_device(self):
         result = fixture()
         runtimes = [result["report"]["gpu_runtime"]]

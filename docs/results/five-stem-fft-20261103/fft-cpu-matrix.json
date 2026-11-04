@@ -1,0 +1,1413 @@
+{
+  "source_commit": "ed3e4789d940703a057760ed28d89374c99dcfeb",
+  "scope": "frontend only; no model or waveform acceptance gate",
+  "device": "cpu",
+  "torch": "2.8.0+cpu",
+  "python": "3.12.14",
+  "cuda_runtime": null,
+  "device_name": "x86_64",
+  "config": {
+    "instruments": [
+      "vocals",
+      "piano",
+      "drums",
+      "bass",
+      "other"
+    ],
+    "filters": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "sample_rate": 44100,
+    "n_fft": 4096,
+    "hop_length": 1024,
+    "segment_frames": 512,
+    "frequency_bins": 1024,
+    "encoder_activation": "elu",
+    "decoder_activation": "elu",
+    "mask_activation": "softmax",
+    "mask_extension": "zeros",
+    "separation_exponent": 2.0
+  },
+  "seed": 773,
+  "cases": [
+    {
+      "samples": 3071,
+      "frames": 7,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3072,
+      "frames": 7,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3073,
+      "frames": 8,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 24575,
+      "frames": 28,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 24576,
+      "frames": 28,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 24577,
+      "frames": 29,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 27647,
+      "frames": 31,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 27648,
+      "frames": 31,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 27649,
+      "frames": 32,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 28671,
+      "frames": 32,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 28672,
+      "frames": 32,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 28673,
+      "frames": 33,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 257023,
+      "frames": 255,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 257024,
+      "frames": 255,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 257025,
+      "frames": 256,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 258047,
+      "frames": 256,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 258048,
+      "frames": 256,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 258049,
+      "frames": 257,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 519167,
+      "frames": 511,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 519168,
+      "frames": 511,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 519169,
+      "frames": 512,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 520191,
+      "frames": 512,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 520192,
+      "frames": 512,
+      "errors": {
+        "native": [
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 520193,
+      "frames": 513,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 521215,
+      "frames": 513,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 521216,
+      "frames": 513,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 521217,
+      "frames": 514,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 522239,
+      "frames": 514,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 522240,
+      "frames": 514,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 522241,
+      "frames": 515,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 527359,
+      "frames": 519,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 527360,
+      "frames": 519,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 527361,
+      "frames": 520,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 548863,
+      "frames": 540,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 548864,
+      "frames": 540,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 548865,
+      "frames": 541,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 551935,
+      "frames": 543,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 551936,
+      "frames": 543,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 551937,
+      "frames": 544,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 552959,
+      "frames": 544,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 552960,
+      "frames": 544,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 552961,
+      "frames": 545,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 781311,
+      "frames": 767,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 781312,
+      "frames": 767,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 781313,
+      "frames": 768,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 782335,
+      "frames": 768,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 782336,
+      "frames": 768,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 782337,
+      "frames": 769,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1043455,
+      "frames": 1023,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1043456,
+      "frames": 1023,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1043457,
+      "frames": 1024,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1044479,
+      "frames": 1024,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1044480,
+      "frames": 1024,
+      "errors": {
+        "native": [
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 1044481,
+      "frames": 1025,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2618367,
+      "frames": 2561,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2618368,
+      "frames": 2561,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2618369,
+      "frames": 2562,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2619391,
+      "frames": 2562,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2619392,
+      "frames": 2562,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2619393,
+      "frames": 2563,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2624511,
+      "frames": 2567,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2624512,
+      "frames": 2567,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2624513,
+      "frames": 2568,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2646015,
+      "frames": 2588,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2646016,
+      "frames": 2588,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2646017,
+      "frames": 2589,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2649087,
+      "frames": 2591,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2649088,
+      "frames": 2591,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2649089,
+      "frames": 2592,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2650111,
+      "frames": 2592,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2650112,
+      "frames": 2592,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2650113,
+      "frames": 2593,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2878463,
+      "frames": 2815,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2878464,
+      "frames": 2815,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2878465,
+      "frames": 2816,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2879487,
+      "frames": 2816,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2879488,
+      "frames": 2816,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 2879489,
+      "frames": 2817,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3140607,
+      "frames": 3071,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3140608,
+      "frames": 3071,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3140609,
+      "frames": 3072,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3141631,
+      "frames": 3072,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3141632,
+      "frames": 3072,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "samples": 3141633,
+      "frames": 3073,
+      "errors": {
+        "native": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pad-long-tail": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  ]
+}

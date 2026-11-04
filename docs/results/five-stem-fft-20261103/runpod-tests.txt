@@ -1,0 +1,83 @@
+OFFLINE MOCK TEST OUTPUT: no real Pods, billing, or GPU execution.
+..............Recorded numerical rejection; collecting remaining evidence
+....Cleanup: 1 managed Pod(s) deleted
+.::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+...::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+..::add-mask::[offline-test-generated-token-redacted]
+Created abc: $0.69/hour; lease 30 minutes
+Cleanup: 1 managed Pod(s) deleted
+.Cleanup: 1 managed Pod(s) deleted
+....::add-mask::[offline-test-generated-token-redacted]
+Created abc: $0.69/hour; lease 30 minutes
+PASS: full-size CUDA train/validation/resume/inference
+Cleanup: 1 managed Pod(s) deleted
+.....Global-volume placement for NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb: EUR-IS-2,US-PA-1
+.............PASS: archive recovery after compute deletion; GPU acceptance=False
+PASS: archive recovery after compute deletion; GPU acceptance=True
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+..Progress: global input files 1/16
+Progress: global input files 2/16
+Progress: global input files 3/16
+Progress: global input files 4/16
+Progress: global input files 5/16
+Progress: global input files 6/16
+Progress: global input files 7/16
+Progress: global input files 8/16
+Progress: global input files 9/16
+Progress: global input files 10/16
+Progress: global input files 11/16
+Progress: global input files 12/16
+Progress: global input files 13/16
+Progress: global input files 14/16
+Progress: global input files 15/16
+Progress: global input files 16/16
+Progress: global input files 1/16
+Progress: global input files 2/16
+Progress: global input files 3/16
+Progress: global input files 4/16
+Progress: global input files 5/16
+Progress: global input files 6/16
+Progress: global input files 7/16
+Progress: global input files 8/16
+Progress: global input files 9/16
+.Cleanup: 1 managed Pod(s) deleted
+Cleanup: 1 managed Pod(s) deleted
+...CPU copy placement: EU-RO-1; catalog rate=$0.06/hour
+Global-volume placement for gpu: US-PA-1
+.::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+.::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+.....PASS: validated resume checkpoint and recovery evidence
+...::add-mask::[offline-test-generated-token-redacted]
+Created abc: $0.69/hour; lease 30 minutes
+Cleanup: 1 managed Pod(s) deleted
+...PASS: persistent-train data/storage/training evidence
+PASS: persistent-train data/storage/training evidence
+....::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+.Cleanup: 1 managed Pod(s) deleted
+.::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+::add-mask::[offline-test-generated-token-redacted]
+Cleanup: 1 managed Pod(s) deleted
+..PASS: 2/4-stem real training, validation, exact fresh-process resume and inference
+..::add-mask::[offline-test-generated-token-redacted]
+Created abc: $0.69/hour; lease 30 minutes
+Cleanup: 1 managed Pod(s) deleted
+......
+----------------------------------------------------------------------
+Ran 82 tests in 1.723s
+
+OK

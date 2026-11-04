@@ -43,6 +43,9 @@ def run(output, *, five_stem=False):
 
     if torch.__version__ != "2.8.0+cu128" or not torch.cuda.is_available():
         raise RuntimeError("Requires pinned torch 2.8.0+cu128 and real CUDA")
+    fft_policy = os.environ.get("SPT_FFT_BATCH_POLICY", "native")
+    if fft_policy not in {"native", "pad-long-tail"} or (not five_stem and fft_policy != "native"):
+        raise ValueError("Unsupported experimental FFT policy")
     runtime = {
         "requested_gpu": os.environ["SPT_GPU_ID"],
         "name": torch.cuda.get_device_name(),
@@ -63,6 +66,8 @@ def run(output, *, five_stem=False):
         "global_volume_id": os.environ["SPT_GLOBAL_VOLUME_ID"],
         "gpu_runtime": runtime,
         "benchmarks": {},
+        "fft_batch_policy": fft_policy,
+        "release_eligible": False,
         "complete": False,
         "numerical_rejections": [],
     }
@@ -108,6 +113,8 @@ def run(output, *, five_stem=False):
             command(
                 sys.executable,
                 "scripts/verify_bounded_checkpoint.py",
+                "--fft-batch-policy",
+                fft_policy,
                 "--checkpoint",
                 work / "weights/5stems.pt",
                 "--device",
@@ -146,6 +153,8 @@ def run(output, *, five_stem=False):
                         destination,
                         sys.executable,
                         "scripts/benchmark_bounded.py",
+                        "--fft-batch-policy",
+                        fft_policy,
                         "--checkpoint",
                         checkpoint,
                         "--device",
@@ -164,23 +173,35 @@ def run(output, *, five_stem=False):
                         report["benchmarks"][key] = json.loads(destination.read_text())
                         save()
         if five_stem:
-            command(
-                sys.executable,
-                "scripts/diagnose_bounded.py",
-                "--checkpoint",
-                checkpoint,
-                "--input",
-                real,
-                "--device",
-                "cuda",
-                "--seconds",
-                60,
-                "--fp64-control",
-                "--output",
-                export / "diagnostic.json",
-            )
-            report["diagnostic"] = json.loads((export / "diagnostic.json").read_text())
-            save()
+            if fft_policy == "native":
+                command(
+                    sys.executable,
+                    "scripts/diagnose_bounded.py",
+                    "--checkpoint",
+                    checkpoint,
+                    "--input",
+                    real,
+                    "--device",
+                    "cuda",
+                    "--seconds",
+                    60,
+                    "--fp64-control",
+                    "--output",
+                    export / "diagnostic.json",
+                )
+                report["diagnostic"] = json.loads((export / "diagnostic.json").read_text())
+                save()
+            else:
+                command(
+                    sys.executable,
+                    "scripts/verify_fft_batches.py",
+                    "--device",
+                    "cuda",
+                    "--output",
+                    export / "fft-matrix.json",
+                )
+                report["fft_matrix"] = json.loads((export / "fft-matrix.json").read_text())
+                save()
             import soundfile as sf
 
             from spleeterpt.audio import read_audio
@@ -211,6 +232,8 @@ def run(output, *, five_stem=False):
                         destination,
                         sys.executable,
                         "scripts/benchmark_bounded.py",
+                        "--fft-batch-policy",
+                        fft_policy,
                         "--checkpoint",
                         checkpoint,
                         "--device",

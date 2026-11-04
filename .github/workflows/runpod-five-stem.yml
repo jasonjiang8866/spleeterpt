@@ -12,6 +12,11 @@ on:
         type: boolean
         required: true
         default: false
+      fft_batch_study:
+        description: 'Experimental pad-long-tail FFT policy; unchanged full-file reference and acceptance thresholds'
+        type: boolean
+        required: true
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -35,6 +40,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: five-stem
+          SPT_FFT_BATCH_STUDY: ${{ inputs.fft_batch_study }}
           SPT_ALLOW_4090_FALLBACK: ${{ inputs.allow_4090_fallback }}
           SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark }}
         run: python runpod/benchmark_control.py

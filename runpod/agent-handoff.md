@@ -103,6 +103,12 @@ gh workflow run runpod-five-stem.yml \
   -f confirm_paid_benchmark=true -f allow_4090_fallback=false
 ```
 
+For the registered [FFT batch candidate study](../docs/five-stem-fft-study-20261103.md),
+add `-f fft_batch_study=true`; it defaults false. This selects an experimental
+streaming frontend, retains the native full-file reference and original numeric
+gates, and records the policy in provisioning and recovery. A passing study is
+not a five-stem release approval.
+
 Set `allow_4090_fallback=true` only when that fallback and its cost are within the
 user's authorization. Confirm the run's recorded `head_sha` matches the reviewed
 main commit; a moving branch must not be treated as an immutable revision.

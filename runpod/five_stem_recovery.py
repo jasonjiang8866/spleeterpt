@@ -36,6 +36,7 @@ def verify(root, *, allow_rejected=False):
             report["experiment"],
             five_stem=True,
             expected_gpu=meta["gpu_id"],
+            expected_fft_policy=meta.get("fft_batch_policy", "native"),
         )
     except ValueError:
         if not allow_rejected:
@@ -43,6 +44,8 @@ def verify(root, *, allow_rejected=False):
         accepted = False
     recovered = {
         "source_commit": meta["commit"],
+        "fft_batch_policy": meta.get("fft_batch_policy", "native"),
+        "release_eligible": False,
         "compute_deleted": True,
         "bundle_sha256": report["bundle"]["sha256"],
         "recovery": "fresh process after verified Pod disappearance",

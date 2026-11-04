@@ -77,6 +77,9 @@ new CPU file-boundary checks and three solo-piano excerpts, but still fails 6/25
 strict TF/PyTorch demo waveform checks. See the [reproducible report and release
 blockers](docs/five-stem-validation-20261102.md). The ordinary download catalog
 continues to recommend 2/4 stems; `--model 5stems` is not yet released.
+An opt-in [FFT batch candidate study](docs/five-stem-fft-study-20261103.md)
+passes official-checkpoint CPU checks; CUDA validation and independent piano
+holdout coverage are still pending. It does not change the default frontend.
 [Real PRO 6000 MIG measurements](docs/five-stem-gpu-20261102.md) now cover 600-second
 audio, but the five-stem bounded path still exceeds its strict absolute-error
 gate on two stems in a 60-second real-music case. Memory savings do not constitute

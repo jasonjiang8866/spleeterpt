@@ -1,0 +1,8 @@
+03a4fded77fa9b3b3f1504aa2070b64428c9765801cb22081e8032a4a70e1b5f  docs/results/five-stem-fft-20261103/edges-2stems-cpu.json
+1289e9b63b9a775fcfbf19a46a5e73344faf59aae02a8efdc63984e8b528dc7f  docs/results/five-stem-fft-20261103/edges-4stems-cpu.json
+b532de98fb6495f142536be4e9bcc59b7d34dee834bd7e7df9785b28d3219511  docs/results/five-stem-fft-20261103/edges-5stems-cpu.json
+692511de9c1eb47440091503926bc1b8d75dae81b312819c826102741b61bb5b  docs/results/five-stem-fft-20261103/fft-cpu-matrix.json
+69078b5a21a84512e5669d9b0392302befb593bd13b00f2d7611843d89d42d5b  docs/results/five-stem-fft-20261103/piano-5stems-cpu.json
+d577dcce43e5ce5b1d933678b21c6104d8a4ab7c342a11acb34635562e05ca30  docs/results/five-stem-fft-20261103/pytest.txt
+4a741a72b41f3225339191a1334b212fbbfcb8d5b491468390ae4840e1d1aec6  docs/results/five-stem-fft-20261103/runpod-tests.txt
+70e34ecae0ed359231617a2ca9a1abb8d8332c5b380974fb8cc79784388265dd  docs/results/five-stem-fft-20261103/synthetic-5stems-cpu.json

@@ -38,6 +38,11 @@ def launch(api):
     profile = os.environ.get("SPT_BENCHMARK_PROFILE", "four-stem")
     if profile not in ("four-stem", "vocal", "convergence", "bounded", "five-stem"):
         raise RuntimeError("Unknown benchmark profile; refusing compute")
+    fft_policy = (
+        "pad-long-tail"
+        if profile == "five-stem" and os.environ.get("SPT_FFT_BATCH_STUDY") == "true"
+        else "native"
+    )
     sha = os.environ["GITHUB_SHA"]
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     if (
@@ -73,6 +78,7 @@ def launch(api):
         "budget": budget,
         "task": "benchmark",
         "benchmark_profile": profile,
+        "fft_batch_policy": fft_policy,
         "gpu_id": gpu_id,
         "gpu_rate_cap_usd_per_hour": rate_cap,
     }
@@ -111,6 +117,7 @@ def launch(api):
             "SPT_EXPIRY": str(expiry),
             "SPT_TASK": "benchmark",
             "SPT_BENCHMARK_PROFILE": profile,
+            "SPT_FFT_BATCH_POLICY": fft_policy,
             "SPT_GPU_ID": gpu_id,
             "PYTHONUNBUFFERED": "1",
             "SPT_GLOBAL_VOLUME_ID": global_volume["id"],
@@ -189,6 +196,7 @@ def launch(api):
                         experiment,
                         five_stem=profile == "five-stem",
                         expected_gpu=gpu_id,
+                        expected_fft_policy=fft_policy,
                     )
                 elif profile == "convergence":
                     from convergence_result import validate as validate_convergence
