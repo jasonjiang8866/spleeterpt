@@ -168,3 +168,19 @@ Actions dispatch tool or authenticated `gh`. Therefore no fresh provider invento
 or paid result is claimed. Repository instructions and the RunPod skill prohibit
 changing workflow triggers to bypass this limitation. Manual dispatch is the
 remaining operational handoff, not a request for another budget approval.
+
+## Observed CUDA result on the 24 GB Blackwell MIG
+
+[Run 41990713955](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41990713955)
+on e604181 passed the original candidate-vs-native-full-file gates. On the
+60-second real mix the worst error was 4.47e-8 (drums 7.45e-9 and other
+1.49e-8). All 84 padded FFT comparisons were exact. The 600-second synthetic
+case used 571.80 MiB peak allocated versus 17,197.95 MiB full-file. The earlier
+native failures remain in the [GPU report](five-stem-gpu-20261102.md).
+The source and weights matched across runs; decoded trim hashes were not
+available for the historical GPU pair. Each within-run comparison shared input.
+[Post-run inventory](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41991211786)
+was empty. Recovered bundle SHA-256:
+`049d70a56d1c7df2b4e51cb4dd088edf7adb23d8f9e67f50ced8f5284fb27f61`.
+This result concerns streaming on the measured GPU. Strict TF waveform parity
+and independent piano quality evaluation remain open.
