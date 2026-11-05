@@ -1,0 +1,46 @@
+name: Five-stem CPU BatchNorm order study
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/study_bn_order.py
+      - .github/workflows/five-stem-bn-study.yml
+permissions:
+  contents: read
+jobs:
+  study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      TF_ENABLE_ONEDNN_OPTS: '0'
+      TF_CPP_MIN_LOG_LEVEL: '2'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+      TF_NUM_INTRAOP_THREADS: '2'
+      TF_NUM_INTEROP_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.4'
+          enable-cache: true
+      - run: uv sync --locked --group dev --group release
+      - name: Prepare historical CPU calibration inputs
+        run: |
+          git clone -q https://github.com/deezer/spleeter.git /tmp/upstream
+          git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
+          uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
+      - name: Compare native and both BN operation orders
+        run: |
+          uv run --no-sync python scripts/study_bn_order.py /tmp/upstream/audio_example.mp3 \
+            --upstream-root /tmp/upstream --weights /tmp/weights --output /tmp/bn-order.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bn-order-${{ github.run_id }}
+          path: /tmp/bn-order.json
+          if-no-files-found: error
