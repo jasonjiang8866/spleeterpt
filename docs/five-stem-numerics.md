@@ -224,3 +224,10 @@ Reject both as release fixes. The next isolated control substitutes only the
 second decoder transposed convolution in each U-Net with the frozen TF operator
 fed the actual incoming Torch activations. BN stays native. This measures the
 waveform impact of one source of convolution drift without deploying TF.
+
+The [decoder control](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41994882442)
+reproduced those BN measurements. Replaying decoder.1 through TF reduced failed
+scalar samples from 4,413 to 4,368 and peak error from 2.70866e-5 to 2.65054e-5.
+All six native failing case/stem combinations still failed. This bounds the
+usefulness of replacing this single stage on this input. The [full JSON](results/bn-order-41994882442/full.json)
+includes all four interventions, five case PCM hashes and per-stem metrics.
