@@ -184,6 +184,18 @@ def main():
             "tf_onednn": os.getenv("TF_ENABLE_ONEDNN_OPTS"),
             "torch_mkldnn": torch.backends.mkldnn.enabled,
             "threads": torch.get_num_threads(),
+            "machine": platform.machine(),
+            "cpu_model": next(
+                (
+                    line.split(":", 1)[1].strip()
+                    for line in Path("/proc/cpuinfo").read_text().splitlines()
+                    if line.startswith("model name")
+                ),
+                None,
+            )
+            if Path("/proc/cpuinfo").is_file()
+            else None,
+            "torch_cpu_capability": torch.backends.cpu.get_cpu_capability(),
         },
         "thresholds": {"atol": ATOL, "rtol": RTOL},
         "cases": {},

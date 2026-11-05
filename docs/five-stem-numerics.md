@@ -268,3 +268,20 @@ sealed while investigating decoder blocks on calibration data.
 |---|---|---|
 | [First run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/42028915255), [full JSON](results/network-halves-42028915255/full.json) | 5120107 | 9aa3c809003cfc8f8568187115c426cb55487e9c67b9498d89c0cbc409c6562f |
 | [Extended run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/42029335678), [full JSON](results/network-halves-42029335678/full.json) | 4f63e5b | cb1bb47bbda831a749e64c103ae1b9d6fdf5606d1c13444a040e437e0c1b1a51 |
+
+The [replication run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/42029989593)
+on 6954e84 reached only **22/25** with the full TF decoder inside the native
+Torch audio path. Original bass had 25 failing scalar samples; multiwindow
+drums and bass had 17 and 26, respectively. The full native pipeline produced
+4,413 failing samples across the two music cases; the hybrid produced 68.
+The fixed-TF-magnitude and TF-reconstruction Torch-encoder/TF-decoder combo
+again had zero failures across the ten music outputs. The [replication JSON](results/network-halves-42029989593/full.json)
+was recovered from archive SHA-256
+`75a27e56a84239aa1a805b3b475bc213286e3f21395d940d8f76b58dbdec1573`.
+
+Thus full decoder replacement reliably removed the shared-magnitude discrepancies
+on these runs, but did not reproduce strict native-path acceptance in every run.
+Earlier reports did not record CPU model/ISA; they cannot establish a hardware
+cause. Next isolate native magnitude and native reconstruction one at a time
+with the decoder held fixed, on the original and repeated clip. Record the CPU
+model and Torch dispatch capability alongside every future run.
