@@ -1,0 +1,30 @@
+name: Verify TRIOS piano reference inputs
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/register_trios.py
+      - .github/workflows/register-trios.yml
+permissions:
+  contents: read
+jobs:
+  register:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy==2.0.2 soundfile==0.14.0
+      - name: Verify licensed archive and fingerprint fixed excerpts without inference
+        run: |
+          curl --fail --location --retry 2 --max-time 150 \
+            'https://zenodo.org/records/6797837/files/TRIOS%20Dataset.zip?download=1' -o /tmp/trios.zip
+          python scripts/register_trios.py /tmp/trios.zip /tmp/inputs.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trios-input-hashes-${{ github.run_id }}
+          path: /tmp/inputs.json
+          if-no-files-found: warn
