@@ -54,18 +54,46 @@ def torch_boundary(net, magnitude, tf_boundary):
     return np.concatenate(logits), np.concatenate(from_tf), boundary
 
 
+def graph_boundary(graph, index):
+    def conv_tensor(i):
+        name = layer_name("conv2d", index * 7 + i)
+        return graph.get_tensor_by_name(f"pretrained/{name}/BiasAdd:0")
+
+    return [conv_tensor(i) for i in range(6)], conv_tensor(6)
+
+
+def native_with_tf_decoder(oracle, model, waveform):
+    # Install on each stem only for this diagnostic call. All surrounding audio,
+    # mask, and softmax operations run through the normal Torch entry point.
+    with ExitStack() as stack:
+        for index, net in enumerate(model.unets.values()):
+            cut, logits = graph_boundary(oracle.graph, index)
+            raw = []
+            for layer in net.encoder:
+                handle = layer.register_forward_hook(
+                    lambda _, __, output, raw=raw: raw.append(nhwc(output))
+                )
+                stack.callback(handle.remove)
+
+            def decode(_, inputs, native, raw=raw, cut=cut, logits=logits):
+                if len(raw) != len(cut):
+                    raise ValueError("incomplete native encoder state")
+                feeds = dict(zip(cut, raw))
+                raw.clear()
+                feeds[oracle.builder.spectrogram_feature] = nhwc(inputs[0])
+                value = oracle.session.run(logits, feeds)
+                return torch.empty_like(native).copy_(nchw(value))
+
+            stack.callback(net.register_forward_hook(decode).remove)
+        return separate(model, waveform)
+
+
 def crossed_logits(oracle, model, magnitude):
     modes = {key: [] for key in ("tf_tf", "tf_refeed", "pt_pt", "tf_pt", "pt_tf")}
     graph = oracle.graph
     feed = {oracle.builder.spectrogram_feature: magnitude}
     for index, net in enumerate(model.unets.values()):
-
-        def conv_tensor(i, index=index):
-            name = layer_name("conv2d", index * 7 + i)
-            return graph.get_tensor_by_name(f"pretrained/{name}/BiasAdd:0")
-
-        cut = [conv_tensor(i) for i in range(6)]
-        out = conv_tensor(6)
+        cut, out = graph_boundary(graph, index)
         original = oracle.session.run(out, feed)
         tf_raw = oracle.session.run(cut, feed)
         native, hybrid, pt_raw = torch_boundary(net, magnitude, tf_raw)
@@ -159,15 +187,26 @@ def main():
         },
         "thresholds": {"atol": ATOL, "rtol": RTOL},
         "cases": {},
+        "native_decoder_gate": {},
         "release_eligible": False,
     }
     try:
         for name, wave in audio_cases(audio, model.config, True).items():
-            if name not in ("music_original", "music_multiwindow"):
-                continue
             pcm = hashlib.sha256(wave.numpy().tobytes()).hexdigest()
             if pcm != history["case_provenance"][name]["decoded_pcm_sha256"]:
                 raise ValueError(f"{name}: PCM mismatch")
+            reference = oracle.separate(wave)
+            hybrid = native_with_tf_decoder(oracle, model, wave)
+            rows = {stem: agreement(ref, hybrid[stem].numpy()) for stem, ref in reference.items()}
+            report["native_decoder_gate"][name] = {"pcm_sha256": pcm, "stems": rows}
+            print(
+                name,
+                "native_tf_decoder",
+                {s: r["strict_failed_samples"] for s, r in rows.items()},
+                flush=True,
+            )
+            if name not in ("music_original", "music_multiwindow"):
+                continue
             case = run_case(oracle, model, wave)
             case["decoded_pcm_sha256"] = pcm
             report["cases"][name] = case
