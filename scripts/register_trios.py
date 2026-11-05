@@ -74,6 +74,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--verify-manifest", type=Path)
     args = parser.parse_args()
     data = args.archive.read_bytes()
     if hashlib.md5(data).hexdigest() != ARCHIVE_MD5:
@@ -91,6 +92,15 @@ def main():
     print(json.dumps(result))
     if any(r["sum_max_error"] > 4 / 32768 for r in recordings):
         raise ValueError("published mix sum exceeds the four PCM16-step peak limit")
+    if args.verify_manifest:
+        frozen = json.loads(args.verify_manifest.read_text())
+        expected = [r["trios"] for r in frozen["records"] if "trios" in r]
+        if (
+            result["archive_sha256"] != frozen["trios_archive"]["sha256"]
+            or result["archive_bytes"] != frozen["trios_archive"]["bytes"]
+            or recordings != expected
+        ):
+            raise ValueError("frozen TRIOS registration mismatch")
 
 
 if __name__ == "__main__":

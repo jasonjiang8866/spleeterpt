@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - scripts/register_trios.py
+      - scripts/five_stem_corpus.json
       - .github/workflows/register-trios.yml
 permissions:
   contents: read
@@ -21,7 +22,18 @@ jobs:
         run: |
           curl --silent --show-error --fail --location --retry 2 --max-time 300 \
             'https://zenodo.org/records/6797837/files/TRIOS%20Dataset.zip?download=1' -o /tmp/trios.zip
-          python scripts/register_trios.py /tmp/trios.zip /tmp/inputs.json
+          python scripts/register_trios.py /tmp/trios.zip /tmp/inputs.json --verify-manifest scripts/five_stem_corpus.json
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.4'
+          enable-cache: true
+      - name: Exercise the public corpus preparation entry point without inference
+        run: |
+          uv sync --locked --no-default-groups --group cpu
+          mkdir -p /tmp/holdout
+          mv /tmp/trios.zip /tmp/holdout/trios.zip
+          uv run --no-sync python scripts/prepare_five_stem_corpus.py \
+            --work /tmp/holdout --split holdout --require-piano-coverage
       - uses: actions/upload-artifact@v4
         if: always()
         with:

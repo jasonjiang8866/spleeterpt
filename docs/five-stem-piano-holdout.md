@@ -40,3 +40,24 @@ artifacts. Fetch audio locally for noncommercial research.
 5. Report all five strict TF/PT waveform verdicts independently. If a frozen
    candidate fails, archive the result and register fresh recordings before
    tuning against these observations. No model execution occurs during registration.
+
+## Preparing and scoring the fixed inputs
+
+Run from the repository root with the locked CPU environment. Preparation checks
+the archive and all eight original WAV identities and writes local float WAVs.
+For these mono recordings, duplicate each channel to stereo for model input and
+for the corresponding targets. Both estimates must use the same channel convention.
+Preserve each model's source revision, weights and prediction provenance alongside
+its exported WAVs.
+
+```bash
+uv run python scripts/prepare_five_stem_corpus.py --work ../holdout \
+  --split holdout --require-piano-coverage
+# Only after the frozen candidate clears the historical calibration gate.
+uv run python scripts/score_piano_holdout.py --inputs ../holdout \
+  --tf ../tf_estimates --candidate ../pt_estimates --output ../quality.json
+```
+
+Estimate paths are `<root>/trios-brahms/{piano,other}.wav` and
+`<root>/trios-schubert/{piano,other}.wav`. Preserve floating-point output without
+per-stem normalization. The score command hashes the reference and estimate PCM.

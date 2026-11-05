@@ -1,13 +1,12 @@
 {
-  "schema_version": 1,
-  "purpose": "Cross-implementation consistency; no ground-truth separation-quality claim",
+  "schema_version": 2,
+  "purpose": "Cross-implementation calibration and frozen mixed-piano separation-quality holdouts",
   "source_commit": "38f4b06556fa0ff1acda5e677d8ba05d1bc0fff0",
   "split_unit": "independent_recording",
   "release_coverage": {
     "minimum_independent_piano_recordings": 3,
     "minimum_holdout_piano_recordings": 2,
-    "status": "blocked",
-    "missing": "Two additional independently recorded, licensed piano sources, including piano in a mixture; pin audio and metadata before opening holdout."
+    "status": "input-coverage-verified; quality evaluation sealed"
   },
   "records": [
     {
@@ -154,6 +153,146 @@
         }
       ],
       "inference_observed": false
+    },
+    {
+      "recording_id": "trios-brahms",
+      "split": "holdout",
+      "category": "mixed_piano",
+      "piano_confirmed": true,
+      "sha256": "d57985913cdf7d7b1ca6ffcd9d555301b185c53acb075fe83fe8d97ad2158012",
+      "license_status": "CC-BY-NC-SA-2.0-UK",
+      "ground_truth_stems": true,
+      "inference_observed": false,
+      "clips": [
+        {
+          "start_seconds": 5,
+          "duration_seconds": 12
+        }
+      ],
+      "trios": {
+        "recording_id": "trios-brahms",
+        "start_seconds": 5,
+        "duration_seconds": 12,
+        "other": [
+          "violin",
+          "horn"
+        ],
+        "assets": {
+          "mix": {
+            "member": "TRIOS Dataset/brahms/mix.wav",
+            "sha256": "d57985913cdf7d7b1ca6ffcd9d555301b185c53acb075fe83fe8d97ad2158012",
+            "bytes": 3792644,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 1896300,
+            "clip_pcm_f32le_interleaved_sha256": "d2c99e2ed1c6b0894959ecbf0b421079c7200754a8d4a09155cf64cd828a5288"
+          },
+          "piano": {
+            "member": "TRIOS Dataset/brahms/piano.wav",
+            "sha256": "e7912a3a1708327de9d3018bff6187001d6bca5ac0135dd8fdd6cf553dddf2a9",
+            "bytes": 3792644,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 1896300,
+            "clip_pcm_f32le_interleaved_sha256": "43cbfe5be896864c3f9d532097051bed31bbfac2d788d1b2a2e7dc343774b10c"
+          },
+          "violin": {
+            "member": "TRIOS Dataset/brahms/violin.wav",
+            "sha256": "5806c5817430da31f0712c55dfdda524053d6ce7f16cda9d96b2a3b35be90b38",
+            "bytes": 3792644,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 1896300,
+            "clip_pcm_f32le_interleaved_sha256": "cbda08b174a06fcda9c043c20e13345445e9ce7597c8894c2378cd55e3c3ef8c"
+          },
+          "horn": {
+            "member": "TRIOS Dataset/brahms/horn.wav",
+            "sha256": "2fd7610172fb3fc78026e65427fadcfb5a4d258827f28cf5453b5a98d2e32e95",
+            "bytes": 3792644,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 1896300,
+            "clip_pcm_f32le_interleaved_sha256": "25f0c3270d82c74d56d836b238083116962f31280c9de418616502514ff51d2e"
+          }
+        },
+        "prepared_pcm": {
+          "mix": "0e4aa44bf61a95c5338f4dcf33482c9d86f79bd43b7f35ea8ba6202710ccbf97",
+          "piano": "5b45d7a88413a2cfe94471058064c15b6e043d0def37a034d03198f12177308a",
+          "other": "5f10747f4b6272806b8d50f8aa817aea087f5e965443c9af4847187780f5d20c"
+        },
+        "sum_max_error": 0,
+        "sum_rms_error": 0
+      }
+    },
+    {
+      "recording_id": "trios-schubert",
+      "split": "holdout",
+      "category": "mixed_piano",
+      "piano_confirmed": true,
+      "sha256": "371e6d956df2f5cca4cd4e4d1c8e0a2a3d2ae2fe6c106ea1157e0ed1cf5cf1a6",
+      "license_status": "CC-BY-NC-SA-2.0-UK",
+      "ground_truth_stems": true,
+      "inference_observed": false,
+      "clips": [
+        {
+          "start_seconds": 5,
+          "duration_seconds": 12
+        }
+      ],
+      "trios": {
+        "recording_id": "trios-schubert",
+        "start_seconds": 5,
+        "duration_seconds": 12,
+        "other": [
+          "violin",
+          "cello"
+        ],
+        "assets": {
+          "mix": {
+            "member": "TRIOS Dataset/schubert/mix.wav",
+            "sha256": "371e6d956df2f5cca4cd4e4d1c8e0a2a3d2ae2fe6c106ea1157e0ed1cf5cf1a6",
+            "bytes": 4685670,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 2342813,
+            "clip_pcm_f32le_interleaved_sha256": "b9647acb93136c2fcfe87209957c871e5b5e57e6540f68d857f3c3d91c2e26e0"
+          },
+          "piano": {
+            "member": "TRIOS Dataset/schubert/piano.wav",
+            "sha256": "c87a68ea390344499ca00b7f2dd07c5c9dd7a0a85d4d504029430cec797e64d1",
+            "bytes": 4685670,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 2342813,
+            "clip_pcm_f32le_interleaved_sha256": "d850bfb561cbf39618faa1ce338c68c56381c69cfe7925608bfc8d5f7cd881cf"
+          },
+          "violin": {
+            "member": "TRIOS Dataset/schubert/violin.wav",
+            "sha256": "1804ff8f2c645402e8f9a4aa48b8e00c782fc35ebf34724e8ddbb51752f01bb7",
+            "bytes": 4685670,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 2342813,
+            "clip_pcm_f32le_interleaved_sha256": "1196bd03e25df98f2faa4688a3e3e0bd099a3bac9e1a1860615b8b43e8db266a"
+          },
+          "cello": {
+            "member": "TRIOS Dataset/schubert/cello.wav",
+            "sha256": "407ed8fa30e9e5c94c082b1be2f03ae21f297b084b48dae1814dbdcb3397a9d4",
+            "bytes": 4685670,
+            "sample_rate": 44100,
+            "channels": 1,
+            "frames": 2342813,
+            "clip_pcm_f32le_interleaved_sha256": "af6127a953dcf4b8c6a14f5dcec1975b6752e68a017d40cdecb99afef741f22e"
+          }
+        },
+        "prepared_pcm": {
+          "mix": "00a599566b9a726785d47e49855da8a95d8fb481d60e8e6901da5aafdc7fb087",
+          "piano": "de4a605f4513859b2cb4eaae5c6748e79968e35ecc7fd57546c085c669731019",
+          "other": "a4263a0216b92f219db2732607549c785d12f76469e56e6afdedf47e124e6289"
+        },
+        "sum_max_error": 0,
+        "sum_rms_error": 0
+      }
     }
   ],
   "existing_global_calibration": {
@@ -164,5 +303,13 @@
     "ground_truth_used": false,
     "split": "calibration",
     "inference_observed": true
+  },
+  "trios_archive": {
+    "url": "https://zenodo.org/records/6797837/files/TRIOS%20Dataset.zip?download=1",
+    "sha256": "bc881879c125d14658d89edf9615d4e9b1a7d6039d733f218c6ff6ff50a3e675",
+    "bytes": 92820286,
+    "license": "CC-BY-NC-SA-2.0-UK",
+    "source": "https://doi.org/10.5281/zenodo.6797837",
+    "attribution": "Joachim Fritsch, High Quality Musical Audio Source Separation, 2012"
   }
 }

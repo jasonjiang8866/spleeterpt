@@ -11,9 +11,12 @@ def test_holdout_identity_and_incomplete_piano_coverage(monkeypatch):
     monkeypatch.syspath_prepend(str(root))
     validate = importlib.import_module("prepare_five_stem_corpus").validate
     manifest = json.loads((root / "five_stem_corpus.json").read_text())
-    assert validate(manifest) is False
+    assert validate(manifest, require_piano_coverage=True)
+    historic = copy.deepcopy(manifest)
+    historic["records"] = [r for r in historic["records"] if "trios" not in r]
+    assert validate(historic) is False
     with pytest.raises(ValueError, match="piano coverage"):
-        validate(manifest, require_piano_coverage=True)
+        validate(historic, require_piano_coverage=True)
     duplicate = copy.deepcopy(manifest)
     duplicate["records"].append(dict(duplicate["records"][0], split="holdout"))
     with pytest.raises(ValueError, match="leakage"):
