@@ -231,3 +231,40 @@ scalar samples from 4,413 to 4,368 and peak error from 2.70866e-5 to 2.65054e-5.
 All six native failing case/stem combinations still failed. This bounds the
 usefulness of replacing this single stage on this input. The [full JSON](results/bn-order-41994882442/full.json)
 includes all four interventions, five case PCM hashes and per-stem metrics.
+
+## Whole encoder / decoder exchange, 2026-11-05
+
+Run the calibration-only `scripts/study_network_halves.py` with the same weights
+directory and pinned upstream checkout as the BN order study. It crosses all
+five raw skip tensors and the raw bottleneck of each U-Net. The decoder includes
+the final logits convolution. Both music cases receive the official TF magnitude
+and TF softmax, masks, phase and synthesis. Each Torch window uses batch size one.
+The multiwindow case repeats the same recording.
+
+| Encoder / decoder | Run 42028915255, failing samples (original / multiwindow) | Run 42029335678, failing samples (original / multiwindow) |
+|---|---:|---:|
+| TF / TF, direct or re-fed | 0 / 0 | 0 / 0 |
+| Torch / Torch | 613 / 1,565 | 488 / 1,543 |
+| TF / Torch | 507 / 941 | 598 / 661 |
+| Torch / TF | **0 / 0** | **0 / 0** |
+| Full native Torch pipeline, with Torch audio | 3,002 / 1,411 | 2,419 / 1,493 |
+
+The TF self-exchange reproduced the official logits and waveforms exactly on
+both runs. The Torch decoder also reproduced its own logits exactly from its
+captured encoder states. Exact error counts varied between hosted runner runs;
+the passing/failing stem identities matched.
+
+The second run additionally used the native Torch frontend, encoder, softmax,
+masks and synthesis, substituting just the full TF decoder. This diagnostic
+passed **25/25** under the original pointwise gate. Peak absolute errors were
+7.272e-6 on the original and 1.2845e-5 on multiwindow. The largest ratio to
+the allowed pointwise error was 0.929. The decoder exchange identifies a
+sufficient intervention on that run; production inference still uses the
+Torch decoder and has the six historical failures. A pure-Torch fix and
+reproduction across CPU configurations remain open. Keep both TRIOS recordings
+sealed while investigating decoder blocks on calibration data.
+
+| Evidence | Source | Artifact ZIP SHA-256 |
+|---|---|---|
+| [First run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/42028915255), [full JSON](results/network-halves-42028915255/full.json) | 5120107 | 9aa3c809003cfc8f8568187115c426cb55487e9c67b9498d89c0cbc409c6562f |
+| [Extended run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/42029335678), [full JSON](results/network-halves-42029335678/full.json) | 4f63e5b | cb1bb47bbda831a749e64c103ae1b9d6fdf5606d1c13444a040e437e0c1b1a51 |
