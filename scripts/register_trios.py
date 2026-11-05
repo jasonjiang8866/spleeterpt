@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import io
 import json
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from zipfile import ZipFile
 
 import numpy as np
@@ -20,19 +20,7 @@ def sha(data):
 
 
 def register(archive, piece, other):
-    wavs = {}
-    for entry in archive.namelist():
-        path = PurePosixPath(entry)
-        if path.suffix.lower() != ".wav" or "__MACOSX" in path.parts or path.name.startswith("."):
-            continue
-        if piece in str(path).lower():
-            wavs[entry] = path.stem.lower()
-    targets = {}
-    for role in ("mix", "piano", *other):
-        found = [name for name, stem in wavs.items() if role in stem]
-        if len(found) != 1:
-            raise ValueError(f"{piece}: expected one {role} WAV in {list(wavs)}")
-        targets[role] = found[0]
+    targets = {role: f"TRIOS Dataset/{piece}/{role}.wav" for role in ("mix", "piano", *other)}
     metadata, clips = {}, {}
     geometry = None
     for role, member in targets.items():
@@ -80,6 +68,7 @@ def main():
         recordings = [register(archive, piece, other) for piece, other in PIECES.items()]
     result = {
         "archive_sha256": sha(data),
+        "archive_bytes": len(data),
         "source": "https://doi.org/10.5281/zenodo.6797837",
         "license": "CC-BY-NC-SA-2.0-UK",
         "recordings": recordings,
