@@ -95,6 +95,11 @@ waveform gate.
 
 ## Piano clips: agreement, not separation quality
 
+The [TRIOS follow-up](five-stem-piano-holdout.md) registers two additional
+independent mixed-piano recordings and their isolated reference tracks. Quality
+inference stays sealed pending a frozen, strict-calibration-passing candidate.
+The measurements below are the original calibration results.
+
 Three preselected 12-second excerpts start at 0, 15 and 30 seconds in
 **Pistachio Ice Cream Ragtime**, by The Piano Lady (Lena Orsa). This is **one
 independent solo-piano recording**, not three songs. Selection preceded evaluation.
