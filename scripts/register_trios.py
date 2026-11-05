@@ -19,7 +19,7 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def register(archive, piece, other):
+def register(archive, piece, other, output_dir=None):
     targets = {role: f"TRIOS Dataset/{piece}/{role}.wav" for role in ("mix", "piano", *other)}
     metadata, clips = {}, {}
     geometry = None
@@ -45,12 +45,26 @@ def register(archive, piece, other):
             "clip_pcm_f32le_interleaved_sha256": sha(clip.astype("<f4").tobytes()),
         }
     residual = clips["mix"] - clips["piano"] - clips[other[0]] - clips[other[1]]
+    prepared_pcm = {}
+    refs = {
+        "mix": clips["mix"],
+        "piano": clips["piano"],
+        "other": clips[other[0]] + clips[other[1]],
+    }
+    for role, clip in refs.items():
+        stereo = np.repeat(clip, 2, axis=1) if clip.shape[1] == 1 else clip
+        stereo = stereo.astype("<f4")
+        prepared_pcm[role] = sha(stereo.tobytes())
+        if output_dir is not None:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            sf.write(output_dir / f"{role}.wav", stereo, 44100, subtype="FLOAT")
     return {
         "recording_id": "trios-" + piece,
         "start_seconds": START,
         "duration_seconds": DURATION,
         "other": list(other),
         "assets": metadata,
+        "prepared_pcm": prepared_pcm,
         "sum_max_error": float(abs(residual).max()),
         "sum_rms_error": float(np.sqrt(np.mean(residual**2))),
     }
