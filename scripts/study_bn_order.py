@@ -55,9 +55,34 @@ def first_layer_replay(model, oracle, waveform):
     return results
 
 
-def separate_with_order(model, waveform, order):
+def decoder_controls(model, oracle):
+    # Preselect decoder.1 from the archived same-input relative-L2 ranking.
+    controls = []
+    for i, net in enumerate(model.unets.values()):
+        base = "pretrained/" + layer_name("conv2d_transpose", i * 6 + 1)
+        output = oracle.graph.get_tensor_by_name(base + "/BiasAdd:0")
+        source = oracle.graph.get_operation_by_name(base + "/conv2d_transpose").inputs[2]
+        controls.append((net.decoder[1], source, output))
+    return controls
+
+
+def separate_with_order(model, waveform, order, oracle, controls):
     with ExitStack() as stack:
-        if order != "native":
+        if order == "tf_decoder1":
+            for layer, source, target in controls:
+
+                def substitute(module, inputs, output, source=source, target=target):
+                    feature = oracle.builder.spectrogram_feature
+                    config = model.config
+                    shape = (inputs[0].shape[0], config.segment_frames, config.frequency_bins, 2)
+                    values = oracle.session.run(
+                        target, {source: nhwc(inputs[0]), feature: np.zeros(shape, np.float32)}
+                    )
+                    # Preserve the original layout seen by downstream Torch operators.
+                    return torch.empty_like(output).copy_(nchw(values))
+
+                stack.callback(layer.register_forward_hook(substitute).remove)
+        elif order in ORDERS[1:]:
             for layer in model.modules():
                 if isinstance(layer, torch.nn.BatchNorm2d):
                     handle = layer.register_forward_hook(
@@ -95,6 +120,8 @@ def main():
     audio = read_audio(args.input, model.config.sample_rate)
     stems = model.config.instruments
     oracle = OfficialGraph(args.weights / "5stems/model", stems, args.upstream_root)
+    orders = (*ORDERS, "tf_decoder1")
+    controls = decoder_controls(model, oracle)
     report = {
         "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "upstream_commit": rev,
@@ -110,7 +137,7 @@ def main():
             "threads": torch.get_num_threads(),
         },
         "cases": {},
-        "failed_outputs": {order: [] for order in ORDERS},
+        "failed_outputs": {order: [] for order in orders},
         "release_eligible": False,
     }
     try:
@@ -122,8 +149,8 @@ def main():
             reference = oracle.separate(waveform)
             case = {"pcm_sha256": pcm}
             report["cases"][name] = case
-            for order in ORDERS:
-                actual = separate_with_order(model, waveform, order)
+            for order in orders:
+                actual = separate_with_order(model, waveform, order, oracle, controls)
                 case[order] = {}
                 for stem in stems:
                     ref, got = reference[stem], actual[stem].numpy()
@@ -139,7 +166,7 @@ def main():
         oracle.close()
     args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     print("Failed outputs by order:", json.dumps(report["failed_outputs"]))
-    for order in ORDERS:
+    for order in orders:
         rows = [r for case in report["cases"].values() for r in case[order].values()]
         print(
             order,

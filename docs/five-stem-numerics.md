@@ -205,3 +205,22 @@ Raw diagnostics: [default backend](results/numerics-5stems.json),
 [five-stem waveform rerun](results/audio-parity-5stems-rechecked.json),
 [two-stem rerun](results/audio-parity-2stems-rechecked.json),
 [four-stem rerun](results/audio-parity-4stems-rechecked.json).
+
+## CPU intervention on the historical waveform gate, 2026-11-05
+
+[Run 41994346973](https://github.com/jasonjiang8866/spleeterpt/actions/runs/41994346973)
+recovered the same six failing outputs with all five case PCM hashes pinned.
+Two inference-only BatchNorm substitutions changed the multiwindow piano
+verdict, while the worst waveform sample moved farther from TF.
+
+| BN arithmetic | Failed outputs / 25 | Failed scalar samples | Worst absolute error |
+|---|---:|---:|---:|
+| Native Torch | 6 | 4,413 | 2.70866e-5 |
+| Center, scale, add bias | 5 | 4,249 | 2.86698e-5 |
+| Precompute affine offset | 5 | 4,249 | 2.86698e-5 |
+
+[Per-case results and shared-input first-layer replay](results/bn-order-41994346973/summary.json).
+Reject both as release fixes. The next isolated control substitutes only the
+second decoder transposed convolution in each U-Net with the frozen TF operator
+fed the actual incoming Torch activations. BN stays native. This measures the
+waveform impact of one source of convolution drift without deploying TF.
