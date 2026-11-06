@@ -1,0 +1,51 @@
+name: Five-stem CPU audio cross study
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: five-stem-audio-cross-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      TF_ENABLE_ONEDNN_OPTS: '0'
+      TF_CPP_MIN_LOG_LEVEL: '2'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+      TF_NUM_INTRAOP_THREADS: '2'
+      TF_NUM_INTEROP_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.16'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: '0.13.4'
+          enable-cache: true
+      - run: uv sync --locked --group dev --group release
+      - name: Prepare only historical calibration inputs
+        run: |
+          git clone -q https://github.com/deezer/spleeter.git /tmp/upstream
+          git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
+          uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
+      - name: Three independent Python processes on the same runner
+        run: |
+          mkdir -p /tmp/audio-cross
+          for repeat in 1 2 3; do
+            uv run --no-sync python scripts/study_audio_cross.py \
+              --upstream-root /tmp/upstream --weights /tmp/weights \
+              --replicate "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${repeat}" \
+              --output "/tmp/audio-cross/repeat-${repeat}.json"
+          done
+          uv run --no-sync python scripts/summarize_audio_cross.py \
+            /tmp/audio-cross/repeat-*.json --output /tmp/audio-cross/summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audio-cross-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/audio-cross/*.json
+          if-no-files-found: error

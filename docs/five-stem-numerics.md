@@ -285,3 +285,14 @@ Earlier reports did not record CPU model/ISA; they cannot establish a hardware
 cause. Next isolate native magnitude and native reconstruction one at a time
 with the decoder held fixed, on the original and repeated clip. Record the CPU
 model and Torch dispatch capability alongside every future run.
+
+## Magnitude / reconstruction cross, 2026-11-06
+
+The [controlled audio cross report](five-stem-audio-cross-20261106.md) fixes the
+Torch encoder and official TF decoder, then independently crosses magnitude
+frontend and inverse STFT with TF post-logit arithmetic and carrier spectrum
+held fixed. Additional bridge cells separately cross post-logit arithmetic and
+carrier STFT, with bitwise replay checks against the existing native hybrid.
+The next residual-error target is the native magnitude frontend; the native
+Torch decoder remains a separate known source of drift. This is calibration
+diagnosis, not a production repair or authorization to open the piano holdouts.

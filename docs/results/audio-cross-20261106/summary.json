@@ -1,0 +1,10 @@
+{
+  "replications": 6,
+  "waveform_comparisons": 960,
+  "all_output_hashes_match": true,
+  "all_controls_exact": true,
+  "archive_sha256": "cabc89b0b66d0c91b53760f08ee5ebf852410f9134be8709e6c22a8116a7cd19",
+  "production_changed": false,
+  "holdouts_used": false,
+  "remote_pr_head": "bf419f5c61563ffea908cfc20999845462598f49"
+}
