@@ -55,4 +55,7 @@ jobs:
           version: '0.13.4'
           enable-cache: true
       - run: uv sync --locked --group dev --group release
-      - run: uv run --no-sync pytest -q tests/test_tensorflow_parity.py tests/test_evaluation_tools.py tests/test_numerical_diagnostics.py
+      - run: >-
+          uv run --no-sync pytest -q tests/test_tensorflow_parity.py
+          tests/test_evaluation_tools.py tests/test_numerical_diagnostics.py
+          tests/test_audio_cross.py tests/test_audio_cross_summary.py

@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - scripts/study_bn_order.py
+      - scripts/study_network_halves.py
       - .github/workflows/five-stem-bn-study.yml
 permissions:
   contents: read
@@ -43,4 +44,14 @@ jobs:
         with:
           name: bn-order-${{ github.run_id }}
           path: /tmp/bn-order.json
+          if-no-files-found: error
+      - name: Cross complete encoders and decoders on both historical music cases
+        run: |
+          uv run --no-sync python scripts/study_network_halves.py --upstream-root /tmp/upstream \
+            --weights /tmp/weights --output /tmp/network-halves.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: network-halves-${{ github.run_id }}
+          path: /tmp/network-halves.json
           if-no-files-found: error
