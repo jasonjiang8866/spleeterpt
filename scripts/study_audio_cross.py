@@ -247,6 +247,124 @@ def run_case(oracle, model, waveform):
     }
 
 
+def magnitude_spectra(oracle, config, waveform, official_spectrum):
+    """Cross the analysis window and FFT backend with the native frame geometry."""
+    n_fft, hop = config.n_fft, config.hop_length
+    torch_window = torch.hann_window(n_fft, dtype=waveform.dtype)
+    with oracle.graph.as_default():
+        tf_window = tf.signal.hann_window(n_fft, dtype=tf.float32)
+        padded_tf = tf.pad(tf.transpose(oracle.waveform), [[0, 0], [n_fft, 0]])
+        tf_spectra = {
+            backend: tf.signal.stft(
+                padded_tf,
+                n_fft,
+                hop,
+                window_fn=lambda _length, dtype, coefficients=window: coefficients,
+                pad_end=True,
+            )
+            for backend, window in (
+                ("tf", tf_window),
+                ("pt", tf.constant(torch_window.numpy())),
+            )
+        }
+    tf_values, tf_replayed = oracle.session.run(
+        [tf_window, tf_spectra], {oracle.waveform: waveform.numpy().T}
+    )
+    if not np.array_equal(tf_replayed["tf"].transpose(1, 2, 0), official_spectrum):
+        raise ValueError("magnitude study did not reproduce official TF STFT")
+    frame_count = official_spectrum.shape[0]
+    needed = n_fft + (frame_count - 1) * hop
+    padded_pt = torch.nn.functional.pad(waveform, (n_fft, needed - n_fft - waveform.shape[-1]))
+    windows = {"tf": torch.from_numpy(tf_values), "pt": torch_window}
+    spectra = {("tf", backend): torch.from_numpy(spec) for backend, spec in tf_replayed.items()}
+    for backend, window in windows.items():
+        spectra["pt", backend] = torch.stft(
+            padded_pt, n_fft, hop, window=window, center=False, return_complex=True
+        ).transpose(-2, -1)
+    native = stft(waveform, config, inference=True)
+    if not torch.equal(spectra["pt", "pt"], native) or any(
+        spec.shape != native.shape for spec in spectra.values()
+    ):
+        raise ValueError("magnitude study did not reproduce native STFT or frame geometry")
+    return spectra, windows
+
+
+def run_magnitude_case(oracle, model, waveform):
+    config, stems = model.config, model.config.instruments
+    feed = {oracle.waveform: waveform.numpy().T}
+    feature, carrier = oracle.builder.spectrogram_feature, oracle.builder.stft_feature
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    official_magnitude, official_spectrum = oracle.session.run([feature, carrier], feed)
+    reference = oracle.separate(waveform)
+    spectra, windows = magnitude_spectra(oracle, config, waveform, official_spectrum)
+    waves, cells = {}, {}
+    for (fft, hann), spectrum in spectra.items():
+        magnitudes = {
+            "tf": oracle.session.run(feature, {carrier: spectrum.numpy().transpose(1, 2, 0)}),
+            "pt": native_magnitude(spectrum, config),
+        }
+        if (fft, hann) == ("tf", "tf") and not np.array_equal(magnitudes["tf"], official_magnitude):
+            raise ValueError("TF STFT refeed did not reproduce the official magnitude")
+        for absolute, magnitude in magnitudes.items():
+            logits = fixed_decoder_logits(oracle, model, magnitude)
+            # Preserve the official carrier STFT, masks and reconstruction.
+            outputs = oracle.session.run(
+                oracle.outputs, {**feed, feature: magnitude, stacked: logits}
+            )
+            value = {s: outputs[s].T for s in stems}
+            waves[fft, hann, absolute] = value
+            cells[f"fft_{fft}__hann_{hann}__abs_{absolute}"] = {
+                "magnitude": metrics(official_magnitude, magnitude),
+                "magnitude_sha256": array_hash(magnitude),
+                "logits_sha256": array_hash(logits),
+                "waveforms": {s: waveform_metrics(reference[s], value[s]) for s in stems},
+            }
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": official_spectrum.shape[0],
+        "windows": len(official_magnitude),
+        "last_window_frames": (official_spectrum.shape[0] - 1) % config.segment_frames + 1,
+        "hann": metrics(windows["tf"].numpy(), windows["pt"].numpy()),
+        "spectra": {
+            f"fft_{fft}__hann_{hann}": {
+                "sha256": array_hash(spec.numpy()),
+                **metrics(official_spectrum, spec.numpy().transpose(1, 2, 0)),
+            }
+            for (fft, hann), spec in spectra.items()
+        },
+        "cells": cells,
+        "fft_hann_contrasts_by_abs": {
+            absolute: {
+                s: factorial_contrasts(
+                    reference[s],
+                    waves["tf", "tf", absolute][s],
+                    waves["pt", "tf", absolute][s],
+                    waves["tf", "pt", absolute][s],
+                    waves["pt", "pt", absolute][s],
+                    axes=("fft", "hann"),
+                )
+                for s in stems
+            }
+            for absolute in BACKENDS
+        },
+        "abs_contrasts": {
+            f"fft_{fft}__hann_{hann}": {
+                s: float(
+                    np.max(
+                        np.abs(
+                            waves[fft, hann, "tf"][s].astype(np.float64) - waves[fft, hann, "pt"][s]
+                        )
+                    )
+                )
+                for s in stems
+            }
+            for fft, hann in spectra
+        },
+        "attribution_valid": True,
+    }
+
+
 def environment():
     cpu = Path("/proc/cpuinfo").read_text() if Path("/proc/cpuinfo").exists() else ""
     return {
@@ -292,6 +410,11 @@ def main():
     parser.add_argument("--upstream-root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--replicate", required=True)
+    parser.add_argument(
+        "--magnitude-breakdown",
+        action="store_true",
+        help="cross FFT, Hann coefficients and complex magnitude on fixed downstream TF audio",
+    )
     args = parser.parse_args()
     if os.getenv("TF_ENABLE_ONEDNN_OPTS") != "0":
         raise ValueError("set TF_ENABLE_ONEDNN_OPTS=0 before starting Python")
@@ -370,15 +493,20 @@ def main():
     oracle = OfficialGraph(
         args.weights / "5stems/model", model.config.instruments, args.upstream_root
     )
+    study_case = run_case
+    if args.magnitude_breakdown:
+        report["primary_factors"] = "FFT backend x Hann coefficients x complex absolute value"
+        del report["bridge_factors"]
+        study_case = run_magnitude_case
     args.output.parent.mkdir(parents=True, exist_ok=True)
     try:
         for name in MUSIC_CASES:
-            report["cases"][name] = run_case(oracle, model, waveforms[name])
+            report["cases"][name] = study_case(oracle, model, waveforms[name])
             args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
             print(
                 name,
                 {
-                    k: sum(r["strict_failed_samples"] for r in rows.values())
+                    k: sum(r["strict_failed_samples"] for r in rows.get("waveforms", rows).values())
                     for k, rows in report["cases"][name]["cells"].items()
                 },
                 flush=True,
