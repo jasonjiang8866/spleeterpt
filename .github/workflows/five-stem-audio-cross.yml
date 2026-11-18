@@ -11,6 +11,7 @@ on:
           - magnitude-breakdown
           - frame-fft
           - decoder-cuts
+          - fft-head
 permissions:
   contents: read
 concurrency:
@@ -51,6 +52,7 @@ jobs:
             magnitude-breakdown) flags=(--magnitude-breakdown) ;;
             frame-fft) flags=(--frame-fft) ;;
             decoder-cuts) flags=(--decoder-cuts) ;;
+            fft-head) flags=(--fft-head) ;;
             *) exit 2 ;;
           esac
           mkdir -p /tmp/audio-cross

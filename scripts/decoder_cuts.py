@@ -91,8 +91,16 @@ def native_block_six(model, oracle, waveform):
     controls = decoder_controls(model, oracle, block=5)
     results = {"native": separate(model, waveform)}
     results["native_tf_conv6"] = separate_with_tf_convolutions(model, waveform, oracle, controls)
+    with widened_layers(layer for layer, _, _ in controls):
+        results["native_wide_conv6"] = separate(model, waveform)
+    return results
+
+
+@contextlib.contextmanager
+def widened_layers(layers):
+    """Widen the selected convolution, preserving its normal output dtype and layout."""
     with contextlib.ExitStack() as stack:
-        for layer, _, _ in controls:
+        for layer in layers:
             widened = copy.deepcopy(layer).double()
             handle = layer.register_forward_hook(
                 lambda module, args, out, conv=widened: torch.empty_like(out).copy_(
@@ -100,5 +108,26 @@ def native_block_six(model, oracle, waveform):
                 )
             )
             stack.callback(handle.remove)
-        results["native_wide_conv6"] = separate(model, waveform)
-    return results
+        yield
+
+
+@contextlib.contextmanager
+def tensorflow_heads(oracle, model, magnitude):
+    feature = oracle.builder.spectrogram_feature
+    with contextlib.ExitStack() as stack:
+        for index, net in enumerate(model.unets.values()):
+            name = layer_name("batch_normalization", index * 12 + 11)
+            source = oracle.graph.get_tensor_by_name(f"pretrained/{name}/cond/Merge:0")
+            _, target = graph_boundary(oracle.graph, index)
+            feed = {feature: magnitude}
+            state, expected = oracle.session.run([source, target], feed)
+            replay = oracle.session.run(target, {**feed, source: state})
+            if not np.array_equal(replay, expected):
+                raise ValueError("official output head refeed differs")
+
+            def substitute(module, args, out, source=source, target=target):
+                result = oracle.session.run(target, {feature: magnitude, source: nhwc(args[0])})
+                return torch.empty_like(out).copy_(nchw(result))
+
+            stack.callback(net.output.register_forward_hook(substitute).remove)
+        yield

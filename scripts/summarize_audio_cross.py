@@ -14,6 +14,7 @@ def summarize(reports):
         first["primary_factors"] == "FFT backend x Hann coefficients x complex absolute value"
     )
     frame_fft = first["primary_factors"] == "RFFT on identical pre-windowed FP32 frames"
+    fft_head = first["primary_factors"] == "analysis RFFT x output head on widened D6"
     cuts = first["primary_factors"] == "decoder prefix by backend"
     expected_cases = {"music_original", "music_multiwindow"}
     expected_cells = {
@@ -32,7 +33,7 @@ def summarize(reports):
         "tf_post_refeed_pt_tf_exact",
         "tf_post_refeed_pt_pt_exact",
     }
-    if frame_fft:
+    if frame_fft or fft_head:
         expected_cases.update(("music_short", "silence", "boundary_impulses"))
         expected_cells = {
             f"{path}_{fft}" for path in ("fixed", "native") for fft in ("pt32", "tf32", "pt64_cast")
@@ -43,6 +44,12 @@ def summarize(reports):
             "pt_rfft_matches_native_stft",
             "native_waveform_replay_exact",
         }
+    if fft_head:
+        implementations = ("pt32", "tf32", "pt64_cast")
+        expected_cells = {
+            f"fft_{a}__head_{b}" for a, b in itertools.product(implementations, repeat=2)
+        }
+        expected_controls.add("tf_head_refeed_exact")
     if cuts:
         expected_cases.update(("music_short", "silence", "boundary_impulses"))
         expected_cells = {"tf", "torch", "native", "native_tf_conv6", "native_wide_conv6"} | {
@@ -67,7 +74,7 @@ def summarize(reports):
             if report[field] != first[field]:
                 raise ValueError(f"replicate provenance mismatch: {field}")
         if (
-            not (magnitude or frame_fft or cuts)
+            not (magnitude or frame_fft or cuts or fft_head)
             and report["bridge_factors"] != first["bridge_factors"]
         ):
             raise ValueError("replicate provenance mismatch: bridge_factors")
@@ -90,7 +97,7 @@ def summarize(reports):
                 for field in ("magnitude_sha256", "carrier_sha256", "reference_sha256")
             ):
                 raise ValueError("decoder cut replicate input or reference mismatch")
-            if frame_fft and any(
+            if (frame_fft or fft_head) and any(
                 result[field] != first["cases"][case][field]
                 for field in ("frame_sha256", "reference_sha256")
             ):
@@ -102,10 +109,26 @@ def summarize(reports):
                 raise ValueError("replay controls invalid; do not attribute")
             if set(result["cells"]) != expected_cells:
                 raise ValueError("incomplete cross cells")
+            if fft_head and result["spectrum_sha256"] != first["cases"][case]["spectrum_sha256"]:
+                raise ValueError("FFT spectrum changed across replicates")
             for values in result["cells"].values():
                 stems = values["waveforms"] if magnitude else values
                 if set(stems) != set(report["config"]["instruments"]):
                     raise ValueError("incomplete stems")
+                if fft_head:
+                    for row in stems.values():
+                        coords = row["failed_channel_sample"]
+                        if (
+                            len(coords) != row["strict_failed_samples"]
+                            or len({tuple(c) for c in coords}) != len(coords)
+                            or any(
+                                len(c) != 2
+                                or c[0] not in (0, 1)
+                                or not 0 <= c[1] < result["samples"]
+                                for c in coords
+                            )
+                        ):
+                            raise ValueError("invalid failing sample coordinates")
     rows = []
     for case, results in first["cases"].items():
         for cell in results["cells"]:
@@ -135,7 +158,7 @@ def summarize(reports):
         "release_eligible": False,
         "note": "Observed repeatability on calibration only; not proof of a deterministic runtime fix. Compare differing environments separately.",
     }
-    if magnitude or frame_fft or cuts:
+    if magnitude or frame_fft or cuts or fft_head:
         result["cpu_model"] = first["environment"]["cpu_model"]
         result["primary_factors"] = first["primary_factors"]
     return result

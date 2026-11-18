@@ -6,6 +6,7 @@ the existing native-audio/TF-decoder control. No runtime implementation changes.
 """
 
 import argparse
+import contextlib
 import hashlib
 import itertools
 import json
@@ -20,7 +21,13 @@ import numpy as np
 import soundfile as sf
 import tensorflow as tf
 import torch
-from decoder_cuts import adjacent_waveform, decoder_logits, native_block_six
+from decoder_cuts import (
+    adjacent_waveform,
+    decoder_logits,
+    native_block_six,
+    tensorflow_heads,
+    widened_layers,
+)
 from diagnose_numerics import metrics, nchw, nhwc
 from parity_metrics import ATOL, RTOL, agreement
 from study_network_halves import graph_boundary, native_with_tf_decoder
@@ -516,6 +523,57 @@ def run_decoder_cuts(oracle, model, waveform):
     }
 
 
+def run_fft_head_case(oracle, model, waveform):
+    config = model.config
+    spectra, controls, frames_hash = frame_fft_spectra(oracle, waveform, config)
+    reference = oracle.separate(waveform)
+    cells = {}
+    frames = spectra["pt32"].shape[-2]
+    with widened_layers(net.decoder[5] for net in model.unets.values()):
+        baseline = separate(model, waveform)
+        for fft, spectrum in spectra.items():
+            # The graph head may use the feature for geometry. Its numeric input
+            # always comes from the actual Torch decoder window at the hook.
+            feature = native_magnitude(spectrum, config)[:1].copy()
+            for head in ("pt32", "tf32", "pt64_cast"):
+                with contextlib.ExitStack() as stack:
+                    if head == "tf32":
+                        stack.enter_context(tensorflow_heads(oracle, model, feature))
+                    elif head == "pt64_cast":
+                        stack.enter_context(
+                            widened_layers(net.output for net in model.unets.values())
+                        )
+                    stack.enter_context(patch("spleeterpt.audio.stft", return_value=spectrum))
+                    outputs = separate(model, waveform)
+                if (fft, head) == ("pt32", "pt32") and any(
+                    not torch.equal(baseline[s], v) for s, v in outputs.items()
+                ):
+                    raise ValueError("widened decoder baseline replay differs")
+                rows = {}
+                for stem, output in outputs.items():
+                    value, ref = output.numpy(), reference[stem]
+                    row = waveform_metrics(ref, value)
+                    r = ref.astype(np.float64)
+                    failures = np.abs(value - r) > ATOL + RTOL * np.abs(r)
+                    row["failed_channel_sample"] = np.argwhere(failures).tolist()
+                    rows[stem] = row
+                cells[f"fft_{fft}__head_{head}"] = rows
+    controls.update(native_waveform_replay_exact=True, tf_head_refeed_exact=True)
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": (frames + config.segment_frames - 1) // config.segment_frames,
+        "last_window_frames": (frames - 1) % config.segment_frames + 1,
+        "frame_sha256": frames_hash,
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "spectrum_sha256": {k: array_hash(v.numpy()) for k, v in spectra.items()},
+        "attribution_valid": all(controls.values()),
+        "controls": controls,
+        "cells": cells,
+    }
+
+
 def environment():
     cpu = Path("/proc/cpuinfo").read_text() if Path("/proc/cpuinfo").exists() else ""
     return {
@@ -562,6 +620,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--replicate", required=True)
     mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--fft-head", action="store_true", help="cross FFT and head with widened D6")
     mode.add_argument(
         "--decoder-cuts",
         action="store_true",
@@ -603,7 +662,9 @@ def main():
         raise ValueError("TF graph differs from historical reference")
     model = load_model(checkpoint).eval()
     waveforms = audio_cases(read_audio(source, model.config.sample_rate), model.config, True)
-    case_names = tuple(waveforms) if (args.frame_fft or args.decoder_cuts) else MUSIC_CASES
+    case_names = (
+        tuple(waveforms) if (args.frame_fft or args.decoder_cuts or args.fft_head) else MUSIC_CASES
+    )
     for name in case_names:
         if (
             array_hash(waveforms[name].numpy())
@@ -659,6 +720,14 @@ def main():
         report["primary_factors"] = "FFT backend x Hann coefficients x complex absolute value"
         del report["bridge_factors"]
         study_case = run_magnitude_case
+    elif args.fft_head:
+        report["primary_factors"] = "analysis RFFT x output head on widened D6"
+        report["fixed_network"] = "Torch encoder and decoder with FP64 sixth transposed convolution"
+        report["postlogit_scope"] = (
+            "native Torch masks, carrier from the selected RFFT, native inverse"
+        )
+        del report["bridge_factors"]
+        study_case = run_fft_head_case
     elif args.decoder_cuts:
         report["primary_factors"] = "decoder prefix by backend"
         report["fixed_network"] = (
