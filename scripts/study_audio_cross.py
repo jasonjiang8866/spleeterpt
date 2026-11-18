@@ -12,6 +12,7 @@ import json
 import os
 import platform
 import subprocess
+import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -19,6 +20,7 @@ import numpy as np
 import soundfile as sf
 import tensorflow as tf
 import torch
+from decoder_cuts import adjacent_waveform, decoder_logits, native_block_six
 from diagnose_numerics import metrics, nchw, nhwc
 from parity_metrics import ATOL, RTOL, agreement
 from study_network_halves import graph_boundary, native_with_tf_decoder
@@ -462,6 +464,58 @@ def run_frame_fft_case(oracle, model, waveform):
     }
 
 
+def run_decoder_cuts(oracle, model, waveform):
+    feed = {oracle.waveform: waveform.numpy().T}
+    magnitude, carrier = oracle.session.run(
+        [oracle.builder.spectrogram_feature, oracle.builder.stft_feature], feed
+    )
+    reference = oracle.separate(waveform)
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    cells, hashes, changes = {}, {}, {}
+    # A repeated clip has three model windows. Spool logits and keep just the
+    # adjacent waveform pair while measuring a switch; TF also allocates workspace.
+    with tempfile.TemporaryDirectory(prefix="spleeter-decoder-") as spool:
+        paths = decoder_logits(oracle, model, magnitude, Path(spool))
+        for left, right in (("tf", "torch"), ("torch", "tf")):
+            path = [right] + [f"{left}_prefix_{k}" for k in range(1, 7)] + [left]
+            changes[left] = []
+            previous = None
+            for mode in path:
+                value = np.load(paths[mode], mmap_mode="r")
+                outputs = oracle.session.run(oracle.outputs, {**feed, stacked: value})
+                current = {s: v.T for s, v in outputs.items()}
+                if mode not in cells:
+                    cells[mode] = {s: waveform_metrics(reference[s], v) for s, v in current.items()}
+                    hashes[mode] = array_hash(value)
+                if previous is not None:
+                    changes[left].append(
+                        {
+                            s: adjacent_waveform(previous[s], current[s], ref, ATOL, RTOL)
+                            for s, ref in reference.items()
+                        }
+                    )
+                previous = current
+    del value, outputs, previous, current
+    for mode, outputs in native_block_six(model, oracle, waveform).items():
+        cells[mode] = {s: waveform_metrics(reference[s], v.numpy()) for s, v in outputs.items()}
+    frames = carrier.shape[0]
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": len(magnitude),
+        "last_window_frames": (frames - 1) % model.config.segment_frames + 1,
+        "magnitude_sha256": array_hash(magnitude),
+        "carrier_sha256": array_hash(carrier),
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "logit_hashes": hashes,
+        "attribution_valid": True,
+        "controls": {"torch_stage_refeeds_exact": True, "tf_stage_refeeds_exact": True},
+        "cells": cells,
+        "adjacent_switches": changes,
+    }
+
+
 def environment():
     cpu = Path("/proc/cpuinfo").read_text() if Path("/proc/cpuinfo").exists() else ""
     return {
@@ -509,6 +563,11 @@ def main():
     parser.add_argument("--replicate", required=True)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
+        "--decoder-cuts",
+        action="store_true",
+        help="cross successive decoder blocks on frozen skips",
+    )
+    mode.add_argument(
         "--frame-fft", action="store_true", help="replay identical windowed frames through RFFT"
     )
     mode.add_argument(
@@ -544,7 +603,7 @@ def main():
         raise ValueError("TF graph differs from historical reference")
     model = load_model(checkpoint).eval()
     waveforms = audio_cases(read_audio(source, model.config.sample_rate), model.config, True)
-    case_names = tuple(waveforms) if args.frame_fft else MUSIC_CASES
+    case_names = tuple(waveforms) if (args.frame_fft or args.decoder_cuts) else MUSIC_CASES
     for name in case_names:
         if (
             array_hash(waveforms[name].numpy())
@@ -600,6 +659,16 @@ def main():
         report["primary_factors"] = "FFT backend x Hann coefficients x complex absolute value"
         del report["bridge_factors"]
         study_case = run_magnitude_case
+    elif args.decoder_cuts:
+        report["primary_factors"] = "decoder prefix by backend"
+        report["fixed_network"] = (
+            "Torch encoder on official TF magnitude; fixed raw skips and bottleneck"
+        )
+        report["postlogit_scope"] = (
+            "prefixes: TF carrier, masks and reconstruction; native variants: complete Torch path"
+        )
+        del report["bridge_factors"]
+        study_case = run_decoder_cuts
     elif args.frame_fft:
         report["primary_factors"] = "RFFT on identical pre-windowed FP32 frames"
         report["fixed_network"] = "fixed Torch encoder / TF decoder and complete native pipeline"

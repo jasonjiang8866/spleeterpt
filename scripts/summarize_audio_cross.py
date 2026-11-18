@@ -14,6 +14,7 @@ def summarize(reports):
         first["primary_factors"] == "FFT backend x Hann coefficients x complex absolute value"
     )
     frame_fft = first["primary_factors"] == "RFFT on identical pre-windowed FP32 frames"
+    cuts = first["primary_factors"] == "decoder prefix by backend"
     expected_cases = {"music_original", "music_multiwindow"}
     expected_cells = {
         f"magnitude_{a}__postlogit_{b}__carrier_{c}__inverse_{d}"
@@ -42,6 +43,12 @@ def summarize(reports):
             "pt_rfft_matches_native_stft",
             "native_waveform_replay_exact",
         }
+    if cuts:
+        expected_cases.update(("music_short", "silence", "boundary_impulses"))
+        expected_cells = {"tf", "torch", "native", "native_tf_conv6", "native_wide_conv6"} | {
+            f"{backend}_prefix_{k}" for backend in ("torch", "tf") for k in range(1, 7)
+        }
+        expected_controls = {"torch_stage_refeeds_exact", "tf_stage_refeeds_exact"}
     for report in reports:
         for field in (
             "schema_version",
@@ -59,7 +66,10 @@ def summarize(reports):
         ):
             if report[field] != first[field]:
                 raise ValueError(f"replicate provenance mismatch: {field}")
-        if not (magnitude or frame_fft) and report["bridge_factors"] != first["bridge_factors"]:
+        if (
+            not (magnitude or frame_fft or cuts)
+            and report["bridge_factors"] != first["bridge_factors"]
+        ):
             raise ValueError("replicate provenance mismatch: bridge_factors")
         if report["holdouts_used"] or report["release_eligible"]:
             raise ValueError("diagnostic scope violation")
@@ -75,6 +85,11 @@ def summarize(reports):
             ):
                 if result[field] != first["cases"][case][field]:
                     raise ValueError(f"replicate input geometry mismatch: {case}/{field}")
+            if cuts and any(
+                result[field] != first["cases"][case][field]
+                for field in ("magnitude_sha256", "carrier_sha256", "reference_sha256")
+            ):
+                raise ValueError("decoder cut replicate input or reference mismatch")
             if frame_fft and any(
                 result[field] != first["cases"][case][field]
                 for field in ("frame_sha256", "reference_sha256")
@@ -120,7 +135,7 @@ def summarize(reports):
         "release_eligible": False,
         "note": "Observed repeatability on calibration only; not proof of a deterministic runtime fix. Compare differing environments separately.",
     }
-    if magnitude or frame_fft:
+    if magnitude or frame_fft or cuts:
         result["cpu_model"] = first["environment"]["cpu_model"]
         result["primary_factors"] = first["primary_factors"]
     return result
