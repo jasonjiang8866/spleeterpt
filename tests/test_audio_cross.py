@@ -104,3 +104,16 @@ def test_frame_fft_replays_stft_on_identical_windowed_frames(cross, tiny_config,
     assert set(spectra) == {"tf32", "pt32", "pt64_cast"}
     assert all(spec.dtype == torch.complex64 for spec in spectra.values())
     assert torch.equal(spectra["pt32"], stft(waveform, tiny_config, inference=True))
+
+
+def test_decoder_switch_counts_distinct_fixed_and_introduced_samples(cross):
+    ref = np.zeros((1, 3), dtype=np.float32)
+    before = np.array([[0.5, 0, -0.5]], dtype=np.float32)
+    after = np.array([[0, 0.25, -0.5]], dtype=np.float32)
+    change = cross.adjacent_waveform(before, after, ref, 0.1, 0)
+    assert change == {
+        "fixed": 1,
+        "introduced": 1,
+        "max_waveform_change": 0.5,
+        "max_change_over_tolerance": 5.0,
+    }
