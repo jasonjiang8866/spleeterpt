@@ -13,6 +13,7 @@ import os
 import platform
 import subprocess
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 import soundfile as sf
@@ -365,6 +366,102 @@ def run_magnitude_case(oracle, model, waveform):
     }
 
 
+def frame_fft_spectra(oracle, waveform, config):
+    """Give both RFFTs the same FP32 buffer and verify both enclosing STFTs."""
+    n_fft, hop = config.n_fft, config.hop_length
+    window = torch.hann_window(n_fft, dtype=waveform.dtype)
+    padded = torch.nn.functional.pad(waveform, (n_fft, 0))
+    count = (padded.shape[-1] + hop - 1) // hop
+    tail = n_fft + (count - 1) * hop - padded.shape[-1]
+    frames = (
+        torch.nn.functional.pad(padded, (0, tail)).unfold(-1, n_fft, hop) * window
+    ).contiguous()
+    with oracle.graph.as_default():
+        tf_audio = tf.pad(tf.transpose(oracle.waveform), [[0, 0], [n_fft, 0]])
+        tf_hann = tf.constant(window.numpy())
+        framed = tf.signal.frame(tf_audio, n_fft, hop, pad_end=True) * tf_hann
+        shared = tf.compat.v1.placeholder(tf.float32, [2, None, n_fft])
+        tf_fft = tf.signal.rfft(shared, [n_fft])
+        enclosing = tf.signal.stft(
+            tf_audio,
+            n_fft,
+            hop,
+            fft_length=n_fft,
+            pad_end=True,
+            window_fn=lambda length, dtype: tf_hann,
+        )
+    tf_frames, tf_stft, tf_result = oracle.session.run(
+        [framed, enclosing, tf_fft], {oracle.waveform: waveform.numpy().T, shared: frames.numpy()}
+    )
+    pt_result = torch.fft.rfft(frames, dim=-1)
+    controls = {
+        "windowed_frame_bytes_equal": array_hash(tf_frames) == array_hash(frames.numpy()),
+        "tf_rfft_matches_tf_stft": np.array_equal(tf_result, tf_stft),
+        "pt_rfft_matches_native_stft": torch.equal(
+            pt_result, stft(waveform, config, inference=True)
+        ),
+    }
+    if not all(controls.values()):
+        raise ValueError(f"FFT boundary replay failed: {controls}")
+    # Widen the transform only. Quantize to complex64 before magnitude, carrier or network use.
+    spectra = {
+        "pt32": pt_result,
+        "tf32": torch.from_numpy(tf_result),
+        "pt64_cast": torch.fft.rfft(frames.double(), dim=-1).to(torch.complex64),
+    }
+    return spectra, controls, array_hash(frames.numpy())
+
+
+def run_frame_fft_case(oracle, model, waveform):
+    config = model.config
+    spectra, controls, frames_hash = frame_fft_spectra(oracle, waveform, config)
+    reference = oracle.separate(waveform)
+    baseline = separate(model, waveform)
+    feed = {oracle.waveform: waveform.numpy().T}
+    feature = oracle.builder.spectrogram_feature
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    spectra_metrics, cells = {}, {}
+    for name, spectrum in spectra.items():
+        magnitude = native_magnitude(spectrum, config)
+        logits = fixed_decoder_logits(oracle, model, magnitude)
+        outputs = oracle.session.run(oracle.outputs, {**feed, feature: magnitude, stacked: logits})
+        cells[f"fixed_{name}"] = {
+            s: waveform_metrics(reference[s], outputs[s].T) for s in config.instruments
+        }
+        # Use the real inference entry point; replace its analysis spectrum for this call only.
+        with patch("spleeterpt.audio.stft", return_value=spectrum):
+            native = separate(model, waveform)
+        if name == "pt32":
+            controls["native_waveform_replay_exact"] = all(
+                torch.equal(baseline[s], native[s]) for s in config.instruments
+            )
+            if not controls["native_waveform_replay_exact"]:
+                raise ValueError("native spectrum injection changed the waveform")
+        cells[f"native_{name}"] = {
+            s: waveform_metrics(reference[s], native[s].numpy()) for s in config.instruments
+        }
+        spectra_metrics[name] = {
+            "sha256": array_hash(spectrum.numpy()),
+            "vs_tf32": metrics(spectra["tf32"].numpy(), spectrum.numpy()),
+            "magnitude_sha256": array_hash(magnitude),
+            "fixed_logits_sha256": array_hash(logits),
+        }
+    frames = spectra["pt32"].shape[-2]
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": (frames + config.segment_frames - 1) // config.segment_frames,
+        "last_window_frames": (frames - 1) % config.segment_frames + 1,
+        "frame_sha256": frames_hash,
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "spectra": spectra_metrics,
+        "controls": controls,
+        "attribution_valid": all(controls.values()),
+        "cells": cells,
+    }
+
+
 def environment():
     cpu = Path("/proc/cpuinfo").read_text() if Path("/proc/cpuinfo").exists() else ""
     return {
@@ -410,7 +507,11 @@ def main():
     parser.add_argument("--upstream-root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--replicate", required=True)
-    parser.add_argument(
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--frame-fft", action="store_true", help="replay identical windowed frames through RFFT"
+    )
+    mode.add_argument(
         "--magnitude-breakdown",
         action="store_true",
         help="cross FFT, Hann coefficients and complex magnitude on fixed downstream TF audio",
@@ -443,7 +544,8 @@ def main():
         raise ValueError("TF graph differs from historical reference")
     model = load_model(checkpoint).eval()
     waveforms = audio_cases(read_audio(source, model.config.sample_rate), model.config, True)
-    for name in MUSIC_CASES:
+    case_names = tuple(waveforms) if args.frame_fft else MUSIC_CASES
+    for name in case_names:
         if (
             array_hash(waveforms[name].numpy())
             != history["case_provenance"][name]["decoded_pcm_sha256"]
@@ -498,9 +600,17 @@ def main():
         report["primary_factors"] = "FFT backend x Hann coefficients x complex absolute value"
         del report["bridge_factors"]
         study_case = run_magnitude_case
+    elif args.frame_fft:
+        report["primary_factors"] = "RFFT on identical pre-windowed FP32 frames"
+        report["fixed_network"] = "fixed Torch encoder / TF decoder and complete native pipeline"
+        report["postlogit_scope"] = (
+            "fixed cells use official TF carrier and reconstruction; native cells replace the full analysis spectrum"
+        )
+        del report["bridge_factors"]
+        study_case = run_frame_fft_case
     args.output.parent.mkdir(parents=True, exist_ok=True)
     try:
-        for name in MUSIC_CASES:
+        for name in case_names:
             report["cases"][name] = study_case(oracle, model, waveforms[name])
             args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
             print(

@@ -86,3 +86,21 @@ def test_native_audio_replay_is_bitwise_equal(cross, tiny_config, samples, stems
         actual = istft(masked, config, samples)
         for index, stem in enumerate(config.instruments):
             assert torch.equal(actual[index], expected[stem])
+
+
+@pytest.mark.parametrize("samples", [31, 128, 4097])
+def test_frame_fft_replays_stft_on_identical_windowed_frames(cross, tiny_config, samples):
+    from types import SimpleNamespace
+
+    tf = cross.tf
+    g = tf.Graph()
+    with g.as_default():
+        audio = tf.compat.v1.placeholder(tf.float32, [None, 2])
+    waveform = torch.randn(2, samples, generator=torch.Generator().manual_seed(71))
+    with tf.compat.v1.Session(graph=g) as session:
+        oracle = SimpleNamespace(graph=g, waveform=audio, session=session)
+        spectra, controls, digest = cross.frame_fft_spectra(oracle, waveform, tiny_config)
+    assert all(controls.values()) and len(digest) == 64
+    assert set(spectra) == {"tf32", "pt32", "pt64_cast"}
+    assert all(spec.dtype == torch.complex64 for spec in spectra.values())
+    assert torch.equal(spectra["pt32"], stft(waveform, tiny_config, inference=True))

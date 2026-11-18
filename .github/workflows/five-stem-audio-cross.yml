@@ -9,6 +9,7 @@ on:
         options:
           - audio-cross
           - magnitude-breakdown
+          - frame-fft
 permissions:
   contents: read
 concurrency:
@@ -47,6 +48,7 @@ jobs:
           case "$STUDY" in
             audio-cross) flags=() ;;
             magnitude-breakdown) flags=(--magnitude-breakdown) ;;
+            frame-fft) flags=(--frame-fft) ;;
             *) exit 2 ;;
           esac
           mkdir -p /tmp/audio-cross

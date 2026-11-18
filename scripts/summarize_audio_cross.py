@@ -13,6 +13,8 @@ def summarize(reports):
     magnitude = (
         first["primary_factors"] == "FFT backend x Hann coefficients x complex absolute value"
     )
+    frame_fft = first["primary_factors"] == "RFFT on identical pre-windowed FP32 frames"
+    expected_cases = {"music_original", "music_multiwindow"}
     expected_cells = {
         f"magnitude_{a}__postlogit_{b}__carrier_{c}__inverse_{d}"
         for a, b, c, d in itertools.product(("tf", "pt"), repeat=4)
@@ -29,6 +31,17 @@ def summarize(reports):
         "tf_post_refeed_pt_tf_exact",
         "tf_post_refeed_pt_pt_exact",
     }
+    if frame_fft:
+        expected_cases.update(("music_short", "silence", "boundary_impulses"))
+        expected_cells = {
+            f"{path}_{fft}" for path in ("fixed", "native") for fft in ("pt32", "tf32", "pt64_cast")
+        }
+        expected_controls = {
+            "windowed_frame_bytes_equal",
+            "tf_rfft_matches_tf_stft",
+            "pt_rfft_matches_native_stft",
+            "native_waveform_replay_exact",
+        }
     for report in reports:
         for field in (
             "schema_version",
@@ -46,11 +59,11 @@ def summarize(reports):
         ):
             if report[field] != first[field]:
                 raise ValueError(f"replicate provenance mismatch: {field}")
-        if not magnitude and report["bridge_factors"] != first["bridge_factors"]:
+        if not (magnitude or frame_fft) and report["bridge_factors"] != first["bridge_factors"]:
             raise ValueError("replicate provenance mismatch: bridge_factors")
         if report["holdouts_used"] or report["release_eligible"]:
             raise ValueError("diagnostic scope violation")
-        if set(report["cases"]) != {"music_original", "music_multiwindow"}:
+        if set(report["cases"]) != expected_cases:
             raise ValueError("incomplete calibration cases")
         for case, result in report["cases"].items():
             for field in (
@@ -62,6 +75,11 @@ def summarize(reports):
             ):
                 if result[field] != first["cases"][case][field]:
                     raise ValueError(f"replicate input geometry mismatch: {case}/{field}")
+            if frame_fft and any(
+                result[field] != first["cases"][case][field]
+                for field in ("frame_sha256", "reference_sha256")
+            ):
+                raise ValueError("frame FFT replicate input or reference mismatch")
             if result["attribution_valid"] is not True or (
                 not magnitude
                 and any(result["controls"].get(k) is not True for k in expected_controls)
@@ -102,7 +120,7 @@ def summarize(reports):
         "release_eligible": False,
         "note": "Observed repeatability on calibration only; not proof of a deterministic runtime fix. Compare differing environments separately.",
     }
-    if magnitude:
+    if magnitude or frame_fft:
         result["cpu_model"] = first["environment"]["cpu_model"]
         result["primary_factors"] = first["primary_factors"]
     return result
