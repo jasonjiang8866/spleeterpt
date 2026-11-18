@@ -101,9 +101,8 @@ The hosted Intel runner matched all 80 waveform hashes from the earlier
 
 Holding Torch Hann fixed and switching to the TF FFT path brought all ten
 fixed-decoder outputs inside tolerance on both hosted CPUs. Replacing only
-the Hann coefficients increased AMD failures from 53 to 107. The next
-intervention is to compare identical, pre-windowed FP32 frames across the
-two FFT paths on the failing AMD cases, then test a Torch-only candidate.
+the Hann coefficients increased AMD failures from 53 to 107. The [shared-frame RFFT follow-up](five-stem-frame-fft-20261118.md) tests
+identical frames and a Torch-only candidate on the failing AMD cases.
 Any candidate still needs all five calibration inputs through the complete
 native decoder and waveform reconstruction before GPU and holdout evaluation.
 
