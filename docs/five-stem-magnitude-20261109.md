@@ -52,11 +52,33 @@ The FFT and Hann factors both warrant checking on a host that reproduces
 the earlier failures. Native Torch decoder parity and independent mixed-piano
 quality validation remain separate release gates. The holdouts were unused.
 
+## Cross-host comparison of archived native cells
+
+The six AMD reports and three Intel reports contain two common cells. Each
+uses one framework throughout the magnitude frontend and fixes the Torch
+encoder, official TF decoder, carrier and reconstruction. The official source,
+checkpoint, decoded PCM, configuration and pointwise thresholds match.
+
+| Frontend | Magnitude hash on AMD vs Intel | Fixed-network logit hash on AMD vs Intel | Failing waveform scalars on AMD / Intel |
+|---|---|---|---:|
+| TF | Identical on both inputs | Different on both inputs | 0 / 0 |
+| Torch | Different on both inputs | Different on both inputs | 68 / 0 |
+
+Counts sum the original and repeated clips once per configuration. With
+identical TF magnitude, drift is already visible at the fixed network output.
+With Torch magnitude there is an additional upstream difference. Hash
+comparisons locate observed differences but cannot assign them to a particular
+FFT or convolution kernel. The AMD archive contains only the native frontend
+pairs, so its hashes cannot resolve the crossed FFT/Hann combinations.
+
 ## Reproduction
 
 Use the pinned CPU/release dependency groups, official weights and upstream
 checkout described in the [audio cross setup](five-stem-audio-cross-20261106.md#reproduction).
-Run each replicate in a fresh Python process.
+Run each replicate in a fresh Python process. The manual
+`Five-stem CPU audio cross study` workflow accepts `study=magnitude-breakdown`
+and uploads the three raw reports with a per-stem repeat summary. Check the
+recorded CPU model before interpreting a hosted run as an AMD reproduction.
 
 ```bash
 uv run --no-sync python scripts/study_audio_cross.py \

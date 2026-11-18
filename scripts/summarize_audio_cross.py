@@ -10,10 +10,17 @@ def summarize(reports):
     if len(reports) < 3 or len({r["replicate"] for r in reports}) != len(reports):
         raise ValueError("need at least three distinct replicate IDs")
     first = reports[0]
+    magnitude = (
+        first["primary_factors"] == "FFT backend x Hann coefficients x complex absolute value"
+    )
     expected_cells = {
         f"magnitude_{a}__postlogit_{b}__carrier_{c}__inverse_{d}"
         for a, b, c, d in itertools.product(("tf", "pt"), repeat=4)
     }
+    if magnitude:
+        expected_cells = {
+            f"fft_{a}__hann_{b}__abs_{c}" for a, b, c in itertools.product(("tf", "pt"), repeat=3)
+        }
     expected_controls = {
         "official_masked_refeed_exact",
         "native_hybrid_replay_exact",
@@ -36,10 +43,11 @@ def summarize(reports):
             "fixed_network",
             "primary_factors",
             "postlogit_scope",
-            "bridge_factors",
         ):
             if report[field] != first[field]:
                 raise ValueError(f"replicate provenance mismatch: {field}")
+        if not magnitude and report["bridge_factors"] != first["bridge_factors"]:
+            raise ValueError("replicate provenance mismatch: bridge_factors")
         if report["holdouts_used"] or report["release_eligible"]:
             raise ValueError("diagnostic scope violation")
         if set(report["cases"]) != {"music_original", "music_multiwindow"}:
@@ -54,20 +62,23 @@ def summarize(reports):
             ):
                 if result[field] != first["cases"][case][field]:
                     raise ValueError(f"replicate input geometry mismatch: {case}/{field}")
-            if not result["attribution_valid"] or any(
-                result["controls"].get(k) is not True for k in expected_controls
+            if result["attribution_valid"] is not True or (
+                not magnitude
+                and any(result["controls"].get(k) is not True for k in expected_controls)
             ):
                 raise ValueError("replay controls invalid; do not attribute")
             if set(result["cells"]) != expected_cells:
                 raise ValueError("incomplete cross cells")
             for values in result["cells"].values():
-                if set(values) != set(report["config"]["instruments"]):
+                stems = values["waveforms"] if magnitude else values
+                if set(stems) != set(report["config"]["instruments"]):
                     raise ValueError("incomplete stems")
     rows = []
     for case, results in first["cases"].items():
-        for cell, stems in results["cells"].items():
-            for stem in stems:
-                values = [r["cases"][case]["cells"][cell][stem] for r in reports]
+        for cell in results["cells"]:
+            cells = [r["cases"][case]["cells"][cell] for r in reports]
+            for stem in first["config"]["instruments"]:
+                values = [(c["waveforms"] if magnitude else c)[stem] for c in cells]
                 rows.append(
                     {
                         "case": case,
@@ -82,7 +93,7 @@ def summarize(reports):
                         "bitwise_repeatable": len({v["output_sha256"] for v in values}) == 1,
                     }
                 )
-    return {
+    result = {
         "replicates": [r["replicate"] for r in reports],
         "identical_recorded_environment": all(
             r["environment"] == first["environment"] for r in reports
@@ -91,6 +102,10 @@ def summarize(reports):
         "release_eligible": False,
         "note": "Observed repeatability on calibration only; not proof of a deterministic runtime fix. Compare differing environments separately.",
     }
+    if magnitude:
+        result["cpu_model"] = first["environment"]["cpu_model"]
+        result["primary_factors"] = first["primary_factors"]
+    return result
 
 
 def main():

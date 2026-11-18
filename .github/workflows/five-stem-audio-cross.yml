@@ -1,6 +1,14 @@
 name: Five-stem CPU audio cross study
 on:
   workflow_dispatch:
+    inputs:
+      study:
+        description: CPU calibration study
+        type: choice
+        default: audio-cross
+        options:
+          - audio-cross
+          - magnitude-breakdown
 permissions:
   contents: read
 concurrency:
@@ -33,10 +41,17 @@ jobs:
           git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
           uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
       - name: Three independent Python processes on the same runner
+        env:
+          STUDY: ${{ inputs.study || 'audio-cross' }}
         run: |
+          case "$STUDY" in
+            audio-cross) flags=() ;;
+            magnitude-breakdown) flags=(--magnitude-breakdown) ;;
+            *) exit 2 ;;
+          esac
           mkdir -p /tmp/audio-cross
           for repeat in 1 2 3; do
-            uv run --no-sync python scripts/study_audio_cross.py \
+            uv run --no-sync python scripts/study_audio_cross.py "${flags[@]}" \
               --upstream-root /tmp/upstream --weights /tmp/weights \
               --replicate "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${repeat}" \
               --output "/tmp/audio-cross/repeat-${repeat}.json"
@@ -46,6 +61,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: audio-cross-${{ github.run_id }}-${{ github.run_attempt }}
+          name: ${{ inputs.study || 'audio-cross' }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/audio-cross/*.json
           if-no-files-found: error
