@@ -117,3 +117,30 @@ def test_decoder_switch_counts_distinct_fixed_and_introduced_samples(cross):
         "max_waveform_change": 0.5,
         "max_change_over_tolerance": 5.0,
     }
+
+
+def test_native_cpu_option_reproduces_widened_hooks(cross, tiny_config):
+    from unittest.mock import patch
+
+    config = replace(tiny_config, instruments=tiny_config.preset(5).instruments)
+    model = Spleeter(config).eval()
+    waveform = torch.randn(2, 4097, generator=torch.Generator().manual_seed(778))
+    baseline = separate(model, waveform)
+    from types import SimpleNamespace
+
+    graph = cross.tf.Graph()
+    with graph.as_default():
+        audio = cross.tf.compat.v1.placeholder(cross.tf.float32, [None, 2])
+    with cross.tf.compat.v1.Session(graph=graph) as session:
+        oracle = SimpleNamespace(graph=graph, waveform=audio, session=session)
+        spectra, _, _ = cross.frame_fft_spectra(oracle, waveform, config)
+    with torch.inference_mode(), ExitStack() as stack:
+        for net in model.unets.values():
+            stack.enter_context(cross.widened_layers((net.decoder[-1], net.output)))
+        stack.enter_context(patch("spleeterpt.audio.stft", return_value=spectra["pt64_cast"]))
+        reference = separate(model, waveform)
+    candidate = separate(model, waveform, five_stem_cpu_precision=True)
+    repeated = separate(model, waveform)
+    for stem in config.instruments:
+        assert torch.equal(candidate[stem], reference[stem])
+        assert torch.equal(repeated[stem], baseline[stem])
