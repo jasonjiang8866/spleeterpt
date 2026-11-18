@@ -140,3 +140,37 @@ def test_magnitude_archive_preserves_repeated_drums_failure(summary):
     assert all(row["case"] == "music_multiwindow" and row["stem"] == "drums" for row in failures)
     assert all(row["strict_failed_samples"] == [1, 1, 1] for row in failures)
     assert not result["release_eligible"]
+
+
+def test_fft_head_rejects_duplicate_coordinates_even_when_count_matches(summary, reports):
+    for report in reports:
+        report["primary_factors"] = "analysis RFFT x output head on widened D6"
+        case = report["cases"]["music_original"]
+        row = next(iter(case["cells"].values()))["piano"]
+        row.update(failed_channel_sample=[[0, 4], [0, 4]], strict_failed_samples=2)
+        implementations = ("pt32", "tf32", "pt64_cast")
+        case["cells"] = {
+            f"fft_{a}__head_{b}": {"piano": row}
+            for a, b in itertools.product(implementations, repeat=2)
+        }
+        case["controls"] = dict.fromkeys(
+            (
+                "tf_head_refeed_exact",
+                "native_waveform_replay_exact",
+                "pt_rfft_matches_native_stft",
+                "tf_rfft_matches_tf_stft",
+                "windowed_frame_bytes_equal",
+            ),
+            True,
+        )
+        case.update(
+            frame_sha256="frame",
+            reference_sha256={"piano": "ref"},
+            spectrum_sha256=dict.fromkeys(implementations, "spectrum"),
+        )
+        report["cases"] = dict.fromkeys(
+            ("music_original", "music_multiwindow", "music_short", "silence", "boundary_impulses"),
+            case,
+        )
+    with pytest.raises(ValueError, match="invalid failing sample coordinates"):
+        summary(reports)
