@@ -71,6 +71,50 @@ comparisons locate observed differences but cannot assign them to a particular
 FFT or convolution kernel. The AMD archive contains only the native frontend
 pairs, so its hashes cannot resolve the crossed FFT/Hann combinations.
 
+## Hosted CPU reproduction, 2026-11-18
+
+Two separately provisioned GitHub runners ran the eight-cell matrix at commit
+`7582bd39129910e5349df30a4e8b53dd5a30eaaf`. Each ran three fresh
+Python 3.12.16 processes with the same pinned weights and PCM, Torch 2.8.0+cpu,
+TF 2.18.1, and NumPy 2.0.2. All 80 waveform hashes repeated within each
+runner. The two absolute-value implementations gave identical magnitude,
+logit and waveform hashes within every FFT/Hann cell. The table therefore
+counts each failing channel/sample scalar once per input, without multiplying
+by repeats or by the absolute-value implementation.
+
+| FFT | Hann | Intel 6975P-C original / repeated failures | AMD EPYC 7763 original / repeated failures | AMD worst tolerance ratio |
+|---|---|---:|---:|---:|
+| TF | TF | 0 / 0 | 0 / 0 | 0.913844 |
+| TF | Torch | 0 / 0 | 0 / 0 | 0.910640 |
+| Torch | TF | 0 / 1 | 0 / 107 | 1.399757 |
+| Torch | Torch | 0 / 0 | 9 / 44 | 1.135836 |
+
+On the EPYC 7763, the native Torch magnitude frontend failed original bass
+(9), repeated drums (11), and repeated bass (33). These are the same three
+case/stem failures seen on the historical EPYC 9V74 (25, 17 and 26).
+For each input, both native TF and native Torch magnitude hashes matched
+between the AMD studies, while their respective fixed-network logit hashes
+differed. This reproduces the failing cases and narrows where the counts
+start to diverge. It leaves the cause of the logit differences open.
+The hosted Intel runner matched all 80 waveform hashes from the earlier
+8573C study, including the one repeated-drums scalar with Torch FFT and TF Hann.
+
+Holding Torch Hann fixed and switching to the TF FFT path brought all ten
+fixed-decoder outputs inside tolerance on both hosted CPUs. Replacing only
+the Hann coefficients increased AMD failures from 53 to 107. The next
+intervention is to compare identical, pre-windowed FP32 frames across the
+two FFT paths on the failing AMD cases, then test a Torch-only candidate.
+Any candidate still needs all five calibration inputs through the complete
+native decoder and waveform reconstruction before GPU and holdout evaluation.
+
+| Runner | Actions run | Raw ZIP and SHA-256 |
+|---|---|---|
+| Intel Xeon 6975P-C, AVX512 | [44300726283](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44300726283) | [Intel evidence](results/magnitude-20261118/intel.zip) `747e08fb7169936e72e086cb4f73acf969058a9d66ced58ecf827fc7ec15a0f1` |
+| AMD EPYC 7763, AVX2 | [44301560507](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44301560507) | [AMD evidence](results/magnitude-20261118/amd.zip) `6266ab9c2ad97d429c02f0e7273fe6b2152c2fa5348e2529a85c0753641fcce4` |
+
+Each checked-in ZIP matches the Actions artifact digest and contains the
+three raw reports and their independently reproducible summary.
+
 ## Reproduction
 
 Use the pinned CPU/release dependency groups, official weights and upstream
