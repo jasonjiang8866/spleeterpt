@@ -74,3 +74,7 @@ measures cumulative decoder drift while avoiding the already-tested isolated
 second transposed convolution. Test the smallest effective pure Torch
 candidate through all 25 complete waveform comparisons. CUDA, piano holdouts
 and weight distribution remain later release gates.
+
+The [decoder block follow-up](five-stem-decoder-cuts-20261118.md) traces both
+directions of this cut and tests the sixth transposed convolution in the full
+native path on Intel and AMD.
