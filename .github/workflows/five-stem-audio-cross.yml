@@ -1,16 +1,6 @@
 name: Five-stem CPU audio cross study
 on:
   workflow_dispatch:
-    inputs:
-      study:
-        description: CPU calibration study
-        type: choice
-        default: audio-cross
-        options:
-          - audio-cross
-          - magnitude-breakdown
-          - frame-fft
-          - decoder-cuts
 permissions:
   contents: read
 concurrency:
@@ -18,8 +8,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   study:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
     env:
       TF_ENABLE_ONEDNN_OPTS: '0'
       TF_CPP_MIN_LOG_LEVEL: '2'
@@ -28,7 +18,14 @@ jobs:
       TF_NUM_INTRAOP_THREADS: '2'
       TF_NUM_INTEROP_THREADS: '2'
     steps:
+      - name: Confirm Intel host
+        run: |
+          lscpu | sed -n '/Model name:/p'
+          grep -qm1 GenuineIntel /proc/cpuinfo
       - uses: actions/checkout@v4
+        with:
+          ref: e63c8987fdf18a30c8d85785f1d680e08bc9430d
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12.16'
@@ -42,29 +39,11 @@ jobs:
           git clone -q https://github.com/deezer/spleeter.git /tmp/upstream
           git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
           uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
-      - name: Three independent Python processes on the same runner
-        env:
-          STUDY: ${{ inputs.study || 'audio-cross' }}
-        run: |
-          case "$STUDY" in
-            audio-cross) flags=() ;;
-            magnitude-breakdown) flags=(--magnitude-breakdown) ;;
-            frame-fft) flags=(--frame-fft) ;;
-            decoder-cuts) flags=(--decoder-cuts) ;;
-            *) exit 2 ;;
-          esac
-          mkdir -p /tmp/audio-cross
-          for repeat in 1 2 3; do
-            uv run --no-sync python scripts/study_audio_cross.py "${flags[@]}" \
-              --upstream-root /tmp/upstream --weights /tmp/weights \
-              --replicate "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${repeat}" \
-              --output "/tmp/audio-cross/repeat-${repeat}.json"
-          done
-          uv run --no-sync python scripts/summarize_audio_cross.py \
-            /tmp/audio-cross/repeat-*.json --output /tmp/audio-cross/summary.json
+      - name: Measure the frozen native CPU separator
+        run: uv run --no-sync python scripts/verify_native_five_stem.py --weights /tmp/weights --upstream-root /tmp/upstream --output /tmp/native.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ inputs.study || 'audio-cross' }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/audio-cross/*.json
-          if-no-files-found: error
+          name: native-cpu-intel
+          path: /tmp/native.json
+          if-no-files-found: warn
