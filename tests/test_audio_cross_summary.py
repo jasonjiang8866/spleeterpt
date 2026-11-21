@@ -3,6 +3,8 @@
 import copy
 import importlib
 import itertools
+import json
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -120,3 +122,55 @@ def test_same_process_label_cannot_count_as_replication(summary, reports):
 def test_environment_difference_remains_explicit(summary, reports):
     reports[1]["environment"] = {"cpu": "different"}
     assert not summary(reports)["identical_recorded_environment"]
+
+
+def test_magnitude_archive_preserves_repeated_drums_failure(summary):
+    archive = Path(__file__).resolve().parents[1] / "docs/results/magnitude-20261109/evidence.zip"
+    with zipfile.ZipFile(archive) as zipped:
+        reports = [json.loads(zipped.read(f"cpu-{i}.json")) for i in (1, 2, 3)]
+    result = summary(reports)
+    assert len(result["rows"]) == 80
+    assert result["identical_recorded_environment"]
+    assert all(row["bitwise_repeatable"] for row in result["rows"])
+    failures = [row for row in result["rows"] if not row["all_replicates_passed"]]
+    assert {row["cell"] for row in failures} == {
+        "fft_pt__hann_tf__abs_tf",
+        "fft_pt__hann_tf__abs_pt",
+    }
+    assert all(row["case"] == "music_multiwindow" and row["stem"] == "drums" for row in failures)
+    assert all(row["strict_failed_samples"] == [1, 1, 1] for row in failures)
+    assert not result["release_eligible"]
+
+
+def test_fft_head_rejects_duplicate_coordinates_even_when_count_matches(summary, reports):
+    for report in reports:
+        report["primary_factors"] = "analysis RFFT x output head on widened D6"
+        case = report["cases"]["music_original"]
+        row = next(iter(case["cells"].values()))["piano"]
+        row.update(failed_channel_sample=[[0, 4], [0, 4]], strict_failed_samples=2)
+        implementations = ("pt32", "tf32", "pt64_cast")
+        case["cells"] = {
+            f"fft_{a}__head_{b}": {"piano": row}
+            for a, b in itertools.product(implementations, repeat=2)
+        }
+        case["controls"] = dict.fromkeys(
+            (
+                "tf_head_refeed_exact",
+                "native_waveform_replay_exact",
+                "pt_rfft_matches_native_stft",
+                "tf_rfft_matches_tf_stft",
+                "windowed_frame_bytes_equal",
+            ),
+            True,
+        )
+        case.update(
+            frame_sha256="frame",
+            reference_sha256={"piano": "ref"},
+            spectrum_sha256=dict.fromkeys(implementations, "spectrum"),
+        )
+        report["cases"] = dict.fromkeys(
+            ("music_original", "music_multiwindow", "music_short", "silence", "boundary_impulses"),
+            case,
+        )
+    with pytest.raises(ValueError, match="invalid failing sample coordinates"):
+        summary(reports)

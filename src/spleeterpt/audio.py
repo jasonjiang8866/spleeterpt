@@ -11,7 +11,7 @@ from torch.nn import functional as F
 from .config import ModelConfig
 
 
-def stft(waveform: torch.Tensor, config: ModelConfig, *, inference=False):
+def stft(waveform: torch.Tensor, config: ModelConfig, *, inference=False, wide_fft=False):
     """[..., samples] -> [..., frames, frequencies]. Float32/float64 only."""
     if waveform.shape[-1] == 0:
         raise ValueError("audio must not be empty")
@@ -25,6 +25,10 @@ def stft(waveform: torch.Tensor, config: ModelConfig, *, inference=False):
     shape = waveform.shape[:-1]
     flat = waveform.reshape(-1, waveform.shape[-1])
     window = torch.hann_window(config.n_fft, dtype=flat.dtype, device=flat.device)
+    if wide_fft:
+        frames = flat.unfold(-1, config.n_fft, config.hop_length) * window
+        spec = torch.fft.rfft(frames.double()).to(torch.complex64)
+        return spec.reshape(*shape, *spec.shape[-2:])
     spec = torch.stft(
         flat, config.n_fft, config.hop_length, window=window, center=False, return_complex=True
     ).transpose(-2, -1)
@@ -75,7 +79,7 @@ def read_audio(path, sample_rate):
 
 
 @torch.inference_mode()
-def separate(model, waveform: torch.Tensor):
+def separate(model, waveform: torch.Tensor, *, five_stem_cpu_precision=False):
     """Separate stereo audio [2, samples] in bounded-size network windows.
 
     The full STFT is resident on the model device; this is not streaming inference.
@@ -86,8 +90,15 @@ def separate(model, waveform: torch.Tensor):
         raise ValueError("audio contains NaN/Inf")
     config = model.config
     device = next(model.parameters()).device
+    if five_stem_cpu_precision and (len(config.instruments) != 5 or device.type != "cpu"):
+        raise ValueError("five-stem CPU precision requires a five-stem checkpoint on CPU")
     model.eval()
-    spectrum = stft(waveform.to(device=device, dtype=torch.float32), config, inference=True)
+    waveform = waveform.to(device=device, dtype=torch.float32)
+    spectrum = (
+        stft(waveform, config, inference=True, wide_fft=True)
+        if five_stem_cpu_precision
+        else stft(waveform, config, inference=True)
+    )
     frames = spectrum.shape[-2]
     estimated = torch.empty(
         (len(config.instruments), *spectrum.shape), device=device, dtype=spectrum.dtype
@@ -98,7 +109,9 @@ def separate(model, waveform: torch.Tensor):
         magnitude = F.pad(
             chunk.abs()[..., : config.frequency_bins], (0, 0, 0, config.segment_frames - actual)
         )
-        masks = ratio_masks(model(magnitude.unsqueeze(0)), config)[0, :, :, :actual]
+        batch = magnitude.unsqueeze(0)
+        estimates = model(batch, wide=True) if five_stem_cpu_precision else model(batch)
+        masks = ratio_masks(estimates, config)[0, :, :, :actual]
         estimated[:, :, start : start + actual] = masks * chunk.unsqueeze(0)
     audio = istft(estimated, config, waveform.shape[-1]).cpu()
     return dict(zip(config.instruments, audio))

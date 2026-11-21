@@ -65,7 +65,13 @@ def parser():
     infer.add_argument("--cache-dir", help="cache directory for --model")
     infer.add_argument("--output", required=True)
     infer.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
-    infer.add_argument(
+    mode = infer.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--five-stem-cpu-precision",
+        action="store_true",
+        help="use selective FP64 in full-track five-stem CPU inference",
+    )
+    mode.add_argument(
         "--bounded-memory",
         action="store_true",
         help="stream file blocks at the model sample rate into a new output directory",
@@ -106,6 +112,8 @@ def main(argv=None):
 
         print(download_model(f"{args.stems}stems", args.cache_dir))
     elif args.command == "separate":
+        if args.five_stem_cpu_precision and (args.model or torch.device(args.device).type != "cpu"):
+            raise ValueError("use --checkpoint with a five-stem model and --device cpu")
         checkpoint = args.checkpoint
         if args.model:
             from .pretrained import download_model
@@ -122,7 +130,9 @@ def main(argv=None):
         if any((output / f"{name}.wav").exists() for name in model.config.instruments):
             raise FileExistsError("output stems already exist; choose another directory")
         audio = read_audio(args.input, model.config.sample_rate)
-        for name, stem in separate(model, audio).items():
+        for name, stem in separate(
+            model, audio, five_stem_cpu_precision=args.five_stem_cpu_precision
+        ).items():
             sf.write(
                 output / f"{name}.wav", stem.numpy().T, model.config.sample_rate, subtype="FLOAT"
             )

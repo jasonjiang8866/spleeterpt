@@ -18,7 +18,7 @@ def activation(name: str):
 class SameConv2d(nn.Conv2d):
     """TensorFlow SAME, including asymmetric padding for stride two."""
 
-    def forward(self, x):
+    def forward(self, x, *, wide=False):
         pads = []
         for size, kernel, stride, dilation in reversed(
             list(zip(x.shape[-2:], self.kernel_size, self.stride, self.dilation))
@@ -26,7 +26,10 @@ class SameConv2d(nn.Conv2d):
             out = (size + stride - 1) // stride
             total = max((out - 1) * stride + dilation * (kernel - 1) + 1 - size, 0)
             pads.extend([total // 2, total - total // 2])
-        return super().forward(F.pad(x, pads))
+        x = F.pad(x, pads)
+        if wide:
+            return self._conv_forward(x.double(), self.weight.double(), self.bias.double()).float()
+        return super().forward(x)
 
 
 class SameConvTranspose2d(nn.ConvTranspose2d):
@@ -38,8 +41,15 @@ class SameConvTranspose2d(nn.ConvTranspose2d):
     def __init__(self, in_channels, out_channels):
         super().__init__(in_channels, out_channels, kernel_size=5, stride=2)
 
-    def forward(self, x):
+    def forward(self, x, *, wide=False):
         height, width = x.shape[-2:]
+        if wide:
+            out = F.conv_transpose2d(
+                x.double(), self.weight.double(), self.bias.double(), self.stride
+            )
+            return out[..., 1 : 1 + 2 * height, 1 : 1 + 2 * width].to(
+                dtype=torch.float32, memory_format=torch.contiguous_format
+            )
         return super().forward(x)[..., 1 : 1 + 2 * height, 1 : 1 + 2 * width]
 
 
@@ -73,7 +83,7 @@ class UNet(nn.Module):
                 nn.init.kaiming_uniform_(layer.weight, nonlinearity="relu")
                 nn.init.zeros_(layer.bias)
 
-    def forward(self, x):
+    def forward(self, x, *, wide=False):
         skips = []
         for i, conv in enumerate(self.encoder):
             x = conv(x)
@@ -81,12 +91,13 @@ class UNet(nn.Module):
             if i < 5:
                 x = self.encoder_activation(self.encoder_norm[i](x))
         for i, (conv, norm) in enumerate(zip(self.decoder, self.decoder_norm)):
-            x = norm(self.decoder_activation(conv(x)))
+            x = conv(x, wide=True) if wide and i == 5 else conv(x)
+            x = norm(self.decoder_activation(x))
             if i < 3:
                 x = self.dropout(x)
             if i < 5:
                 x = torch.cat((skips[4 - i], x), dim=1)
-        return self.output(x)
+        return self.output(x, wide=True) if wide else self.output(x)
 
 
 class Spleeter(nn.Module):
@@ -97,12 +108,15 @@ class Spleeter(nn.Module):
         self.config = config
         self.unets = nn.ModuleDict({name: UNet(config) for name in config.instruments})
 
-    def forward(self, magnitude):
+    def forward(self, magnitude, *, wide=False):
         if magnitude.ndim != 4 or magnitude.shape[1] != 2:
             raise ValueError("expected [batch, stereo=2, time, frequency]")
         if magnitude.shape[-2:] != (self.config.segment_frames, self.config.frequency_bins):
             raise ValueError("spectrogram dimensions must match model config")
-        logits = torch.stack([net(magnitude) for net in self.unets.values()], dim=1)
+        logits = torch.stack(
+            [net(magnitude, wide=True) if wide else net(magnitude) for net in self.unets.values()],
+            dim=1,
+        )
         masks = (
             logits.softmax(dim=1) if self.config.mask_activation == "softmax" else logits.sigmoid()
         )

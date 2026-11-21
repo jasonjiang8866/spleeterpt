@@ -1,6 +1,18 @@
 name: Five-stem CPU audio cross study
 on:
   workflow_dispatch:
+    inputs:
+      study:
+        description: CPU calibration study
+        type: choice
+        default: audio-cross
+        options:
+          - audio-cross
+          - magnitude-breakdown
+          - frame-fft
+          - decoder-cuts
+          - fft-head
+          - native-intel
 permissions:
   contents: read
 concurrency:
@@ -18,7 +30,18 @@ jobs:
       TF_NUM_INTRAOP_THREADS: '2'
       TF_NUM_INTEROP_THREADS: '2'
     steps:
+      - name: Confirm Intel host for native calibration
+        if: inputs.study == 'native-intel'
+        run: |
+          awk '/^model name[[:space:]]*:/ { print; exit }' /proc/cpuinfo
+          if ! grep -qm1 '^vendor_id[[:space:]]*:[[:space:]]*GenuineIntel$' /proc/cpuinfo; then
+            echo "::error::Intel runner unavailable. No waveform comparisons executed."
+            exit 1
+          fi
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.study == 'native-intel' && 'e63c8987fdf18a30c8d85785f1d680e08bc9430d' || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12.16'
@@ -32,11 +55,29 @@ jobs:
           git clone -q https://github.com/deezer/spleeter.git /tmp/upstream
           git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
           uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
-      - name: Three independent Python processes on the same runner
+      - name: Measure the frozen native separator on Intel
+        id: native
+        if: inputs.study == 'native-intel'
         run: |
           mkdir -p /tmp/audio-cross
+          uv run --no-sync python scripts/verify_native_five_stem.py \
+            --weights /tmp/weights --upstream-root /tmp/upstream --output /tmp/audio-cross/native.json
+      - name: Three independent Python processes on the same runner
+        if: inputs.study != 'native-intel'
+        env:
+          STUDY: ${{ inputs.study || 'audio-cross' }}
+        run: |
+          case "$STUDY" in
+            audio-cross) flags=() ;;
+            magnitude-breakdown) flags=(--magnitude-breakdown) ;;
+            frame-fft) flags=(--frame-fft) ;;
+            decoder-cuts) flags=(--decoder-cuts) ;;
+            fft-head) flags=(--fft-head) ;;
+            *) exit 2 ;;
+          esac
+          mkdir -p /tmp/audio-cross
           for repeat in 1 2 3; do
-            uv run --no-sync python scripts/study_audio_cross.py \
+            uv run --no-sync python scripts/study_audio_cross.py "${flags[@]}" \
               --upstream-root /tmp/upstream --weights /tmp/weights \
               --replicate "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${repeat}" \
               --output "/tmp/audio-cross/repeat-${repeat}.json"
@@ -44,8 +85,8 @@ jobs:
           uv run --no-sync python scripts/summarize_audio_cross.py \
             /tmp/audio-cross/repeat-*.json --output /tmp/audio-cross/summary.json
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && (inputs.study != 'native-intel' || steps.native.outcome == 'success' || steps.native.outcome == 'failure')
         with:
-          name: audio-cross-${{ github.run_id }}-${{ github.run_attempt }}
+          name: ${{ inputs.study || 'audio-cross' }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/audio-cross/*.json
           if-no-files-found: error
