@@ -53,3 +53,43 @@ TF_ENABLE_ONEDNN_OPTS=0 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 \
   --weights weights --upstream-root ../spleeter --trios-archive ../trios.zip \
   --output native-five-stem.json
 ```
+
+## Intel replay
+
+The manual `native-intel` study checks the CPU vendor before downloading weights
+and checks out the same native implementation as the 9V74 run. The
+[Ubuntu 22.04 attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44526567093)
+received an EPYC 9V74. The [Ubuntu 24.04 attempt](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44840963148)
+received an EPYC 7763. Both stopped before inference.
+
+The [Xeon 8370C archive](results/decoder-cuts-20261118/intel.zip) and the
+[9V74 native report](results/native-cpu-20261119/epyc-9v74.json.gz) have identical
+decoded PCM hashes for all five inputs and identical checkpoint files. In all
+three Xeon repeats, only the five silence outputs had the same TensorFlow
+reference hashes as the 9V74. All 20 references for music and boundary impulses
+differed at the byte level. The hashes identify exact replays. Measuring numerical
+agreement requires comparing candidate and reference on the same Intel host
+with the existing samplewise tolerance (`atol=1e-5`, `rtol=1e-4`).
+
+On a known Intel x86-64 Linux machine, the same calibration can run outside
+Actions. From a spleeterpt clone with uv 0.13.4 available, run in Bash:
+
+```bash
+(
+  set -euo pipefail
+  grep -qm1 '^vendor_id[[:space:]]*:[[:space:]]*GenuineIntel$' /proc/cpuinfo
+  replay_dir=$(mktemp -d)
+  echo "Replay directory: $replay_dir"
+  git worktree add --detach "$replay_dir/spleeterpt" e63c8987fdf18a30c8d85785f1d680e08bc9430d
+  cd "$replay_dir/spleeterpt"
+  git clone -q https://github.com/deezer/spleeter.git "$replay_dir/upstream"
+  git -C "$replay_dir/upstream" checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
+  export TF_ENABLE_ONEDNN_OPTS=0 TF_CPP_MIN_LOG_LEVEL=2 OPENBLAS_NUM_THREADS=1
+  export OMP_NUM_THREADS=2 TF_NUM_INTRAOP_THREADS=2 TF_NUM_INTEROP_THREADS=2
+  uv sync --python 3.12.16 --locked --group dev --group release
+  uv run --no-sync python scripts/prepare_five_stem.py --work "$replay_dir/weights"
+  uv run --no-sync python scripts/verify_native_five_stem.py \
+    --weights "$replay_dir/weights" --upstream-root "$replay_dir/upstream" \
+    --output "$replay_dir/native-intel.json"
+)
+```
