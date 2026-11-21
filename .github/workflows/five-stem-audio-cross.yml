@@ -12,6 +12,7 @@ on:
           - frame-fft
           - decoder-cuts
           - fft-head
+          - native-intel
 permissions:
   contents: read
 concurrency:
@@ -29,7 +30,18 @@ jobs:
       TF_NUM_INTRAOP_THREADS: '2'
       TF_NUM_INTEROP_THREADS: '2'
     steps:
+      - name: Confirm Intel host for native calibration
+        if: inputs.study == 'native-intel'
+        run: |
+          awk '/^model name[[:space:]]*:/ { print; exit }' /proc/cpuinfo
+          if ! grep -qm1 '^vendor_id[[:space:]]*:[[:space:]]*GenuineIntel$' /proc/cpuinfo; then
+            echo "::error::Intel runner unavailable. No waveform comparisons executed."
+            exit 1
+          fi
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.study == 'native-intel' && 'e63c8987fdf18a30c8d85785f1d680e08bc9430d' || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12.16'
@@ -43,7 +55,15 @@ jobs:
           git clone -q https://github.com/deezer/spleeter.git /tmp/upstream
           git -C /tmp/upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
           uv run --no-sync python scripts/prepare_five_stem.py --work /tmp/weights
+      - name: Measure the frozen native separator on Intel
+        id: native
+        if: inputs.study == 'native-intel'
+        run: |
+          mkdir -p /tmp/audio-cross
+          uv run --no-sync python scripts/verify_native_five_stem.py \
+            --weights /tmp/weights --upstream-root /tmp/upstream --output /tmp/audio-cross/native.json
       - name: Three independent Python processes on the same runner
+        if: inputs.study != 'native-intel'
         env:
           STUDY: ${{ inputs.study || 'audio-cross' }}
         run: |
@@ -65,7 +85,7 @@ jobs:
           uv run --no-sync python scripts/summarize_audio_cross.py \
             /tmp/audio-cross/repeat-*.json --output /tmp/audio-cross/summary.json
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && (inputs.study != 'native-intel' || steps.native.outcome == 'success' || steps.native.outcome == 'failure')
         with:
           name: ${{ inputs.study || 'audio-cross' }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp/audio-cross/*.json
