@@ -12,7 +12,7 @@ official Deezer release.
 
 **Five-stem progress · 22 Nov 2026.** The opt-in CPU path passed all
 25 calibration waveform checks on both AMD EPYC 9V74 and DigitalOcean Premium Intel.
-Both hosts also passed all 10 stem checks on the same two TRIOS chamber recordings. The release catalog currently offers 2 and 4 stems.
+Both hosts also passed all 10 stem checks on the same two TRIOS chamber recordings. On a Blackwell MIG, the production CUDA CLI passed 10/25 calibration waveforms in both full-file and bounded modes. The release catalog offers 2 and 4 stems.
 [Five-stem results and availability](#five-stem-validation)
 
 ## Long-audio inference with bounded memory
@@ -102,8 +102,9 @@ increased from 1.38 s to 1.53 s on AMD (two CPU threads, six timed runs).
 [Protocol, measurements and raw results](docs/five-stem-native-cpu-20261119.md)
 
 Use `--device cpu --five-stem-cpu-precision` with a converted five-stem checkpoint.
-Five-stem weights remain research-only pending strict bounded-memory CUDA validation
-and release checks.
+Five-stem weights remain research-only. On a Blackwell MIG 24 GB, bounded CUDA inference
+used 572 MiB on 600 s of audio, but the default CLI exceeded the waveform tolerance
+on the 60 s real mix. [CUDA CLI acceptance and per-stem results](docs/five-stem-cuda-cli-20261122.md).
 [Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights
