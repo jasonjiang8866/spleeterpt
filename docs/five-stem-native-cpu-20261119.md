@@ -7,7 +7,7 @@ The native implementation runs the analysis RFFT, final decoder transposed
 convolution and output convolution in FP64, then casts each result back.
 It uses the existing checkpoint and performs each convolution once.
 
-## Two preregistered mixed-piano recordings
+## AMD results on two preregistered mixed-piano recordings
 
 The candidate and official TensorFlow graph processed seconds 5–17 of each
 TRIOS recording. All ten candidate stem waveforms matched TF within the
@@ -65,9 +65,24 @@ TF_ENABLE_ONEDNN_OPTS=0 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 \
 | Silence | 5/5 | 5/5 |
 | Boundary impulses | 5/5 | 5/5 |
 
-Median inference on the original clip took 1.562 s by default and 1.835 s with the candidate on this shared VM. The TRIOS holdout measurements above apply to the AMD host. The [archived run artifact](results/native-cpu-20261119/do-intel-45017698867.zip) contains the raw waveform metrics, CPU identity, quote and deletion confirmation. Its SHA-256 is `9525f17c5657b4103f2f3e1711ebe398eab1c738aa3b0d395a3c12b3fc17af9e`.
+Median inference on the original clip took 1.562 s by default and 1.835 s with the candidate on this shared VM. The [archived run artifact](results/native-cpu-20261119/do-intel-45017698867.zip) contains the raw waveform metrics, CPU identity, quote and deletion confirmation. Its SHA-256 is `9525f17c5657b4103f2f3e1711ebe398eab1c738aa3b0d395a3c12b3fc17af9e`.
 
 [Run #13](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45017291194) stopped at Python setup. Its Droplet and the successful run's Droplet were each verified absent after deletion. At US$0.08333/hour their combined 346.7 seconds from request to confirmed deletion cost an estimated US$0.0080.
+
+### Intel replication of the TRIOS recordings
+
+[Run #15](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45018853332) repeated the 25/25 calibration on a fresh Premium Intel Droplet and compared each stem with the official TensorFlow output on that host. All ten waveforms passed the original samplewise gate across the two 12-second excerpts. Each of the four active targets improved over the mixture and stayed within 0.1 dB of TensorFlow. Leakage measures the contribution of the other active source in the indicated output. Lower values indicate less leakage.
+
+| Recording | Output | SI-SDR gain over mixture (dB) | Candidate minus TF (dB) | Candidate leakage (dB) | TF leakage (dB) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Brahms Op. 40 | Piano | +6.9013 | -0.000041 | -11.8153 | -11.8154 |
+| Brahms Op. 40 | Other | +2.4417 | -0.000025 | -19.4675 | -19.4674 |
+| Schubert D.929 | Piano | +7.3376 | +0.000007 | -27.8402 | -27.8402 |
+| Schubert D.929 | Other | +6.3296 | +0.000005 | -13.2528 | -13.2528 |
+
+Both CPUs used the same candidate, checkpoint, registered audio and scoring protocol. The Intel run replicates the AMD result on the same two recordings. Generalization to new music requires new recordings.
+
+The [raw metrics and cleanup record](results/native-cpu-20261119/do-intel-45018853332.zip) have ZIP SHA-256 `1bb2065645402ab6754cc102e9439f892f97610820003dfdc640c9ef0927fa2c`. The run verified the Droplet was absent by ID after deletion. At US$0.08333/h, the 285.4 seconds from create request to confirmed deletion cost an estimated US$0.0066.
 
 ### Earlier placement attempts
 
@@ -123,7 +138,7 @@ Actions. From a spleeterpt clone with uv 0.13.4 available, run in Bash:
   git -C "$replay_dir/upstream" checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
   export TF_ENABLE_ONEDNN_OPTS=0 TF_CPP_MIN_LOG_LEVEL=2 OPENBLAS_NUM_THREADS=1
   export OMP_NUM_THREADS=2 TF_NUM_INTRAOP_THREADS=2 TF_NUM_INTEROP_THREADS=2
-  uv sync --python 3.12.16 --locked --group dev --group release
+  uv sync --python 3.12.14 --locked --group dev --group release
   uv run --no-sync python scripts/prepare_five_stem.py --work "$replay_dir/weights"
   uv run --no-sync python scripts/verify_native_five_stem.py \
     --weights "$replay_dir/weights" --upstream-root "$replay_dir/upstream" \
