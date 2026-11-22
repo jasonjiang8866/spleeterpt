@@ -19,12 +19,30 @@ from torch.nn import functional as F
 from .audio import ratio_masks, stft
 
 
-def _separate_blocks(model, length, read):
+def _use_padded_tail(policy, config, device):
+    if policy == "auto":
+        return device.type == "cuda" and len(config.instruments) == 5
+    if policy not in ("native", "pad-long-tail"):
+        raise ValueError(f"unknown FFT batch policy: {policy}")
+    return policy == "pad-long-tail"
+
+
+def _block_stft(samples, config, start, actual, pad_tail):
+    if pad_tail and start > 0 and actual < config.segment_frames:
+        extra = (config.segment_frames - actual) * config.hop_length
+        spectrum = stft(F.pad(samples, (0, extra)), config)
+        # Overlap in the padded FFT frames must never become extra model context.
+        return spectrum[..., :actual, :]
+    return stft(samples, config)
+
+
+def _separate_blocks(model, length, read, fft_batch_policy):
     """read(start, stop) returns CPU stereo samples at the model sample rate."""
     if length <= 0:
         raise ValueError("audio must not be empty")
     config = model.config
     device = next(model.parameters()).device
+    pad_tail = _use_padded_tail(fft_batch_policy, config, device)
     model.eval()
     n_fft, hop = config.n_fft, config.hop_length
     frames = math.ceil((length + n_fft) / hop)
@@ -48,7 +66,7 @@ def _separate_blocks(model, length, read):
                 samples = F.pad(samples, (lo - left, right - hi))
             else:
                 samples = torch.zeros((2, right - left), device=device)
-            spectrum = stft(samples, config)
+            spectrum = _block_stft(samples, config, start, actual, pad_tail)
             magnitude = F.pad(
                 spectrum.abs()[..., : config.frequency_bins],
                 (0, 0, 0, config.segment_frames - actual),
@@ -82,12 +100,14 @@ def _separate_blocks(model, length, read):
     # overlap tail is wholly outside the original audio and must be discarded.
 
 
-def separate_iter(model, waveform: torch.Tensor):
+def separate_iter(model, waveform: torch.Tensor, *, fft_batch_policy="auto"):
     """Yield consecutive CPU float32 stereo stem blocks, without collecting them.
 
     Accepts CPU [samples], [1, samples], or [2, samples] already at the model
     sample rate. Mono is duplicated exactly as in read_audio(). Input storage is
     still O(duration); use separate_file() to bound end-to-end host memory too.
+    Auto pads partial multi-window CUDA FFT tails for five-stem models. Explicit
+    "native" and "pad-long-tail" policies are available for comparison.
     Consume and release blocks instead of list()/cat() for bounded output memory.
     """
     if waveform.device.type != "cpu":
@@ -100,12 +120,15 @@ def separate_iter(model, waveform: torch.Tensor):
         raise ValueError("audio must be floating point")
     if waveform.shape[0] == 1:
         waveform = waveform.expand(2, -1)
-    yield from _separate_blocks(model, waveform.shape[-1], lambda lo, hi: waveform[:, lo:hi])
+    yield from _separate_blocks(
+        model, waveform.shape[-1], lambda lo, hi: waveform[:, lo:hi], fft_batch_policy
+    )
 
 
-def separate_file(model, input_path, output_dir):
+def separate_file(model, input_path, output_dir, *, fft_batch_policy="auto"):
     """Separate a seekable file with bounded CPU/GPU memory into float WAV stems.
 
+    FFT batch policy follows separate_iter.
     Requires the model sample rate (no implicit full-file resampling). output_dir
     must not exist. Publish the directory only after every stem closes cleanly;
     an error removes temporary files. RF64 is used when a stem would exceed 4 GiB.
@@ -151,7 +174,7 @@ def separate_file(model, input_path, output_dir):
                     )
                     for name in config.instruments
                 }
-                for block in _separate_blocks(model, len(source), read):
+                for block in _separate_blocks(model, len(source), read, fft_batch_policy):
                     for name, samples in block.items():
                         writers[name].write(samples.numpy().T)
             if output.exists():

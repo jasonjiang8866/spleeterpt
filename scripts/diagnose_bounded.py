@@ -32,7 +32,7 @@ def diagnose(checkpoint, input_path, device, seconds=12, fp64_control=False):
     reference = separate(model, waveform)
 
     def collect():
-        blocks = list(streaming.separate_iter(model, waveform))
+        blocks = list(streaming.separate_iter(model, waveform, fft_batch_policy="native"))
         return {n: torch.cat([b[n] for b in blocks], -1) for n in config.instruments}
 
     normal = collect()

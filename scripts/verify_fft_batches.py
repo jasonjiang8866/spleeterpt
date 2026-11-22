@@ -8,7 +8,6 @@ import subprocess
 from pathlib import Path
 
 import torch
-from fft_batch_policy import fft_batch_policy
 from torch.nn import functional as F
 
 from spleeterpt import audio, streaming
@@ -47,16 +46,13 @@ def run(device):
                 errors = {}
                 for policy in ("native", "pad-long-tail"):
                     maxima = []
-                    with fft_batch_policy(policy, config, length):
-                        for start in range(0, frames, 512):
-                            count = min(512, frames - start)
-                            samples = padded[
-                                :, start * 1024 : start * 1024 + 4096 + (count - 1) * 1024
-                            ]
-                            spec = streaming.stft(samples.to(device), config)
-                            maxima.append(
-                                float((spec - full[:, start : start + count]).abs().max())
-                            )
+                    for start in range(0, frames, 512):
+                        count = min(512, frames - start)
+                        samples = padded[:, start * 1024 : start * 1024 + 4096 + (count - 1) * 1024]
+                        spec = streaming._block_stft(
+                            samples.to(device), config, start, count, policy == "pad-long-tail"
+                        )
+                        maxima.append(float((spec - full[:, start : start + count]).abs().max()))
                     errors[policy] = maxima
                 report["cases"].append({"samples": length, "frames": frames, "errors": errors})
     return report

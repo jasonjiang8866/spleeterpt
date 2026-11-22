@@ -193,7 +193,9 @@ def test_file_read_and_fft_sizes_are_bounded(tiny_config, tmp_path, monkeypatch)
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="requires a real CUDA device")
 @pytest.mark.parametrize("stems", [2, 4, 5])
-def test_cuda_parity_and_input_guard(tiny_config, stems):
+def test_cuda_parity_and_input_guard(tiny_config, stems, monkeypatch):
+    from spleeterpt import streaming
+
     preset = ModelConfig.preset(stems)
     config = replace(
         tiny_config,
@@ -203,8 +205,19 @@ def test_cuda_parity_and_input_guard(tiny_config, stems):
         mask_activation=preset.mask_activation,
     )
     model = Spleeter(config).cuda()
-    audio = torch.randn(2, 20609)
+    window = config.segment_frames
+    length = (10 * window + 28) * config.hop_length - config.n_fft
+    audio = torch.randn(2, length)
+    fft_frames = []
+    original = streaming.stft
+
+    def record(samples, config):
+        fft_frames.append(1 + (samples.shape[-1] - config.n_fft) // config.hop_length)
+        return original(samples, config)
+
+    monkeypatch.setattr(streaming, "stft", record)
     expected, actual = separate(model, audio), collect(model, audio)
+    assert fft_frames == [window] * 10 + [window if stems == 5 else 28]
     for name in expected:
         torch.testing.assert_close(actual[name], expected[name], atol=2e-6, rtol=1e-5)
     with pytest.raises(ValueError, match="CPU"):

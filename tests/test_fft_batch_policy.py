@@ -1,8 +1,6 @@
 """Candidate preserves the model's zero context and bounds FFT allocations."""
 
-import importlib
 from dataclasses import replace
-from pathlib import Path
 
 import pytest
 import torch
@@ -12,20 +10,14 @@ from spleeterpt.config import ModelConfig
 from spleeterpt.model import Spleeter
 
 
-@pytest.fixture
-def policy(monkeypatch):
-    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
-    return importlib.import_module("fft_batch_policy").fft_batch_policy
-
-
-def collect(model, waveform):
-    blocks = list(streaming.separate_iter(model, waveform))
+def collect(model, waveform, policy="auto"):
+    blocks = list(streaming.separate_iter(model, waveform, fft_batch_policy=policy))
     return {s: torch.cat([b[s] for b in blocks], -1) for s in model.config.instruments}
 
 
 @pytest.mark.parametrize("stems", [2, 4, 5])
 @pytest.mark.parametrize("remainder", [1, 2, 7, 28, 31, 32, 63, 64])
-def test_long_tail_preserves_network_context(policy, tiny_config, stems, remainder):
+def test_long_tail_preserves_network_context(tiny_config, stems, remainder):
     preset = ModelConfig.preset(stems)
     config = replace(
         tiny_config,
@@ -39,56 +31,64 @@ def test_long_tail_preserves_network_context(policy, tiny_config, stems, remaind
     length = (config.segment_frames + remainder) * config.hop_length - config.n_fft
     waveform = torch.randn(2, length) * 0.1
     reference = audio.separate(model, waveform)
-    original = streaming.stft
-    with policy("pad-long-tail", config, length):
-        candidate = collect(model, waveform)
-    assert streaming.stft is original
+    candidate = collect(model, waveform, "pad-long-tail")
     for name in config.instruments:
         assert candidate[name].shape == (2, length)
         torch.testing.assert_close(candidate[name], reference[name], atol=2e-6, rtol=0)
 
 
-@pytest.mark.parametrize("length", [1, 31, 32, 33, 127, 128, 129, 1919, 1920])
-def test_single_window_and_native_unchanged(policy, tiny_config, length):
-    original = streaming.stft
-    for name in ("native", "pad-long-tail"):
-        with policy(name, tiny_config, length):
-            assert streaming.stft is original
+@pytest.mark.parametrize("stems", [2, 4, 5])
+@pytest.mark.parametrize("device", ["cpu", "cuda"])
+def test_auto_policy_selection(stems, device):
+    config = ModelConfig.preset(stems)
+    assert streaming._use_padded_tail("auto", config, torch.device(device)) == (
+        device == "cuda" and stems == 5
+    )
 
 
-def test_padding_crops_before_model_and_restores_on_error(policy, tiny_config, monkeypatch):
+def test_file_jobs_reuse_model_without_sharing_tail_policy(tiny_config, monkeypatch, tmp_path):
+    import soundfile as sf
+
+    model = Spleeter(tiny_config)
     seen = []
     original = streaming.stft
 
     def record(samples, config):
-        seen.append(samples.shape[-1])
+        seen.append(1 + (samples.shape[-1] - config.n_fft) // config.hop_length)
         return original(samples, config)
 
     monkeypatch.setattr(streaming, "stft", record)
-    samples = torch.randn(2, tiny_config.n_fft + 27 * tiny_config.hop_length)
-    expected = original(samples, tiny_config)
-    with pytest.raises(RuntimeError, match="consumer"), policy("pad-long-tail", tiny_config, 8000):
-        actual = streaming.stft(samples, tiny_config)
-        assert actual.shape == expected.shape
-        torch.testing.assert_close(actual, expected, atol=1e-5, rtol=1e-5)
-        assert seen == [tiny_config.n_fft + 63 * tiny_config.hop_length]
-        raise RuntimeError("consumer")
-    assert streaming.stft is record
+    window = tiny_config.segment_frames
+    for job, (frames, policy, expected) in enumerate(
+        [
+            (window + 28, "pad-long-tail", [window, window]),
+            (28, "pad-long-tail", [28]),
+            (window * 2, "pad-long-tail", [window, window]),
+            (window + 28, "native", [window, 28]),
+            (window + 28, "auto", [window, 28]),  # CPU default
+        ]
+    ):
+        length = frames * tiny_config.hop_length - tiny_config.n_fft
+        source = tmp_path / "input.wav"
+        sf.write(source, torch.ones(length).numpy(), tiny_config.sample_rate, subtype="FLOAT")
+        seen.clear()
+        paths = streaming.separate_file(model, source, tmp_path / str(job), fft_batch_policy=policy)
+        assert seen == expected
+        assert all(sf.info(path).frames == length for path in paths.values())
 
 
-def test_invalid_grid_rejected(policy, tiny_config):
-    with policy("pad-long-tail", tiny_config, 8000), pytest.raises(ValueError, match="grid"):
-        streaming.stft(torch.zeros(2, 129), tiny_config)
+def test_unknown_policy_rejected(tiny_config):
+    with pytest.raises(ValueError, match="unknown FFT batch policy"):
+        collect(Spleeter(tiny_config), torch.zeros(2, 129), "invalid")
 
 
-def test_extra_fft_frames_never_reach_network(policy, tiny_config):
+def test_extra_fft_frames_never_reach_network(tiny_config):
     model = Spleeter(tiny_config).eval()
     inputs = []
     hook = model.register_forward_pre_hook(lambda module, args: inputs.append(args[0].clone()))
     length = (64 + 28) * 32 - 128
     try:
-        with policy("pad-long-tail", tiny_config, length):
-            collect(model, torch.ones(2, length))
+        collect(model, torch.ones(2, length), "pad-long-tail")
     finally:
         hook.remove()
     assert len(inputs) == 2

@@ -18,7 +18,6 @@ import numpy as np
 import soundfile as sf
 import torch
 from benchmark_bounded import acceptance, paired_metrics
-from fft_batch_policy import fft_batch_policy
 
 from spleeterpt.audio import read_audio, separate
 from spleeterpt.checkpoint import load_model
@@ -100,8 +99,7 @@ def main():
             legacy_seconds = time.perf_counter() - started
             del legacy
             started = time.perf_counter()
-            with fft_batch_policy(args.fft_batch_policy, model.config, len(audio)):
-                separate_file(model, source, root / "bounded")
+            separate_file(model, source, root / "bounded", fft_batch_policy=args.fft_batch_policy)
             bounded_seconds = time.perf_counter() - started
             metrics = {
                 stem: paired_metrics(root / f"{stem}.wav", root / "bounded" / f"{stem}.wav")
