@@ -12,6 +12,10 @@ on:
         type: boolean
         required: true
         default: false
+      cli_acceptance:
+        description: 'Also measure the production CUDA CLI against the official TensorFlow CPU graph and long-file gates'
+        type: boolean
+        default: false
       fft_batch_study:
         description: 'Experimental pad-long-tail FFT policy; unchanged full-file reference and acceptance thresholds'
         type: boolean
@@ -40,6 +44,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: five-stem
+          SPT_CLI_ACCEPTANCE: ${{ inputs.cli_acceptance }}
           SPT_FFT_BATCH_STUDY: ${{ inputs.fft_batch_study }}
           SPT_ALLOW_4090_FALLBACK: ${{ inputs.allow_4090_fallback }}
           SPT_CONFIRM_BENCHMARK: ${{ inputs.confirm_paid_benchmark }}

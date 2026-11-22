@@ -27,6 +27,7 @@ def validate(
     five_stem=False,
     expected_gpu=MIG24,
     expected_fft_policy="native",
+    cli_acceptance=False,
 ):
     if expected_fft_policy not in {"native", "pad-long-tail"}:
         raise ValueError("Unknown FFT policy")
@@ -46,6 +47,8 @@ def validate(
         or report.get("experiment") != experiment
     ):
         raise ValueError("Incomplete or mismatched bounded benchmark identity")
+    if cli_acceptance:
+        validate_cli(report.get("cuda_cli", {}), sha)
     validate_runtime(report["gpu_runtime"], expected_gpu)
     if (
         report["cuda_tests"]["returncode"] != 0
@@ -237,3 +240,84 @@ def validate_edges(report, sha, checkpoint_sha, expected_fft_policy="native"):
                 or (error != 0 and not quiet and (not number(score) or score < 100))
             ):
                 raise ValueError("Five-stem edge numerical failure")
+
+
+def validate_cli(probe, sha):
+    """Independently check coverage, PCM identity, same-input comparisons and memory bounds."""
+    pins = json.loads((ROOT / "scripts/five_stem_source.json").read_text())
+    history = json.loads(
+        (ROOT / "docs/results/five-stem-20261102/5stems-strict-final.json").read_text()
+    )
+    stems = set(pins["instruments"])
+
+    def strict(rows, length):
+        return set(rows) == stems and all(
+            row["reference_samples"] == row["candidate_samples"] == length
+            and row["compared_scalar_samples"] == 2 * length
+            and row["strict_failed_samples"] == 0
+            and row["max_tolerance_ratio"] <= 1
+            and row["allclose_atol_1e-5_rtol_1e-4"] is True
+            for row in rows.values()
+        )
+
+    cases = probe.get("calibration", {})
+    if (
+        probe.get("source_commit") != sha
+        or probe.get("checkpoint_sha256") != pins["converted_sha256"]
+        or probe.get("upstream_commit") != pins["upstream_commit"]
+        or set(cases) != set(history["case_provenance"])
+    ):
+        raise ValueError("Missing CUDA CLI calibration or source identity")
+    for name, case in cases.items():
+        frozen = history["case_provenance"][name]
+        if case["input_pcm_sha256"] != frozen["decoded_pcm_sha256"] or not all(
+            strict(case[m], frozen["samples"]) for m in ("full", "bounded")
+        ):
+            raise ValueError(f"CUDA CLI versus TF failed: {name}")
+    long = probe.get("long_audio", {})
+    if set(long) != {"synthetic60", "synthetic600", "real60"}:
+        raise ValueError("Incomplete CLI long-file coverage")
+    for name, case in long.items():
+        if set(case["stems"]) != stems or not all(
+            number(case["peak_allocated_mib"][m], positive=True) for m in ("full", "bounded")
+        ):
+            raise ValueError("Incomplete CLI memory/stems")
+        for row in case["stems"].values():
+            near = row["reference_rms"] <= 1e-5
+            score = row["legacy_reference_si_sdr_db"]
+            if (
+                row["samples_per_channel"] != (600 if name == "synthetic600" else 60) * 44100
+                or not number(row["max_abs_error"])
+                or row["max_abs_error"] > 2e-6
+                or (near and (row["rms_error"] > 1e-8 or row["max_abs_error"] > 1e-7))
+                or (not near and row["max_abs_error"] != 0 and (score is None or score < 100))
+            ):
+                raise ValueError("CUDA CLI long-file waveform mismatch")
+    peaks = long["synthetic600"]["peak_allocated_mib"]
+    if (
+        peaks["bounded"] >= peaks["full"] * 0.5
+        or peaks["bounded"] > long["synthetic60"]["peak_allocated_mib"]["bounded"] * 1.10 + 32
+    ):
+        raise ValueError("CUDA CLI memory scaling failed")
+    hold = probe.get("trios") or {}
+    manifest = json.loads((ROOT / "scripts/five_stem_corpus.json").read_text())
+    inputs = {
+        r["recording_id"]: r["trios"]["prepared_pcm"]["mix"]
+        for r in manifest["records"]
+        if "trios" in r
+    }
+    if set(hold) != set(inputs):
+        raise ValueError("TRIOS holdouts pending")
+    for name, case in hold.items():
+        if (
+            case["input_pcm_sha256"] != inputs[name]
+            or not strict(case["waveforms"], 12 * 44100)
+            or set(case["quality"]) != {"piano", "other"}
+        ):
+            raise ValueError("TRIOS waveform gate failed")
+        for row in case["quality"].values():
+            scores = row["si_sdr_db"]
+            if not (
+                scores["candidate"] > scores["mix"] and scores["candidate"] >= scores["tf"] - 0.1
+            ):
+                raise ValueError("TRIOS SI-SDR gate failed")

@@ -42,7 +42,7 @@ def benchmark(model, waveform):
     return samples
 
 
-def score_holdout(archive, manifest, oracle, model):
+def score_holdout(archive, manifest, oracle, separator):
     if digest(archive) != manifest["trios_archive"]["sha256"]:
         raise ValueError("TRIOS archive identity mismatch")
     results = {}
@@ -60,7 +60,7 @@ def score_holdout(archive, manifest, oracle, model):
             inputs = {role: read(root, name, role) for role in ("mix", "piano", "other")}
             audio = torch.from_numpy(np.ascontiguousarray(inputs["mix"].T))
             reference = oracle.separate(audio)
-            outputs = separate(model, audio, five_stem_cpu_precision=True)
+            outputs = separator(audio)
             results[name] = {
                 "input_pcm_sha256": array_hash(inputs["mix"]),
                 "waveforms": comparisons(reference, outputs),
@@ -136,7 +136,10 @@ def main():
             manifest = root / "scripts/five_stem_corpus.json"
             report["holdout_manifest_sha256"] = digest(manifest)
             report["holdout"] = score_holdout(
-                args.trios_archive, json.loads(manifest.read_text()), oracle, model
+                args.trios_archive,
+                json.loads(manifest.read_text()),
+                oracle,
+                lambda audio: separate(model, audio, five_stem_cpu_precision=True),
             )
     finally:
         oracle.close()

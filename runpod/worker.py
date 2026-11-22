@@ -397,7 +397,11 @@ def run():
                     [python, "runpod/bounded.py", "--output", str(report)],
                 ]
                 if profile == "five-stem":
-                    commands[2][commands[2].index(".")] = ".[convert]"
+                    commands[2][commands[2].index(".")] = (
+                        ".[verify]"
+                        if os.environ.get("SPT_CLI_ACCEPTANCE") == "true"
+                        else ".[convert]"
+                    )
             elif profile != "four-stem":
                 raise ValueError("Unknown benchmark profile")
             env.update(
