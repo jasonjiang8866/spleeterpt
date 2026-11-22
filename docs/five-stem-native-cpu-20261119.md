@@ -81,6 +81,18 @@ On 22 November 2026, [RunPod placement run #9](https://github.com/jasonjiang8866
 
 The three placements exhausted the agreed limit. The Intel worker executed **0 of 25** waveform checks. Each Pod was confirmed absent before the next request or exit. The three intervals totaled 174 s, an estimated US$0.0077 at US$0.16/h. The run artifact `native-intel-45011267899` contains the three placement records (ZIP SHA-256 `14c6e8e009428ddf14a102434515c37f9799f71cbb4bad57212a6d07eee4a1b9`).
 
+A [second placement run (#10)](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45014722775) found 13 available CPU3g data centers and tried five new locations. Each worker again reported `AuthenticAMD` before downloading weights.
+
+| Data center | Reported processor | Request to confirmed deletion |
+| --- | --- | ---: |
+| EUR-IS-1 | AMD EPYC 9754 | 29 s |
+| US-CA-2 | AMD EPYC 7713 | 28 s |
+| US-GA-2 | AMD EPYC 9354 | 28 s |
+| US-IL-1 | AMD EPYC 9355 | 27 s |
+| US-MD-1 | AMD EPYC 7702P | 20 s |
+
+All five Pods were confirmed absent after cleanup. The intervals totaled 132 s, an estimated US$0.0059 at US$0.16/h. The run artifact `native-intel-45014722775` contains the catalog snapshot and all five placement records (ZIP SHA-256 `3bc3e7106f84a65686e08c6be6b53d8c5883e50c4d0ef4b00d7e25331e45ec45`). Across the two runs, eight distinct locations supplied AMD CPUs and zero Intel waveform checks ran.
+
 On a known Intel x86-64 Linux machine, the same calibration can run outside
 Actions. From a spleeterpt clone with uv 0.13.4 available, run in Bash:
 
