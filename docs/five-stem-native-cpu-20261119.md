@@ -71,6 +71,16 @@ differed at the byte level. The hashes identify exact replays. Measuring numeric
 agreement requires comparing candidate and reference on the same Intel host
 with the existing samplewise tolerance (`atol=1e-5`, `rtol=1e-4`).
 
+On 22 November 2026, [RunPod placement run #9](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45011267899) requested one Secure Cloud CPU3g Pod at a time (4 vCPUs, 16 GB). Each worker read `/proc/cpuinfo` before fetching the checkpoint. All three reported `AuthenticAMD`.
+
+| Data center | Reported processor | Request to confirmed deletion |
+| --- | --- | ---: |
+| EU-CZ-1 | AMD EPYC 9B45 | 39 s |
+| EU-NL-1 | AMD EPYC 9654 | 31 s |
+| EU-RO-1 | AMD EPYC 9655P | 104 s |
+
+The three placements exhausted the agreed limit. The Intel worker executed **0 of 25** waveform checks. Each Pod was confirmed absent before the next request or exit. The three intervals totaled 174 s, an estimated US$0.0077 at US$0.16/h. The run artifact `native-intel-45011267899` contains the three placement records (ZIP SHA-256 `14c6e8e009428ddf14a102434515c37f9799f71cbb4bad57212a6d07eee4a1b9`).
+
 On a known Intel x86-64 Linux machine, the same calibration can run outside
 Actions. From a spleeterpt clone with uv 0.13.4 available, run in Bash:
 
