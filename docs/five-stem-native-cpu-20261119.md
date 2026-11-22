@@ -32,8 +32,7 @@ and [raw metrics, including leakage, PCM hashes and every timing](results/native
 On 10.88 s of stereo music with two CPU threads, median full-track inference
 time was 1.381 s for default FP32 and 1.533 s for the candidate (+11.0%).
 Each mode had one warmup and six timed runs in alternating order. Timing
-excludes model loading, decoding and WAV export. Intel validation of this
-exact native implementation and bounded-memory CUDA acceptance remain open.
+excludes model loading, decoding and WAV export. Bounded-memory CUDA acceptance remains open.
 
 From a checkout containing the candidate and an already converted checkpoint:
 
@@ -55,6 +54,22 @@ TF_ENABLE_ONEDNN_OPTS=0 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 \
 ```
 
 ## Intel replay
+
+[DigitalOcean run #14](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45017698867) completed the same five-input calibration on a four-vCPU, 8 GiB Premium Intel Droplet in Amsterdam. The guest reported vendor `GenuineIntel` and model `DO-Premium-Intel`. The candidate matched the official same-host TensorFlow outputs on **25/25** waveforms at `atol=1e-5, rtol=1e-4`. Default FP32 passed **20/25**. Both used two PyTorch threads, Python 3.12.14, PyTorch 2.8.0+cpu, TensorFlow 2.18.1 and NumPy 2.0.2. All input PCM and checkpoint hashes matched the frozen calibration.
+
+| Input | Default FP32 | Opt-in candidate |
+| --- | ---: | ---: |
+| Original music | 3/5 | 5/5 |
+| Multiwindow music | 2/5 | 5/5 |
+| Short music | 5/5 | 5/5 |
+| Silence | 5/5 | 5/5 |
+| Boundary impulses | 5/5 | 5/5 |
+
+Median inference on the original clip took 1.562 s by default and 1.835 s with the candidate on this shared VM. The TRIOS holdout measurements above apply to the AMD host. The [archived run artifact](results/native-cpu-20261119/do-intel-45017698867.zip) contains the raw waveform metrics, CPU identity, quote and deletion confirmation. Its SHA-256 is `9525f17c5657b4103f2f3e1711ebe398eab1c738aa3b0d395a3c12b3fc17af9e`.
+
+[Run #13](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45017291194) stopped at Python setup. Its Droplet and the successful run's Droplet were each verified absent after deletion. At US$0.08333/hour their combined 346.7 seconds from request to confirmed deletion cost an estimated US$0.0080.
+
+### Earlier placement attempts
 
 The manual `native-intel` study checks the CPU vendor before downloading weights
 and checks out the same native implementation as the 9V74 run. The
