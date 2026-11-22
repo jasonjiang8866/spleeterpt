@@ -22,7 +22,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Check the quote and run the frozen Intel calibration
-        timeout-minutes: 36
+        timeout-minutes: 32
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         run: python3 experiments/digitalocean/intel.py ${{ inputs.confirm && 'run' || 'quote' }}
