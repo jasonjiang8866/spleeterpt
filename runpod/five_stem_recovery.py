@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import tarfile
 from pathlib import Path
 
 from bounded_result import validate
@@ -58,6 +59,26 @@ def verify(root, *, allow_rejected=False):
         "gpu_acceptance_revalidated": accepted,
         "acceptance_status": "accepted" if accepted else "rejected",
     }
+    if meta.get("cuda_settings_study"):
+        filename = "cuda-settings.json"
+        recovered["cuda_settings_status"] = "missing"
+        if filename in report["bundle"]["files"]:
+            with tarfile.open(root / "listening-and-metrics.tar", "r:") as archive:
+                study = json.load(archive.extractfile(filename))
+            if study["source_commit"] != meta["commit"] or study["release_eligible"] is not False:
+                raise ValueError("CUDA settings study identity mismatch")
+            recovered["cuda_settings_status"] = "partial"
+            if study["complete"]:
+                cli = report["cuda_cli"]
+                original = cli["calibration"]["music_original"]
+                case = study["cases"]["music_original"]
+                if (
+                    study["checkpoint_sha256"] != cli["checkpoint_sha256"]
+                    or case["input_pcm_sha256"] != original["input_pcm_sha256"]
+                    or case["reference_sha256"] != original["reference_sha256"]
+                ):
+                    raise ValueError("CUDA settings study calibration mismatch")
+                recovered["cuda_settings_status"] = "complete"
     (root / "recovery.json").write_text(json.dumps(recovered, indent=2) + "\n")
     print(f"PASS: archive recovery after compute deletion; GPU acceptance={accepted}")
 

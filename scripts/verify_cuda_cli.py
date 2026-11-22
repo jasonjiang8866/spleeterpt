@@ -27,6 +27,14 @@ def pcm_hash(data):
     return hashlib.sha256(np.ascontiguousarray(data).tobytes()).hexdigest()
 
 
+def cli_args(checkpoint, source, root, mode):
+    args = ["separate", str(source), "--checkpoint", str(checkpoint), "--device", "cuda"]
+    args += ["--output", str(root / mode)]
+    if mode == "bounded":
+        args.append("--bounded-memory")
+    return args
+
+
 def cli(checkpoint, source, root, mode):
     # Call the installed CLI entry point in a fresh process so each peak includes model loading.
     runner = """import json, sys, torch
@@ -35,12 +43,26 @@ main(sys.argv[1:])
 torch.cuda.synchronize()
 print(json.dumps(torch.cuda.max_memory_allocated() / 2**20))
 """
-    args = ["separate", str(source), "--checkpoint", str(checkpoint), "--device", "cuda"]
-    args += ["--output", str(root / mode)]
-    if mode == "bounded":
-        args.append("--bounded-memory")
-    peak = subprocess.check_output([sys.executable, "-c", runner, *args], text=True)
+    peak = subprocess.check_output(
+        [sys.executable, "-c", runner, *cli_args(checkpoint, source, root, mode)], text=True
+    )
     return json.loads(peak.splitlines()[-1])
+
+
+def bounded_metrics(root, frames, thresholds):
+    rows = {}
+    for stem in CONFIG.instruments:
+        file = stem + ".wav"
+        metrics = paired_metrics(root / "full" / file, root / "bounded" / file)
+        if metrics["samples_per_channel"] != frames:
+            raise ValueError("Incorrect output duration")
+        metrics["verdict"] = acceptance(metrics, thresholds)
+        if metrics["reference_rms"] <= 1e-5 and (
+            metrics["rms_error"] > 1e-8 or metrics["max_abs_error"] > 1e-7
+        ):
+            metrics["verdict"] = "failed_near_silent"
+        rows[stem] = metrics
+    return rows
 
 
 def replay(work, destination):
@@ -100,18 +122,7 @@ def replay(work, destination):
             wav = root / "input.wav"
             make_input(wav, CONFIG, seconds, original)
             peaks = {mode: cli(checkpoint, wav, root, mode) for mode in MODES}
-            rows = {}
-            for stem in CONFIG.instruments:
-                file = stem + ".wav"
-                metrics = paired_metrics(root / "full" / file, root / "bounded" / file)
-                if metrics["samples_per_channel"] != seconds * 44100:
-                    raise ValueError("Incorrect output duration")
-                metrics["verdict"] = acceptance(metrics, thresholds)
-                if metrics["reference_rms"] <= 1e-5 and (
-                    metrics["rms_error"] > 1e-8 or metrics["max_abs_error"] > 1e-7
-                ):
-                    metrics["verdict"] = "failed_near_silent"
-                rows[stem] = metrics
+            rows = bounded_metrics(root, seconds * 44100, thresholds)
             report["long_audio"][case] = {"peak_allocated_mib": peaks, "stems": rows}
             save()
 
@@ -124,6 +135,8 @@ def replay(work, destination):
             out[stem] = torch.from_numpy(np.ascontiguousarray(data.T))
         return out
 
+    settings_requested = os.environ.get("SPT_CUDA_SETTINGS_STUDY") == "true"
+    calibration_pair = None
     oracle = OfficialGraph(tf_prefix, CONFIG.instruments, upstream)
     try:
         for name, audio in audio_cases(read_audio(source, 44100), CONFIG, True).items():
@@ -135,6 +148,8 @@ def replay(work, destination):
                 if key != history["case_provenance"][name]["decoded_pcm_sha256"]:
                     raise ValueError("Calibration PCM changed")
                 ref = oracle.separate(audio)
+                if settings_requested and name == "music_original":
+                    calibration_pair = audio, ref
                 case = {
                     "input_pcm_sha256": key,
                     "reference_sha256": {s: pcm_hash(a) for s, a in ref.items()},
@@ -145,6 +160,20 @@ def replay(work, destination):
                     case[mode] = {s: agreement(ref[s], a.numpy()) for s, a in outputs.items()}
                 report["calibration"][name] = case
                 save()
+
+        if settings_requested:
+            if calibration_pair is None:
+                raise ValueError("Missing original music calibration")
+            from study_cuda_settings import study
+
+            study(
+                checkpoint,
+                *calibration_pair,
+                real,
+                thresholds,
+                destination.with_name("cuda-settings.json"),
+                report["source_commit"],
+            )
 
         def bounded(audio):
             with tempfile.TemporaryDirectory(dir=work) as tmp:
