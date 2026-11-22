@@ -38,7 +38,13 @@ backpressure; sequential jobs can reuse one loaded model.
    `s*H-N` through `(s+A-1)*H` (exclusive), supplying zeros outside `[0,L)`.
    Neighboring reads overlap by `N-H`. They reproduce the reference STFT frames;
    they are not independent calls to whole-song `separate()`.
-3. Use the same periodic Hann window and `center=False` STFT. Compute magnitudes
+3. For five-stem CUDA inference, a short final block after a complete window
+   is zero-extended to one full FFT batch. Crop the spectrum to the real frame
+   count before computing magnitudes. This preserves the model context while
+   matching the FFT batch shape used for earlier windows. Single-window inputs
+   keep their original FFT size. See the [Blackwell MIG experiment](five-stem-fft-study-20261103.md#observed-cuda-result-on-the-24-gb-blackwell-mig)
+   for the historical 28-frame case.
+   Use the same periodic Hann window and `center=False` STFT. Compute magnitudes
    at the same frequency bins; zero-pad only the final **magnitude** window to W.
    Run the unmodified model and `ratio_masks`, then discard padded output frames.
    High-frequency `zeros`/`average` extension and complex mixture phase are unchanged.

@@ -21,7 +21,6 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 import torch
-from fft_batch_policy import fft_batch_policy
 
 from spleeterpt.audio import read_audio, separate
 from spleeterpt.checkpoint import load_model, read_checkpoint
@@ -76,8 +75,7 @@ def worker(args):
                 format="RF64" if stem.shape[-1] * 8 >= 2**32 - 4096 else "WAV",
             )
     else:
-        with fft_batch_policy(args.fft_batch_policy, model.config, sf.info(args.input).frames):
-            separate_file(model, args.input, args.output)
+        separate_file(model, args.input, args.output, fft_batch_policy=args.fft_batch_policy)
     if cuda:
         torch.cuda.synchronize()
     result = {
