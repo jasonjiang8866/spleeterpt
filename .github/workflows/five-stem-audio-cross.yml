@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   calibration:
-    if: inputs.confirm && github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/experiment/pr50-do-intel' && github.run_attempt == '1'
+    if: github.repository == 'jasonjiang8866/spleeterpt' && github.ref == 'refs/heads/experiment/pr50-do-intel' && github.run_attempt == '1'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -25,7 +25,7 @@ jobs:
         timeout-minutes: 36
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-        run: python3 experiments/digitalocean/intel.py run
+        run: python3 experiments/digitalocean/intel.py ${{ inputs.confirm && 'run' || 'quote' }}
       - name: Delete the temporary Droplet and verify absence
         if: always()
         timeout-minutes: 4

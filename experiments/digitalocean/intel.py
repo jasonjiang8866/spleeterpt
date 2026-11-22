@@ -85,10 +85,24 @@ def cleanup():
     raise RuntimeError("Droplet cleanup not confirmed")
 
 
+def quote():
+    OUT.mkdir(exist_ok=True)
+    sizes = list(listing("sizes"))
+    rows = [
+        {
+            key: s.get(key)
+            for key in ("slug", "available", "price_hourly", "memory", "vcpus", "disk", "regions")
+        }
+        for s in sizes
+        if s["slug"].endswith("-intel") and (s["slug"] == SIZE or 8192 <= s["memory"] <= 32768)
+    ]
+    save(OUT / "intel-catalog.json", rows)
+    return sizes
+
+
 def run():
     STATE.mkdir(mode=0o700)
-    OUT.mkdir()
-    sizes = list(listing("sizes"))
+    sizes = quote()
     size = next((s for s in sizes if s["slug"] == SIZE and s["available"]), None)
     if not size or not 0 < size["price_hourly"] <= RATE_LIMIT or size["memory"] < 16384:
         raise RuntimeError("Requested Intel size unavailable or over rate cap")
@@ -192,4 +206,4 @@ def run():
 
 
 if __name__ == "__main__":
-    {"run": run, "cleanup": cleanup}[sys.argv[1]]()
+    {"quote": quote, "run": run, "cleanup": cleanup}[sys.argv[1]]()
