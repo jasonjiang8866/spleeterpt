@@ -21,7 +21,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Check the quote and run the frozen Intel calibration
+      - name: Verify the registered TRIOS archive before creating a Droplet
+        if: inputs.confirm
+        timeout-minutes: 6
+        run: |
+          manifest=scripts/five_stem_corpus.json
+          archive="$RUNNER_TEMP/trios.zip"
+          curl --fail --silent --show-error --location --retry 2 --max-time 120 \
+            "$(jq -er '.trios_archive.url' "$manifest")" -o "$archive"
+          test "$(stat -c %s "$archive")" = "$(jq -er '.trios_archive.bytes' "$manifest")"
+          echo "$(jq -er '.trios_archive.sha256' "$manifest")  $archive" | sha256sum --check
+      - name: Verify calibration and replay the two registered Intel holdouts
         timeout-minutes: 32
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}

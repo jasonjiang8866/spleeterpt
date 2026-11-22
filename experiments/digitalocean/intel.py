@@ -196,6 +196,8 @@ def run():
     print("CPU:", cpu.get("vendor_id"), cpu.get("model name"), flush=True)
     if cpu.get("vendor_id") != "GenuineIntel":
         raise RuntimeError("Intel vendor check failed")
+    with (STATE.parent / "trios.zip").open("rb") as archive:
+        subprocess.run(ssh + ["cat > trios.zip"], stdin=archive, check=True)
     with Path(__file__).with_name("replay.sh").open() as script:
         replay = subprocess.run(ssh + ["bash -s"], stdin=script, check=False)
     report = subprocess.run(ssh + ["cat native.json"], capture_output=True, check=False)

@@ -20,13 +20,8 @@ git -C upstream checkout -q c8854001ac8acad34a9bc2bd15f28475541828b1
 cd source
 export TF_ENABLE_ONEDNN_OPTS=0 TF_CPP_MIN_LOG_LEVEL=2 OPENBLAS_NUM_THREADS=1
 export OMP_NUM_THREADS=2 TF_NUM_INTRAOP_THREADS=2 TF_NUM_INTEROP_THREADS=2
-# Match the AMD calibration interpreter when the managed build is available.
-if uv python install 3.12.14; then
-  python_bin=3.12.14
-else
-  python_bin=/usr/bin/python3.12
-fi
-uv sync --locked --python "$python_bin" --group dev --group release
+uv python install 3.12.14
+uv sync --locked --python 3.12.14 --group dev --group release
 .venv/bin/python scripts/prepare_five_stem.py --work "$HOME/weights"
 .venv/bin/python scripts/verify_native_five_stem.py --weights "$HOME/weights" \
-  --upstream-root "$HOME/upstream" --output "$HOME/native.json"
+  --upstream-root "$HOME/upstream" --trios-archive "$HOME/trios.zip" --output "$HOME/native.json"
