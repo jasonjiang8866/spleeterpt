@@ -110,6 +110,26 @@ def run(output, *, five_stem=False):
         if five_stem:
             command(sys.executable, "scripts/prepare_five_stem.py", "--work", work / "weights")
             report["conversion"] = json.loads((work / "weights/provenance.json").read_text())
+            if os.environ.get("SPT_CLI_ACCEPTANCE") == "true":
+                probe = export / "cuda-cli.json"
+                try:
+                    subprocess.run(
+                        [sys.executable, "scripts/verify_cuda_cli.py", work, probe],
+                        check=True,
+                        cwd=ROOT,
+                        env={**os.environ, "TF_ENABLE_ONEDNN_OPTS": "0"},
+                    )
+                finally:
+                    if probe.exists():
+                        report["cuda_cli"] = json.loads(probe.read_text())
+                        save()
+                from bounded_result import validate_cli
+
+                try:
+                    validate_cli(report["cuda_cli"], report["commit"])
+                except ValueError:
+                    report["numerical_rejections"].append("cuda-cli")
+                    save()
             command(
                 sys.executable,
                 "scripts/verify_bounded_checkpoint.py",

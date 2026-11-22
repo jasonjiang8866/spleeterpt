@@ -65,6 +65,12 @@ class Tests(unittest.TestCase):
     def test_complete(self):
         self.check(fixture())
 
+    def test_api_benchmark_cannot_pass_as_cli_acceptance(self):
+        with self.assertRaisesRegex(ValueError, "Missing CUDA CLI calibration"):
+            validate(
+                fixture(), "a" * 40, "global1", "pod1", "1-1", five_stem=True, cli_acceptance=True
+            )
+
     def test_candidate_cannot_masquerade_as_native(self):
         result = fixture()
         report = result["report"]

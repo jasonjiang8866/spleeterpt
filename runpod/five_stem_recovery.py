@@ -37,6 +37,7 @@ def verify(root, *, allow_rejected=False):
             five_stem=True,
             expected_gpu=meta["gpu_id"],
             expected_fft_policy=meta.get("fft_batch_policy", "native"),
+            cli_acceptance=meta.get("cli_acceptance", False),
         )
     except ValueError:
         if not allow_rejected:
