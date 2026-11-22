@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_rental:
-        description: 'Rent CPU3g only, up to 3 regions, $0.16/hr, 40 minutes aggregate, $1 total budget'
+        description: 'Rent CPU3g only, up to 5 distinct regions, $0.16/hr, 40 minutes aggregate, $1 total budget'
         type: boolean
         required: true
         default: false

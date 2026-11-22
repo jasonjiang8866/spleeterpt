@@ -15,6 +15,9 @@ from native_intel_worker import SOURCE
 OUT = Path("runpod-results")
 RATE = 0.16
 LIMIT_SECONDS = 2400
+MAX_REGIONS = 5
+# All three reported AMD in placement run 45011267899.
+PREVIOUS_AMD_REGIONS = {"EU-CZ-1", "EU-NL-1", "EU-RO-1"}
 
 
 def write(name, data):
@@ -31,7 +34,8 @@ def locations(api):
             dc["id"]
             for dc in item.get("dataCenters", [])
             if dc.get("availability") in {"HIGH", "MEDIUM", "LOW"}
-        }
+        },
+        key=lambda region: (region in PREVIOUS_AMD_REGIONS, region),
     )
 
 
@@ -75,7 +79,9 @@ def run():
     if any(owned(p, repo, repo_id) for p in api.pods()):
         raise RuntimeError("A managed Pod already exists")
     image = resolve_image("library/python:3.12-bookworm")
-    regions = locations(api)[:3]
+    available = locations(api)
+    regions = available[:MAX_REGIONS]
+    write("placement-plan.json", {"available": available, "selected": regions})
     deadline = int(time.time()) + LIMIT_SECONDS
     for index, region in enumerate(regions, 1):
         if time.time() + 180 >= deadline:
@@ -102,7 +108,13 @@ def run():
         }
         audit = {"region": region, "image": image, "start_unix": int(time.time()), "name": name}
         try:
-            pod = api.call("/pods", "POST", payload)
+            try:
+                pod = api.call("/pods", "POST", payload)
+            except RuntimeError as error:
+                if "(capacity-unavailable)" not in str(error):
+                    raise
+                audit["status"] = "capacity-unavailable"
+                continue
             pod_id = pod["id"]
             if not re.fullmatch("[A-Za-z0-9]+", pod_id):
                 raise ValueError("Invalid Pod id")
@@ -125,6 +137,7 @@ def run():
                 cpu = result.get("cpu") or {}
                 status = result["status"]
                 if cpu.get("vendor") == "GenuineIntel":
+                    audit["cpu"] = cpu
                     probe_deadline = deadline
                 if status in {"other-cpu", "passed", "failed"}:
                     audit.update(cpu=cpu, status=status)
@@ -137,7 +150,9 @@ def run():
                     return
                 time.sleep(8)
             else:
-                raise TimeoutError("CPU probe or calibration timed out")
+                if audit.get("cpu", {}).get("vendor") == "GenuineIntel":
+                    raise TimeoutError("Intel calibration timed out")
+                audit["status"] = "probe-timeout"
         finally:
             cleanup(api)
             for _ in range(10):
