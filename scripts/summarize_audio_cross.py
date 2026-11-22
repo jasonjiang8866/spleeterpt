@@ -10,10 +10,21 @@ def summarize(reports):
     if len(reports) < 3 or len({r["replicate"] for r in reports}) != len(reports):
         raise ValueError("need at least three distinct replicate IDs")
     first = reports[0]
+    magnitude = (
+        first["primary_factors"] == "FFT backend x Hann coefficients x complex absolute value"
+    )
+    frame_fft = first["primary_factors"] == "RFFT on identical pre-windowed FP32 frames"
+    fft_head = first["primary_factors"] == "analysis RFFT x output head on widened D6"
+    cuts = first["primary_factors"] == "decoder prefix by backend"
+    expected_cases = {"music_original", "music_multiwindow"}
     expected_cells = {
         f"magnitude_{a}__postlogit_{b}__carrier_{c}__inverse_{d}"
         for a, b, c, d in itertools.product(("tf", "pt"), repeat=4)
     }
+    if magnitude:
+        expected_cells = {
+            f"fft_{a}__hann_{b}__abs_{c}" for a, b, c in itertools.product(("tf", "pt"), repeat=3)
+        }
     expected_controls = {
         "official_masked_refeed_exact",
         "native_hybrid_replay_exact",
@@ -22,6 +33,29 @@ def summarize(reports):
         "tf_post_refeed_pt_tf_exact",
         "tf_post_refeed_pt_pt_exact",
     }
+    if frame_fft or fft_head:
+        expected_cases.update(("music_short", "silence", "boundary_impulses"))
+        expected_cells = {
+            f"{path}_{fft}" for path in ("fixed", "native") for fft in ("pt32", "tf32", "pt64_cast")
+        }
+        expected_controls = {
+            "windowed_frame_bytes_equal",
+            "tf_rfft_matches_tf_stft",
+            "pt_rfft_matches_native_stft",
+            "native_waveform_replay_exact",
+        }
+    if fft_head:
+        implementations = ("pt32", "tf32", "pt64_cast")
+        expected_cells = {
+            f"fft_{a}__head_{b}" for a, b in itertools.product(implementations, repeat=2)
+        }
+        expected_controls.add("tf_head_refeed_exact")
+    if cuts:
+        expected_cases.update(("music_short", "silence", "boundary_impulses"))
+        expected_cells = {"tf", "torch", "native", "native_tf_conv6", "native_wide_conv6"} | {
+            f"{backend}_prefix_{k}" for backend in ("torch", "tf") for k in range(1, 7)
+        }
+        expected_controls = {"torch_stage_refeeds_exact", "tf_stage_refeeds_exact"}
     for report in reports:
         for field in (
             "schema_version",
@@ -36,13 +70,17 @@ def summarize(reports):
             "fixed_network",
             "primary_factors",
             "postlogit_scope",
-            "bridge_factors",
         ):
             if report[field] != first[field]:
                 raise ValueError(f"replicate provenance mismatch: {field}")
+        if (
+            not (magnitude or frame_fft or cuts or fft_head)
+            and report["bridge_factors"] != first["bridge_factors"]
+        ):
+            raise ValueError("replicate provenance mismatch: bridge_factors")
         if report["holdouts_used"] or report["release_eligible"]:
             raise ValueError("diagnostic scope violation")
-        if set(report["cases"]) != {"music_original", "music_multiwindow"}:
+        if set(report["cases"]) != expected_cases:
             raise ValueError("incomplete calibration cases")
         for case, result in report["cases"].items():
             for field in (
@@ -54,20 +92,49 @@ def summarize(reports):
             ):
                 if result[field] != first["cases"][case][field]:
                     raise ValueError(f"replicate input geometry mismatch: {case}/{field}")
-            if not result["attribution_valid"] or any(
-                result["controls"].get(k) is not True for k in expected_controls
+            if cuts and any(
+                result[field] != first["cases"][case][field]
+                for field in ("magnitude_sha256", "carrier_sha256", "reference_sha256")
+            ):
+                raise ValueError("decoder cut replicate input or reference mismatch")
+            if (frame_fft or fft_head) and any(
+                result[field] != first["cases"][case][field]
+                for field in ("frame_sha256", "reference_sha256")
+            ):
+                raise ValueError("frame FFT replicate input or reference mismatch")
+            if result["attribution_valid"] is not True or (
+                not magnitude
+                and any(result["controls"].get(k) is not True for k in expected_controls)
             ):
                 raise ValueError("replay controls invalid; do not attribute")
             if set(result["cells"]) != expected_cells:
                 raise ValueError("incomplete cross cells")
+            if fft_head and result["spectrum_sha256"] != first["cases"][case]["spectrum_sha256"]:
+                raise ValueError("FFT spectrum changed across replicates")
             for values in result["cells"].values():
-                if set(values) != set(report["config"]["instruments"]):
+                stems = values["waveforms"] if magnitude else values
+                if set(stems) != set(report["config"]["instruments"]):
                     raise ValueError("incomplete stems")
+                if fft_head:
+                    for row in stems.values():
+                        coords = row["failed_channel_sample"]
+                        if (
+                            len(coords) != row["strict_failed_samples"]
+                            or len({tuple(c) for c in coords}) != len(coords)
+                            or any(
+                                len(c) != 2
+                                or c[0] not in (0, 1)
+                                or not 0 <= c[1] < result["samples"]
+                                for c in coords
+                            )
+                        ):
+                            raise ValueError("invalid failing sample coordinates")
     rows = []
     for case, results in first["cases"].items():
-        for cell, stems in results["cells"].items():
-            for stem in stems:
-                values = [r["cases"][case]["cells"][cell][stem] for r in reports]
+        for cell in results["cells"]:
+            cells = [r["cases"][case]["cells"][cell] for r in reports]
+            for stem in first["config"]["instruments"]:
+                values = [(c["waveforms"] if magnitude else c)[stem] for c in cells]
                 rows.append(
                     {
                         "case": case,
@@ -82,7 +149,7 @@ def summarize(reports):
                         "bitwise_repeatable": len({v["output_sha256"] for v in values}) == 1,
                     }
                 )
-    return {
+    result = {
         "replicates": [r["replicate"] for r in reports],
         "identical_recorded_environment": all(
             r["environment"] == first["environment"] for r in reports
@@ -91,6 +158,10 @@ def summarize(reports):
         "release_eligible": False,
         "note": "Observed repeatability on calibration only; not proof of a deterministic runtime fix. Compare differing environments separately.",
     }
+    if magnitude or frame_fft or cuts or fft_head:
+        result["cpu_model"] = first["environment"]["cpu_model"]
+        result["primary_factors"] = first["primary_factors"]
+    return result
 
 
 def main():

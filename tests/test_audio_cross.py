@@ -86,3 +86,61 @@ def test_native_audio_replay_is_bitwise_equal(cross, tiny_config, samples, stems
         actual = istft(masked, config, samples)
         for index, stem in enumerate(config.instruments):
             assert torch.equal(actual[index], expected[stem])
+
+
+@pytest.mark.parametrize("samples", [31, 128, 4097])
+def test_frame_fft_replays_stft_on_identical_windowed_frames(cross, tiny_config, samples):
+    from types import SimpleNamespace
+
+    tf = cross.tf
+    g = tf.Graph()
+    with g.as_default():
+        audio = tf.compat.v1.placeholder(tf.float32, [None, 2])
+    waveform = torch.randn(2, samples, generator=torch.Generator().manual_seed(71))
+    with tf.compat.v1.Session(graph=g) as session:
+        oracle = SimpleNamespace(graph=g, waveform=audio, session=session)
+        spectra, controls, digest = cross.frame_fft_spectra(oracle, waveform, tiny_config)
+    assert all(controls.values()) and len(digest) == 64
+    assert set(spectra) == {"tf32", "pt32", "pt64_cast"}
+    assert all(spec.dtype == torch.complex64 for spec in spectra.values())
+    assert torch.equal(spectra["pt32"], stft(waveform, tiny_config, inference=True))
+
+
+def test_decoder_switch_counts_distinct_fixed_and_introduced_samples(cross):
+    ref = np.zeros((1, 3), dtype=np.float32)
+    before = np.array([[0.5, 0, -0.5]], dtype=np.float32)
+    after = np.array([[0, 0.25, -0.5]], dtype=np.float32)
+    change = cross.adjacent_waveform(before, after, ref, 0.1, 0)
+    assert change == {
+        "fixed": 1,
+        "introduced": 1,
+        "max_waveform_change": 0.5,
+        "max_change_over_tolerance": 5.0,
+    }
+
+
+def test_native_cpu_option_reproduces_widened_hooks(cross, tiny_config):
+    from unittest.mock import patch
+
+    config = replace(tiny_config, instruments=tiny_config.preset(5).instruments)
+    model = Spleeter(config).eval()
+    waveform = torch.randn(2, 4097, generator=torch.Generator().manual_seed(778))
+    baseline = separate(model, waveform)
+    from types import SimpleNamespace
+
+    graph = cross.tf.Graph()
+    with graph.as_default():
+        audio = cross.tf.compat.v1.placeholder(cross.tf.float32, [None, 2])
+    with cross.tf.compat.v1.Session(graph=graph) as session:
+        oracle = SimpleNamespace(graph=graph, waveform=audio, session=session)
+        spectra, _, _ = cross.frame_fft_spectra(oracle, waveform, config)
+    with torch.inference_mode(), ExitStack() as stack:
+        for net in model.unets.values():
+            stack.enter_context(cross.widened_layers((net.decoder[-1], net.output)))
+        stack.enter_context(patch("spleeterpt.audio.stft", return_value=spectra["pt64_cast"]))
+        reference = separate(model, waveform)
+    candidate = separate(model, waveform, five_stem_cpu_precision=True)
+    repeated = separate(model, waveform)
+    for stem in config.instruments:
+        assert torch.equal(candidate[stem], reference[stem])
+        assert torch.equal(repeated[stem], baseline[stem])

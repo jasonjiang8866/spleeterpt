@@ -55,34 +55,40 @@ def first_layer_replay(model, oracle, waveform):
     return results
 
 
-def decoder_controls(model, oracle):
+def decoder_controls(model, oracle, block=1):
     # Preselect decoder.1 from the archived same-input relative-L2 ranking.
     controls = []
     for i, net in enumerate(model.unets.values()):
-        base = "pretrained/" + layer_name("conv2d_transpose", i * 6 + 1)
+        base = "pretrained/" + layer_name("conv2d_transpose", i * 6 + block)
         output = oracle.graph.get_tensor_by_name(base + "/BiasAdd:0")
         source = oracle.graph.get_operation_by_name(base + "/conv2d_transpose").inputs[2]
-        controls.append((net.decoder[1], source, output))
+        controls.append((net.decoder[block], source, output))
     return controls
 
 
-def separate_with_order(model, waveform, order, oracle, controls):
+def separate_with_tf_convolutions(model, waveform, oracle, controls):
     with ExitStack() as stack:
-        if order == "tf_decoder1":
-            for layer, source, target in controls:
+        for layer, source, target in controls:
 
-                def substitute(module, inputs, output, source=source, target=target):
-                    feature = oracle.builder.spectrogram_feature
-                    config = model.config
-                    shape = (inputs[0].shape[0], config.segment_frames, config.frequency_bins, 2)
-                    values = oracle.session.run(
-                        target, {source: nhwc(inputs[0]), feature: np.zeros(shape, np.float32)}
-                    )
-                    # Preserve the original layout seen by downstream Torch operators.
-                    return torch.empty_like(output).copy_(nchw(values))
+            def substitute(module, inputs, output, source=source, target=target):
+                feature = oracle.builder.spectrogram_feature
+                config = model.config
+                shape = (inputs[0].shape[0], config.segment_frames, config.frequency_bins, 2)
+                values = oracle.session.run(
+                    target, {source: nhwc(inputs[0]), feature: np.zeros(shape, np.float32)}
+                )
+                # Preserve the original layout seen by downstream Torch operators.
+                return torch.empty_like(output).copy_(nchw(values))
 
-                stack.callback(layer.register_forward_hook(substitute).remove)
-        elif order in ORDERS[1:]:
+            stack.callback(layer.register_forward_hook(substitute).remove)
+        return separate(model, waveform)
+
+
+def separate_with_order(model, waveform, order, oracle, controls):
+    if order == "tf_decoder1":
+        return separate_with_tf_convolutions(model, waveform, oracle, controls)
+    with ExitStack() as stack:
+        if order in ORDERS[1:]:
             for layer in model.modules():
                 if isinstance(layer, torch.nn.BatchNorm2d):
                     handle = layer.register_forward_hook(

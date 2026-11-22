@@ -1,0 +1,159 @@
+# Five-stem CPU magnitude breakdown — 2026-11-09
+
+This follows the [CPU audio cross](five-stem-audio-cross-20261106.md) from
+[PR #49](https://github.com/jasonjiang8866/spleeterpt/pull/49). It crosses
+three binary factors in the magnitude frontend: analysis STFT backend,
+Hann coefficient source, and complex absolute value backend.
+
+Both inputs use the same hash-pinned historical recording. The repeated
+input crosses three model windows and ends with a five-frame tail. The
+Torch encoder, official TF decoder, TF carrier STFT, masks and inverse
+STFT are fixed. The independently rebuilt TF STFT and the Torch STFT with
+native Hann values must each reproduce their own native spectra exactly.
+Feeding the TF spectrum through the official magnitude graph must also
+reproduce its original feature tensor. The pointwise waveform threshold
+remains `1e-5 + 1e-4 * abs(reference)`.
+
+## Observed results
+
+Intel Xeon Platinum 8573C, ATen AVX512, Python 3.12.14, Torch 2.8.0+cpu,
+TensorFlow 2.18.1 with oneDNN disabled, NumPy 2.0.2. The table collapses
+the absolute-value factor because each TF/PT pair had identical magnitude,
+decoder-logit and waveform hashes.
+
+Three fresh processes agreed on all 80 waveform comparisons per process.
+[Raw reports](results/magnitude-20261109/evidence.zip) contain all three replicates,
+the exact script and model hashes, input PCM hashes, and per-stem metrics.
+The ZIP SHA-256 is
+`5e394f24bd43b97d15aec18196982063ae20c3e19243a5c96b5d83643c95d560`.
+The reports identify base commit `a4c092a01d8308eeecabbc3344bf797573685ad4`
+and the local diagnostic source hashes. No audio, weights or holdout material
+is included.
+
+| Analysis STFT | Hann | Original worst tolerance ratio | Repeated worst tolerance ratio | Failed scalars, original / repeated |
+|---|---|---:|---:|---:|
+| TF | TF | 0.308331 | 0.354766 | 0 / 0 |
+| TF | Torch | 0.777305 | 0.788843 | 0 / 0 |
+| Torch | TF | 0.887487 | 1.023671 | 0 / 1 |
+| Torch | Torch | 0.722568 | 0.927264 | 0 / 0 |
+
+The Hann coefficients differed by at most `5.96046448e-8`. Changing FFT
+backend at fixed TF Hann shifted the repeated waveform by up to
+`1.37537718e-5`. Changing Hann at fixed Torch FFT shifted it by up to
+`1.20401382e-5`. The largest signed FFT × Hann interaction was
+`1.24387443e-5`. The one failing sample was in repeated-clip drums.
+Substituting TF Hann by itself therefore made that Torch-FFT case worse.
+
+The all-Torch frontend passed 10/10 outputs with the fixed TF decoder and
+downstream path on this host. The [prior AMD study](five-stem-audio-cross-20261106.md)
+found 68 failing scalars under that controlled configuration. The runs
+differ in environment and do not isolate CPU architecture as the cause.
+The FFT and Hann factors both warrant checking on a host that reproduces
+the earlier failures. Native Torch decoder parity and independent mixed-piano
+quality validation remain separate release gates. The holdouts were unused.
+
+## Cross-host comparison of archived native cells
+
+The six AMD reports and three Intel reports contain two common cells. Each
+uses one framework throughout the magnitude frontend and fixes the Torch
+encoder, official TF decoder, carrier and reconstruction. The official source,
+checkpoint, decoded PCM, configuration and pointwise thresholds match.
+
+| Frontend | Magnitude hash on AMD vs Intel | Fixed-network logit hash on AMD vs Intel | Failing waveform scalars on AMD / Intel |
+|---|---|---|---:|
+| TF | Identical on both inputs | Different on both inputs | 0 / 0 |
+| Torch | Different on both inputs | Different on both inputs | 68 / 0 |
+
+Counts sum the original and repeated clips once per configuration. With
+identical TF magnitude, drift is already visible at the fixed network output.
+With Torch magnitude there is an additional upstream difference. Hash
+comparisons locate observed differences but cannot assign them to a particular
+FFT or convolution kernel. The AMD archive contains only the native frontend
+pairs, so its hashes cannot resolve the crossed FFT/Hann combinations.
+
+## Hosted CPU reproduction, 2026-11-18
+
+Two separately provisioned GitHub runners ran the eight-cell matrix at commit
+`7582bd39129910e5349df30a4e8b53dd5a30eaaf`. Each ran three fresh
+Python 3.12.16 processes with the same pinned weights and PCM, Torch 2.8.0+cpu,
+TF 2.18.1, and NumPy 2.0.2. All 80 waveform hashes repeated within each
+runner. The two absolute-value implementations gave identical magnitude,
+logit and waveform hashes within every FFT/Hann cell. The table therefore
+counts each failing channel/sample scalar once per input, without multiplying
+by repeats or by the absolute-value implementation.
+
+| FFT | Hann | Intel 6975P-C original / repeated failures | AMD EPYC 7763 original / repeated failures | AMD worst tolerance ratio |
+|---|---|---:|---:|---:|
+| TF | TF | 0 / 0 | 0 / 0 | 0.913844 |
+| TF | Torch | 0 / 0 | 0 / 0 | 0.910640 |
+| Torch | TF | 0 / 1 | 0 / 107 | 1.399757 |
+| Torch | Torch | 0 / 0 | 9 / 44 | 1.135836 |
+
+On the EPYC 7763, the native Torch magnitude frontend failed original bass
+(9), repeated drums (11), and repeated bass (33). These are the same three
+case/stem failures seen on the historical EPYC 9V74 (25, 17 and 26).
+For each input, both native TF and native Torch magnitude hashes matched
+between the AMD studies, while their respective fixed-network logit hashes
+differed. This reproduces the failing cases and narrows where the counts
+start to diverge. It leaves the cause of the logit differences open.
+The hosted Intel runner matched all 80 waveform hashes from the earlier
+8573C study, including the one repeated-drums scalar with Torch FFT and TF Hann.
+
+Holding Torch Hann fixed and switching to the TF FFT path brought all ten
+fixed-decoder outputs inside tolerance on both hosted CPUs. Replacing only
+the Hann coefficients increased AMD failures from 53 to 107. The [shared-frame RFFT follow-up](five-stem-frame-fft-20261118.md) tests
+identical frames and a Torch-only candidate on the failing AMD cases.
+Any candidate still needs all five calibration inputs through the complete
+native decoder and waveform reconstruction before GPU and holdout evaluation.
+
+| Runner | Actions run | Raw ZIP and SHA-256 |
+|---|---|---|
+| Intel Xeon 6975P-C, AVX512 | [44300726283](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44300726283) | [Intel evidence](results/magnitude-20261118/intel.zip) `747e08fb7169936e72e086cb4f73acf969058a9d66ced58ecf827fc7ec15a0f1` |
+| AMD EPYC 7763, AVX2 | [44301560507](https://github.com/jasonjiang8866/spleeterpt/actions/runs/44301560507) | [AMD evidence](results/magnitude-20261118/amd.zip) `6266ab9c2ad97d429c02f0e7273fe6b2152c2fa5348e2529a85c0753641fcce4` |
+
+Each checked-in ZIP matches the Actions artifact digest and contains the
+three raw reports and their independently reproducible summary.
+
+## Reproduction
+
+Use the pinned CPU/release dependency groups, official weights and upstream
+checkout described in the [audio cross setup](five-stem-audio-cross-20261106.md#reproduction).
+Run each replicate in a fresh Python process. The manual
+`Five-stem CPU audio cross study` workflow accepts `study=magnitude-breakdown`
+and uploads the three raw reports with a per-stem repeat summary. Check the
+recorded CPU model before interpreting a hosted run as an AMD reproduction.
+
+```bash
+uv run --no-sync python scripts/study_audio_cross.py \
+  --magnitude-breakdown --weights /tmp/weights --upstream-root /tmp/upstream \
+  --replicate cpu-1 --output /tmp/magnitude-cpu-1.json
+```
+
+## Path to five-stem weights publication
+
+The current evidence supports a rounding investigation. It does not establish
+a defect in Deezer's trained weights or a separation-quality regression.
+The existing [operator and FP64 controls](five-stem-numerics.md) found matching
+mathematical networks, with FP32 drift before the five-stem softmax. Two/four
+stems use sigmoid masks; five stems uses cross-stem softmax. The measured
+response to relative-logit drift helps explain this checkpoint's sensitivity,
+but stem count alone does not prove the cause.
+
+| Stage | Work | Completion evidence |
+|---|---|---|
+| Reproduce across environments | Run this matrix on an AMD environment that reproduces the earlier failure, pinning dependencies and decoded PCM. Record fresh-process repeats and the paired native controls. | A reproducible failing case and comparable Intel/AMD reports with exact source and environment identity. |
+| Resolve native inference | Use the failing case to test one frontend intervention at a time, then isolate the remaining decoder convolution/BatchNorm drift. Recheck the full native pipeline after each candidate. | All five calibration inputs pass all five stems under the original pointwise gate, across declared CPU environments. Mixed TF/Torch diagnostic outputs cannot satisfy this native-PyTorch gate. |
+| Validate CUDA and bounded inference | Review the current RunPod budget ledger and inventory, then validate the frozen candidate on PRO 6000 MIG 24 GB using the existing controller, Global Volume and cleanup checks. Include long-audio boundaries and the recorded FFT-tail candidate. | Original CUDA waveform gates, edge cases, bounded-memory measurements, artifacts and independently verified temporary-Pod deletion. |
+| Open frozen piano holdouts | Freeze candidate source, checkpoint and evaluation protocol, then evaluate the two preregistered TRIOS mixtures against official TF and the mixture baseline. | Positive piano/other improvement over the mixture and at most 0.1 dB loss versus TF for each active target on each recording, plus leakage and waveform reports. Follow the existing holdout protocol on failure. |
+| Package and publish | Extend the existing release builder and model catalog after the validation gates pass. Recheck weight redistribution notices, build the model card and verify clean-cache CLI download/inference and all uploaded checksums. | A reviewed draft release with immutable assets and explicit supported environments, followed by release authorization. |
+
+If cross-environment FP32 parity remains unattainable, report that result and
+make an explicit release-policy decision before changing acceptance criteria.
+Quality-based experimental distribution would require a separately reviewed
+policy and supporting measurements. A more permissive gate must not silently
+turn previous numerical failures into passes.
+
+Local validation for this change completed with 320 tests passed, three CUDA
+tests skipped, and 82 RunPod offline tests passed. Three independent processes
+completed the numerical matrix. This PR prepares the first stage of the release
+plan; the later stages require their own measured evidence.

@@ -6,18 +6,28 @@ the existing native-audio/TF-decoder control. No runtime implementation changes.
 """
 
 import argparse
+import contextlib
 import hashlib
 import itertools
 import json
 import os
 import platform
 import subprocess
+import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 import soundfile as sf
 import tensorflow as tf
 import torch
+from decoder_cuts import (
+    adjacent_waveform,
+    decoder_logits,
+    native_block_six,
+    tensorflow_heads,
+    widened_layers,
+)
 from diagnose_numerics import metrics, nchw, nhwc
 from parity_metrics import ATOL, RTOL, agreement
 from study_network_halves import graph_boundary, native_with_tf_decoder
@@ -247,6 +257,323 @@ def run_case(oracle, model, waveform):
     }
 
 
+def magnitude_spectra(oracle, config, waveform, official_spectrum):
+    """Cross the analysis window and FFT backend with the native frame geometry."""
+    n_fft, hop = config.n_fft, config.hop_length
+    torch_window = torch.hann_window(n_fft, dtype=waveform.dtype)
+    with oracle.graph.as_default():
+        tf_window = tf.signal.hann_window(n_fft, dtype=tf.float32)
+        padded_tf = tf.pad(tf.transpose(oracle.waveform), [[0, 0], [n_fft, 0]])
+        tf_spectra = {
+            backend: tf.signal.stft(
+                padded_tf,
+                n_fft,
+                hop,
+                window_fn=lambda _length, dtype, coefficients=window: coefficients,
+                pad_end=True,
+            )
+            for backend, window in (
+                ("tf", tf_window),
+                ("pt", tf.constant(torch_window.numpy())),
+            )
+        }
+    tf_values, tf_replayed = oracle.session.run(
+        [tf_window, tf_spectra], {oracle.waveform: waveform.numpy().T}
+    )
+    if not np.array_equal(tf_replayed["tf"].transpose(1, 2, 0), official_spectrum):
+        raise ValueError("magnitude study did not reproduce official TF STFT")
+    frame_count = official_spectrum.shape[0]
+    needed = n_fft + (frame_count - 1) * hop
+    padded_pt = torch.nn.functional.pad(waveform, (n_fft, needed - n_fft - waveform.shape[-1]))
+    windows = {"tf": torch.from_numpy(tf_values), "pt": torch_window}
+    spectra = {("tf", backend): torch.from_numpy(spec) for backend, spec in tf_replayed.items()}
+    for backend, window in windows.items():
+        spectra["pt", backend] = torch.stft(
+            padded_pt, n_fft, hop, window=window, center=False, return_complex=True
+        ).transpose(-2, -1)
+    native = stft(waveform, config, inference=True)
+    if not torch.equal(spectra["pt", "pt"], native) or any(
+        spec.shape != native.shape for spec in spectra.values()
+    ):
+        raise ValueError("magnitude study did not reproduce native STFT or frame geometry")
+    return spectra, windows
+
+
+def run_magnitude_case(oracle, model, waveform):
+    config, stems = model.config, model.config.instruments
+    feed = {oracle.waveform: waveform.numpy().T}
+    feature, carrier = oracle.builder.spectrogram_feature, oracle.builder.stft_feature
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    official_magnitude, official_spectrum = oracle.session.run([feature, carrier], feed)
+    reference = oracle.separate(waveform)
+    spectra, windows = magnitude_spectra(oracle, config, waveform, official_spectrum)
+    waves, cells = {}, {}
+    for (fft, hann), spectrum in spectra.items():
+        magnitudes = {
+            "tf": oracle.session.run(feature, {carrier: spectrum.numpy().transpose(1, 2, 0)}),
+            "pt": native_magnitude(spectrum, config),
+        }
+        if (fft, hann) == ("tf", "tf") and not np.array_equal(magnitudes["tf"], official_magnitude):
+            raise ValueError("TF STFT refeed did not reproduce the official magnitude")
+        for absolute, magnitude in magnitudes.items():
+            logits = fixed_decoder_logits(oracle, model, magnitude)
+            # Preserve the official carrier STFT, masks and reconstruction.
+            outputs = oracle.session.run(
+                oracle.outputs, {**feed, feature: magnitude, stacked: logits}
+            )
+            value = {s: outputs[s].T for s in stems}
+            waves[fft, hann, absolute] = value
+            cells[f"fft_{fft}__hann_{hann}__abs_{absolute}"] = {
+                "magnitude": metrics(official_magnitude, magnitude),
+                "magnitude_sha256": array_hash(magnitude),
+                "logits_sha256": array_hash(logits),
+                "waveforms": {s: waveform_metrics(reference[s], value[s]) for s in stems},
+            }
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": official_spectrum.shape[0],
+        "windows": len(official_magnitude),
+        "last_window_frames": (official_spectrum.shape[0] - 1) % config.segment_frames + 1,
+        "hann": metrics(windows["tf"].numpy(), windows["pt"].numpy()),
+        "spectra": {
+            f"fft_{fft}__hann_{hann}": {
+                "sha256": array_hash(spec.numpy()),
+                **metrics(official_spectrum, spec.numpy().transpose(1, 2, 0)),
+            }
+            for (fft, hann), spec in spectra.items()
+        },
+        "cells": cells,
+        "fft_hann_contrasts_by_abs": {
+            absolute: {
+                s: factorial_contrasts(
+                    reference[s],
+                    waves["tf", "tf", absolute][s],
+                    waves["pt", "tf", absolute][s],
+                    waves["tf", "pt", absolute][s],
+                    waves["pt", "pt", absolute][s],
+                    axes=("fft", "hann"),
+                )
+                for s in stems
+            }
+            for absolute in BACKENDS
+        },
+        "abs_contrasts": {
+            f"fft_{fft}__hann_{hann}": {
+                s: float(
+                    np.max(
+                        np.abs(
+                            waves[fft, hann, "tf"][s].astype(np.float64) - waves[fft, hann, "pt"][s]
+                        )
+                    )
+                )
+                for s in stems
+            }
+            for fft, hann in spectra
+        },
+        "attribution_valid": True,
+    }
+
+
+def frame_fft_spectra(oracle, waveform, config):
+    """Give both RFFTs the same FP32 buffer and verify both enclosing STFTs."""
+    n_fft, hop = config.n_fft, config.hop_length
+    window = torch.hann_window(n_fft, dtype=waveform.dtype)
+    padded = torch.nn.functional.pad(waveform, (n_fft, 0))
+    count = (padded.shape[-1] + hop - 1) // hop
+    tail = n_fft + (count - 1) * hop - padded.shape[-1]
+    frames = (
+        torch.nn.functional.pad(padded, (0, tail)).unfold(-1, n_fft, hop) * window
+    ).contiguous()
+    with oracle.graph.as_default():
+        tf_audio = tf.pad(tf.transpose(oracle.waveform), [[0, 0], [n_fft, 0]])
+        tf_hann = tf.constant(window.numpy())
+        framed = tf.signal.frame(tf_audio, n_fft, hop, pad_end=True) * tf_hann
+        shared = tf.compat.v1.placeholder(tf.float32, [2, None, n_fft])
+        tf_fft = tf.signal.rfft(shared, [n_fft])
+        enclosing = tf.signal.stft(
+            tf_audio,
+            n_fft,
+            hop,
+            fft_length=n_fft,
+            pad_end=True,
+            window_fn=lambda length, dtype: tf_hann,
+        )
+    tf_frames, tf_stft, tf_result = oracle.session.run(
+        [framed, enclosing, tf_fft], {oracle.waveform: waveform.numpy().T, shared: frames.numpy()}
+    )
+    pt_result = torch.fft.rfft(frames, dim=-1)
+    controls = {
+        "windowed_frame_bytes_equal": array_hash(tf_frames) == array_hash(frames.numpy()),
+        "tf_rfft_matches_tf_stft": np.array_equal(tf_result, tf_stft),
+        "pt_rfft_matches_native_stft": torch.equal(
+            pt_result, stft(waveform, config, inference=True)
+        ),
+    }
+    if not all(controls.values()):
+        raise ValueError(f"FFT boundary replay failed: {controls}")
+    # Widen the transform only. Quantize to complex64 before magnitude, carrier or network use.
+    spectra = {
+        "pt32": pt_result,
+        "tf32": torch.from_numpy(tf_result),
+        "pt64_cast": torch.fft.rfft(frames.double(), dim=-1).to(torch.complex64),
+    }
+    return spectra, controls, array_hash(frames.numpy())
+
+
+def run_frame_fft_case(oracle, model, waveform):
+    config = model.config
+    spectra, controls, frames_hash = frame_fft_spectra(oracle, waveform, config)
+    reference = oracle.separate(waveform)
+    baseline = separate(model, waveform)
+    feed = {oracle.waveform: waveform.numpy().T}
+    feature = oracle.builder.spectrogram_feature
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    spectra_metrics, cells = {}, {}
+    for name, spectrum in spectra.items():
+        magnitude = native_magnitude(spectrum, config)
+        logits = fixed_decoder_logits(oracle, model, magnitude)
+        outputs = oracle.session.run(oracle.outputs, {**feed, feature: magnitude, stacked: logits})
+        cells[f"fixed_{name}"] = {
+            s: waveform_metrics(reference[s], outputs[s].T) for s in config.instruments
+        }
+        # Use the real inference entry point; replace its analysis spectrum for this call only.
+        with patch("spleeterpt.audio.stft", return_value=spectrum):
+            native = separate(model, waveform)
+        if name == "pt32":
+            controls["native_waveform_replay_exact"] = all(
+                torch.equal(baseline[s], native[s]) for s in config.instruments
+            )
+            if not controls["native_waveform_replay_exact"]:
+                raise ValueError("native spectrum injection changed the waveform")
+        cells[f"native_{name}"] = {
+            s: waveform_metrics(reference[s], native[s].numpy()) for s in config.instruments
+        }
+        spectra_metrics[name] = {
+            "sha256": array_hash(spectrum.numpy()),
+            "vs_tf32": metrics(spectra["tf32"].numpy(), spectrum.numpy()),
+            "magnitude_sha256": array_hash(magnitude),
+            "fixed_logits_sha256": array_hash(logits),
+        }
+    frames = spectra["pt32"].shape[-2]
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": (frames + config.segment_frames - 1) // config.segment_frames,
+        "last_window_frames": (frames - 1) % config.segment_frames + 1,
+        "frame_sha256": frames_hash,
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "spectra": spectra_metrics,
+        "controls": controls,
+        "attribution_valid": all(controls.values()),
+        "cells": cells,
+    }
+
+
+def run_decoder_cuts(oracle, model, waveform):
+    feed = {oracle.waveform: waveform.numpy().T}
+    magnitude, carrier = oracle.session.run(
+        [oracle.builder.spectrogram_feature, oracle.builder.stft_feature], feed
+    )
+    reference = oracle.separate(waveform)
+    stacked = oracle.graph.get_tensor_by_name("pretrained/stack:0")
+    cells, hashes, changes = {}, {}, {}
+    # A repeated clip has three model windows. Spool logits and keep just the
+    # adjacent waveform pair while measuring a switch; TF also allocates workspace.
+    with tempfile.TemporaryDirectory(prefix="spleeter-decoder-") as spool:
+        paths = decoder_logits(oracle, model, magnitude, Path(spool))
+        for left, right in (("tf", "torch"), ("torch", "tf")):
+            path = [right] + [f"{left}_prefix_{k}" for k in range(1, 7)] + [left]
+            changes[left] = []
+            previous = None
+            for mode in path:
+                value = np.load(paths[mode], mmap_mode="r")
+                outputs = oracle.session.run(oracle.outputs, {**feed, stacked: value})
+                current = {s: v.T for s, v in outputs.items()}
+                if mode not in cells:
+                    cells[mode] = {s: waveform_metrics(reference[s], v) for s, v in current.items()}
+                    hashes[mode] = array_hash(value)
+                if previous is not None:
+                    changes[left].append(
+                        {
+                            s: adjacent_waveform(previous[s], current[s], ref, ATOL, RTOL)
+                            for s, ref in reference.items()
+                        }
+                    )
+                previous = current
+    del value, outputs, previous, current
+    for mode, outputs in native_block_six(model, oracle, waveform).items():
+        cells[mode] = {s: waveform_metrics(reference[s], v.numpy()) for s, v in outputs.items()}
+    frames = carrier.shape[0]
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": len(magnitude),
+        "last_window_frames": (frames - 1) % model.config.segment_frames + 1,
+        "magnitude_sha256": array_hash(magnitude),
+        "carrier_sha256": array_hash(carrier),
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "logit_hashes": hashes,
+        "attribution_valid": True,
+        "controls": {"torch_stage_refeeds_exact": True, "tf_stage_refeeds_exact": True},
+        "cells": cells,
+        "adjacent_switches": changes,
+    }
+
+
+def run_fft_head_case(oracle, model, waveform):
+    config = model.config
+    spectra, controls, frames_hash = frame_fft_spectra(oracle, waveform, config)
+    reference = oracle.separate(waveform)
+    cells = {}
+    frames = spectra["pt32"].shape[-2]
+    with widened_layers(net.decoder[5] for net in model.unets.values()):
+        baseline = separate(model, waveform)
+        for fft, spectrum in spectra.items():
+            # The graph head may use the feature for geometry. Its numeric input
+            # always comes from the actual Torch decoder window at the hook.
+            feature = native_magnitude(spectrum, config)[:1].copy()
+            for head in ("pt32", "tf32", "pt64_cast"):
+                with contextlib.ExitStack() as stack:
+                    if head == "tf32":
+                        stack.enter_context(tensorflow_heads(oracle, model, feature))
+                    elif head == "pt64_cast":
+                        stack.enter_context(
+                            widened_layers(net.output for net in model.unets.values())
+                        )
+                    stack.enter_context(patch("spleeterpt.audio.stft", return_value=spectrum))
+                    outputs = separate(model, waveform)
+                if (fft, head) == ("pt32", "pt32") and any(
+                    not torch.equal(baseline[s], v) for s, v in outputs.items()
+                ):
+                    raise ValueError("widened decoder baseline replay differs")
+                rows = {}
+                for stem, output in outputs.items():
+                    value, ref = output.numpy(), reference[stem]
+                    row = waveform_metrics(ref, value)
+                    r = ref.astype(np.float64)
+                    failures = np.abs(value - r) > ATOL + RTOL * np.abs(r)
+                    row["failed_channel_sample"] = np.argwhere(failures).tolist()
+                    rows[stem] = row
+                cells[f"fft_{fft}__head_{head}"] = rows
+    controls.update(native_waveform_replay_exact=True, tf_head_refeed_exact=True)
+    return {
+        "decoded_pcm_sha256": array_hash(waveform.numpy()),
+        "samples": waveform.shape[-1],
+        "frames": frames,
+        "windows": (frames + config.segment_frames - 1) // config.segment_frames,
+        "last_window_frames": (frames - 1) % config.segment_frames + 1,
+        "frame_sha256": frames_hash,
+        "reference_sha256": {s: array_hash(v) for s, v in reference.items()},
+        "spectrum_sha256": {k: array_hash(v.numpy()) for k, v in spectra.items()},
+        "attribution_valid": all(controls.values()),
+        "controls": controls,
+        "cells": cells,
+    }
+
+
 def environment():
     cpu = Path("/proc/cpuinfo").read_text() if Path("/proc/cpuinfo").exists() else ""
     return {
@@ -292,6 +619,21 @@ def main():
     parser.add_argument("--upstream-root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--replicate", required=True)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--fft-head", action="store_true", help="cross FFT and head with widened D6")
+    mode.add_argument(
+        "--decoder-cuts",
+        action="store_true",
+        help="cross successive decoder blocks on frozen skips",
+    )
+    mode.add_argument(
+        "--frame-fft", action="store_true", help="replay identical windowed frames through RFFT"
+    )
+    mode.add_argument(
+        "--magnitude-breakdown",
+        action="store_true",
+        help="cross FFT, Hann coefficients and complex magnitude on fixed downstream TF audio",
+    )
     args = parser.parse_args()
     if os.getenv("TF_ENABLE_ONEDNN_OPTS") != "0":
         raise ValueError("set TF_ENABLE_ONEDNN_OPTS=0 before starting Python")
@@ -320,7 +662,10 @@ def main():
         raise ValueError("TF graph differs from historical reference")
     model = load_model(checkpoint).eval()
     waveforms = audio_cases(read_audio(source, model.config.sample_rate), model.config, True)
-    for name in MUSIC_CASES:
+    case_names = (
+        tuple(waveforms) if (args.frame_fft or args.decoder_cuts or args.fft_head) else MUSIC_CASES
+    )
+    for name in case_names:
         if (
             array_hash(waveforms[name].numpy())
             != history["case_provenance"][name]["decoded_pcm_sha256"]
@@ -370,15 +715,46 @@ def main():
     oracle = OfficialGraph(
         args.weights / "5stems/model", model.config.instruments, args.upstream_root
     )
+    study_case = run_case
+    if args.magnitude_breakdown:
+        report["primary_factors"] = "FFT backend x Hann coefficients x complex absolute value"
+        del report["bridge_factors"]
+        study_case = run_magnitude_case
+    elif args.fft_head:
+        report["primary_factors"] = "analysis RFFT x output head on widened D6"
+        report["fixed_network"] = "Torch encoder and decoder with FP64 sixth transposed convolution"
+        report["postlogit_scope"] = (
+            "native Torch masks, carrier from the selected RFFT, native inverse"
+        )
+        del report["bridge_factors"]
+        study_case = run_fft_head_case
+    elif args.decoder_cuts:
+        report["primary_factors"] = "decoder prefix by backend"
+        report["fixed_network"] = (
+            "Torch encoder on official TF magnitude; fixed raw skips and bottleneck"
+        )
+        report["postlogit_scope"] = (
+            "prefixes: TF carrier, masks and reconstruction; native variants: complete Torch path"
+        )
+        del report["bridge_factors"]
+        study_case = run_decoder_cuts
+    elif args.frame_fft:
+        report["primary_factors"] = "RFFT on identical pre-windowed FP32 frames"
+        report["fixed_network"] = "fixed Torch encoder / TF decoder and complete native pipeline"
+        report["postlogit_scope"] = (
+            "fixed cells use official TF carrier and reconstruction; native cells replace the full analysis spectrum"
+        )
+        del report["bridge_factors"]
+        study_case = run_frame_fft_case
     args.output.parent.mkdir(parents=True, exist_ok=True)
     try:
-        for name in MUSIC_CASES:
-            report["cases"][name] = run_case(oracle, model, waveforms[name])
+        for name in case_names:
+            report["cases"][name] = study_case(oracle, model, waveforms[name])
             args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
             print(
                 name,
                 {
-                    k: sum(r["strict_failed_samples"] for r in rows.values())
+                    k: sum(r["strict_failed_samples"] for r in rows.get("waveforms", rows).values())
                     for k, rows in report["cases"][name]["cells"].items()
                 },
                 flush=True,
