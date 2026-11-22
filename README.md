@@ -8,7 +8,12 @@ official Deezer release.
 [Long-audio inference](#long-audio-inference-with-bounded-memory) ·
 [Beginner's stem guide](#what-is-a-stem-and-which-model-should-i-choose) ·
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
-[When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress--2026-11-01-sgt)
+[When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress)
+
+**Five-stem progress · 22 Nov 2026.** The opt-in CPU path passed all
+25 calibration waveform checks on both AMD EPYC 9V74 and DigitalOcean Premium Intel.
+Both hosts also passed all 10 stem checks on the same two TRIOS chamber recordings. The release catalog currently offers 2 and 4 stems.
+[Five-stem results and availability](#five-stem-validation)
 
 ## Long-audio inference with bounded memory
 
@@ -70,20 +75,7 @@ to control; they do not automatically mean cleaner vocals or better sound.
 |---|---|---|---|
 | **2-stem** | `vocals.wav` (人声) + `accompaniment.wav` (all instruments together / 伴奏) | You want vocals to listen to or edit, or a backing track to sing over | Ready to use: `--model 2stems` |
 | **4-stem** | `vocals.wav` (人声), `drums.wav` (鼓与打击乐), `bass.wav` (贝斯), `other.wav` (remaining instruments / 其他乐器) | You want to study a drum/bass part or adjust vocals, drums and bass independently | Ready to use: `--model 4stems` |
-| **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Advanced only: code supports it, but no ready-to-use release; strict numerical validation is not yet fully passing |
-
-**Five-stem validation update (2026-11-02):** the official checkpoint passes the
-new CPU file-boundary checks and three solo-piano excerpts, but still fails 6/25
-strict TF/PyTorch demo waveform checks. See the [reproducible report and release
-blockers](docs/five-stem-validation-20261102.md). The ordinary download catalog
-continues to recommend 2/4 stems; `--model 5stems` is not yet released.
-An opt-in [FFT batch candidate study](docs/five-stem-fft-study-20261103.md)
-passes official-checkpoint CPU checks; CUDA validation and independent piano
-holdout coverage are still pending. It does not change the default frontend.
-[Real PRO 6000 MIG measurements](docs/five-stem-gpu-20261102.md) now cover 600-second
-audio, but the five-stem bounded path still exceeds its strict absolute-error
-gate on two stems in a 60-second real-music case. Memory savings do not constitute
-full model acceptance.
+| **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Research checkpoint via conversion. [CPU candidate and release status](#five-stem-validation) |
 
 In the 4-stem model, `other.wav` groups instruments such as guitar, piano, strings
 and synthesizers together. Five-stem uses a separately trained preset that adds
@@ -96,6 +88,23 @@ it does not provide one file per singer or guarantee separate lead/backing vocal
 For karaoke, **start with 2-stem and use `accompaniment.wav`**. For drum practice,
 choose 4-stem and listen to `drums.wav`; to make a backing track without drums,
 combine vocals, bass and other in an audio editor, leaving drums out.
+
+### Five-stem validation
+
+[PR #50](https://github.com/jasonjiang8866/spleeterpt/pull/50) adds an opt-in,
+full-track CPU path for a converted five-stem checkpoint. On AMD EPYC 9V74 and
+DigitalOcean Premium Intel, all five stems of five calibration inputs matched
+the official TensorFlow reference computed on each host. Default FP32 passed
+20/25 on Intel. On each CPU the opt-in path passed all ten TRIOS waveforms and all four
+piano/other quality checks on the same two recordings. Piano SI-SDR improved over the unseparated mixture by **6.90 dB on
+Brahms** and **7.34 dB on Schubert**. Median inference for a 10.88 s clip
+increased from 1.38 s to 1.53 s on AMD (two CPU threads, six timed runs).
+[Protocol, measurements and raw results](docs/five-stem-native-cpu-20261119.md)
+
+Use `--device cpu --five-stem-cpu-precision` with a converted five-stem checkpoint.
+Five-stem weights remain research-only pending strict bounded-memory CUDA validation
+and release checks.
+[Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights
 
@@ -223,7 +232,7 @@ challengers; this project does not claim the best current separation quality.
 
 | Need | Spleeter / spleeterpt advantage | Boundary |
 |---|---|---|
-| Maintain an existing Spleeter pipeline | Official weight conversion and checked 2/4-stem TF/PT waveform parity | Five-stem strict FP32 parity still has small discrepancies |
+| Maintain an existing Spleeter pipeline | Official weight conversion and checked 2/4-stem TF/PT waveform parity | Default five-stem FP32 still has discrepancies. [Opt-in CPU results](#five-stem-validation) |
 | Batch MIR preprocessing, rough stems, practice tracks | Released 2/4-stem weights; research 5-stem checkpoint support; local CLI | Listen for bleed and artifacts; benchmark throughput on the actual workload |
 | Study training, normalization or recovery | Inspectable CNN; checked resume/recovery; controlled BN experiments | The 90-step fine-tune has not improved on official weights |
 | Keep inference in a PyTorch stack | TensorFlow needed only for checkpoint conversion | Local inference and trainability are also available in several alternatives |
@@ -314,12 +323,12 @@ has **55.67× faster inference** with these recipes. One-attempt compute estimat
 are additional. Upstream training overlap remains unresolved, and all 50 test
 songs remain untouched. [Full results, protocol, CPU memory and listening package](docs/vocal-benchmark-41281557441.md).
 
-## Current progress — 2026-11-01 (SGT)
+## Current progress
 
 | Area | Verified status |
 |---|---|
 | PyTorch port | Trainable 2/4/5-stem U-Nets, official TF checkpoint conversion, separation, validation and resume |
-| TF/PT parity | 2/4-stem real-audio waveform comparisons pass; 5-stem retains small FP32 numerical discrepancies under strict waveform tolerances |
+| TF/PT parity | 2/4-stem real-audio checks pass. The [opt-in five-stem CPU candidate](#five-stem-validation) passed 25/25 calibration waveforms on AMD and Intel, plus 10/10 TRIOS waveforms on each CPU |
 | Legacy quality regression | Controlled ablations identified STFT frame alignment and, for 4 stems, activation mismatch; see [diagnosis](docs/audio-parity-and-legacy-diagnosis.md) |
 | Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
@@ -607,8 +616,8 @@ and the [persistent training pilot](runpod/persistent.md).
 
 New: [real-audio parity and legacy-port diagnosis](docs/audio-parity-and-legacy-diagnosis.md)
 includes complete TF/Torch waveform comparisons, controlled legacy ablations, and
-a five-track ground-truth MUSDB preview check. Two/four stems match; the stricter
-five-stem waveform test retains a small numerical discrepancy and is not marked passed.
+a five-track ground-truth MUSDB preview check. Two/four stems match. For subsequent five-stem measurements, see
+[the CPU candidate and its validation scope](#five-stem-validation).
 
 ## Attribution
 
