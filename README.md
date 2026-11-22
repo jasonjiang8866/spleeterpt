@@ -10,9 +10,9 @@ official Deezer release.
 [Model architecture](#model-architecture) · [Alternatives](#spleeter-and-its-alternatives) ·
 [When to use Spleeter](#where-spleeter-and-this-port-fit) · [Current progress](#current-progress)
 
-**Five-stem progress · 22 Nov 2026.** The CPU candidate in PR #50 passed all
+**Five-stem progress · 22 Nov 2026.** The opt-in CPU path passed all
 25 calibration waveform checks on both AMD EPYC 9V74 and DigitalOcean Premium Intel.
-On AMD it also passed all 10 stem checks on two held-out chamber recordings. The release catalog currently offers 2 and 4 stems.
+Both hosts also passed all 10 stem checks on the same two TRIOS chamber recordings. The release catalog currently offers 2 and 4 stems.
 [Five-stem results and availability](#five-stem-validation)
 
 ## Long-audio inference with bounded memory
@@ -95,15 +95,15 @@ combine vocals, bass and other in an audio editor, leaving drums out.
 full-track CPU path for a converted five-stem checkpoint. On AMD EPYC 9V74 and
 DigitalOcean Premium Intel, all five stems of five calibration inputs matched
 the official TensorFlow reference computed on each host. Default FP32 passed
-20/25 on Intel. On AMD the candidate also passed all ten waveforms from the two
-preregistered TRIOS mixtures. Piano SI-SDR improved over the unseparated mixture by **6.90 dB on
+20/25 on Intel. On each CPU the opt-in path passed all ten TRIOS waveforms and all four
+piano/other quality checks on the same two recordings. Piano SI-SDR improved over the unseparated mixture by **6.90 dB on
 Brahms** and **7.34 dB on Schubert**. Median inference for a 10.88 s clip
-increased from 1.38 s to 1.53 s on that host (two CPU threads, six timed runs).
-[Protocol, measurements and raw results](https://github.com/jasonjiang8866/spleeterpt/blob/3cb3ea1083f72c5a7ccc41b922364c042490a150/docs/five-stem-native-cpu-20261119.md)
+increased from 1.38 s to 1.53 s on AMD (two CPU threads, six timed runs).
+[Protocol, measurements and raw results](docs/five-stem-native-cpu-20261119.md)
 
-For the candidate CLI, use a checkout of PR #50 and a converted checkpoint.
-The five-stem weights remain research-only. Intel TRIOS holdout validation and strict
-bounded-memory CUDA validation remain open.
+Use `--device cpu --five-stem-cpu-precision` with a converted five-stem checkpoint.
+Five-stem weights remain research-only pending strict bounded-memory CUDA validation
+and release checks.
 [Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights
@@ -328,7 +328,7 @@ songs remain untouched. [Full results, protocol, CPU memory and listening packag
 | Area | Verified status |
 |---|---|
 | PyTorch port | Trainable 2/4/5-stem U-Nets, official TF checkpoint conversion, separation, validation and resume |
-| TF/PT parity | 2/4-stem real-audio checks pass. The [opt-in five-stem CPU candidate](#five-stem-validation) passed 25/25 calibration waveforms on AMD and Intel, plus 10/10 held-out waveforms on AMD |
+| TF/PT parity | 2/4-stem real-audio checks pass. The [opt-in five-stem CPU candidate](#five-stem-validation) passed 25/25 calibration waveforms on AMD and Intel, plus 10/10 TRIOS waveforms on each CPU |
 | Legacy quality regression | Controlled ablations identified STFT frame alignment and, for 4 stems, activation mismatch; see [diagnosis](docs/audio-parity-and-legacy-diagnosis.md) |
 | Real GPU training | Full 2/4-stem presets on RTX 4090, torch 2.8.0+cu128; training, validation, fresh-process resume and inference passed |
 | Replacement-Pod recovery | Step 3 → new Pod → step 8; final/best state hashes and complete metrics match the continuous reference; actual checkpoint artifacts retained |
