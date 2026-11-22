@@ -11,7 +11,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-SIZE = "s-4vcpu-16gb-320gb-intel"
+SIZE = "s-4vcpu-8gb-intel"
 RATE_LIMIT = 0.16
 STATE = Path(os.environ["RUNNER_TEMP"]) / "spt-do"
 OUT = Path("do-results")
@@ -104,7 +104,7 @@ def run():
     STATE.mkdir(mode=0o700)
     sizes = quote()
     size = next((s for s in sizes if s["slug"] == SIZE and s["available"]), None)
-    if not size or not 0 < size["price_hourly"] <= RATE_LIMIT or size["memory"] < 16384:
+    if not size or not 0 < size["price_hourly"] <= RATE_LIMIT or size["memory"] < 8192:
         raise RuntimeError("Requested Intel size unavailable or over rate cap")
     regions = [
         r["slug"] for r in listing("regions") if r["available"] and r["slug"] in size["regions"]

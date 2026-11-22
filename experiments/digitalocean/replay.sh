@@ -4,6 +4,10 @@ cd "$HOME"
 grep -qm1 '^vendor_id[[:space:]]*:[[:space:]]*GenuineIntel$' /proc/cpuinfo
 export DEBIAN_FRONTEND=noninteractive
 sudo cloud-init status --wait >/dev/null || test "$?" -eq 2
+sudo fallocate -l 12G /var/tmp/spt-swap
+sudo chmod 600 /var/tmp/spt-swap
+sudo mkswap /var/tmp/spt-swap
+sudo swapon /var/tmp/spt-swap
 sudo apt-get -q update
 sudo env DEBIAN_FRONTEND=noninteractive apt-get -y -q -o DPkg::Lock::Timeout=120 install git python3-venv ffmpeg
 python3 -m venv "$HOME/tools"
