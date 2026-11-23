@@ -7,6 +7,8 @@ import os
 import subprocess
 import sys
 import tempfile
+from contextlib import ExitStack
+from functools import partial
 from pathlib import Path
 from unittest.mock import patch
 
@@ -16,7 +18,7 @@ from benchmark_bounded import make_input
 from parity_metrics import agreement
 from verify_cuda_cli import CONFIG, MODES, bounded_metrics, cli_args, pcm_hash
 
-from spleeterpt import cli
+from spleeterpt import audio, cli, streaming
 from spleeterpt.audio import read_audio, separate
 
 # Each contrast changes one factor. Also run the complete benchmark configuration.
@@ -26,6 +28,15 @@ PROFILES = [
     for size in range(len(FACTORS) + 1)
     for subset in itertools.combinations(FACTORS, size)
 ] + ["benchmark"]
+
+
+# Each precision arm inherits the previously measured deterministic FP32 control.
+WIDE_OPS = ("fft64", "decoder64", "output64")
+PRECISION_PROFILES = [
+    "+".join(("no_tf32", "deterministic", *subset))
+    for size in range(len(WIDE_OPS) + 1)
+    for subset in itertools.combinations(WIDE_OPS, size)
+]
 
 
 def run_cli(profile, args):
@@ -43,16 +54,28 @@ def run_cli(profile, args):
 
     load = cli.load_model
 
-    def warm_load(checkpoint, device):
+    def study_load(checkpoint, device):
         model = load(checkpoint, device)
-        separate(model, torch.zeros(2, model.config.hop_length))
-        torch.cuda.synchronize()
+        if len(model.config.instruments) != 5:
+            raise ValueError("CUDA study requires a five-stem checkpoint")
+        for net in model.unets.values():
+            if "decoder64" in factors:
+                net.decoder[-1].forward = partial(net.decoder[-1].forward, wide=True)
+            if "output64" in factors:
+                net.output.forward = partial(net.output.forward, wide=True)
+        if "warmup" in factors:
+            separate(model, torch.zeros(2, model.config.hop_length))
+            torch.cuda.synchronize()
         return model
 
-    if "warmup" in factors:
-        with patch.object(cli, "load_model", warm_load):
-            cli.main(args)
-    else:
+    with ExitStack() as stack:
+        if factors.intersection(("warmup", "decoder64", "output64")):
+            stack.enter_context(patch.object(cli, "load_model", study_load))
+        if "fft64" in factors:
+            wide_stft = partial(audio.stft, wide_fft=True)
+            # Both entry points import the same STFT under separate module names.
+            stack.enter_context(patch.object(audio, "stft", wide_stft))
+            stack.enter_context(patch.object(streaming, "stft", wide_stft))
         cli.main(args)
     torch.cuda.synchronize()
 
@@ -64,6 +87,7 @@ def run_cli(profile, args):
         "cublas_workspace_config": os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
         "nvidia_tf32_override": os.environ.get("NVIDIA_TF32_OVERRIDE"),
         "threads": torch.get_num_threads(),
+        "fp64_operations": [op for op in WIDE_OPS if op in factors],
         "warmup_windows": int("warmup" in factors),
         "torch": str(torch.__version__),
         "cuda": torch.version.cuda,
@@ -108,9 +132,9 @@ def measure_pair(profile, checkpoint, wav, root, reference, thresholds):
     return result
 
 
-def summarize(cases):
+def summarize(cases, profiles):
     summary = {}
-    for profile in PROFILES:
+    for profile in profiles:
         row = {}
         for name, case in cases.items():
             runs = [run for run in case["runs"] if run["profile"] == profile]
@@ -140,12 +164,24 @@ def summarize(cases):
     return summary
 
 
-def study(checkpoint, original, original_ref, real, thresholds, destination, source_commit):
+def study(
+    checkpoint,
+    original,
+    original_ref,
+    real,
+    thresholds,
+    destination,
+    source_commit,
+    *,
+    precision=False,
+):
     from spleeterpt.pretrained import digest
 
+    profiles = PRECISION_PROFILES if precision else PROFILES
     cases = {}
     report = {
         "source_commit": source_commit,
+        "study_kind": "precision" if precision else "backend",
         "checkpoint_sha256": digest(checkpoint),
         "release_eligible": False,
         "complete": False,
@@ -179,22 +215,32 @@ def study(checkpoint, original, original_ref, real, thresholds, destination, sou
                 else None,
                 "runs": runs,
             }
-            for repeat, profiles in enumerate((PROFILES, reversed(PROFILES)), start=1):
-                for profile in profiles:
+            for repeat, order in enumerate((profiles, reversed(profiles)), start=1):
+                for profile in order:
                     with tempfile.TemporaryDirectory(dir=directory) as outputs:
                         pair = measure_pair(
                             profile, checkpoint, path, Path(outputs), reference, thresholds
                         )
                     runs.append({"repeat": repeat, "profile": profile, **pair})
                     save()
-    report["summary"] = summarize(cases)
+    report["summary"] = summarize(cases, profiles)
+    if precision:
+        # A screen can nominate a configuration only for the next, full validation.
+        expected = [len(CONFIG.instruments)] * 2
+        report["screen_passed_profiles"] = [
+            profile
+            for profile, row in report["summary"].items()
+            if all(case["identical_repeat_pcm"] for case in row.values())
+            and all(case["bounded_stems_passed"] == expected for case in row.values())
+            and all(row["music_original"]["tf_stems_passed"][mode] == expected for mode in MODES)
+        ]
     report["complete"] = True
     save()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("profile", choices=PROFILES)
+    parser.add_argument("profile", choices=sorted(set(PROFILES + PRECISION_PROFILES)))
     parser.add_argument("args", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     run_cli(args.profile, args.args)

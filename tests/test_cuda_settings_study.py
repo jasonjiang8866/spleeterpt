@@ -1,6 +1,7 @@
 import importlib
 import json
 from dataclasses import replace
+from functools import partial
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -50,7 +51,9 @@ def test_real_cli_warms_loaded_model(probe, monkeypatch, tmp_path, tiny_config, 
         assert len(list((tmp_path / profile / "full").glob("*.wav"))) == 5
 
 
-def test_study_repeats_partial_recovery_and_numeric_gates(probe, tmp_path, monkeypatch):
+@pytest.mark.parametrize("precision", [False, True])
+def test_study_repeats_partial_recovery_and_numeric_gates(probe, tmp_path, monkeypatch, precision):
+    profiles = probe.PRECISION_PROFILES if precision else probe.PROFILES
     instruments = probe.CONFIG.instruments
     audio = torch.zeros((2, 80))
     ref = dict.fromkeys(instruments, audio.numpy())
@@ -74,7 +77,7 @@ def test_study_repeats_partial_recovery_and_numeric_gates(probe, tmp_path, monke
         out.mkdir()
         for index, stem in enumerate(instruments):
             data = np.zeros((80, 2), dtype="float32")
-            if profile == "default" and index == 0 and out.name == "bounded":
+            if profile == profiles[0] and index == 0 and out.name == "bounded":
                 data[3, 0] = 0.01
             sf.write(out / (stem + ".wav"), data, probe.CONFIG.sample_rate, subtype="FLOAT")
         return "{}\n"
@@ -83,20 +86,93 @@ def test_study_repeats_partial_recovery_and_numeric_gates(probe, tmp_path, monke
     thresholds = SimpleNamespace(max_abs_error=2e-6, min_si_sdr=100)
     interrupt = True
     with pytest.raises(RuntimeError, match="interrupted"):
-        probe.study(checkpoint, audio, ref, None, thresholds, dest, "test")
+        probe.study(checkpoint, audio, ref, None, thresholds, dest, "test", precision=precision)
     partial = json.loads(dest.read_text())
     assert not partial["complete"]
     assert len(partial["cases"]["music_original"]["runs"]) == 1
     interrupt = False
     calls.clear()
-    probe.study(checkpoint, audio, ref, None, thresholds, dest, "test")
+    probe.study(checkpoint, audio, ref, None, thresholds, dest, "test", precision=precision)
     result = json.loads(dest.read_text())
     assert result["complete"] and not result["release_eligible"]
-    assert len(calls) == 72 and len(set(calls)) == 9
+    assert len(calls) == len(profiles) * 8 and set(calls) == set(profiles)
+    if precision:
+        assert result["screen_passed_profiles"] == profiles[1:]
     for case in result["cases"].values():
-        assert [r["profile"] for r in case["runs"]] == probe.PROFILES + probe.PROFILES[::-1]
-    baseline = result["summary"]["default"]
+        assert [r["profile"] for r in case["runs"]] == profiles + profiles[::-1]
+    baseline = result["summary"][profiles[0]]
     assert baseline["real60"]["bounded_stems_passed"] == [4, 4]
     assert baseline["music_original"]["tf_stems_passed"] == {"full": [5, 5], "bounded": [4, 4]}
-    assert result["summary"]["benchmark"]["music_original"]["identical_repeat_pcm"]
-    assert result["summary"]["benchmark"]["real60"]["bounded_stems_passed"] == [5, 5]
+    assert result["summary"][profiles[-1]]["music_original"]["identical_repeat_pcm"]
+    assert result["summary"][profiles[-1]]["real60"]["bounded_stems_passed"] == [5, 5]
+
+
+def test_precision_profiles_exercise_selected_operations_on_both_cli_modes(
+    probe, monkeypatch, tmp_path, tiny_config, capsys, request
+):
+    config = replace(tiny_config, instruments=probe.CONFIG.instruments)
+    checkpoint = tmp_path / "model.pt"
+    model = Spleeter(config).eval()
+    atomic_save(
+        {"format_version": 1, "config": config.to_dict(), "model": model.state_dict()}, checkpoint
+    )
+    source = tmp_path / "mix.wav"
+    # Traverse multiple windows and a partial tail.
+    waveform = torch.randn(2, config.segment_samples + 123)
+    sf.write(source, waveform.T.numpy(), config.sample_rate, subtype="FLOAT")
+    reference = probe.separate(model, waveform, five_stem_cpu_precision=True)
+
+    seen = set()
+    stft = probe.audio.stft
+
+    def fft(*args, **kwargs):
+        if kwargs.get("wide_fft"):
+            seen.add("fft64")
+        return stft(*args, **kwargs)
+
+    monkeypatch.setattr(probe.audio, "stft", fft)
+    monkeypatch.setattr(probe.streaming, "stft", fft)
+    load = probe.cli.load_model
+
+    def load_traced(*args):
+        loaded = load(*args)
+        for net in loaded.unets.values():
+            # Observe the wide flag inside forward rather than in a pre-hook:
+            # the diagnostic binds it on the instance's forward callable.
+            for label, layer in (("decoder64", net.decoder[-1]), ("output64", net.output)):
+
+                def traced(x, *, forward=layer.forward, name=label, wide=False):
+                    if wide:
+                        seen.add(name)
+                    return forward(x, wide=wide)
+
+                layer.forward = traced
+        return loaded
+
+    monkeypatch.setattr(probe.cli, "load_model", load_traced)
+    monkeypatch.setattr(torch.cuda, "get_device_name", lambda: "test CPU")
+    monkeypatch.setattr(torch.cuda, "synchronize", lambda: None)
+    # Restore process-global flags after exercising the worker in-process.
+    for backend, name in (
+        (torch.backends.cudnn, "allow_tf32"),
+        (torch.backends.cuda.matmul, "allow_tf32"),
+        (torch.backends.cudnn, "deterministic"),
+    ):
+        request.addfinalizer(partial(setattr, backend, name, getattr(backend, name)))
+    assert len(set(probe.PRECISION_PROFILES)) == 8
+    for profile in probe.PRECISION_PROFILES:
+        expected = set(profile.split("+")).intersection(probe.WIDE_OPS)
+        for mode in probe.MODES:
+            seen.clear()
+            root = tmp_path / profile
+            args = probe.cli_args(checkpoint, source, root, mode)
+            args[args.index("cuda")] = "cpu"
+            probe.run_cli(profile, args)
+            settings = json.loads(capsys.readouterr().out)
+            assert settings["cudnn_deterministic"] and not settings["cudnn_tf32"]
+            assert not settings["matmul_tf32"] and settings["warmup_windows"] == 0
+            assert seen == expected == set(settings["fp64_operations"])
+            if expected == set(probe.WIDE_OPS) and mode == "full":
+                for stem, wave in reference.items():
+                    got, _ = sf.read(root / mode / (stem + ".wav"), dtype="float32")
+                    np.testing.assert_array_equal(got.T, wave.numpy())

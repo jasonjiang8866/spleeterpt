@@ -59,15 +59,19 @@ def verify(root, *, allow_rejected=False):
         "gpu_acceptance_revalidated": accepted,
         "acceptance_status": "accepted" if accepted else "rejected",
     }
-    if meta.get("cuda_settings_study"):
-        filename = "cuda-settings.json"
-        recovered["cuda_settings_status"] = "missing"
+    precision = meta.get("cuda_precision_study", False)
+    if precision or meta.get("cuda_settings_study"):
+        filename = "cuda-precision.json" if precision else "cuda-settings.json"
+        status = "cuda_precision_status" if precision else "cuda_settings_status"
+        recovered[status] = "missing"
         if filename in report["bundle"]["files"]:
             with tarfile.open(root / "listening-and-metrics.tar", "r:") as archive:
                 study = json.load(archive.extractfile(filename))
             if study["source_commit"] != meta["commit"] or study["release_eligible"] is not False:
                 raise ValueError("CUDA settings study identity mismatch")
-            recovered["cuda_settings_status"] = "partial"
+            if study.get("study_kind", "backend") != ("precision" if precision else "backend"):
+                raise ValueError("Unexpected CUDA study kind")
+            recovered[status] = "partial"
             if study["complete"]:
                 cli = report["cuda_cli"]
                 original = cli["calibration"]["music_original"]
@@ -78,7 +82,7 @@ def verify(root, *, allow_rejected=False):
                     or case["reference_sha256"] != original["reference_sha256"]
                 ):
                     raise ValueError("CUDA settings study calibration mismatch")
-                recovered["cuda_settings_status"] = "complete"
+                recovered[status] = "complete"
     (root / "recovery.json").write_text(json.dumps(recovered, indent=2) + "\n")
     print(f"PASS: archive recovery after compute deletion; GPU acceptance={accepted}")
 
