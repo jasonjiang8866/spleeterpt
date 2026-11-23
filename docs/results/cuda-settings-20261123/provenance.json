@@ -1,0 +1,52 @@
+{
+  "run_id": 45058973840,
+  "artifact_zip_sha256": "6337543d7254dd2186f674881ebb8eda57fec86f0b4fc03d2c46a1e2a8efd3e2",
+  "source_commit": "36600e2a50cb7d787e184eadf00d9f44adc67b66",
+  "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+  "real_input": {
+    "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+    "path": "musdb18/train-pool/Auctioneer - Our Future Faces/mixture.wav",
+    "bytes": 73277554,
+    "sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+    "test_pool_used": false
+  },
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "lease": {
+    "cost_per_hour": 0.69,
+    "controller_elapsed_seconds": 604.025726556778,
+    "compute_cost_upper_estimate_usd": 0.1157715975900491,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice",
+    "cleanup_confirmed": true
+  },
+  "recovery": {
+    "source_commit": "36600e2a50cb7d787e184eadf00d9f44adc67b66",
+    "fft_batch_policy": "pad-long-tail",
+    "release_eligible": false,
+    "compute_deleted": true,
+    "bundle_sha256": "4be4de33dc6ec6c58405ad040f6acc80138acba077f6e601131dd25954a0bd00",
+    "recovery": "fresh process after verified Pod disappearance",
+    "execution_location": "GitHub Actions",
+    "verifier_sha256": "e3e1f99c2e447b3c27da34cf5880789126505e0612822fa32fc185d818a02838",
+    "all_members_verified": true,
+    "gpu_acceptance_revalidated": false,
+    "acceptance_status": "rejected",
+    "cuda_settings_status": "complete"
+  },
+  "post_run_inventory": {
+    "run_id": 45060051104,
+    "source_commit": "36600e2a50cb7d787e184eadf00d9f44adc67b66",
+    "read_only": true,
+    "observed_at_utc": "2026-11-22T19:19:10.538421+00:00",
+    "account_pod_count": 1,
+    "project_pods": []
+  }
+}
