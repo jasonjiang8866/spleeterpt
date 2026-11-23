@@ -45,7 +45,10 @@ def launch(api):
     )
     cli_acceptance = os.environ.get("SPT_CLI_ACCEPTANCE") == "true"
     settings_study = os.environ.get("SPT_CUDA_SETTINGS_STUDY") == "true"
-    if settings_study and not cli_acceptance:
+    precision_study = os.environ.get("SPT_CUDA_PRECISION_STUDY") == "true"
+    if settings_study and precision_study:
+        raise ValueError("Select one CUDA study per run")
+    if (settings_study or precision_study) and not cli_acceptance:
         raise ValueError("CUDA settings study requires CLI acceptance")
     if cli_acceptance and fft_policy != "pad-long-tail":
         raise ValueError("CLI acceptance requires the five-stem FFT study")
@@ -87,6 +90,7 @@ def launch(api):
         "fft_batch_policy": fft_policy,
         "cli_acceptance": cli_acceptance,
         "cuda_settings_study": settings_study,
+        "cuda_precision_study": precision_study,
         "gpu_id": gpu_id,
         "gpu_rate_cap_usd_per_hour": rate_cap,
     }
@@ -127,6 +131,7 @@ def launch(api):
             "SPT_BENCHMARK_PROFILE": profile,
             "SPT_FFT_BATCH_POLICY": fft_policy,
             "SPT_CLI_ACCEPTANCE": str(cli_acceptance).lower(),
+            "SPT_CUDA_PRECISION_STUDY": str(precision_study).lower(),
             "SPT_CUDA_SETTINGS_STUDY": str(settings_study).lower(),
             "SPT_GPU_ID": gpu_id,
             "PYTHONUNBUFFERED": "1",

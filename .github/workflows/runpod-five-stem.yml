@@ -20,6 +20,10 @@ on:
         description: 'Compare TF32, determinism and warmup on two frozen inputs (requires both CLI acceptance and FFT study)'
         type: boolean
         default: false
+      cuda_precision_study:
+        description: 'Compare FP64 analysis FFT, last decoder and output convolutions (requires CLI acceptance and FFT study)'
+        type: boolean
+        default: false
       fft_batch_study:
         description: 'Experimental pad-long-tail FFT policy; unchanged full-file reference and acceptance thresholds'
         type: boolean
@@ -48,6 +52,7 @@ jobs:
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           SPT_BENCHMARK_PROFILE: five-stem
+          SPT_CUDA_PRECISION_STUDY: ${{ inputs.cuda_precision_study }}
           SPT_CUDA_SETTINGS_STUDY: ${{ inputs.cuda_settings_study }}
           SPT_CLI_ACCEPTANCE: ${{ inputs.cli_acceptance }}
           SPT_FFT_BATCH_STUDY: ${{ inputs.fft_batch_study }}

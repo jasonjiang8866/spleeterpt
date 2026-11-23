@@ -38,3 +38,19 @@ On the original music excerpt, 1,239,048 of 4,798,320 channel samples across all
 The study crosses three switches: disable TF32 for both matmul and cuDNN, enable cuDNN determinism, and warm the loaded model with one silent window. Unset switches inherit the installed CLI defaults. A ninth profile adds the controlled benchmark's thread count, seed, cuDNN benchmark setting and cuBLAS workspace setting. Each profile runs twice in opposite order on the original music and the same 60 s Auctioneer mix. Full-file and bounded inference use separate fresh processes. Both modes are compared with the same official TF output used for the original calibration. The 60 s mix checks bounded against full-file output.
 
 The Actions artifact contains `cuda-settings.json` inside `listening-and-metrics.tar`, with effective backend settings, per-stem errors, failed sample counts and PCM hashes for both repeats. A candidate for full validation must pass all five stems for bounded vs full on both inputs and for both modes vs TF on the original music, twice. Repeat hashes help distinguish numerical drift from exact reproducibility. Any candidate still needs the complete CLI calibration, 60 s and 600 s waveform and memory checks, and the frozen TRIOS holdout. If a setting restores streaming agreement alone, use the remaining TF errors to guide the next decoder precision experiment.
+
+## Isolating the remaining CUDA precision errors
+
+The [backend experiment](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45058973840) identified a repeatable control. With TF32 disabled and cuDNN determinism enabled, the full and bounded modes agreed on both music inputs. Against official TF, the original music still had 38 failing drum samples and 146 failing bass samples in each mode and repeat.
+
+The manual five-stem workflow's `cuda_precision_study` option runs a separate eight-arm screen. Select CLI acceptance and the FFT batch study, and leave the earlier CUDA settings study off. The control uses FP32 throughout, disables TF32 and enables deterministic cuDNN with no warmup. The other seven arms cross three independent changes on that control:
+
+| Operation | FP64 intervention |
+| --- | --- |
+| Analysis FFT | Use the existing FP64 RFFT on FP32-windowed frames and round the spectrum to complex64. Apply it in full-file and bounded mode, including the bounded tail. |
+| Last decoder transposed convolution | Evaluate only the final transposed convolution in each of the five U-Nets in FP64 and round its output to FP32. |
+| Output convolution | Evaluate the output convolution in each U-Net in FP64 and round its logits to FP32. |
+
+Run all eight arms twice, reversing the order on the second pass. Each of the two modes and two frozen inputs uses a fresh CLI process, for 64 invocations. First check whether the control reproduces the historical counts and repeat PCM. If the control changes, report that drift before attributing an improvement to precision. Use the same-run control for each contrast and inspect all five stems.
+
+The archive member `cuda-precision.json` includes per-stem TF failure counts, peak errors, PCM hashes and effective settings. A profile enters `screen_passed_profiles` only if both repeats pass all five original-music TF comparisons in both modes, both inputs pass bounded vs full, and repeat PCM hashes match. A passing profile still needs validation through a user-facing CLI on the full calibration, long-file memory gates and frozen TRIOS protocol before weight publication.

@@ -135,7 +135,8 @@ def replay(work, destination):
             out[stem] = torch.from_numpy(np.ascontiguousarray(data.T))
         return out
 
-    settings_requested = os.environ.get("SPT_CUDA_SETTINGS_STUDY") == "true"
+    precision = os.environ.get("SPT_CUDA_PRECISION_STUDY") == "true"
+    settings_requested = precision or os.environ.get("SPT_CUDA_SETTINGS_STUDY") == "true"
     calibration_pair = None
     oracle = OfficialGraph(tf_prefix, CONFIG.instruments, upstream)
     try:
@@ -171,8 +172,9 @@ def replay(work, destination):
                 *calibration_pair,
                 real,
                 thresholds,
-                destination.with_name("cuda-settings.json"),
+                destination.with_name("cuda-precision.json" if precision else "cuda-settings.json"),
                 report["source_commit"],
+                precision=precision,
             )
 
         def bounded(audio):
