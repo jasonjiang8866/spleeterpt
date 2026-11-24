@@ -105,7 +105,11 @@ Use `--device cpu --five-stem-cpu-precision` with a converted five-stem checkpoi
 Five-stem weights remain research-only. On a Blackwell MIG 24 GB, bounded CUDA inference
 used 572 MiB on 600 s of audio, but the default CLI exceeded the waveform tolerance
 on the 60 s real mix. [CUDA CLI acceptance and per-stem results](docs/five-stem-cuda-cli-20261122.md).
-On the same GPU model, disabling cuDNN TF32 and enabling deterministic convolution passed all five bounded-vs-full checks on both music inputs in two runs. Against official TF, drums and bass still exceeded tolerance at 184 channel samples on the original music. [Nine-configuration study and raw results](docs/five-stem-cuda-settings-20261123.md).
+In a follow-up [eight-configuration precision screen](docs/five-stem-cuda-precision-20261124.md),
+disabling TF32, enabling cuDNN determinism and computing only the analysis FFT in FP64 reduced
+out-of-tolerance samples on the original music from 184 to **zero** in both CLI modes, twice.
+The 60 s real mix passed the full-vs-bounded check. This diagnostic candidate still needs the
+complete CUDA calibration, long-file memory and TRIOS checks through a supported CLI option.
 [Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights
