@@ -82,6 +82,10 @@ def verify(root, *, allow_rejected=False):
                     or case["reference_sha256"] != original["reference_sha256"]
                 ):
                     raise ValueError("CUDA settings study calibration mismatch")
+                if precision:
+                    from precision_result import audit
+
+                    recovered["cuda_precision_audit"] = audit(study)
                 recovered[status] = "complete"
     (root / "recovery.json").write_text(json.dumps(recovered, indent=2) + "\n")
     print(f"PASS: archive recovery after compute deletion; GPU acceptance={accepted}")
