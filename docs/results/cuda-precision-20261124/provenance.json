@@ -1,0 +1,110 @@
+{
+  "run_id": 45293725620,
+  "artifact_zip_sha256": "73ed4ce004dafa437b1aad67cb6423143f5b0d77567f786296cdbf35192b28ab",
+  "source_commit": "1c8f972c905b5a1ba9f3a6c8286d19925d920299",
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+  "source_audio": {
+    "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+    "path": "musdb18/train-pool/Auctioneer - Our Future Faces/mixture.wav",
+    "bytes": 73277554,
+    "sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+    "test_pool_used": false
+  },
+  "lease": {
+    "cost_per_hour": 0.69,
+    "cleanup_confirmed": true,
+    "controller_elapsed_seconds": 683.4865012168884,
+    "compute_cost_upper_estimate_usd": 0.13100157939990362,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice"
+  },
+  "workflow_recovery": {
+    "source_commit": "1c8f972c905b5a1ba9f3a6c8286d19925d920299",
+    "fft_batch_policy": "pad-long-tail",
+    "release_eligible": false,
+    "compute_deleted": true,
+    "bundle_sha256": "0f4e3dc583ba783db487a922c73c5514e09b788217eb077559b68afd3403d9a7",
+    "recovery": "fresh process after verified Pod disappearance",
+    "execution_location": "GitHub Actions",
+    "verifier_sha256": "d8dc414bf93c3ef6d7794b6c5e932e463535d5162dd6026fee7780088f6c3cd8",
+    "all_members_verified": true,
+    "gpu_acceptance_revalidated": false,
+    "acceptance_status": "rejected",
+    "cuda_precision_status": "complete"
+  },
+  "independent_recovery": {
+    "source_commit": "1c8f972c905b5a1ba9f3a6c8286d19925d920299",
+    "fft_batch_policy": "pad-long-tail",
+    "release_eligible": false,
+    "compute_deleted": true,
+    "bundle_sha256": "0f4e3dc583ba783db487a922c73c5514e09b788217eb077559b68afd3403d9a7",
+    "recovery": "fresh process after verified Pod disappearance",
+    "execution_location": "local",
+    "verifier_sha256": "9de20ade1ebdc09b05243c8f3d119d9c9b7bce874e01db51b122084c91ad80f0",
+    "all_members_verified": true,
+    "gpu_acceptance_revalidated": false,
+    "acceptance_status": "rejected",
+    "cuda_precision_status": "complete",
+    "cuda_precision_audit": {
+      "screen_passed_profiles": [
+        "no_tf32+deterministic+fft64"
+      ],
+      "control_tf_failed_samples": {
+        "full": [
+          {
+            "vocals": 0,
+            "piano": 0,
+            "drums": 38,
+            "bass": 146,
+            "other": 0
+          },
+          {
+            "vocals": 0,
+            "piano": 0,
+            "drums": 38,
+            "bass": 146,
+            "other": 0
+          }
+        ],
+        "bounded": [
+          {
+            "vocals": 0,
+            "piano": 0,
+            "drums": 38,
+            "bass": 146,
+            "other": 0
+          },
+          {
+            "vocals": 0,
+            "piano": 0,
+            "drums": 38,
+            "bass": 146,
+            "other": 0
+          }
+        ]
+      },
+      "control_pcm_matches_previous": {
+        "music_original": true,
+        "real60": true
+      },
+      "tf_reference_matches_previous": true
+    }
+  },
+  "independent_verifier_commit": "6e4b94b91ad98a9599f20a8180b724f38e87b8ea",
+  "post_run_inventory": {
+    "run_id": 45295451613,
+    "observed_at_utc": "2026-11-24T00:14:13.386596+00:00",
+    "account_pod_count": 1,
+    "project_pods": [],
+    "source_commit": "1c8f972c905b5a1ba9f3a6c8286d19925d920299"
+  }
+}
