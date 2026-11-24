@@ -9,6 +9,7 @@ import math
 import os
 import tempfile
 from contextlib import ExitStack
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -27,22 +28,23 @@ def _use_padded_tail(policy, config, device):
     return policy == "pad-long-tail"
 
 
-def _block_stft(samples, config, start, actual, pad_tail):
+def _block_stft(samples, config, start, actual, pad_tail, analysis_stft):
     if pad_tail and start > 0 and actual < config.segment_frames:
         extra = (config.segment_frames - actual) * config.hop_length
-        spectrum = stft(F.pad(samples, (0, extra)), config)
+        spectrum = analysis_stft(F.pad(samples, (0, extra)), config)
         # Overlap in the padded FFT frames must never become extra model context.
         return spectrum[..., :actual, :]
-    return stft(samples, config)
+    return analysis_stft(samples, config)
 
 
-def _separate_blocks(model, length, read, fft_batch_policy):
+def _separate_blocks(model, length, read, fft_batch_policy, *, wide_fft=False):
     """read(start, stop) returns CPU stereo samples at the model sample rate."""
     if length <= 0:
         raise ValueError("audio must not be empty")
     config = model.config
     device = next(model.parameters()).device
     pad_tail = _use_padded_tail(fft_batch_policy, config, device)
+    analysis_stft = partial(stft, wide_fft=True) if wide_fft else stft
     model.eval()
     n_fft, hop = config.n_fft, config.hop_length
     frames = math.ceil((length + n_fft) / hop)
@@ -66,7 +68,7 @@ def _separate_blocks(model, length, read, fft_batch_policy):
                 samples = F.pad(samples, (lo - left, right - hi))
             else:
                 samples = torch.zeros((2, right - left), device=device)
-            spectrum = _block_stft(samples, config, start, actual, pad_tail)
+            spectrum = _block_stft(samples, config, start, actual, pad_tail, analysis_stft)
             magnitude = F.pad(
                 spectrum.abs()[..., : config.frequency_bins],
                 (0, 0, 0, config.segment_frames - actual),
@@ -125,7 +127,7 @@ def separate_iter(model, waveform: torch.Tensor, *, fft_batch_policy="auto"):
     )
 
 
-def separate_file(model, input_path, output_dir, *, fft_batch_policy="auto"):
+def separate_file(model, input_path, output_dir, *, fft_batch_policy="auto", wide_fft=False):
     """Separate a seekable file with bounded CPU/GPU memory into float WAV stems.
 
     FFT batch policy follows separate_iter.
@@ -174,7 +176,9 @@ def separate_file(model, input_path, output_dir, *, fft_batch_policy="auto"):
                     )
                     for name in config.instruments
                 }
-                for block in _separate_blocks(model, len(source), read, fft_batch_policy):
+                for block in _separate_blocks(
+                    model, len(source), read, fft_batch_policy, wide_fft=wide_fft
+                ):
                     for name, samples in block.items():
                         writers[name].write(samples.numpy().T)
             if output.exists():

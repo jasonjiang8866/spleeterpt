@@ -135,6 +135,28 @@ class Tests(unittest.TestCase):
             self.run_controller(api, env=env, budget_error=error)
             self.assertEqual(api.calls, [])
 
+    def test_fft64_selection_reaches_worker_and_rejects_mixed_studies(self):
+        env = {
+            "SPT_BENCHMARK_PROFILE": "five-stem",
+            "SPT_CLI_ACCEPTANCE": "true",
+            "SPT_FFT_BATCH_STUDY": "true",
+            "SPT_CUDA_CLI_PROFILE": "fft64",
+        }
+        api = Fake()
+        meta = self.run_controller(api, env=env)
+        self.assertEqual(meta["cuda_cli_profile"], "fft64")
+        self.assertEqual(api.calls[0][2]["env"]["SPT_CUDA_CLI_PROFILE"], "fft64")
+        for change in (
+            {"SPT_CUDA_SETTINGS_STUDY": "true"},
+            {"SPT_CUDA_PRECISION_STUDY": "true"},
+            {"SPT_CLI_ACCEPTANCE": "false"},
+            {"SPT_CUDA_CLI_PROFILE": "typo"},
+        ):
+            api = Fake()
+            with patch.dict(os.environ, {**ENV, **env, **change}), self.assertRaises(ValueError):
+                control.launch(api)
+            self.assertEqual(api.calls, [])
+
     def test_lost_create_response_cleanup_no_retry_or_volume_delete(self):
         api = Fake(lost=True)
         result = self.run_controller(api)

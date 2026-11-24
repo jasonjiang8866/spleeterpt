@@ -27,6 +27,16 @@ def verify(root, *, allow_rejected=False):
         raise ValueError("Recovered experiment identity mismatch")
     validate_runtime(report["gpu_runtime"], meta["gpu_id"])
     validate_export(root / "listening-and-metrics.tar", report)
+    cli_profile = meta.get("cuda_cli_profile", "default")
+    if cli_profile not in ("default", "fft64") or (
+        cli_profile == "fft64" and meta.get("cli_acceptance") is not True
+    ):
+        raise ValueError("Unexpected CUDA CLI precision profile in provisioning")
+    if "cuda_cli" in report or "cuda-cli.json" in report["bundle"]["files"]:
+        with tarfile.open(root / "listening-and-metrics.tar", "r:") as archive:
+            cli = json.load(archive.extractfile("cuda-cli.json"))
+        if cli.get("cli_profile", "default") != cli_profile or cli != report.get("cuda_cli"):
+            raise ValueError("Archived CUDA CLI evidence differs from selected profile or report")
     accepted = True
     try:
         validate(
@@ -39,12 +49,14 @@ def verify(root, *, allow_rejected=False):
             expected_gpu=meta["gpu_id"],
             expected_fft_policy=meta.get("fft_batch_policy", "native"),
             cli_acceptance=meta.get("cli_acceptance", False),
+            expected_cli_profile=cli_profile,
         )
     except ValueError:
         if not allow_rejected:
             raise
         accepted = False
     recovered = {
+        "cuda_cli_profile": cli_profile,
         "source_commit": meta["commit"],
         "fft_batch_policy": meta.get("fft_batch_policy", "native"),
         "release_eligible": False,

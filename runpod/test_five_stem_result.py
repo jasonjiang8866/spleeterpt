@@ -1,10 +1,11 @@
 """Five-stem GPU reports must prove identity, every stem and real CUDA edges."""
 
 import copy
+import gzip
 import json
 import unittest
 
-from bounded_result import validate
+from bounded_result import validate, validate_cli
 from gpu_profile import ADA
 from quality import ROOT
 from test_bounded_result import fixture as four_fixture
@@ -70,6 +71,18 @@ class Tests(unittest.TestCase):
             validate(
                 fixture(), "a" * 40, "global1", "pod1", "1-1", five_stem=True, cli_acceptance=True
             )
+
+    def test_cuda_cli_profile_cannot_relabel_the_archived_default(self):
+        with gzip.open(ROOT / "docs/results/cuda-precision-20261124/cuda-cli.json.gz") as stream:
+            probe = json.load(stream)
+        sha = probe["source_commit"]
+        with self.assertRaisesRegex(ValueError, "profile mismatch"):
+            validate_cli(probe, sha, expected_profile="fft64")
+        with self.assertRaisesRegex(ValueError, "versus TF failed"):
+            validate_cli(probe, sha)
+        probe["cli_profile"] = "fft64"
+        with self.assertRaisesRegex(ValueError, "output hashes"):
+            validate_cli(probe, sha, expected_profile="fft64")
 
     def test_candidate_cannot_masquerade_as_native(self):
         result = fixture()

@@ -28,6 +28,7 @@ def validate(
     expected_gpu=MIG24,
     expected_fft_policy="native",
     cli_acceptance=False,
+    expected_cli_profile="default",
 ):
     if expected_fft_policy not in {"native", "pad-long-tail"}:
         raise ValueError("Unknown FFT policy")
@@ -48,7 +49,7 @@ def validate(
     ):
         raise ValueError("Incomplete or mismatched bounded benchmark identity")
     if cli_acceptance:
-        validate_cli(report.get("cuda_cli", {}), sha)
+        validate_cli(report.get("cuda_cli", {}), sha, expected_profile=expected_cli_profile)
     validate_runtime(report["gpu_runtime"], expected_gpu)
     if (
         report["cuda_tests"]["returncode"] != 0
@@ -242,8 +243,13 @@ def validate_edges(report, sha, checkpoint_sha, expected_fft_policy="native"):
                 raise ValueError("Five-stem edge numerical failure")
 
 
-def validate_cli(probe, sha):
+def validate_cli(probe, sha, *, expected_profile="default"):
     """Independently check coverage, PCM identity, same-input comparisons and memory bounds."""
+    if (
+        expected_profile not in ("default", "fft64")
+        or probe.get("cli_profile", "default") != expected_profile
+    ):
+        raise ValueError("CUDA CLI precision profile mismatch")
     pins = json.loads((ROOT / "scripts/five_stem_source.json").read_text())
     history = json.loads(
         (ROOT / "docs/results/five-stem-20261102/5stems-strict-final.json").read_text()
@@ -269,6 +275,16 @@ def validate_cli(probe, sha):
     ):
         raise ValueError("Missing CUDA CLI calibration or source identity")
     for name, case in cases.items():
+        if expected_profile == "fft64":
+            hashes = case.get("output_pcm_sha256", {})
+            if set(hashes) != {"full", "bounded"} or not all(
+                set(row) == stems
+                and all(
+                    isinstance(h, str) and re.fullmatch("[0-9a-f]{64}", h) for h in row.values()
+                )
+                for row in hashes.values()
+            ):
+                raise ValueError(f"Missing CUDA CLI output hashes: {name}")
         frozen = history["case_provenance"][name]
         if case["input_pcm_sha256"] != frozen["decoded_pcm_sha256"] or not all(
             strict(case[m], frozen["samples"]) for m in ("full", "bounded")

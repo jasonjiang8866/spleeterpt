@@ -176,3 +176,79 @@ def test_precision_profiles_exercise_selected_operations_on_both_cli_modes(
                 for stem, wave in reference.items():
                     got, _ = sf.read(root / mode / (stem + ".wav"), dtype="float32")
                     np.testing.assert_array_equal(got.T, wave.numpy())
+
+
+@pytest.mark.parametrize("mode", ["full", "bounded"])
+def test_public_precision_option_matches_screen_on_cpu_fixture(
+    probe, monkeypatch, tmp_path, tiny_config, mode
+):
+    # Keep the CLI's device selection, substitute CPU only for model loading.
+    config = replace(tiny_config, instruments=probe.CONFIG.instruments)
+    model = Spleeter(config).eval()
+    monkeypatch.setattr(probe.cli, "load_model", lambda checkpoint, device: model)
+    monkeypatch.setattr(torch.cuda, "get_device_name", lambda: "CPU fixture")
+    monkeypatch.setattr(torch.cuda, "synchronize", lambda: None)
+    source = tmp_path / "music.wav"
+    sf.write(
+        source,
+        torch.randn(config.segment_samples + 123, 2).numpy(),
+        config.sample_rate,
+        subtype="FLOAT",
+    )
+
+    def backend():
+        return (
+            torch.get_float32_matmul_precision(),
+            torch.backends.cudnn.allow_tf32,
+            torch.backends.cudnn.deterministic,
+            torch.backends.cudnn.benchmark,
+        )
+
+    # Keep the diagnostic's process-global changes inside this test.
+    with probe.cli._cuda_precision():
+        probe.run_cli(
+            "no_tf32+deterministic+fft64",
+            probe.cli_args("weights", source, tmp_path / "study", mode),
+        )
+
+    states = []
+    original = probe.audio.stft
+
+    def observe(*args, **kwargs):
+        states.append((backend(), kwargs.get("wide_fft", False)))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(probe.audio, "stft", observe)
+    monkeypatch.setattr(probe.streaming, "stft", observe)
+    before = backend()
+    args = probe.cli_args("weights", source, tmp_path / "public", mode, profile="fft64")
+    probe.cli.main(args)
+    assert states and all(state == (("highest", False, True, False), True) for state in states)
+    for stem in config.instruments:
+        name = stem + ".wav"
+        actual = sf.read(tmp_path / "public" / mode / name, dtype="float32")[0]
+        reference = sf.read(tmp_path / "study" / mode / name, dtype="float32")[0]
+        np.testing.assert_array_equal(actual, reference)
+    assert backend() == before
+    with pytest.raises(FileExistsError):
+        probe.cli.main(args)
+    assert backend() == before
+
+
+def test_public_precision_rejects_wrong_device_and_weights(
+    probe, monkeypatch, tmp_path, tiny_config
+):
+    args = probe.cli_args("weights", "music.wav", tmp_path, "full", profile="fft64")
+    cpu = ["cpu" if arg == "cuda" else arg for arg in args]
+    with pytest.raises(ValueError, match="device cuda"):
+        probe.cli.main(cpu)
+    released = [
+        "--model" if arg == "--checkpoint" else "2stems" if arg == "weights" else arg
+        for arg in args
+    ]
+    with pytest.raises(ValueError, match="checkpoint"):
+        probe.cli.main(released)
+    monkeypatch.setattr(probe.cli, "load_model", lambda *a: Spleeter(tiny_config))
+    with pytest.raises(ValueError, match="five-stem checkpoint"):
+        probe.cli.main(args)
+    assert not (tmp_path / "full").exists()

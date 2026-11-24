@@ -79,7 +79,7 @@ def read_audio(path, sample_rate):
 
 
 @torch.inference_mode()
-def separate(model, waveform: torch.Tensor, *, five_stem_cpu_precision=False):
+def separate(model, waveform: torch.Tensor, *, five_stem_cpu_precision=False, wide_fft=False):
     """Separate stereo audio [2, samples] in bounded-size network windows.
 
     The full STFT is resident on the model device; this is not streaming inference.
@@ -96,7 +96,7 @@ def separate(model, waveform: torch.Tensor, *, five_stem_cpu_precision=False):
     waveform = waveform.to(device=device, dtype=torch.float32)
     spectrum = (
         stft(waveform, config, inference=True, wide_fft=True)
-        if five_stem_cpu_precision
+        if five_stem_cpu_precision or wide_fft
         else stft(waveform, config, inference=True)
     )
     frames = spectrum.shape[-2]

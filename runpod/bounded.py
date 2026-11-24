@@ -126,7 +126,11 @@ def run(output, *, five_stem=False):
                 from bounded_result import validate_cli
 
                 try:
-                    validate_cli(report["cuda_cli"], report["commit"])
+                    validate_cli(
+                        report["cuda_cli"],
+                        report["commit"],
+                        expected_profile=os.environ.get("SPT_CUDA_CLI_PROFILE", "default"),
+                    )
                 except ValueError:
                     report["numerical_rejections"].append("cuda-cli")
                     save()
