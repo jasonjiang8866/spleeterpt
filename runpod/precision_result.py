@@ -141,3 +141,49 @@ def audit(study):
         "tf_reference_matches_previous": cases["music_original"]["reference_sha256"]
         == baseline["cases"]["music_original"]["reference_sha256"],
     }
+
+
+def compare_cli_to_screen(probe, source_commit):
+    """Compare original-music PCM from the public fft64 CLI with the earlier GPU screen."""
+    if probe.get("cli_profile") != "fft64" or probe.get("source_commit") != source_commit:
+        raise ValueError("Unexpected CLI profile or source commit for precision replay")
+    original = probe["calibration"].get("music_original")
+    if original is None:
+        return {"status": "pending_music_original"}
+
+    path = ROOT / "docs/results/cuda-precision-20261124/cuda-precision.json.gz"
+    with gzip.open(path) as stream:
+        screen = json.load(stream)
+    winner = CONTROL + "+fft64"
+    # audit() checks both repeats, every stem and the worker's candidate list.
+    if audit(screen)["screen_passed_profiles"] != [winner]:
+        raise ValueError("Archived precision screen does not reproduce the FFT-only candidate")
+    case = screen["cases"]["music_original"]
+    summary = {
+        "screen_source_commit": screen["source_commit"],
+        "screen_profile": winner,
+        "same_checkpoint": probe["checkpoint_sha256"] == screen["checkpoint_sha256"],
+        "same_input_pcm": original["input_pcm_sha256"] == case["input_pcm_sha256"],
+    }
+    if not (summary["same_checkpoint"] and summary["same_input_pcm"]):
+        return {**summary, "status": "different_input_or_checkpoint"}
+
+    reference = original["reference_sha256"]
+    public = original["output_pcm_sha256"]
+    if set(public) != set(MODES) or any(
+        set(row) != STEMS
+        or not all(isinstance(h, str) and re.fullmatch("[a-f0-9]{64}", h) for h in row.values())
+        for row in (reference, *public.values())
+    ):
+        raise ValueError("Incomplete CLI replay PCM hashes")
+    expected = next(run["output_pcm_sha256"] for run in case["runs"] if run["profile"] == winner)
+    return {
+        **summary,
+        "status": "compared",
+        "tf_reference_differs": sorted(
+            s for s in STEMS if reference[s] != case["reference_sha256"][s]
+        ),
+        "cli_output_differs": {
+            mode: sorted(s for s in STEMS if public[mode][s] != expected[mode][s]) for mode in MODES
+        },
+    }
