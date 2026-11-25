@@ -109,6 +109,12 @@ streaming frontend, retains the native full-file reference and original numeric
 gates, and records the policy in provisioning and recovery. A passing study is
 not a five-stem release approval.
 
+For formal acceptance of the [FFT-only candidate](../docs/five-stem-cuda-precision-20261124.md),
+select `fft_batch_study=true`, `cli_acceptance=true` and `cuda_cli_profile=fft64`. Leave both
+`cuda_settings_study` and `cuda_precision_study` off. The same public CLI option runs on all
+five calibration inputs, the three long-file cases and the gated TRIOS recordings. The default
+CLI can still be measured by selecting `cuda_cli_profile=default`.
+
 Set `allow_4090_fallback=true` only when that fallback and its cost are within the
 user's authorization. Confirm the run's recorded `head_sha` matches the reviewed
 main commit; a moving branch must not be treated as an immutable revision.

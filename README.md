@@ -75,7 +75,7 @@ to control; they do not automatically mean cleaner vocals or better sound.
 |---|---|---|---|
 | **2-stem** | `vocals.wav` (人声) + `accompaniment.wav` (all instruments together / 伴奏) | You want vocals to listen to or edit, or a backing track to sing over | Ready to use: `--model 2stems` |
 | **4-stem** | `vocals.wav` (人声), `drums.wav` (鼓与打击乐), `bass.wav` (贝斯), `other.wav` (remaining instruments / 其他乐器) | You want to study a drum/bass part or adjust vocals, drums and bass independently | Ready to use: `--model 4stems` |
-| **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Research checkpoint via conversion. [CPU candidate and release status](#five-stem-validation) |
+| **5-stem** | Vocals, drums, bass, **piano** and other instruments | You specifically need piano as a separate group | Research checkpoint via conversion. [CPU and CUDA precision options](#five-stem-validation) |
 
 In the 4-stem model, `other.wav` groups instruments such as guitar, piano, strings
 and synthesizers together. Five-stem uses a separately trained preset that adds
@@ -108,8 +108,15 @@ on the 60 s real mix. [CUDA CLI acceptance and per-stem results](docs/five-stem-
 In a follow-up [eight-configuration precision screen](docs/five-stem-cuda-precision-20261124.md),
 disabling TF32, enabling cuDNN determinism and computing only the analysis FFT in FP64 reduced
 out-of-tolerance samples on the original music from 184 to **zero** in both CLI modes, twice.
-The 60 s real mix passed the full-vs-bounded check. This diagnostic candidate still needs the
-complete CUDA calibration, long-file memory and TRIOS checks through a supported CLI option.
+The 60 s real mix passed the full-vs-bounded check. To try the same configuration with a converted
+five-stem checkpoint, run the following command. Omit `--bounded-memory` for full-file inference.
+
+```bash
+uv run --no-sync spleeterpt separate song.wav --checkpoint weights/5stems.pt --device cuda \
+  --five-stem-cuda-precision --bounded-memory --output outputs/song-5stems
+```
+
+Full CUDA CLI calibration, long-file memory and TRIOS validation of this option are pending.
 [Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights

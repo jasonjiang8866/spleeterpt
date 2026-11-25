@@ -1,4 +1,4 @@
-"""Compare the unmodified CUDA CLI with its full-file path and the frozen TF CPU graph."""
+"""Compare the selected CUDA CLI profile with its full-file path and the frozen TF CPU graph."""
 
 import hashlib
 import json
@@ -27,15 +27,19 @@ def pcm_hash(data):
     return hashlib.sha256(np.ascontiguousarray(data).tobytes()).hexdigest()
 
 
-def cli_args(checkpoint, source, root, mode):
+def cli_args(checkpoint, source, root, mode, *, profile="default"):
     args = ["separate", str(source), "--checkpoint", str(checkpoint), "--device", "cuda"]
     args += ["--output", str(root / mode)]
+    if profile == "fft64":
+        args.append("--five-stem-cuda-precision")
+    elif profile != "default":
+        raise ValueError(f"Unknown CUDA CLI profile: {profile}")
     if mode == "bounded":
         args.append("--bounded-memory")
     return args
 
 
-def cli(checkpoint, source, root, mode):
+def cli(checkpoint, source, root, mode, *, profile):
     # Call the installed CLI entry point in a fresh process so each peak includes model loading.
     runner = """import json, sys, torch
 from spleeterpt.cli import main
@@ -44,7 +48,8 @@ torch.cuda.synchronize()
 print(json.dumps(torch.cuda.max_memory_allocated() / 2**20))
 """
     peak = subprocess.check_output(
-        [sys.executable, "-c", runner, *cli_args(checkpoint, source, root, mode)], text=True
+        [sys.executable, "-c", runner, *cli_args(checkpoint, source, root, mode, profile=profile)],
+        text=True,
     )
     return json.loads(peak.splitlines()[-1])
 
@@ -98,7 +103,9 @@ def replay(work, destination):
         for suffix, value in history["tf_checkpoint_files"].items()
     ):
         raise ValueError("Frozen input or model mismatch")
+    profile = os.environ.get("SPT_CUDA_CLI_PROFILE", "default")
     report = {
+        "cli_profile": profile,
         "calibration": {},
         "long_audio": {},
         "trios": None,
@@ -121,7 +128,7 @@ def replay(work, destination):
             root = Path(tmp)
             wav = root / "input.wav"
             make_input(wav, CONFIG, seconds, original)
-            peaks = {mode: cli(checkpoint, wav, root, mode) for mode in MODES}
+            peaks = {mode: cli(checkpoint, wav, root, mode, profile=profile) for mode in MODES}
             rows = bounded_metrics(root, seconds * 44100, thresholds)
             report["long_audio"][case] = {"peak_allocated_mib": peaks, "stems": rows}
             save()
@@ -153,11 +160,15 @@ def replay(work, destination):
                     calibration_pair = audio, ref
                 case = {
                     "input_pcm_sha256": key,
+                    "output_pcm_sha256": {},
                     "reference_sha256": {s: pcm_hash(a) for s, a in ref.items()},
                 }
                 for mode in MODES:
-                    cli(checkpoint, wav, root, mode)
+                    cli(checkpoint, wav, root, mode, profile=profile)
                     outputs = read_outputs(root, mode, audio.shape[1])
+                    case["output_pcm_sha256"][mode] = {
+                        s: pcm_hash(a.numpy()) for s, a in outputs.items()
+                    }
                     case[mode] = {s: agreement(ref[s], a.numpy()) for s, a in outputs.items()}
                 report["calibration"][name] = case
                 save()
@@ -182,7 +193,7 @@ def replay(work, destination):
                 root = Path(tmp)
                 wav = root / "mix.wav"
                 sf.write(wav, audio.numpy().T, 44100, subtype="FLOAT")
-                cli(checkpoint, wav, root, "bounded")
+                cli(checkpoint, wav, root, "bounded", profile=profile)
                 return read_outputs(root, "bounded", audio.shape[1])
 
         long_audio = report["long_audio"]

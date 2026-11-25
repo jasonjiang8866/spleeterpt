@@ -2,6 +2,7 @@
 
 import argparse
 import json
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 
 import soundfile as sf
@@ -65,6 +66,11 @@ def parser():
     infer.add_argument("--cache-dir", help="cache directory for --model")
     infer.add_argument("--output", required=True)
     infer.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    infer.add_argument(
+        "--five-stem-cuda-precision",
+        action="store_true",
+        help="use deterministic CUDA convolution without TF32 and a float64 analysis FFT",
+    )
     mode = infer.add_mutually_exclusive_group()
     mode.add_argument(
         "--five-stem-cpu-precision",
@@ -88,6 +94,22 @@ def parser():
     convert.add_argument("--stems", type=int, choices=[2, 4, 5], required=True)
     convert.add_argument("--output", required=True)
     return root
+
+
+@contextmanager
+def _cuda_precision():
+    matmul_precision = torch.get_float32_matmul_precision()
+    try:
+        torch.set_float32_matmul_precision("highest")
+        with torch.backends.cudnn.flags(
+            enabled=True,
+            benchmark=False,
+            deterministic=True,
+            allow_tf32=False,
+        ):
+            yield
+    finally:
+        torch.set_float32_matmul_precision(matmul_precision)
 
 
 def main(argv=None):
@@ -114,28 +136,40 @@ def main(argv=None):
     elif args.command == "separate":
         if args.five_stem_cpu_precision and (args.model or torch.device(args.device).type != "cpu"):
             raise ValueError("use --checkpoint with a five-stem model and --device cpu")
+        if args.five_stem_cuda_precision and (
+            args.model or torch.device(args.device).type != "cuda"
+        ):
+            raise ValueError("use --checkpoint with a five-stem model and --device cuda")
         checkpoint = args.checkpoint
         if args.model:
             from .pretrained import download_model
 
             checkpoint = download_model(args.model, args.cache_dir)
         model = load_model(checkpoint, args.device)
-        if args.bounded_memory:
-            from .streaming import separate_file
+        if args.five_stem_cuda_precision and len(model.config.instruments) != 5:
+            raise ValueError("five-stem CUDA precision requires a five-stem checkpoint")
+        with _cuda_precision() if args.five_stem_cuda_precision else nullcontext():
+            _write_stems(args, model)
 
-            separate_file(model, args.input, args.output)
-            return
-        output = Path(args.output)
-        output.mkdir(parents=True, exist_ok=True)
-        if any((output / f"{name}.wav").exists() for name in model.config.instruments):
-            raise FileExistsError("output stems already exist; choose another directory")
-        audio = read_audio(args.input, model.config.sample_rate)
-        for name, stem in separate(
-            model, audio, five_stem_cpu_precision=args.five_stem_cpu_precision
-        ).items():
-            sf.write(
-                output / f"{name}.wav", stem.numpy().T, model.config.sample_rate, subtype="FLOAT"
-            )
+
+def _write_stems(args, model):
+    if args.bounded_memory:
+        from .streaming import separate_file
+
+        separate_file(model, args.input, args.output, wide_fft=args.five_stem_cuda_precision)
+        return
+    output = Path(args.output)
+    output.mkdir(parents=True, exist_ok=True)
+    if any((output / f"{name}.wav").exists() for name in model.config.instruments):
+        raise FileExistsError("output stems already exist; choose another directory")
+    audio = read_audio(args.input, model.config.sample_rate)
+    for name, stem in separate(
+        model,
+        audio,
+        five_stem_cpu_precision=args.five_stem_cpu_precision,
+        wide_fft=args.five_stem_cuda_precision,
+    ).items():
+        sf.write(output / f"{name}.wav", stem.numpy().T, model.config.sample_rate, subtype="FLOAT")
 
 
 if __name__ == "__main__":

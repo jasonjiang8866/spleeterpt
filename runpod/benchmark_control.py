@@ -46,6 +46,11 @@ def launch(api):
     cli_acceptance = os.environ.get("SPT_CLI_ACCEPTANCE") == "true"
     settings_study = os.environ.get("SPT_CUDA_SETTINGS_STUDY") == "true"
     precision_study = os.environ.get("SPT_CUDA_PRECISION_STUDY") == "true"
+    cli_profile = os.environ.get("SPT_CUDA_CLI_PROFILE", "default")
+    if cli_profile not in ("default", "fft64"):
+        raise ValueError("Unknown CUDA CLI profile")
+    if cli_profile == "fft64" and (not cli_acceptance or settings_study or precision_study):
+        raise ValueError("FFT64 requires standalone CLI acceptance")
     if settings_study and precision_study:
         raise ValueError("Select one CUDA study per run")
     if (settings_study or precision_study) and not cli_acceptance:
@@ -89,6 +94,7 @@ def launch(api):
         "benchmark_profile": profile,
         "fft_batch_policy": fft_policy,
         "cli_acceptance": cli_acceptance,
+        "cuda_cli_profile": cli_profile,
         "cuda_settings_study": settings_study,
         "cuda_precision_study": precision_study,
         "gpu_id": gpu_id,
@@ -130,6 +136,7 @@ def launch(api):
             "SPT_TASK": "benchmark",
             "SPT_BENCHMARK_PROFILE": profile,
             "SPT_FFT_BATCH_POLICY": fft_policy,
+            "SPT_CUDA_CLI_PROFILE": cli_profile,
             "SPT_CLI_ACCEPTANCE": str(cli_acceptance).lower(),
             "SPT_CUDA_PRECISION_STUDY": str(precision_study).lower(),
             "SPT_CUDA_SETTINGS_STUDY": str(settings_study).lower(),
@@ -213,6 +220,7 @@ def launch(api):
                         expected_gpu=gpu_id,
                         expected_fft_policy=fft_policy,
                         cli_acceptance=cli_acceptance,
+                        expected_cli_profile=cli_profile,
                     )
                 elif profile == "convergence":
                     from convergence_result import validate as validate_convergence
