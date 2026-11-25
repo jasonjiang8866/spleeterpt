@@ -26,3 +26,14 @@ The unmodified default CLI passed 10/25 frozen TF comparisons in each mode. Nume
 The controller confirmed Pod deletion. A [separate inventory](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45295451613) found zero project Pods. The controller measured 683.49 s at US$0.69/hour, an estimated US$0.1310 of compute excluding storage and requests. After verifying the artifact ZIP and every TAR member, the [independent verifier](https://github.com/jasonjiang8866/spleeterpt/pull/58) recomputed the sole passing candidate from per-stem metrics and PCM hashes.
 
 [Raw two-repeat precision study](results/cuda-precision-20261124/cuda-precision.json.gz) · [Default CLI calibration and memory](results/cuda-precision-20261124/cuda-cli.json.gz) · [Source, archive checksums, cleanup, cost and recovery](results/cuda-precision-20261124/provenance.json)
+
+
+## Comparing the public CLI to this screen
+
+For a public `fft64` run, the post-deletion verifier writes `cuda_cli_screen_replay` in
+`recovery.json`. It checks the checkpoint and original input PCM, then lists any
+TensorFlow reference stems and public CLI output stems whose SHA-256 differs from
+this screen. Full and bounded outputs are compared separately. Empty difference
+lists with status `compared` mean all five reference hashes and ten output hashes
+matched. Interrupted runs can report a missing CLI report or pending original music.
+The full calibration, long-file and TRIOS gates determine the formal acceptance result.

@@ -71,6 +71,14 @@ def verify(root, *, allow_rejected=False):
         "gpu_acceptance_revalidated": accepted,
         "acceptance_status": "accepted" if accepted else "rejected",
     }
+    if cli_profile == "fft64":
+        from precision_result import compare_cli_to_screen
+
+        recovered["cuda_cli_screen_replay"] = (
+            compare_cli_to_screen(report["cuda_cli"], meta["commit"])
+            if "cuda_cli" in report
+            else {"status": "missing_cli_report"}
+        )
     precision = meta.get("cuda_precision_study", False)
     if precision or meta.get("cuda_settings_study"):
         filename = "cuda-precision.json" if precision else "cuda-settings.json"
