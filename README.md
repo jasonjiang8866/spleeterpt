@@ -116,7 +116,11 @@ uv run --no-sync spleeterpt separate song.wav --checkpoint weights/5stems.pt --d
   --five-stem-cuda-precision --bounded-memory --output outputs/song-5stems
 ```
 
-Full CUDA CLI calibration, long-file memory and TRIOS validation of this option are pending.
+On the Blackwell MIG, this CLI option passed **23/25** official TensorFlow waveform comparisons
+in each mode (default **10/25**). Drums and bass on the repeated multiwindow mix exceeded tolerance.
+At 600 s, bounded inference used **572 MiB** versus **17.01 GiB** for full-file inference.
+The CUDA TRIOS holdout remains unopened and five-stem weights remain research-only.
+[Calibration, long-file results and raw evidence](docs/five-stem-cuda-cli-fft64-20261127.md).
 [Earlier GPU measurements](docs/five-stem-gpu-20261102.md)
 
 ## Ready-to-use official weights
