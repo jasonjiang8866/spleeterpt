@@ -1,0 +1,95 @@
+{
+  "source_commit": "50e3de8092eaf3505c0fb6b553ff8ab67252552a",
+  "workflow_run": 45855512496,
+  "attempt": 2,
+  "first_attempt": "NoGpuCapacity before Pod creation",
+  "artifact": {
+    "id": 15135863320,
+    "digest": "sha256:47c2ecd35a38c66b8bd898bc43a9083fc2d11596f79b53120073674aaf19d9c8"
+  },
+  "image": "runpod/pytorch@sha256:cb154fcca15d1d6ce858cfa672b76505e30861ef981d28ec94bd44168767d853",
+  "gpu_runtime": {
+    "requested_gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb",
+    "device_count": 1,
+    "capability": [
+      12,
+      0
+    ],
+    "total_memory_bytes": 25367150592
+  },
+  "source_audio": {
+    "snapshot_sha256": "308c47f1005e1409b6f4f592480a708ffea4d6c92ac0c15fb10f1908810a1bec",
+    "path": "musdb18/train-pool/Auctioneer - Our Future Faces/mixture.wav",
+    "bytes": 73277554,
+    "sha256": "c6a5eee2c88740839f22ff94d2da38016e68495f20ac36fde94679fcb361e3c7",
+    "test_pool_used": false
+  },
+  "fft_batch_policy": "pad-long-tail",
+  "cli_profile": "fft64",
+  "checkpoint_sha256": "0f93e93ad4629baafe6d0a2690fa386907518f8d93667dae0743e886a83f36c7",
+  "actual_lease": {
+    "cost_per_hour": 0.69,
+    "controller_elapsed_seconds": 384.7676866054535,
+    "compute_cost_upper_estimate_usd": 0.07374713993271191,
+    "cleanup_confirmed": true,
+    "cost_scope": "wall-clock at quoted rate; excludes persistent storage/request charges; not invoice"
+  },
+  "workflow_recovery": {
+    "cuda_cli_profile": "fft64",
+    "source_commit": "50e3de8092eaf3505c0fb6b553ff8ab67252552a",
+    "fft_batch_policy": "pad-long-tail",
+    "release_eligible": false,
+    "compute_deleted": true,
+    "bundle_sha256": "8da3106988434a9663abc70a7ca6ff5149395085c5b87fcee3a72a13b53b4709",
+    "recovery": "fresh process after verified Pod disappearance",
+    "execution_location": "GitHub Actions",
+    "verifier_sha256": "f3b598d9abf3a6071d76a09a64d4f32f13ab1d9ef01f646ecfce6245b299b627",
+    "all_members_verified": true,
+    "gpu_acceptance_revalidated": false,
+    "acceptance_status": "rejected"
+  },
+  "independent_verifier_commit": "ac0066f3f9e259722babeda3bd55cbb748aa7eff",
+  "independent_recovery": {
+    "cuda_cli_profile": "fft64",
+    "source_commit": "50e3de8092eaf3505c0fb6b553ff8ab67252552a",
+    "fft_batch_policy": "pad-long-tail",
+    "release_eligible": false,
+    "compute_deleted": true,
+    "bundle_sha256": "8da3106988434a9663abc70a7ca6ff5149395085c5b87fcee3a72a13b53b4709",
+    "recovery": "fresh process after verified Pod disappearance",
+    "execution_location": "local",
+    "verifier_sha256": "8685a2cf6a4b670dfb62de51701da0a12041fe5415f018b1f58cb052ca589dca",
+    "all_members_verified": true,
+    "gpu_acceptance_revalidated": false,
+    "acceptance_status": "rejected",
+    "cuda_cli_screen_replay": {
+      "screen_source_commit": "1c8f972c905b5a1ba9f3a6c8286d19925d920299",
+      "screen_profile": "no_tf32+deterministic+fft64",
+      "same_checkpoint": true,
+      "same_input_pcm": true,
+      "status": "compared",
+      "tf_reference_differs": [],
+      "cli_output_differs": {
+        "full": [],
+        "bounded": []
+      }
+    }
+  },
+  "post_run_inventory": {
+    "run_id": 45857429700,
+    "observed_at_utc": "2026-11-26T16:18:09.710338+00:00",
+    "project_pod_count": 0
+  },
+  "worker": {
+    "status": "failed",
+    "complete": false,
+    "numerical_rejections": [
+      "cuda-cli"
+    ],
+    "cuda_tests": "3 passed, 127 deselected in 3.67s",
+    "edge_cases": 15,
+    "edges_passed": true,
+    "fft_matrix_error": "TypeError: _block_stft() missing 1 required positional argument: 'analysis_stft'"
+  }
+}

@@ -1,6 +1,9 @@
 """Candidate preserves the model's zero context and bounds FFT allocations."""
 
+import math
+import runpy
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
 import torch
@@ -94,3 +97,16 @@ def test_extra_fft_frames_never_reach_network(tiny_config):
     assert len(inputs) == 2
     assert torch.count_nonzero(inputs[-1][..., 28:, :]) == 0
     assert torch.count_nonzero(inputs[-1][..., :28, :]) > 0
+
+
+def test_fft_matrix_measures_both_policies_on_partial_second_block():
+    script = Path(__file__).resolve().parents[1] / "scripts/verify_fft_batches.py"
+    matrix = runpy.run_path(str(script))
+    length = (512 + 7) * 1024 - 4096
+    report = matrix["run"]("cpu", lengths=[length])
+    (case,) = report["cases"]
+    assert (case["samples"], case["frames"]) == (length, 519)
+    assert set(case["errors"]) == {"native", "pad-long-tail"}
+    for maxima in case["errors"].values():
+        assert len(maxima) == 2
+        assert all(math.isfinite(error) and error >= 0 for error in maxima)
