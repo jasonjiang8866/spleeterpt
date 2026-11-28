@@ -222,3 +222,17 @@ def test_cuda_parity_and_input_guard(tiny_config, stems, monkeypatch):
         torch.testing.assert_close(actual[name], expected[name], atol=2e-6, rtol=1e-5)
     with pytest.raises(ValueError, match="CPU"):
         next(separate_iter(model, audio.cuda()))
+
+
+def test_diagnostic_windows_match_emitted_blocks(tiny_config, monkeypatch):
+    import importlib
+    from pathlib import Path
+
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
+    locate = importlib.import_module("parity_metrics").multiwindow_failure_locations
+    length = 2 * tiny_config.segment_frames * tiny_config.hop_length + 1
+    mask = {"silent": np.zeros((2, length), dtype=bool)}
+    report = locate(mask, mask, tiny_config, length, length)
+    blocks = separate_iter(Spleeter(tiny_config).eval(), torch.zeros(2, length))
+    stops = np.cumsum([next(iter(block.values())).shape[-1] for block in blocks])
+    assert stops.tolist() == [window["stop"] for window in report["output_windows"]]
