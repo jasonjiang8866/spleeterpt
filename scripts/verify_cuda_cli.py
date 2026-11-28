@@ -71,7 +71,7 @@ def bounded_metrics(root, frames, thresholds):
 
 
 def replay(work, destination):
-    from parity_metrics import agreement
+    from parity_metrics import agreement_with_failures, multiwindow_failure_locations
     from verify_audio_parity import OfficialGraph, audio_cases
     from verify_native_five_stem import passed, score_holdout
 
@@ -147,7 +147,8 @@ def replay(work, destination):
     calibration_pair = None
     oracle = OfficialGraph(tf_prefix, CONFIG.instruments, upstream)
     try:
-        for name, audio in audio_cases(read_audio(source, 44100), CONFIG, True).items():
+        original_music = read_audio(source, 44100)
+        for name, audio in audio_cases(original_music, CONFIG, True).items():
             with tempfile.TemporaryDirectory(dir=work) as tmp:
                 root = Path(tmp)
                 wav = root / "input.wav"
@@ -163,13 +164,27 @@ def replay(work, destination):
                     "output_pcm_sha256": {},
                     "reference_sha256": {s: pcm_hash(a) for s, a in ref.items()},
                 }
+                failure_masks = {}
                 for mode in MODES:
                     cli(checkpoint, wav, root, mode, profile=profile)
                     outputs = read_outputs(root, mode, audio.shape[1])
                     case["output_pcm_sha256"][mode] = {
                         s: pcm_hash(a.numpy()) for s, a in outputs.items()
                     }
-                    case[mode] = {s: agreement(ref[s], a.numpy()) for s, a in outputs.items()}
+                    case[mode] = {}
+                    for stem, output in outputs.items():
+                        row, failures = agreement_with_failures(ref[stem], output.numpy())
+                        case[mode][stem] = row
+                        if name == "music_multiwindow":
+                            failure_masks.setdefault(mode, {})[stem] = failures
+                if failure_masks:
+                    case["failure_locations"] = multiwindow_failure_locations(
+                        failure_masks["full"],
+                        failure_masks["bounded"],
+                        CONFIG,
+                        audio.shape[-1],
+                        original_music.shape[-1],
+                    )
                 report["calibration"][name] = case
                 save()
 

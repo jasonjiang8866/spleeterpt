@@ -56,3 +56,18 @@ Run all eight arms twice, reversing the order on the second pass. Each of the tw
 The archive member `cuda-precision.json` includes per-stem TF failure counts, peak errors, PCM hashes and effective settings. A profile enters `screen_passed_profiles` only if both repeats pass all five original-music TF comparisons in both modes, both inputs pass bounded vs full, and repeat PCM hashes match. A passing profile still needs validation through a user-facing CLI on the full calibration, long-file memory gates and frozen TRIOS protocol before weight publication.
 
 After download, run `python runpod/five_stem_recovery.py --allow-rejected --directory runpod-results` against the extracted Actions artifact. For a completed precision study, `recovery.json` includes `cuda_precision_audit`. It recomputes candidate eligibility from the two repeats and compares control PCM and TF reference hashes with the previous MIG study. A changed control or TF reference is recorded for interpretation. The audit can recover a completed screen even when the default CLI fails numerical acceptance.
+
+## Locating multiwindow calibration failures
+
+The [November 27 GPU run](https://github.com/jasonjiang8866/spleeterpt/actions/runs/45855512496/attempts/2) recorded 56 strict drum failures and 214 bass failures per mode on the repeated music fixture. The full-file and bounded PCM hashes differ for both stems. The archived counts leave the intersection of failing positions unknown.
+
+On the next CLI acceptance run, inspect `calibration.music_multiwindow.failure_locations` in `cuda-cli.json`. Both modes use the same official reference and the existing strict tolerance. For each stem and mode, channel 0 is left and channel 1 is right. Divide a zero-based `sample_indices` entry by `sample_rate` to get seconds from the start of the decoded waveform. Each channel lists its first 512 failures and the number omitted. Window counts and same-position cross-mode counts cover **all** failures, including omitted positions.
+
+| Report field | Interpretation |
+| --- | --- |
+| `output_windows`, `by_window` | Each count covers the half-open output sample interval from `start` to `stop`. With the 4096-sample analysis pad removed, the internal windows start at 520,192 and 1,044,480. |
+| `in_overlap` | Counts in the overlap-add carry from the previous model window, from `start` up to but excluding `overlap_stop`. The two 3,072-sample carry regions cover 6,144 of the 1,048,713 sample positions per channel (0.586%). |
+| `source_repeat_starts` | The original decoded clip repeats at samples 479,832 and 959,664. These positions identify joins in the input audio. |
+| `both_modes_by_channel` | Counts where both modes exceed tolerance for the same stem, channel and sample. Subtract this from each mode's channel total to get failures unique to that mode. |
+
+Older reports retain the aggregate metrics. Recovering the coordinates requires the reference and candidate waveforms at comparison time.
